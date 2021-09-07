@@ -1,0 +1,84 @@
+version: '3.5'
+
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:12.4
+    restart: always
+    ports:
+      - 5432:5432
+    networks:
+      - database
+    volumes:
+      - postgres:/var/lib/postgresql/data
+      - ./conf/postgres/1-create-user-and-db.sh:/docker-entrypoint-initdb.d/1-create-user-and-db.sh
+      - ./conf/postgres/2-insert-mock-data.sh:/docker-entrypoint-initdb.d/2-insert-mock-data.sh
+    environment:
+      POSTGRES_PASSWORD: postgres
+      PGDATA: /var/lib/postgresql/data/pgdata
+      TZ: "Europe/Rome"
+      PGTZ: "Europe/Rome"
+
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    depends_on: 
+      - postgres
+    restart: always
+    ports:
+      - 8000:80
+    networks: 
+      - database
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: dev@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: password
+
+  redis:
+    container_name: redis
+    image: redis
+    restart: always
+    ports:
+      - 6379:6379
+    networks: 
+      - database
+    volumes:
+      - redis:/data
+
+  redis-commander:
+    container_name: redis-commander
+    image: rediscommander/redis-commander
+    depends_on: 
+      - redis
+    restart: always
+    ports:
+      - 8081:8081
+    networks: 
+      - database
+    environment:
+      REDIS_HOSTS: local:redis:6379
+
+  portainer:
+    container_name: portainer
+    image: portainer/portainer:latest
+    restart: always
+    ports:
+      - 9000:9000
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer:/data
+
+networks:
+  database:
+    name: database
+
+volumes:
+  postgres:
+    name: postgres
+  redis:
+    name: redis
+  pgadmin:
+    name: pgamin
+  portainer:
+    name: portainer

@@ -6,7 +6,9 @@
   "type": "module",
   "scripts": {
     "test": "tap",
-    "dev": "nodemon --config nodemon.json --inspect -r dotenv/config index.js"
+    "dev": "nodemon --config nodemon.json --inspect -r dotenv/config index.js",
+    "init-stack": "./dev-stack/init.sh",
+    "rebuild-db": "./dev-stack/rebuild-db.sh"
   },
   "keywords": [
     "political",
