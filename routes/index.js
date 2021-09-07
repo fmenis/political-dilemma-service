@@ -1,5 +1,7 @@
-import healthRoute from './misc/health.js'
+import miscRoutes from './misc/index.js'
+import userRoutes from './users/index.js'
 
 export default async function index(fastify, opts) {
-  fastify.register(healthRoute, { prefix: '/v1' })
+  fastify.register(miscRoutes)
+  fastify.register(userRoutes)
 }
