@@ -1,6 +1,6 @@
 
-import v1 from './v1/index.js'
+import createRoute from './create.js'
 
 export default async function index(fastify, opts) {
-  fastify.register(v1, { prefix: '/v1'})
+  fastify.register(createRoute, { prefix: '/v1'})
 }

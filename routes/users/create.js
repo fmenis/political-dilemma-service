@@ -1,15 +1,10 @@
 import S from 'fluent-json-schema'
-
-import { hashString } from '../../lib/hash.js'
+import { hashString } from '../lib/hash.js'
 
 export default async function health(fastify, opts) {
   fastify.route({
     method: 'POST',
     path: '/users',
-    config: {
-      trimFields: ['firstName', 'lastname', 'username', 'email', 'bio'],
-      // capitalizeFields: ['firstName', 'lastname']
-    },
     schema: {
       body: S.object()
         .additionalProperties(false)
@@ -17,7 +12,7 @@ export default async function health(fastify, opts) {
         .prop('lastName', S.string().minLength(3).maxLength(50))
         .prop('username', S.string().minLength(3).maxLength(50))
         .required()
-        .prop('email', S.string()) //TODO validazione email
+        .prop('email', S.string().format(S.FORMATS.EMAIL))
         .required()
         .prop('password', S.string().minLength(8))
         .required()
@@ -38,27 +33,30 @@ export default async function health(fastify, opts) {
   })
 
   async function onCreate(req, reply) {
-    const { pg, log } = this
+    const { pg, log, httpErrors } = this
     const { body } = req
 
     const res = await pg.query(
-      'SELECT username, email FROM users WHERE username = $1 OR email = $2',
+      `SELECT case
+        WHEN username = $1
+          THEN 'username'
+        WHEN email = $2
+          THEN 'email'
+        END AS campomatch
+        FROM users WHERE username = $1 OR email = $2`,
       [body.username, body.email]
     )
 
-    if (duplicateUsername) {
-
-    }
-
-    if (duplicateEmail) {
-
+    if (res.length) {
+      const match = res[0].campomatch
+      throw httpErrors.unauthorized(`${match} '${body[match]}' already esists`)
     }
 
     log.debug(`Creating user ${body.email}...`)
 
     const password = await hashString(body.password, parseInt(process.env.SALT_ROUNDS))
 
-    const res2 = await pg.users.save({
+    await pg.users.save({
       firstname: body.firstName,
       lastname: body.lastName,
       username: body.username,
@@ -69,10 +67,7 @@ export default async function health(fastify, opts) {
       roleid: body.roleId
     });
 
-    console.log(res);
-
     log.debug(`User ${body.email} created!`)
-
     reply.code(204)
   }
 }
