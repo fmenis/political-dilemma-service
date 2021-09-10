@@ -6,6 +6,9 @@ export default async function health(fastify, opts) {
     method: 'POST',
     path: '/users',
     schema: {
+      description: 'Create user',
+			tags: ['user', 'create'],
+			summary: 'create',
       body: S.object()
         .additionalProperties(false)
         .prop('firstName', S.string().minLength(3).maxLength(50))

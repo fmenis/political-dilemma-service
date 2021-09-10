@@ -28,6 +28,7 @@
     "massive": "6.10.0"
   },
   "devDependencies": {
+    "fastify-swagger": "4.11.0",
     "nodemon": "2.0.12",
     "pino-pretty": "6.0.0",
     "tap": "15.0.9"

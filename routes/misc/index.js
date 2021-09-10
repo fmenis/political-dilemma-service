@@ -1,5 +1,5 @@
-import healthRoute from './health.js'
+import statusRoute from './status.js'
 
 export default async function index(fastify, opts) {
-  fastify.register(healthRoute, { prefix: '/v1' })
+  fastify.register(statusRoute, { prefix: '/v1' })
 }
