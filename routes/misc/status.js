@@ -9,20 +9,21 @@ export default async function status(fastify, opts) {
 		method: 'GET',
 		path: '/status',
 		schema: {
-			description: 'Returns status and version of the application',
-			tags: ['misc', 'status'],
-			summary: 'status',
+			tags: ['misc'],
+			summary: 'Get application status and version',
+			description: 'Returns status and version of the server.',
 			response: {
 				200: S.object()
-					.additionalProperties(true)
 					.prop('status', S.string())
+					.description('Status')
 					.prop('version', S.string())
+					.description('Server version')
 			}
 		},
 		handler: onStatus
 	})
 
 	async function onStatus(req, reply) {
-		return { status: 'Ok', version }
+		return { status: 'ok', version }
 	}
 }

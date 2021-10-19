@@ -7,7 +7,7 @@ const { version } = JSON.parse(readFileSync(join(resolve(), 'package.json')))
 
 async function swaggerGenerator (fastify, opts) {
   fastify.register(Swagger, {
-    routePrefix: '/documentation',
+    routePrefix: '/doc',
     swagger: {
       info: {
         title: 'Political Dilemma Service',
@@ -18,26 +18,14 @@ async function swaggerGenerator (fastify, opts) {
         url: 'https://github.com/fmenis/political-dilemma-service',
         description: 'Find more info here'
       },
-      host: 'localhost:3000', // and your deployed url
+      host: 'localhost:3000',
       schemes: ['http', 'https'],
       consumes: ['application/json'],
       produces: ['application/json'],
       tags: [
         { name: 'users', description: 'User related end-points' },
-        { name: 'miscellaneous', description: 'Miscellaneous related end-points' }
+        { name: 'misc', description: 'Miscellaneous related end-points' }
       ],
-      // securityDefinitions: {
-      //   Bearer: {
-      //     type: 'apiKey',
-      //     name: 'Bearer',
-      //     in: 'header'
-      //   },
-      //   Csrf: {
-      //     type: 'apiKey',
-      //     name: 'x-csrf-token',
-      //     in: 'header'
-      //   }
-      // }
     },
     exposeRoute: process.env.NODE_ENV !== 'production'
   })

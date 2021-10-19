@@ -5,14 +5,14 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "tap",
-    "dev": "nodemon --config nodemon.json --inspect -r dotenv/config index.js",
+    "test": "tap --before=test/loadEnvs.js",
+    "start": "NODE_ENV=production node -r dotenv/config index.js",
+    "dev": "NODE_ENV=development nodemon --config nodemon.json --inspect -r dotenv/config index.js",
     "init-stack": "./dev-stack/init.sh",
     "rebuild-db": "./dev-stack/rebuild-db.sh"
   },
   "keywords": [
-    "political",
-    "dilemma"
+    "political-dilemma"
   ],
   "author": "filippomeniswork@gmail.com",
   "license": "ISC",

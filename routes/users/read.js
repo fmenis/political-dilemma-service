@@ -1,23 +1,27 @@
 import S from 'fluent-json-schema'
+import { sUser } from './lib/schema.js'
 
-export default async function health(fastify, opts) {
+export default async function readUser(fastify, opts) {
   fastify.route({
-    method: 'POST',
-    path: '/users/:id',
+    method: 'GET',
+    path: '/:id',
     schema: {
-      description: 'Returns user',
-			tags: ['user', 'read'],
-			summary: 'read',
+      tags: ['users'],
+			summary: 'Get user',
+      description: 'Get user by id.',
       params: S.object()
         .additionalProperties(false)
         .prop('id', S.integer().minimum(1))
+        .description('User id')
         .required(),
-      response: S.object()
+      response: {
+        200: sUser()
+      }
     },
-    handler: onRetrieve
+    handler: onReadUser
   })
 
-  async function onRetrieve(req, reply) {
+  async function onReadUser(req, reply) {
     const { pg, httpErrors, log } = this
     const { id } = params
 

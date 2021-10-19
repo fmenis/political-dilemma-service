@@ -8,9 +8,8 @@ import swaggerPlugin from './plugins/swagger.js'
 
 export default async function app(fastify, opts) {
   fastify.register(Sensible)
-
   fastify.register(Helmet, {
-    contentSecurityPolicy: {
+    contentSecurityPolicy: { // helmet + swagger configs
       directives: {
         defaultSrc: [`'self'`],
         styleSrc: [`'self'`, `'unsafe-inline'`],
@@ -19,11 +18,9 @@ export default async function app(fastify, opts) {
       },
     },
   })
-
   fastify.register(Cors)
 
-  fastify.register(apiPlugin, { prefix: '/api'})
-
-  fastify.register(pgPlugin)
   fastify.register(swaggerPlugin)
+  fastify.register(pgPlugin)
+  fastify.register(apiPlugin, { prefix: '/api'})
 }
