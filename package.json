@@ -1,9 +1,14 @@
 {
   "name": "political-dilemma-service",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Political dilemma service",
   "main": "index.js",
   "type": "module",
+  "engines": {
+    "node": ">=14.15.x"
+  },
+  "os": ["Linux", "MacOs"],
+  "private": true,
   "scripts": {
     "test": "tap --before=test/loadEnvs.js",
     "start": "NODE_ENV=production node -r dotenv/config index.js",
