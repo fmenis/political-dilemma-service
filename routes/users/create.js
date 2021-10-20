@@ -1,6 +1,6 @@
 import S from 'fluent-json-schema'
 
-import { hashString } from '../lib/hash.js'
+import { hashString } from '../../lib/hash.js'
 import { sUser, sUserRequestBody } from './lib/schema.js'
 
 export default async function createUser(fastify, opts) {

@@ -14,7 +14,8 @@
     "start": "NODE_ENV=production node -r dotenv/config index.js",
     "dev": "NODE_ENV=development nodemon --config nodemon.json --inspect -r dotenv/config index.js",
     "init-stack": "./dev-stack/init.sh",
-    "rebuild-db": "./dev-stack/rebuild-db.sh"
+    "rebuild-db": "./dev-stack/rebuild-db.sh",
+    "genPw": "node scripts/generatePassword.js"
   },
   "keywords": [
     "political-dilemma"
