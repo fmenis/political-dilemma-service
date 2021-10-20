@@ -1,6 +1,6 @@
 import S from 'fluent-json-schema'
 
-export function sUserResponse() {
+export function sUserResponse() { // TODO manca pw, capire come gestire gli schema richiesta, risposta e db
   return S.object()
     .additionalProperties(false)
     .prop('id', S.number())
@@ -16,10 +16,6 @@ export function sUserResponse() {
     .prop('email', S.string().format('email').minLength(3).maxLength(50))
     .description('User email. It must be unique.')
     .required()
-    .prop('password', S.string().minLength(8))
-    .description('User password.')
-    // .writeOnly(true) //TODO capire
-    // .required()
     .prop('bio', S.oneOf[S.string().maxLength(500), S.null()])
     .description('User biography.')
     .prop('is_blocked', S.boolean())
