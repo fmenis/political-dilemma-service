@@ -7,7 +7,10 @@
   "engines": {
     "node": ">=14.15.x"
   },
-  "os": ["Linux", "MacOs"],
+  "os": [
+    "Linux",
+    "MacOs"
+  ],
   "private": true,
   "scripts": {
     "test": "tap",
@@ -27,11 +30,12 @@
     "dotenv": "10.0.0",
     "fastify": "^3.21.0",
     "fastify-cors": "6.0.2",
+    "fastify-env": "2.1.1",
     "fastify-helmet": "5.3.2",
     "fastify-plugin": "3.0.0",
     "fastify-sensible": "3.1.1",
     "fluent-json-schema": "3.0.1",
-    "massive": "6.10.0"
+    "pg": "8.7.1"
   },
   "devDependencies": {
     "fastify-swagger": "4.11.0",

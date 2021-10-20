@@ -1,5 +1,5 @@
 import S from 'fluent-json-schema'
-import { sUser } from './lib/schema.js'
+import { sUserResponse } from './lib/schema.js'
 
 export default async function readUser(fastify, opts) {
   fastify.route({
@@ -15,7 +15,7 @@ export default async function readUser(fastify, opts) {
         .description('User id')
         .required(),
       response: {
-        200: sUser()
+        200: sUserResponse()
       }
     },
     handler: onReadUser

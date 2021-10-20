@@ -1,8 +1,10 @@
 version: '3.5'
 
+# TODO ripassare docker-compose file e separare bene i container dei vari applicativi
+
 services:
   postgres:
-    container_name: postgres
+    container_name: postgres-pd
     image: postgres:12.4
     restart: always
     ports:
@@ -75,7 +77,7 @@ networks:
 
 volumes:
   postgres:
-    name: postgres
+    name: postgres-pd
   redis:
     name: redis
   pgadmin:

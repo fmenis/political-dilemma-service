@@ -1,14 +1,14 @@
 import S from 'fluent-json-schema'
 
-export function sUser() {
+export function sUserResponse() {
   return S.object()
     .additionalProperties(false)
     .prop('id', S.number())
     .description('User id.')
     .required()
-    .prop('first_name', S.string().minLength(3).maxLength(50))
+    .prop('first_name', S.anyOf[S.string().minLength(3).maxLength(50), S.null()])
     .description('User first name.')
-    .prop('last_name', S.string().minLength(3).maxLength(50))
+    .prop('last_name', S.anyOf[S.string().minLength(3).maxLength(50), S.null()])
     .description('User last name.')
     .prop('user_name', S.string().minLength(3).maxLength(50))
     .description('User system name. It must be unique.')
@@ -18,8 +18,9 @@ export function sUser() {
     .required()
     .prop('password', S.string().minLength(8))
     .description('User password.')
-    .required()
-    .prop('bio', S.string().maxLength(500))
+    // .writeOnly(true) //TODO capire
+    // .required()
+    .prop('bio', S.oneOf[S.string().maxLength(500), S.null()])
     .description('User biography.')
     .prop('is_blocked', S.boolean())
     .description(`Define if the user is blocked, i.e. if he cannot use the API (until it is unblocked).`)
@@ -32,10 +33,9 @@ export function sUser() {
 export function sUserRequestBody() {
   return S.object()
     .additionalProperties(false)
-    .description('User first name.')
     .prop('first_name', S.string().minLength(3).maxLength(50))
     .description('User first name.')
-    .prop('last_name', S.string().minLength(3).maxLength(50))
+    .prop('last_name', S.anyOf[S.string().minLength(3).maxLength(50), S.null()])
     .description('User last name.')
     .prop('user_name', S.string().minLength(3).maxLength(50))
     .description('User system name. It must be unique.')

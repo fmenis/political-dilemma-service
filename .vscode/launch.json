@@ -13,7 +13,10 @@
             ],
             "program": "${workspaceFolder}/index.js",
             "envFile": "${workspaceFolder}/.env",
-            "outputCapture": "std"
+            "outputCapture": "std",
+            "env": {
+                "NODE_ENV": "development"
+            }
         },
         {
             "name": "Attach to port",
