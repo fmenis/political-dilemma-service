@@ -6,14 +6,6 @@ import statusRoute from './status.js'
 
 export default async function index(fastify, opts) {
   fastify.addHook('onRoute', (routeOptions) => {
-    // set common prefix
-    const prefix = routeOptions.routePath ? 
-      `${routeOptions.prefix}/v1${routeOptions.routePath}` :
-      `${routeOptions.prefix}/v1`
-
-    routeOptions.url = prefix
-    routeOptions.path = prefix
-    
     // set common header and response schemas
     routeOptions.schema = {
       ...routeOptions.schema,
@@ -30,5 +22,6 @@ export default async function index(fastify, opts) {
     }
   })
 
-  fastify.register(statusRoute)
+  const prefix = '/v1'
+  fastify.register(statusRoute, { prefix })
 }
