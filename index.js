@@ -9,7 +9,7 @@ const fastify = Fastify({
 		level: process.env.LOG_LEVEL,
 		prettyPrint: process.env.NODE_ENV !== 'production'
 	},
-});
+})
 
 fastify.register(Env, {
   schema: S.object()
@@ -37,7 +37,14 @@ const address = process.env.SERVER_ADDRESS || '127.0.0.1'
 fastify.listen(port, address, err => {  
   if (err) {
     fastify.log.fatal(err)
-    process.exit(1);
+    process.exit(1)
   }
   fastify.log.debug(`Server launched in ${process.env.NODE_ENV} mode`)
-});
+})
+
+/**
+ * TODO
+ * - gracefull shutdown
+ * - linting
+ * - API versioning
+ */

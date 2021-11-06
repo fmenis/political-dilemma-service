@@ -40,6 +40,6 @@ export default async function createUser(fastify, opts) {
 
     const inputs = [obj.first_name, obj.last_name, obj.user_name, obj.email, obj.password, obj.bio, obj.is_blocked]
     const res = await db.execQuery(query, inputs)
-    return res.rows[0];
+    return res.rows[0]
   }
 }

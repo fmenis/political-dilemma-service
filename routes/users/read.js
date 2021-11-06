@@ -36,6 +36,6 @@ export default async function readUser(fastify, opts) {
   async function execQuery(id, db) {
     const query = 'SELECT * FROM users WHERE id = $1'
     const res = await db.execQuery(query, [id])
-    return res.rows[0];
+    return res.rows[0]
   }
 }

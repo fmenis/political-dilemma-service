@@ -11,27 +11,22 @@ async function postgresClient(fastify, opts) {
 	})
 
 	pool.on('error', (err, client) => {
-		fastify.log.error(err)
-	});
+		fastify.log.error(err) //TODO capire se serve
+	})
 
 	function execQuery(query, inputs = [], client = pool) {
 		return new Promise((resolve, reject) => {
 			client.query(query, inputs, (err, reply) => {
 				if (err) {
-					return reject(err);
+					return reject(err)
 				}
-				resolve(reply);
-			});
-		});
-	}
-
-	async function findOne(query, inputs) {
-		const reply = await execQuery(query, inputs)
-		return reply.rows[0]
+				resolve(reply)
+			})
+		})
 	}
 
 	fastify.decorate('db', {
-		execQuery, findOne
+		execQuery
 	})
 }
 

@@ -39,6 +39,6 @@ export default async function deleteUser(fastify, opts) {
   async function execQuery(id, db) {
     const query = 'DELETE FROM users WHERE id = $1'
     const res = await db.execQuery(query, [id])
-    return res.rowCount;
+    return res.rowCount
   }
 }

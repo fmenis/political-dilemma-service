@@ -8,7 +8,7 @@ async function generatePw() {
 	if (!inputString) {
 		throw new Error('Input string not found')
 	}
-	const hashedString = await hashString(inputString, 10);
+	const hashedString = await hashString(inputString, 10)
 	return {
 		string: inputString,
 		hash: hashedString
@@ -17,7 +17,7 @@ async function generatePw() {
 
 generatePw()
 	.then(res => {
-		console.log(`Hashed "${res.string}": ${res.hash}`);
+		console.log(`Hashed "${res.string}": ${res.hash}`)
 	}).catch(err => {
 		console.error(err)
 	})
