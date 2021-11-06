@@ -16,8 +16,8 @@
     "test": "tap",
     "start": "NODE_ENV=production node -r dotenv/config index.js",
     "dev": "NODE_ENV=development nodemon --config nodemon.json --inspect -r dotenv/config index.js",
-    "init-stack": "cd ./dev-stack && docker-compose up -d",
-    "rebuild-db": "./dev-stack/rebuild-db.sh",
+    "init-stack": "cd ./pd-stack && docker-compose up -d",
+    "rebuild-db": "./pd-stack/rebuild-db.sh",
     "genPw": "node scripts/generatePassword.js"
   },
   "keywords": [
@@ -27,8 +27,10 @@
   "license": "ISC",
   "dependencies": {
     "bcrypt": "5.0.1",
+    "desm": "1.2.0",
     "dotenv": "10.0.0",
     "fastify": "^3.21.0",
+    "fastify-autoload": "3.9.0",
     "fastify-cookie": "5.3.2",
     "fastify-cors": "6.0.2",
     "fastify-env": "2.1.1",
