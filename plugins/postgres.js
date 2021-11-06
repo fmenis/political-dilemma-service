@@ -25,8 +25,13 @@ async function postgresClient(fastify, opts) {
 		})
 	}
 
+	async function findOne(query, inputs) {
+		const reply = await execQuery(query, inputs)
+		return reply.rows[0]
+	}
+
 	fastify.decorate('db', {
-		execQuery
+		execQuery, findOne
 	})
 }
 

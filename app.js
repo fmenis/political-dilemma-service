@@ -2,9 +2,11 @@ import Sensible from 'fastify-sensible'
 import Helmet from 'fastify-helmet'
 import Cors from 'fastify-cors'
 
-import apiPlugin from './routes/index.js'
-import pgPlugin from './plugins/postgres.js'
 import swaggerPlugin from './plugins/swagger.js'
+import pgPlugin from './plugins/postgres.js'
+import redisPlugin from './plugins/redis.js'
+
+import apiPlugin from './routes/index.js'
 
 export default async function app(fastify, opts) {
   fastify.register(Sensible)
@@ -22,6 +24,7 @@ export default async function app(fastify, opts) {
 
   fastify.register(swaggerPlugin)
   fastify.register(pgPlugin)
+  fastify.register(redisPlugin)
 
   fastify.register(apiPlugin, { prefix: '/api'})
 }
