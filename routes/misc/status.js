@@ -2,6 +2,7 @@ import S from 'fluent-json-schema'
 import { join, resolve } from 'path'
 import { readFileSync } from 'fs'
 
+import { sUnauthorized, sForbidden } from '../lib/errorSchemas.js'
 const { version } = JSON.parse(readFileSync(join(resolve(), 'package.json')))
 
 export default async function status(fastify, opts) {
@@ -17,7 +18,9 @@ export default async function status(fastify, opts) {
 					.prop('status', S.string())
 					.description('Status')
 					.prop('version', S.string())
-					.description('Server version')
+					.description('Server version'),
+				401: sUnauthorized(),
+				403: sForbidden()
 			}
 		},
 		handler: onStatus

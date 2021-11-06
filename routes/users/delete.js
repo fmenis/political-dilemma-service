@@ -1,5 +1,7 @@
 import S from 'fluent-json-schema'
 
+import { sNoContent, sUnauthorized, sForbidden, sNotFound } from '../lib/errorSchemas.js'
+
 export default async function deleteUser(fastify, opts) {
   fastify.route({
     method: 'DELETE',
@@ -14,11 +16,10 @@ export default async function deleteUser(fastify, opts) {
         .description('User id')
         .required(),
       response: {
-        204: S.object().description('No content'), //TODO non bene, in realtà non torna nulla, non oggetto vuoto
-        404: S.object().description('User not found')
-          .prop('statusCode', S.number())
-          .prop('error', S.string())
-          .prop('message', S.string())
+        204: sNoContent(),
+        401: sUnauthorized(),
+        403: sForbidden(),
+        404: sNotFound()
       }
     },
     handler: onDeleteUser

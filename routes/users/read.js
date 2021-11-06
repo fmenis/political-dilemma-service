@@ -1,5 +1,7 @@
 import S from 'fluent-json-schema'
+
 import { sUserResponse } from './lib/schema.js'
+import { sUnauthorized, sForbidden, sNotFound } from '../lib/errorSchemas.js'
 
 export default async function readUser(fastify, opts) {
   fastify.route({
@@ -15,7 +17,10 @@ export default async function readUser(fastify, opts) {
         .description('User id')
         .required(),
       response: {
-        200: sUserResponse()
+        200: sUserResponse(),
+        401: sUnauthorized(),
+        403: sForbidden(),
+        404: sNotFound()
       }
     },
     handler: onReadUser

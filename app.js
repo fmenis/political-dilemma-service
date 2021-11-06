@@ -1,8 +1,10 @@
 import Sensible from 'fastify-sensible'
 import Helmet from 'fastify-helmet'
 import Cors from 'fastify-cors'
-import Autoload from 'fastify-autoload'
-import { join } from 'desm'
+
+import swaggerPlugin from './plugins/swagger.js'
+import pgPlugin from './plugins/postgres.js'
+import redisPlugin from './plugins/redis.js'
 
 import apiPlugin from './routes/index.js'
 
@@ -20,10 +22,9 @@ export default async function app(fastify, opts) {
   })
   fastify.register(Cors)
 
-  fastify.register(Autoload, {
-    dir: join(import.meta.url, 'plugins'),
-    opts
-  })
+  fastify.register(swaggerPlugin)
+  fastify.register(pgPlugin)
+  fastify.register(redisPlugin)
 
   fastify.register(apiPlugin, { prefix: '/api'})
 }
