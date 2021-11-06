@@ -2,7 +2,6 @@ import S from 'fluent-json-schema'
 import { join, resolve } from 'path'
 import { readFileSync } from 'fs'
 
-import { sUnauthorized, sForbidden } from '../lib/errorSchemas.js'
 const { version } = JSON.parse(readFileSync(join(resolve(), 'package.json')))
 
 export default async function status(fastify, opts) {
@@ -13,14 +12,13 @@ export default async function status(fastify, opts) {
 			tags: ['misc'],
 			summary: 'Get application status and version',
 			description: 'Returns status and version of the server.',
+			
 			response: {
 				200: S.object()
 					.prop('status', S.string())
 					.description('Status')
 					.prop('version', S.string())
-					.description('Server version'),
-				401: sUnauthorized(),
-				403: sForbidden()
+					.description('Server version')
 			}
 		},
 		handler: onStatus

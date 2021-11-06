@@ -44,6 +44,7 @@ fastify.listen(port, address, err => {
 
 /**
  * TODO
+ * - uso addSchema for schema reuse
  * - gracefull shutdown
  * - linting
  * - API versioning

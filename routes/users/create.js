@@ -1,6 +1,5 @@
 import { hashString } from '../../lib/hash.js'
 import { sUserResponse, sUserRequestBody } from './lib/schema.js'
-import { sUnauthorized, sForbidden } from '../lib/errorSchemas.js'
 
 export default async function createUser(fastify, opts) {
   fastify.route({
@@ -12,9 +11,7 @@ export default async function createUser(fastify, opts) {
       description: 'Create user.',
       body: sUserRequestBody(),
       response: {
-      	201: sUserResponse(),
-        401: sUnauthorized(),
-        403: sForbidden()
+      	201: sUserResponse()
       }
     },
     handler: onCreateUser

@@ -1,3 +1,5 @@
+import S from 'fluent-json-schema'
+
 import { clearCookie } from '../../lib/cookie.js'
 import { sNoContent, sUnauthorized, sForbidden } from '../lib/errorSchemas.js'
 
@@ -9,6 +11,11 @@ export default async function logout(fastify, opts) {
       tags: ['auth'],
       summary: 'Logout',
       description: 'Remove user authentication.',
+      headers: S.object()
+        .additionalProperties(true)
+        .prop('Cookie', S.string())
+        .description('Autentication header')
+        .required(),
       response: {
         204: sNoContent(),
         401: sUnauthorized(),
