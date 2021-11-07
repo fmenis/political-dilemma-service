@@ -20,7 +20,7 @@ export function sUnauthorized() {
     .default('Unauthorized')
     .required()
     .prop('message', S.string())
-    .description('Http message')
+    .description('Message')
     .required()
 }
 
@@ -37,7 +37,7 @@ export function sForbidden() {
     .default('Forbidden')
     .required()
     .prop('message', S.string())
-    .description('Http message')
+    .description('Message')
     .required()
 }
 
@@ -54,6 +54,23 @@ export function sNotFound() {
     .default('Not found')
     .required()
     .prop('message', S.string())
-    .description('Http message')
+    .description('Message')
+    .required()
+}
+
+export function sConflict() {
+  return S.object()
+    .additionalProperties(false)
+    .description('Conflict')
+    .prop('statusCode', S.number())
+    .description('Http status code')
+    .default('409')
+    .required()
+    .prop('error', S.string())
+    .description('Http error')
+    .default('Conflict')
+    .required()
+    .prop('message', S.string())
+    .description('Message')
     .required()
 }

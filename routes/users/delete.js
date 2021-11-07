@@ -1,6 +1,6 @@
 import S from 'fluent-json-schema'
 
-import { sNoContent, sNotFound } from '../lib/errorSchemas.js'
+import { sNoContent, sNotFound, sConflict } from '../lib/errorSchemas.js'
 
 export default async function deleteUser(fastify, opts) {
   fastify.route({
@@ -17,7 +17,8 @@ export default async function deleteUser(fastify, opts) {
         .required(),
       response: {
         204: sNoContent(),
-        404: sNotFound()
+        404: sNotFound(),
+        409: sConflict()
       }
     },
     handler: onDeleteUser
@@ -26,18 +27,18 @@ export default async function deleteUser(fastify, opts) {
   async function onDeleteUser(req, reply) {
     const { db, httpErrors } = this
     const { id } = req.params
+    const { user } = req
 
-    const rowCont = await execQuery(id, db)
-    if (!rowCont) {
+    const { id: user_id } = await db.findOne('SELECT id FROM users WHERE id=$1', [id])
+    if (!user_id) {
       throw httpErrors.notFound(`User with id '${id}' not found`)
     }
 
-    reply.code(204)
-  }
+    if (user_id ===  user.id) {
+      throw httpErrors.conflict(`Cannot delete your own user`)
+    }
 
-  async function execQuery(id, db) {
-    const query = 'DELETE FROM users WHERE id = $1'
-    const res = await db.execQuery(query, [id])
-    return res.rowCount
+    await db.execQuery(query, [id])
+    reply.code(204)
   }
 }
