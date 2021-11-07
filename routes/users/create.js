@@ -34,7 +34,6 @@ export default async function createUser(fastify, opts) {
       if (password !== confirm_password) {
         throw httpErrors.badRequest('Password and password confirmation are not equal')
       }
-
     },
     handler: onCreateUser
   })

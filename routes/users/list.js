@@ -3,6 +3,8 @@ import S from 'fluent-json-schema'
 import { sUserResponse } from './lib/schema.js'
 
 export default async function listUsers(fastify, opts) {
+  const { db } = fastify
+
   fastify.route({
     method: 'POST',
     path: '/list',
@@ -27,7 +29,6 @@ export default async function listUsers(fastify, opts) {
   })
 
   async function onListUsers(req, reply) {
-    const { db } = this
     const { query } = req
 
     const options = {

@@ -31,20 +31,20 @@ export default async function index(fastify, opts) {
   /**
    * Set common routes stuff
    */
-  fastify.addHook('onRoute', (routeOptions) => {
-    routeOptions.schema = {
-      ...routeOptions.schema,
+  fastify.addHook('onRoute', options => {
+    options.schema = {
+      ...options.schema,
       response: {
-        ...routeOptions.schema.response,
+        ...options.schema.response,
         400: fastify.getSchema('sBadRequest'),
         401: fastify.getSchema('sUnauthorized'),
         403: fastify.getSchema('sForbidden'),
       }
     }
 
-    if (!routeOptions.config.public) {
-      routeOptions.schema = {
-        ...routeOptions.schema,
+    if (!options.config.public) {
+      options.schema = {
+        ...options.schema,
         headers: S.object()
           .additionalProperties(true)
           .prop('Cookie', S.string())

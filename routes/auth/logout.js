@@ -3,6 +3,8 @@ import S from 'fluent-json-schema'
 import { clearCookie } from '../../lib/cookie.js'
 
 export default async function logout(fastify, opts) {
+  const { redis } = fastify
+
   fastify.route({
     method: 'POST',
     path: '/logout',
@@ -26,7 +28,6 @@ export default async function logout(fastify, opts) {
   })
 
   async function onLogout(req, reply) {
-    const { redis } = this
     const { id } = req.user
 
     await redis.del(id)

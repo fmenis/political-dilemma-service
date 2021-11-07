@@ -3,6 +3,8 @@ import S from 'fluent-json-schema'
 import { sUserResponse } from './lib/schema.js'
 
 export default async function readUser(fastify, opts) {
+  const { db, httpErrors } = fastify
+
   fastify.route({
     method: 'GET',
     path: '/:id',
@@ -27,7 +29,6 @@ export default async function readUser(fastify, opts) {
   })
 
   async function onReadUser(req, reply) {
-    const { db, httpErrors } = this
     const { id } = req.params
 
     const user = await execQuery(id, db)

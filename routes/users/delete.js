@@ -1,6 +1,8 @@
 import S from 'fluent-json-schema'
 
 export default async function deleteUser(fastify, opts) {
+  const { db, httpErrors } = fastify
+
   fastify.route({
     method: 'DELETE',
     path: '/:id',
@@ -26,7 +28,6 @@ export default async function deleteUser(fastify, opts) {
   })
 
   async function onDeleteUser(req, reply) {
-    const { db, httpErrors } = this
     const { id } = req.params
     const { user } = req
 

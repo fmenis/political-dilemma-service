@@ -4,7 +4,7 @@ import moment from 'moment'
 import { compareStrings } from '../../lib/hash.js'
 
 export default async function login(fastify, opts) {
-  const { httpErrors } = fastify;
+  const { db, log, redis, httpErrors } = fastify
 
   fastify.route({
     method: 'POST',
@@ -33,7 +33,6 @@ export default async function login(fastify, opts) {
 
   async function onLogin(req, reply) {
     const { email, password } = req.body
-    const { db, log, redis } = this
 
     const user = await db.findOne('SELECT * FROM users WHERE email=$1', [email])
 
