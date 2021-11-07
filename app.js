@@ -5,6 +5,7 @@ import Cors from 'fastify-cors'
 import swaggerPlugin from './plugins/swagger.js'
 import pgPlugin from './plugins/postgres.js'
 import redisPlugin from './plugins/redis.js'
+import loadSchemasPlugin from './plugins/loadSchemas.js'
 
 import apiPlugin from './routes/index.js'
 
@@ -25,6 +26,7 @@ export default async function app(fastify, opts) {
   fastify.register(swaggerPlugin)
   fastify.register(pgPlugin)
   fastify.register(redisPlugin)
+  fastify.register(loadSchemasPlugin)
 
   fastify.register(apiPlugin, { prefix: '/api'})
 }

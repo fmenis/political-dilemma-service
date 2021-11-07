@@ -2,6 +2,7 @@ import S from 'fluent-json-schema'
 
 export function sNoContent() {
   return {
+    $id: 'sNoContent',
     description: 'No content',
     type: 'null'
   }
@@ -9,6 +10,7 @@ export function sNoContent() {
 
 export function sBadRequest() {
   return S.object()
+    .id('sBadRequest')
     .additionalProperties(false)
     .description('Bad Request')
     .prop('statusCode', S.number())
@@ -26,6 +28,7 @@ export function sBadRequest() {
 
 export function sUnauthorized() {
   return S.object()
+    .id('sUnauthorized')
     .additionalProperties(false)
     .description('Unauthorized')
     .prop('statusCode', S.number())
@@ -43,6 +46,7 @@ export function sUnauthorized() {
 
 export function sForbidden() {
   return S.object()
+    .id('sForbidden')
     .additionalProperties(false)
     .description('Forbidden')
     .prop('statusCode', S.number())
@@ -60,6 +64,7 @@ export function sForbidden() {
 
 export function sNotFound() {
   return S.object()
+    .id('sNotFound')
     .additionalProperties(false)
     .description('Not found')
     .prop('statusCode', S.number())
@@ -77,6 +82,7 @@ export function sNotFound() {
 
 export function sConflict() {
   return S.object()
+    .id('sConflict')
     .additionalProperties(false)
     .description('Conflict')
     .prop('statusCode', S.number())

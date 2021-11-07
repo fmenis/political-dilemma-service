@@ -1,7 +1,6 @@
 import S from 'fluent-json-schema'
 
 import { sUserResponse } from './lib/schema.js'
-import { sNotFound } from '../lib/errorSchemas.js'
 
 export default async function readUser(fastify, opts) {
   fastify.route({
@@ -21,7 +20,7 @@ export default async function readUser(fastify, opts) {
         .required(),
       response: {
         200: sUserResponse(),
-        404: sNotFound()
+        404: fastify.getSchema('sNotFound'),
       }
     },
     handler: onReadUser

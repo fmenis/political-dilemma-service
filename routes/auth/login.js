@@ -2,7 +2,6 @@ import S from 'fluent-json-schema'
 import moment from 'moment'
 
 import { compareStrings } from '../../lib/hash.js'
-import { sNoContent } from '../lib/errorSchemas.js'
 
 export default async function login(fastify, opts) {
   const { httpErrors } = fastify;
@@ -26,7 +25,7 @@ export default async function login(fastify, opts) {
 				.description('User password')
 				.required(),
 			response: {
-        204: sNoContent()
+        204: fastify.getSchema('sNoContent')
 			}
     },
     handler: onLogin
@@ -61,6 +60,7 @@ export default async function login(fastify, opts) {
       is_valid: true
     }, { ttl: fastify.config.SESSION_TTL })
 
+    // TODO controllare
     const cookieOptions = {
       path: '/api',
       httpOnly: true,

@@ -1,7 +1,6 @@
 import S from 'fluent-json-schema'
 
 import authentication from '../plugins/authentication.js'
-import { sBadRequest, sUnauthorized, sForbidden } from './lib/errorSchemas.js'
 
 import authRoutes from './auth/index.js'
 import userRoutes from './users/index.js'
@@ -14,7 +13,6 @@ export default async function index(fastify, opts) {
    * Log request body
    */
   fastify.addHook('preHandler', function (req, reply, done) {
-    // log request body
     if (req.body) {
       if (req.body.password) {
         req.log.info({
@@ -38,9 +36,9 @@ export default async function index(fastify, opts) {
       ...routeOptions.schema,
       response: {
         ...routeOptions.schema.response,
-        400: sBadRequest(),
-        401: sUnauthorized(),
-        403: sForbidden(),
+        400: fastify.getSchema('sBadRequest'),
+        401: fastify.getSchema('sUnauthorized'),
+        403: fastify.getSchema('sForbidden'),
       }
     }
 

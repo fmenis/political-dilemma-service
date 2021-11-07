@@ -3,7 +3,7 @@ import S from 'fluent-json-schema'
 export function sUserResponse() { // TODO manca pw, capire come gestire gli schema richiesta, risposta e db
   return S.object()
     .additionalProperties(false)
-    .description('Created')
+    .description('User')
     .prop('id', S.number())
     .description('User id.')
     .required()

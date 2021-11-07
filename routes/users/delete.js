@@ -1,7 +1,5 @@
 import S from 'fluent-json-schema'
 
-import { sNoContent, sNotFound, sConflict } from '../lib/errorSchemas.js'
-
 export default async function deleteUser(fastify, opts) {
   fastify.route({
     method: 'DELETE',
@@ -19,9 +17,9 @@ export default async function deleteUser(fastify, opts) {
         .description('User id')
         .required(),
       response: {
-        204: sNoContent(),
-        404: sNotFound(),
-        409: sConflict()
+        204: fastify.getSchema('sNoContent'),
+        404: fastify.getSchema('sNotFound'),
+        409: fastify.getSchema('sConflict'),
       }
     },
     handler: onDeleteUser

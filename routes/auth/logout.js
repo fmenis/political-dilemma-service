@@ -1,7 +1,6 @@
 import S from 'fluent-json-schema'
 
 import { clearCookie } from '../../lib/cookie.js'
-import { sNoContent, sUnauthorized, sForbidden } from '../lib/errorSchemas.js'
 
 export default async function logout(fastify, opts) {
   fastify.route({
@@ -20,9 +19,7 @@ export default async function logout(fastify, opts) {
         .description('Autentication header')
         .required(),
       response: {
-        204: sNoContent(),
-        401: sUnauthorized(),
-        403: sForbidden()
+        204: fastify.getSchema('sNoContent')
       }
     },
     handler: onLogout
