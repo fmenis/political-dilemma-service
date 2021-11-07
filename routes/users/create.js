@@ -23,6 +23,8 @@ export default async function createUser(fastify, opts) {
 
     const userObj = {
       ...body,
+      //TODO capire se non serve dal momento in cui la colonna è not null
+      is_blocked: body.is_blocked ?? false,
       password: await hashString(body.password, parseInt(config.SALT_ROUNDS)),
     }
 
