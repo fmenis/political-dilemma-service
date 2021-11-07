@@ -2,6 +2,8 @@ import { hashString } from '../../lib/hash.js'
 import { sUserResponse, sUserRequestBody } from './lib/schema.js'
 
 export default async function createUser(fastify, opts) {
+  const { db, config, httpErrors } = fastify
+
   fastify.route({
     method: 'POST',
     path: '/',
@@ -17,11 +19,27 @@ export default async function createUser(fastify, opts) {
       	201: sUserResponse()
       }
     },
+    preHandler: async function (req, reply) {
+      const { user_name, email, password, confirm_password } = req.body
+
+      const query = 'SELECT id FROM users ' +
+        'WHERE user_name=$1 OR email=$2'
+
+      const already_insered = await db.findOne(query, [user_name, email])
+  
+      if (already_insered) {
+        throw httpErrors.badRequest(`Username or email already used`)
+      }
+
+      if (password !== confirm_password) {
+        throw httpErrors.badRequest('Password and password confirmation are not equal')
+      }
+
+    },
     handler: onCreateUser
   })
 
   async function onCreateUser(req, reply) {
-    const { db, config } = this
     const { body } = req
 
     const userObj = {
