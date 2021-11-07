@@ -6,6 +6,9 @@ export default async function listUsers(fastify, opts) {
   fastify.route({
     method: 'POST',
     path: '/list',
+    config: {
+      public: false
+    },
     schema: {
       tags: ['users'],
       summary: 'User list',

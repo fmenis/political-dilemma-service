@@ -7,6 +7,9 @@ export default async function logout(fastify, opts) {
   fastify.route({
     method: 'POST',
     path: '/logout',
+    config: {
+      public: false
+    },
     schema: {
       tags: ['auth'],
       summary: 'Logout',

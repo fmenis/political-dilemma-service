@@ -5,6 +5,9 @@ export default async function createUser(fastify, opts) {
   fastify.route({
     method: 'POST',
     path: '/',
+    config: {
+      public: false
+    },
     schema: {
       tags: ['users'],
       summary: 'Create user',

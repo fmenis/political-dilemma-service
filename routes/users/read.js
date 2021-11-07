@@ -7,6 +7,9 @@ export default async function readUser(fastify, opts) {
   fastify.route({
     method: 'GET',
     path: '/:id',
+    config: {
+      public: false
+    },
     schema: {
       tags: ['users'],
       summary: 'Get user',

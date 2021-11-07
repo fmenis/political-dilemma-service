@@ -2,7 +2,7 @@ import S from 'fluent-json-schema'
 import moment from 'moment'
 
 import { compareStrings } from '../../lib/hash.js'
-import { sNoContent, sUnauthorized, sForbidden } from '../lib/errorSchemas.js'
+import { sNoContent } from '../lib/errorSchemas.js'
 
 export default async function login(fastify, opts) {
   const { httpErrors } = fastify;
@@ -26,9 +26,7 @@ export default async function login(fastify, opts) {
 				.description('User password')
 				.required(),
 			response: {
-        204: sNoContent(),
-        401: sUnauthorized(),
-        403: sForbidden()
+        204: sNoContent()
 			}
     },
     handler: onLogin

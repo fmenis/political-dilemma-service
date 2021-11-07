@@ -6,6 +6,9 @@ export default async function deleteUser(fastify, opts) {
   fastify.route({
     method: 'DELETE',
     path: '/:id',
+    config: {
+      public: false
+    },
     schema: {
       tags: ['users'],
       summary: 'Delete user',
