@@ -29,18 +29,23 @@ export default async function deleteUser(fastify, opts) {
 
   async function onDeleteUser(req, reply) {
     const { id } = req.params
-    const { user } = req
+    const { user: owner } = req
 
     const { id: user_id } = await db.findOne('SELECT id FROM users WHERE id=$1', [id])
     if (!user_id) {
       throw httpErrors.notFound(`User with id '${id}' not found`)
     }
 
-    if (user_id ===  user.id) {
+    if (user_id === owner.id) {
       throw httpErrors.conflict(`Cannot delete your own user`)
     }
 
-    await db.execQuery(query, [id])
+    const { rowCount } = await db.execQuery(query, [id])
+
+    if (!rowCount) {
+      throw httpErrors.conflict('The action had no effect')
+    }
+
     reply.code(204)
   }
 }

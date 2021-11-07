@@ -1,5 +1,5 @@
 import { hashString } from '../../lib/hash.js'
-import { sUserResponse, sUserRequestBody } from './lib/schema.js'
+import { sUserResponse, sCreateUser } from './lib/schema.js'
 
 export default async function createUser(fastify, opts) {
   const { db, config, httpErrors } = fastify
@@ -14,7 +14,7 @@ export default async function createUser(fastify, opts) {
       tags: ['users'],
       summary: 'Create user',
       description: 'Create user.',
-      body: sUserRequestBody(),
+      body: sCreateUser(),
       response: {
       	201: sUserResponse()
       }

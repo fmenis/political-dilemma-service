@@ -27,7 +27,7 @@ export function sUserResponse() { // TODO manca pw, capire come gestire gli sche
     .description('Defines the last time that the user was updated.')
 }
 
-export function sUserRequestBody() {
+export function sCreateUser() {
   return S.object()
     .additionalProperties(false)
     .prop('first_name', S.string().minLength(3).maxLength(50))
@@ -46,6 +46,23 @@ export function sUserRequestBody() {
     .prop('confirm_password', S.string().minLength(8))
     .description('Password confirmation.')
     .required()
+    .prop('bio', S.string().maxLength(500))
+    .description('User biography.')
+    .prop('is_blocked', S.boolean())
+    .description(`Define if the user is blocked, i.e. if he cannot use the API (until it is unblocked).`)
+}
+
+export function sUpdateUser() {
+  return S.object()
+    .additionalProperties(false)
+    .prop('first_name', S.string().minLength(3).maxLength(50))
+    .description('User first name.')
+    .prop('last_name', S.anyOf[S.string().minLength(3).maxLength(50), S.null()])
+    .description('User last name.')
+    .prop('user_name', S.string().minLength(3).maxLength(50))
+    .description('User system name. It must be unique.')
+    .prop('email', S.string().format('email').minLength(6).maxLength(50))
+    .description('User email. It must be unique.')
     .prop('bio', S.string().maxLength(500))
     .description('User biography.')
     .prop('is_blocked', S.boolean())

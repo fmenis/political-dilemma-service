@@ -55,11 +55,11 @@ export default async function changePassword(fastify, opts) {
       throw httpErrors.badRequest(`The 'new' and 'confirmation' password does't match`)
     }
 
-    const intpus = [user.id, await hashString(new_pw, parseInt(config.SALT_ROUNDS))]
-    const { rowCount } = await db.execQuery('UPDATE users SET password=$2 WHERE id=$1', intpus)
+    const inputs = [user.id, await hashString(new_pw, parseInt(config.SALT_ROUNDS))]
+    const { rowCount } = await db.execQuery('UPDATE users SET password=$2 WHERE id=$1', inputs)
 
     if (!rowCount) {
-      throw httpErrors.conflict('Password not updated')
+      throw httpErrors.conflict('The action had no effect')
     }
      
     reply.code(204)
