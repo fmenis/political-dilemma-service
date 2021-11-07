@@ -7,6 +7,23 @@ export function sNoContent() {
   }
 }
 
+export function sBadRequest() {
+  return S.object()
+    .additionalProperties(false)
+    .description('Bad Request')
+    .prop('statusCode', S.number())
+    .description('Http status code')
+    .default('400')
+    .required()
+    .prop('error', S.string())
+    .description('Http error')
+    .default('Bad Request')
+    .required()
+    .prop('message', S.string())
+    .description('Message')
+    .required()
+}
+
 export function sUnauthorized() {
   return S.object()
     .additionalProperties(false)
