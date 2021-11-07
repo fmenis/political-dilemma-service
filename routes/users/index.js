@@ -6,6 +6,13 @@ import deleteRoute from './delete.js'
 import changePwRoute from './changePassword.js'
 
 export default async function index(fastify, opts) {
+  fastify.addHook('onRoute', options => {
+    options.schema = {
+      ...options.schema,
+      tags: ['users']
+    }
+  })
+
   const prefix = '/v1/users'
 
   fastify.register(createRoute, { prefix })

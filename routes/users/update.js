@@ -12,7 +12,6 @@ export default async function updateUser(fastify, opts) {
       public: false,
     },
     schema: {
-      tags: ['users'],
       summary: 'Update user',
       description: 'Update user',
       params: S.object()

@@ -12,7 +12,6 @@ export default async function readUser(fastify, opts) {
       public: false
     },
     schema: {
-      tags: ['users'],
       summary: 'Get user',
       description: 'Get user by id.',
       params: S.object()

@@ -11,7 +11,6 @@ export default async function createUser(fastify, opts) {
       public: false
     },
     schema: {
-      tags: ['users'],
       summary: 'Create user',
       description: 'Create user.',
       body: sCreateUser(),

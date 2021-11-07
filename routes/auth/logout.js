@@ -12,7 +12,6 @@ export default async function logout(fastify, opts) {
       public: false
     },
     schema: {
-      tags: ['auth'],
       summary: 'Logout',
       description: 'Remove user authentication.',
       headers: S.object()

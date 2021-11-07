@@ -12,7 +12,6 @@ export default async function listUsers(fastify, opts) {
       public: false
     },
     schema: {
-      tags: ['users'],
       summary: 'User list',
       description: 'Get all users.',
       querystring: S.object()

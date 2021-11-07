@@ -10,7 +10,6 @@ export default async function deleteUser(fastify, opts) {
       public: false
     },
     schema: {
-      tags: ['users'],
       summary: 'Delete user',
       description: 'Delete user by id.',
       params: S.object()

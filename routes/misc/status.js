@@ -12,10 +12,8 @@ export default async function status(fastify, opts) {
       public: false
     },
 		schema: {
-			tags: ['misc'],
 			summary: 'Get application status and version',
 			description: 'Returns status and version of the server.',
-			
 			response: {
 				200: S.object()
 					.prop('status', S.string())

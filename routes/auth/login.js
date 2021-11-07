@@ -13,7 +13,6 @@ export default async function login(fastify, opts) {
       public: true
     },
     schema: {
-			tags: ['auth'],
       summary: 'Login',
       description: 'Authenticate user into the system.',
       body: S.object()

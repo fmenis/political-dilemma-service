@@ -11,7 +11,6 @@ export default async function changePassword(fastify, opts) {
       public: false,
     },
     schema: {
-      tags: ['users'],
       summary: 'Change password',
       description: 'Change user password.',
       params: S.object()
