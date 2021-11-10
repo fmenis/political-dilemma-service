@@ -1,7 +1,7 @@
 import S from 'fluent-json-schema'
 import { compareStrings, hashString } from '../../lib/hash.js'
 
-export default async function changePassword(fastify, opts) {
+export default async function changePassword(fastify) {
   const { db, config, httpErrors } = fastify
 
   fastify.route({

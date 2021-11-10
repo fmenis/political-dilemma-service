@@ -1,7 +1,7 @@
 import { hashString } from '../../lib/hash.js'
 import { sUserResponse, sCreateUser } from './lib/schema.js'
 
-export default async function createUser(fastify, opts) {
+export default async function createUser(fastify) {
   const { db, config, httpErrors } = fastify
 
   fastify.route({
@@ -15,10 +15,10 @@ export default async function createUser(fastify, opts) {
       description: 'Create user.',
       body: sCreateUser(),
       response: {
-      	201: sUserResponse()
+        201: sUserResponse()
       }
     },
-    preHandler: async function (req, reply) {
+    preHandler: async function (req) {
       const { user_name, email, password, confirm_password } = req.body
 
       const query = 'SELECT id FROM users ' +

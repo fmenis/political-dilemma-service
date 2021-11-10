@@ -2,8 +2,8 @@ import S from 'fluent-json-schema'
 
 import { sUpdateUser, sUserResponse } from './lib/schema.js'
 
-export default async function updateUser(fastify, opts) {
-  const { db, config, httpErrors } = fastify
+export default async function updateUser(fastify) {
+  const { db, httpErrors } = fastify
 
   fastify.route({
     method: 'PUT',

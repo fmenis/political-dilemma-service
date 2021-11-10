@@ -5,7 +5,7 @@ import Swagger from 'fastify-swagger'
 
 const { version } = JSON.parse(readFileSync(join(resolve(), 'package.json')))
 
-async function swaggerGenerator (fastify, opts) {
+async function swaggerGenerator (fastify) {
   fastify.register(Swagger, {
     routePrefix: '/doc',
     swagger: {

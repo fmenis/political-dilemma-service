@@ -1,6 +1,6 @@
 import S from 'fluent-json-schema'
 
-export default async function deleteUser(fastify, opts) {
+export default async function deleteUser(fastify) {
   const { db, httpErrors } = fastify
 
   fastify.route({
@@ -39,7 +39,7 @@ export default async function deleteUser(fastify, opts) {
       throw httpErrors.conflict(`Cannot delete your own user`)
     }
 
-    const { rowCount } = await db.execQuery(query, [id])
+    const { rowCount } = await db.execQuery('DELETE users WHERE id=$1', [id])
 
     if (!rowCount) {
       throw httpErrors.conflict('The action had no effect')

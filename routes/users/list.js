@@ -2,7 +2,7 @@ import S from 'fluent-json-schema'
 
 import { sUserResponse } from './lib/schema.js'
 
-export default async function listUsers(fastify, opts) {
+export default async function listUsers(fastify) {
   const { db } = fastify
 
   fastify.route({
@@ -27,7 +27,7 @@ export default async function listUsers(fastify, opts) {
     handler: onListUsers
   })
 
-  async function onListUsers(req, reply) {
+  async function onListUsers(req) {
     const { query } = req
 
     const options = {

@@ -18,7 +18,8 @@
     "dev": "NODE_ENV=development nodemon --config nodemon.json --inspect -r dotenv/config index.js",
     "init-stack": "cd ./pd-stack && docker-compose up -d",
     "rebuild-db": "./pd-stack/rebuild-db.sh",
-    "genPw": "node -r dotenv/config scripts/generatePassword.js"
+    "genPw": "node -r dotenv/config scripts/generatePassword.js",
+    "lint": "eslint . --ext .js"
   },
   "keywords": [
     "political-dilemma"
@@ -42,6 +43,11 @@
     "shortid": "2.2.16"
   },
   "devDependencies": {
+    "eslint": "7.32.0",
+    "eslint-config-standard": "16.0.3",
+    "eslint-plugin-import": "2.25.3",
+    "eslint-plugin-node": "11.1.0",
+    "eslint-plugin-promise": "5.1.1",
     "fastify-swagger": "4.11.0",
     "nodemon": "2.0.12",
     "pino-pretty": "6.0.0",

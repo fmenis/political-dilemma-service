@@ -9,7 +9,7 @@ import loadSchemasPlugin from './plugins/loadSchemas.js'
 
 import apiPlugin from './routes/index.js'
 
-export default async function app(fastify, opts) {
+export default async function app(fastify) {
   fastify.register(Sensible)
   fastify.register(Helmet, {
     contentSecurityPolicy: { // helmet + swagger configs
@@ -28,5 +28,5 @@ export default async function app(fastify, opts) {
   fastify.register(redisPlugin)
   fastify.register(loadSchemasPlugin)
 
-  fastify.register(apiPlugin, { prefix: '/api'})
+  fastify.register(apiPlugin, { prefix: '/api' })
 }

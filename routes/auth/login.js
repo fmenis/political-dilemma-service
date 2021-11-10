@@ -3,7 +3,7 @@ import moment from 'moment'
 
 import { compareStrings } from '../../lib/hash.js'
 
-export default async function login(fastify, opts) {
+export default async function login(fastify) {
   const { db, log, redis, httpErrors } = fastify
 
   fastify.route({
@@ -18,14 +18,14 @@ export default async function login(fastify, opts) {
       body: S.object()
         .additionalProperties(false)
         .prop('email', S.string().format('email').minLength(6).maxLength(50))
-				.description('User email')
-				.required()
+        .description('User email')
+        .required()
         .prop('password', S.string().minLength(8))
-				.description('User password')
-				.required(),
-			response: {
+        .description('User password')
+        .required(),
+      response: {
         204: fastify.getSchema('sNoContent')
-			}
+      }
     },
     handler: onLogin
   })

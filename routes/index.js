@@ -6,13 +6,14 @@ import authRoutes from './auth/index.js'
 import userRoutes from './users/index.js'
 import miscRoutes from './misc/index.js'
 
-export default async function index(fastify, opts) {
+export default async function index(fastify) {
   fastify.register(authentication)
 
   /**
    * Log request body
    */
-  fastify.addHook('preHandler', function (req, reply, done) {
+  fastify.addHook('preHandler', function (req, reply, done) { // eslint-disable-line
+    //TODO completare con altri campi (updatePassword)
     if (req.body) {
       if (req.body.password) {
         req.log.info({

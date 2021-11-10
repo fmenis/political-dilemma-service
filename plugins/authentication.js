@@ -3,7 +3,7 @@ import cookie from 'fastify-cookie'
 
 import { clearCookie } from '../lib/cookie.js'
 
-async function authentication(fastify, opts) {
+async function authentication(fastify) {
   fastify.register(cookie, {
     secret: fastify.config.SECRET
   })
@@ -21,7 +21,7 @@ async function authentication(fastify, opts) {
       throw httpErrors.unauthorized('Authentication error')
     }
 
-    const unsigned_cookie = req.unsignCookie(cookie);
+    const unsigned_cookie = req.unsignCookie(cookie)
     if (!unsigned_cookie.valid) {
       log.debug(`Invalid access: malformed cookie`)
       throw httpErrors.unauthorized('Authentication error')

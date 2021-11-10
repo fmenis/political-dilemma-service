@@ -4,7 +4,7 @@ import {
   sBadRequest, sForbidden, sNoContent, sUnauthorized, sNotFound, sConflict
 } from '../routes/lib/errorSchemas.js'
 
-async function loadSchemas (fastify, opts) {
+async function loadSchemas (fastify) {
   fastify.addSchema(sBadRequest())
   fastify.addSchema(sForbidden())
   fastify.addSchema(sNoContent())

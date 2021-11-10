@@ -2,7 +2,7 @@ import S from 'fluent-json-schema'
 
 import { clearCookie } from '../../lib/cookie.js'
 
-export default async function logout(fastify, opts) {
+export default async function logout(fastify) { 
   const { redis } = fastify
 
   fastify.route({
