@@ -8,33 +8,34 @@ export default async function createUser(fastify) {
     method: 'POST',
     path: '',
     config: {
-      public: false
+      public: false,
     },
     schema: {
       summary: 'Create user',
       description: 'Create user.',
       body: sCreateUser(),
       response: {
-        201: sUserResponse()
-      }
+        201: sUserResponse(),
+      },
     },
     preHandler: async function (req) {
       const { user_name, email, password, confirm_password } = req.body
 
-      const query = 'SELECT id FROM users ' +
-        'WHERE user_name=$1 OR email=$2'
+      const query = 'SELECT id FROM users ' + 'WHERE user_name=$1 OR email=$2'
 
       const already_insered = await db.findOne(query, [user_name, email])
-  
+
       if (already_insered) {
         throw httpErrors.badRequest(`Username or email already used`)
       }
 
       if (password !== confirm_password) {
-        throw httpErrors.badRequest('Password and password confirmation are not equal')
+        throw httpErrors.badRequest(
+          'Password and password confirmation are not equal'
+        )
       }
     },
-    handler: onCreateUser
+    handler: onCreateUser,
   })
 
   async function onCreateUser(req, reply) {
@@ -52,12 +53,22 @@ export default async function createUser(fastify) {
   }
 
   async function execQuery(obj, db) {
-    const query = 'INSERT INTO users ' +
+    const query =
+      'INSERT INTO users ' +
       '(first_name, last_name, user_name, email, password, bio, is_blocked) ' +
       'VALUES ($1, $2, $3, $4, $5, $6, $7) ' +
-      'RETURNING id, first_name, last_name, user_name, email, bio, is_blocked, created_at, updated_at'
+      'RETURNING id, first_name, last_name, user_name, email, bio, is_blocked' +
+      ', created_at, updated_at'
 
-    const inputs = [obj.first_name, obj.last_name, obj.user_name, obj.email, obj.password, obj.bio, obj.is_blocked]
+    const inputs = [
+      obj.first_name,
+      obj.last_name,
+      obj.user_name,
+      obj.email,
+      obj.password,
+      obj.bio,
+      obj.is_blocked,
+    ]
     const res = await db.execQuery(query, inputs)
     return res.rows[0]
   }

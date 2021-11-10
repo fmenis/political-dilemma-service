@@ -6,10 +6,10 @@ import deleteRoute from './delete.js'
 import changePwRoute from './changePassword.js'
 
 export default async function index(fastify) {
-  fastify.addHook('onRoute', options => {
+  fastify.addHook('onRoute', (options) => {
     options.schema = {
       ...options.schema,
-      tags: ['users']
+      tags: ['users'],
     }
   })
 

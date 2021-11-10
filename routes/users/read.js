@@ -9,7 +9,7 @@ export default async function readUser(fastify) {
     method: 'GET',
     path: '/:id',
     config: {
-      public: false
+      public: false,
     },
     schema: {
       summary: 'Get user',
@@ -22,9 +22,9 @@ export default async function readUser(fastify) {
       response: {
         200: sUserResponse(),
         404: fastify.getSchema('sNotFound'),
-      }
+      },
     },
-    handler: onReadUser
+    handler: onReadUser,
   })
 
   async function onReadUser(req) {

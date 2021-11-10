@@ -31,10 +31,10 @@ export default async function changePassword(fastify) {
         .required(),
       response: {
         200: fastify.getSchema('sNoContent'),
-        409: fastify.getSchema('sConflict')
-      }
+        409: fastify.getSchema('sConflict'),
+      },
     },
-    handler: onChangePassword
+    handler: onChangePassword,
   })
 
   async function onChangePassword(req, reply) {
@@ -51,16 +51,25 @@ export default async function changePassword(fastify) {
     }
 
     if (new_pw !== new_pw_confirmation) {
-      throw httpErrors.badRequest(`The 'new' and 'confirmation' password does't match`)
+      throw httpErrors.badRequest(
+        `The 'new' and 'confirmation' password does't match`
+      )
     }
 
-    const inputs = [user.id, await hashString(new_pw, parseInt(config.SALT_ROUNDS))]
-    const { rowCount } = await db.execQuery('UPDATE users SET password=$2 WHERE id=$1', inputs)
+    const inputs = [
+      user.id,
+      await hashString(new_pw, parseInt(config.SALT_ROUNDS)),
+    ]
+
+    const { rowCount } = await db.execQuery(
+      'UPDATE users SET password=$2 WHERE id=$1',
+      inputs
+    )
 
     if (!rowCount) {
       throw httpErrors.conflict('The action had no effect')
     }
-     
+
     reply.code(204)
   }
 }

@@ -1,15 +1,22 @@
 import S from 'fluent-json-schema'
 
-export function sUserResponse() { // TODO manca pw, capire come gestire gli schema richiesta, risposta e db
+export function sUserResponse() {
+  // TODO manca pw, capire come gestire gli schema richiesta, risposta e db
   return S.object()
     .additionalProperties(false)
     .description('User')
     .prop('id', S.number())
     .description('User id.')
     .required()
-    .prop('first_name', S.anyOf[S.string().minLength(3).maxLength(50), S.null()])
+    .prop(
+      'first_name',
+      S.anyOf[(S.string().minLength(3).maxLength(50), S.null())]
+    )
     .description('User first name.')
-    .prop('last_name', S.anyOf[S.string().minLength(3).maxLength(50), S.null()])
+    .prop(
+      'last_name',
+      S.anyOf[(S.string().minLength(3).maxLength(50), S.null())]
+    )
     .description('User last name.')
     .prop('user_name', S.string().minLength(3).maxLength(50))
     .description('User system name. It must be unique.')
@@ -17,10 +24,13 @@ export function sUserResponse() { // TODO manca pw, capire come gestire gli sche
     .prop('email', S.string().format('email').minLength(6).maxLength(50))
     .description('User email. It must be unique.')
     .required()
-    .prop('bio', S.oneOf[S.string().maxLength(500), S.null()])
+    .prop('bio', S.oneOf[(S.string().maxLength(500), S.null())])
     .description('User biography.')
     .prop('is_blocked', S.boolean())
-    .description(`Define if the user is blocked, i.e. if he cannot use the API (until it is unblocked).`)
+    .description(
+      `Define if the user is blocked, i.e. 
+      if he cannot use the API (until it is unblocked).`
+    )
     .prop('created_at', S.string().format('date-time'))
     .description('Defines when the user was created.')
     .prop('updated_at', S.string().format('date-time'))
@@ -32,7 +42,10 @@ export function sCreateUser() {
     .additionalProperties(false)
     .prop('first_name', S.string().minLength(3).maxLength(50))
     .description('User first name.')
-    .prop('last_name', S.anyOf[S.string().minLength(3).maxLength(50), S.null()])
+    .prop(
+      'last_name',
+      S.anyOf[(S.string().minLength(3).maxLength(50), S.null())]
+    )
     .description('User last name.')
     .prop('user_name', S.string().minLength(3).maxLength(50))
     .description('User system name. It must be unique.')
@@ -49,7 +62,10 @@ export function sCreateUser() {
     .prop('bio', S.string().maxLength(500))
     .description('User biography.')
     .prop('is_blocked', S.boolean())
-    .description(`Define if the user is blocked, i.e. if he cannot use the API (until it is unblocked).`)
+    .description(
+      `Define if the user is blocked, i.e.
+      if he cannot use the API (until it is unblocked).`
+    )
 }
 
 export function sUpdateUser() {
@@ -57,7 +73,10 @@ export function sUpdateUser() {
     .additionalProperties(false)
     .prop('first_name', S.string().minLength(3).maxLength(50))
     .description('User first name.')
-    .prop('last_name', S.anyOf[S.string().minLength(3).maxLength(50), S.null()])
+    .prop(
+      'last_name',
+      S.anyOf[(S.string().minLength(3).maxLength(50), S.null())]
+    )
     .description('User last name.')
     .prop('user_name', S.string().minLength(3).maxLength(50))
     .description('User system name. It must be unique.')
@@ -66,5 +85,8 @@ export function sUpdateUser() {
     .prop('bio', S.string().maxLength(500))
     .description('User biography.')
     .prop('is_blocked', S.boolean())
-    .description(`Define if the user is blocked, i.e. if he cannot use the API (until it is unblocked).`)
+    .description(
+      `Define if the user is blocked, i.e. 
+      if he cannot use the API (until it is unblocked).`
+    )
 }

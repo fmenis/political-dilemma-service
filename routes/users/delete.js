@@ -7,7 +7,7 @@ export default async function deleteUser(fastify) {
     method: 'DELETE',
     path: '/:id',
     config: {
-      public: false
+      public: false,
     },
     schema: {
       summary: 'Delete user',
@@ -21,16 +21,19 @@ export default async function deleteUser(fastify) {
         204: fastify.getSchema('sNoContent'),
         404: fastify.getSchema('sNotFound'),
         409: fastify.getSchema('sConflict'),
-      }
+      },
     },
-    handler: onDeleteUser
+    handler: onDeleteUser,
   })
 
   async function onDeleteUser(req, reply) {
     const { id } = req.params
     const { user: owner } = req
 
-    const { id: user_id } = await db.findOne('SELECT id FROM users WHERE id=$1', [id])
+    const { id: user_id } = await db.findOne(
+      'SELECT id FROM users WHERE id=$1',
+      [id]
+    )
     if (!user_id) {
       throw httpErrors.notFound(`User with id '${id}' not found`)
     }

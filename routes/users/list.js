@@ -9,7 +9,7 @@ export default async function listUsers(fastify) {
     method: 'POST',
     path: '/list',
     config: {
-      public: false
+      public: false,
     },
     schema: {
       summary: 'List users',
@@ -21,10 +21,10 @@ export default async function listUsers(fastify) {
       response: {
         200: S.object()
           .additionalProperties(false)
-          .prop('results', S.array().items(sUserResponse()))
-      }
+          .prop('results', S.array().items(sUserResponse())),
+      },
     },
-    handler: onListUsers
+    handler: onListUsers,
   })
 
   async function onListUsers(req) {
@@ -32,12 +32,12 @@ export default async function listUsers(fastify) {
 
     const options = {
       filters: {
-        is_blocked: query.is_blocked
+        is_blocked: query.is_blocked,
       },
       pagination: {
         limit: query.limit ?? 10,
-        offset: query.offset ?? 0
-      }
+        offset: query.offset ?? 0,
+      },
     }
 
     const users = await execQuery(options, db)
@@ -45,9 +45,17 @@ export default async function listUsers(fastify) {
   }
 
   async function execQuery(options, db) {
-    const base_query = 'SELECT id, first_name, last_name, user_name, email, bio, is_blocked, created_at, updated_at FROM users'
+    const base_query =
+      'SELECT id, first_name, last_name, user_name, email, bio, is_blocked' +
+      ', created_at, updated_at FROM users'
+
     const db_obj = applyFilters(base_query, options.filters)
-    const { query, inputs } = applyPagination(db_obj.query, options.pagination, db_obj.inputs)
+
+    const { query, inputs } = applyPagination(
+      db_obj.query,
+      options.pagination,
+      db_obj.inputs
+    )
 
     const res = await db.execQuery(query, inputs)
     return res.rows
@@ -55,7 +63,7 @@ export default async function listUsers(fastify) {
 
   function applyFilters(query, filters, inputs = []) {
     const where = Object.entries(filters).reduce((acc, item) => {
-      const [ field, value ] = item
+      const [field, value] = item
 
       if (value === undefined) {
         return acc
