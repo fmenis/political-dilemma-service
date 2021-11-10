@@ -13,7 +13,7 @@ export default async function updateUser(fastify, opts) {
     },
     schema: {
       summary: 'Update user',
-      description: 'Update user',
+      description: 'Update user by id.',
       params: S.object()
         .additionalProperties(false)
         .prop('id', S.integer().minimum(1))

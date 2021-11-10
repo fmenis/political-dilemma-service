@@ -12,7 +12,7 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
         last_name VARCHAR(50),
         user_name VARCHAR(50) UNIQUE NOT NULL,
         email VARCHAR(50) UNIQUE NOT NULL,
-        password VARCHAR (128) NOT NULL,
+        password VARCHAR (60) NOT NULL,
         bio VARCHAR (500),
         is_blocked BOOLEAN DEFAULT false,
         created_at timestamp DEFAULT NOW(),

@@ -8,7 +8,7 @@ async function generatePw() {
 	if (!inputString) {
 		throw new Error('Input string not found')
 	}
-	const hashedString = await hashString(inputString, 10)
+	const hashedString = await hashString(inputString, parseInt(process.env.SALT_ROUNDS))
 	return {
 		string: inputString,
 		hash: hashedString

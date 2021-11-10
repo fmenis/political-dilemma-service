@@ -12,7 +12,7 @@ export default async function listUsers(fastify, opts) {
       public: false
     },
     schema: {
-      summary: 'User list',
+      summary: 'List users',
       description: 'Get all users.',
       querystring: S.object()
         .additionalProperties(false)

@@ -6,7 +6,7 @@ export default async function createUser(fastify, opts) {
 
   fastify.route({
     method: 'POST',
-    path: '/',
+    path: '',
     config: {
       public: false
     },
