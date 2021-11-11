@@ -34,6 +34,7 @@ export default async function deleteUser(fastify) {
       'SELECT id FROM users WHERE id=$1',
       [id]
     )
+
     if (!user_id) {
       throw httpErrors.notFound(`User with id '${id}' not found`)
     }
@@ -42,7 +43,9 @@ export default async function deleteUser(fastify) {
       throw httpErrors.conflict(`Cannot delete your own user`)
     }
 
-    const { rowCount } = await db.execQuery('DELETE users WHERE id=$1', [id])
+    const { rowCount } = await db.execQuery('DELETE FROM users WHERE id=$1', [
+      id,
+    ])
 
     if (!rowCount) {
       throw httpErrors.conflict('The action had no effect')
