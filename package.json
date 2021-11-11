@@ -8,10 +8,6 @@
     "node": ">=16.13.x",
     "npm": ">=8.1.0"
   },
-  "os": [
-    "Linux",
-    "MacOs"
-  ],
   "private": true,
   "scripts": {
     "test": "tap",
@@ -20,7 +16,8 @@
     "init-stack": "cd ./pd-stack && docker-compose up -d",
     "rebuild-db": "./pd-stack/rebuild-db.sh",
     "genPw": "node -r dotenv/config scripts/generatePassword.js",
-    "lint": "eslint . --ext .js"
+    "lint": "eslint . --ext .js",
+    "prepare": "husky install"
   },
   "keywords": [
     "political-dilemma"
@@ -52,6 +49,7 @@
     "eslint-plugin-prettier": "4.0.0",
     "eslint-plugin-promise": "5.1.1",
     "fastify-swagger": "4.11.0",
+    "husky": "7.0.4",
     "nodemon": "2.0.12",
     "pino-pretty": "6.0.0",
     "prettier": "2.4.1",
