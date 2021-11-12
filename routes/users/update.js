@@ -30,8 +30,7 @@ export default async function updateUser(fastify) {
   })
 
   async function onUpdateUser(req, reply) {
-    const { first_name, last_name, user_name, email, bio, is_blocked } =
-      req.body
+    const { firstName, lastName, userName, email, bio, isBlocked } = req.body
     const { id } = req.params
 
     const user = await db.findOne('SELECT id FROM users WHERE id=$1', [id])
@@ -49,16 +48,16 @@ export default async function updateUser(fastify) {
 
     const inputs = [
       id,
-      first_name,
-      last_name,
-      user_name,
+      firstName,
+      lastName,
+      userName,
       email,
       bio,
-      is_blocked,
+      isBlocked,
       new Date(),
     ]
 
-    let updated_user
+    let updatedUser
 
     try {
       const { rowCount, rows } = await db.execQuery(query, inputs)
@@ -66,7 +65,7 @@ export default async function updateUser(fastify) {
         throw httpErrors.conflict('The action had no effect')
       }
 
-      updated_user = rows[0]
+      updatedUser = rows[0]
     } catch (error) {
       if (error.code && error.code === '23505') {
         // duplicate unique value error
@@ -75,6 +74,6 @@ export default async function updateUser(fastify) {
       throw error
     }
 
-    reply.send(updated_user)
+    reply.send(updatedUser)
   }
 }

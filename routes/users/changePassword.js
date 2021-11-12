@@ -20,13 +20,13 @@ export default async function changePassword(fastify) {
         .required(),
       body: S.object()
         .additionalProperties(false)
-        .prop('old_pw', S.string().minLength(8))
+        .prop('oldPassword', S.string().minLength(8))
         .description('Current password')
         .required()
-        .prop('new_pw', S.string().minLength(8))
+        .prop('newPassword', S.string().minLength(8))
         .description('New password')
         .required()
-        .prop('new_pw_confirmation', S.string().minLength(8))
+        .prop('newPasswordConfirmation', S.string().minLength(8))
         .description('New password confirmation')
         .required(),
       response: {
@@ -38,19 +38,19 @@ export default async function changePassword(fastify) {
   })
 
   async function onChangePassword(req, reply) {
-    const { old_pw, new_pw, new_pw_confirmation } = req.body
+    const { oldPassword, newPassword, newPasswordConfirmation } = req.body
     const { user } = req
 
-    const match = await compareStrings(old_pw, user.password)
+    const match = await compareStrings(oldPassword, user.password)
     if (!match) {
       throw httpErrors.badRequest(`Old password not valid`)
     }
 
-    if (new_pw === old_pw) {
+    if (newPassword === oldPassword) {
       throw httpErrors.badRequest(`New password is the same as the previous`)
     }
 
-    if (new_pw !== new_pw_confirmation) {
+    if (newPassword !== newPasswordConfirmation) {
       throw httpErrors.badRequest(
         `The 'new' and 'confirmation' password does't match`
       )
@@ -58,7 +58,7 @@ export default async function changePassword(fastify) {
 
     const inputs = [
       user.id,
-      await hashString(new_pw, parseInt(config.SALT_ROUNDS)),
+      await hashString(newPassword, parseInt(config.SALT_ROUNDS)),
     ]
 
     const { rowCount } = await db.execQuery(

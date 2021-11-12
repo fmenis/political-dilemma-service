@@ -30,16 +30,16 @@ export default async function deleteUser(fastify) {
     const { id } = req.params
     const { user: owner } = req
 
-    const { id: user_id } = await db.findOne(
+    const { id: userId } = await db.findOne(
       'SELECT id FROM users WHERE id=$1',
       [id]
     )
 
-    if (!user_id) {
+    if (!userId) {
       throw httpErrors.notFound(`User with id '${id}' not found`)
     }
 
-    if (user_id === owner.id) {
+    if (userId === owner.id) {
       throw httpErrors.conflict(`Cannot delete your own user`)
     }
 

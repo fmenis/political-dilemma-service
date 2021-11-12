@@ -12,16 +12,20 @@ export default async function index(fastify) {
   /**
    * Log request body
    */
-  fastify.addHook('preHandler', function (req, reply, done) { // eslint-disable-line
+  fastify.addHook('preHandler', function (req, reply, done) {
+    // eslint-disable-line
     //TODO completare con altri campi (updatePassword)
     if (req.body) {
       if (req.body.password) {
-        req.log.info({
-          body: {
-            ...req.body,
-            password: '*'.repeat(req.body.password.length)
-          }
-        }, 'parsed body')
+        req.log.info(
+          {
+            body: {
+              ...req.body,
+              password: '*'.repeat(req.body.password.length),
+            },
+          },
+          'parsed body'
+        )
       } else {
         req.log.info({ body: req.body }, 'parsed body')
       }
@@ -40,7 +44,7 @@ export default async function index(fastify) {
         400: fastify.getSchema('sBadRequest'),
         401: fastify.getSchema('sUnauthorized'),
         403: fastify.getSchema('sForbidden'),
-      }
+      },
     }
 
     if (!options.config.public) {
@@ -49,7 +53,7 @@ export default async function index(fastify) {
         headers: S.object()
           .additionalProperties(true)
           .prop('Cookie', S.string())
-          .description('Autentication header')
+          .description('Authentication cookie header')
           .required(),
       }
     }

@@ -7,7 +7,7 @@ async function postgresClient(fastify) {
     host: fastify.config.PG_HOST,
     database: fastify.config.PG_DB,
     password: fastify.config.PG_PW,
-    port: fastify.config.PG_PORT
+    port: fastify.config.PG_PORT,
   })
 
   //TODO capire se serve
@@ -21,6 +21,7 @@ async function postgresClient(fastify) {
         if (err) {
           return reject(err)
         }
+        reply.rows = reply.rows.map(row => changeFieldsCase(row))
         resolve(reply)
       })
     })
@@ -31,8 +32,24 @@ async function postgresClient(fastify) {
     return reply.rows[0]
   }
 
+  function changeFieldsCase(obj) {
+    return Object.keys(obj).reduce((acc, key) => {
+      const camelCaseKey = key.split('_').reduce((str, item, index) => {
+        if (index === 0) {
+          str = item
+        } else {
+          str += `${item.charAt(0).toUpperCase()}${item.slice(1)}`
+        }
+        return str
+      }, '')
+      acc[camelCaseKey] = obj[key]
+      return acc
+    }, {})
+  }
+
   fastify.decorate('db', {
-    execQuery, findOne
+    execQuery,
+    findOne,
   })
 }
 

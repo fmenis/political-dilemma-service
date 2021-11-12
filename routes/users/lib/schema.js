@@ -1,7 +1,7 @@
 import S from 'fluent-json-schema'
 
 export function sUserResponse() {
-  // TODO manca pw, capire come gestire gli schema richiesta, risposta e db
+  // TODO controllare utilità S.anyOf[null]
   return S.object()
     .additionalProperties(false)
     .description('User')
@@ -9,16 +9,16 @@ export function sUserResponse() {
     .description('User id.')
     .required()
     .prop(
-      'first_name',
+      'firstName',
       S.anyOf[(S.string().minLength(3).maxLength(50), S.null())]
     )
     .description('User first name.')
     .prop(
-      'last_name',
+      'lastName',
       S.anyOf[(S.string().minLength(3).maxLength(50), S.null())]
     )
     .description('User last name.')
-    .prop('user_name', S.string().minLength(3).maxLength(50))
+    .prop('userName', S.string().minLength(3).maxLength(50))
     .description('User system name. It must be unique.')
     .required()
     .prop('email', S.string().format('email').minLength(6).maxLength(50))
@@ -26,28 +26,28 @@ export function sUserResponse() {
     .required()
     .prop('bio', S.oneOf[(S.string().maxLength(500), S.null())])
     .description('User biography.')
-    .prop('is_blocked', S.boolean())
+    .prop('isBlocked', S.boolean())
     .description(
       `Define if the user is blocked, i.e. 
       if he cannot use the API (until it is unblocked).`
     )
-    .prop('created_at', S.string().format('date-time'))
+    .prop('createdAt', S.string().format('date-time'))
     .description('Defines when the user was created.')
-    .prop('updated_at', S.string().format('date-time'))
+    .prop('updatedAt', S.string().format('date-time'))
     .description('Defines the last time that the user was updated.')
 }
 
 export function sCreateUser() {
   return S.object()
     .additionalProperties(false)
-    .prop('first_name', S.string().minLength(3).maxLength(50))
+    .prop('firstName', S.string().minLength(3).maxLength(50))
     .description('User first name.')
     .prop(
-      'last_name',
+      'lastName',
       S.anyOf[(S.string().minLength(3).maxLength(50), S.null())]
     )
     .description('User last name.')
-    .prop('user_name', S.string().minLength(3).maxLength(50))
+    .prop('userName', S.string().minLength(3).maxLength(50))
     .description('User system name. It must be unique.')
     .required()
     .prop('email', S.string().format('email').minLength(6).maxLength(50))
@@ -56,12 +56,12 @@ export function sCreateUser() {
     .prop('password', S.string().minLength(8))
     .description('User password.')
     .required()
-    .prop('confirm_password', S.string().minLength(8))
+    .prop('confirmPassword', S.string().minLength(8))
     .description('Password confirmation.')
     .required()
     .prop('bio', S.string().maxLength(500))
     .description('User biography.')
-    .prop('is_blocked', S.boolean())
+    .prop('isBlocked', S.boolean())
     .description(
       `Define if the user is blocked, i.e.
       if he cannot use the API (until it is unblocked).`
@@ -71,20 +71,20 @@ export function sCreateUser() {
 export function sUpdateUser() {
   return S.object()
     .additionalProperties(false)
-    .prop('first_name', S.string().minLength(3).maxLength(50))
+    .prop('firstName', S.string().minLength(3).maxLength(50))
     .description('User first name.')
     .prop(
       'last_name',
       S.anyOf[(S.string().minLength(3).maxLength(50), S.null())]
     )
     .description('User last name.')
-    .prop('user_name', S.string().minLength(3).maxLength(50))
+    .prop('userName', S.string().minLength(3).maxLength(50))
     .description('User system name. It must be unique.')
     .prop('email', S.string().format('email').minLength(6).maxLength(50))
     .description('User email. It must be unique.')
     .prop('bio', S.string().maxLength(500))
     .description('User biography.')
-    .prop('is_blocked', S.boolean())
+    .prop('isBlocked', S.boolean())
     .description(
       `Define if the user is blocked, i.e. 
       if he cannot use the API (until it is unblocked).`

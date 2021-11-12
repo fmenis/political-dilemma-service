@@ -10,7 +10,7 @@ export default async function login(fastify) {
     method: 'POST',
     path: '/login',
     config: {
-      public: true
+      public: true,
     },
     schema: {
       summary: 'Login',
@@ -24,10 +24,10 @@ export default async function login(fastify) {
         .description('User password')
         .required(),
       response: {
-        204: fastify.getSchema('sNoContent')
-      }
+        204: fastify.getSchema('sNoContent'),
+      },
     },
-    handler: onLogin
+    handler: onLogin,
   })
 
   async function onLogin(req, reply) {
@@ -40,7 +40,7 @@ export default async function login(fastify) {
       throw httpErrors.unauthorized('Invalid email or password')
     }
 
-    if (user.is_blocked) {
+    if (user.isBlocked) {
       log.debug(`Invalid access: login attempt from blocked user '${email}')`)
       throw httpErrors.forbidden(`Invalid email or password`)
     }
@@ -51,12 +51,16 @@ export default async function login(fastify) {
       throw httpErrors.unauthorized('Invalid email or password')
     }
 
-    await redis.set(user.id.toString(), {
-      user_id: user.id,
-      email: user.email,
-      created_at: new Date(),
-      is_valid: true
-    }, { ttl: fastify.config.SESSION_TTL })
+    await redis.set(
+      user.id.toString(),
+      {
+        userId: user.id,
+        email: user.email,
+        createdAt: new Date(),
+        isValid: true,
+      },
+      { ttl: fastify.config.SESSION_TTL }
+    )
 
     // TODO controllare
     const cookieOptions = {
@@ -66,7 +70,7 @@ export default async function login(fastify) {
       SameSite: 'Lax',
       domain: 'localhost',
       // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Date
-      expire: moment().add(6, 'months').toDate().toUTCString()
+      expire: moment().add(6, 'months').toDate().toUTCString(),
     }
 
     if (fastify.config.NODE_ENV === 'production') {

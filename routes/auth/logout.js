@@ -2,14 +2,14 @@ import S from 'fluent-json-schema'
 
 import { clearCookie } from '../../lib/cookie.js'
 
-export default async function logout(fastify) { 
+export default async function logout(fastify) {
   const { redis } = fastify
 
   fastify.route({
     method: 'POST',
     path: '/logout',
     config: {
-      public: false
+      public: false,
     },
     schema: {
       summary: 'Logout',
@@ -17,13 +17,13 @@ export default async function logout(fastify) {
       headers: S.object()
         .additionalProperties(true)
         .prop('Cookie', S.string())
-        .description('Autentication header')
+        .description('Authentication cookie header')
         .required(),
       response: {
-        204: fastify.getSchema('sNoContent')
-      }
+        204: fastify.getSchema('sNoContent'),
+      },
     },
-    handler: onLogout
+    handler: onLogout,
   })
 
   async function onLogout(req, reply) {

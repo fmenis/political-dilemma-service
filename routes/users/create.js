@@ -19,17 +19,17 @@ export default async function createUser(fastify) {
       },
     },
     preHandler: async function (req) {
-      const { user_name, email, password, confirm_password } = req.body
+      const { userName, email, password, confirmPassword } = req.body
 
       const query = 'SELECT id FROM users ' + 'WHERE user_name=$1 OR email=$2'
 
-      const already_insered = await db.findOne(query, [user_name, email])
+      const alreadyInsered = await db.findOne(query, [userName, email])
 
-      if (already_insered) {
+      if (alreadyInsered) {
         throw httpErrors.badRequest(`Username or email already used`)
       }
 
-      if (password !== confirm_password) {
+      if (password !== confirmPassword) {
         throw httpErrors.badRequest(
           'Password and password confirmation are not equal'
         )
@@ -44,7 +44,7 @@ export default async function createUser(fastify) {
     const userObj = {
       ...body,
       //TODO capire se non serve dal momento in cui la colonna è not null
-      is_blocked: body.is_blocked ?? false,
+      isBlocked: body.isBlocked ?? false,
       password: await hashString(body.password, parseInt(config.SALT_ROUNDS)),
     }
 
@@ -61,13 +61,13 @@ export default async function createUser(fastify) {
       ', created_at, updated_at'
 
     const inputs = [
-      obj.first_name,
-      obj.last_name,
-      obj.user_name,
+      obj.firstName,
+      obj.lastName,
+      obj.userName,
       obj.email,
       obj.password,
       obj.bio,
-      obj.is_blocked,
+      obj.isBlocked,
     ]
     const res = await db.execQuery(query, inputs)
     return res.rows[0]

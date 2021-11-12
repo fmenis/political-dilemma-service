@@ -16,8 +16,8 @@ export default async function listUsers(fastify) {
       description: 'Get all users.',
       querystring: S.object()
         .additionalProperties(false)
-        .prop('is_blocked', S.boolean())
-        .description('Returns blocked or non blocked users. Default all'),
+        .prop('isBlocked', S.boolean())
+        .description('Returns blocked or non blocked users.'),
       response: {
         200: S.object()
           .additionalProperties(false)
@@ -32,7 +32,7 @@ export default async function listUsers(fastify) {
 
     const options = {
       filters: {
-        is_blocked: query.is_blocked,
+        isBlocked: query.isBlocked,
       },
       pagination: {
         limit: query.limit ?? 10,
@@ -45,16 +45,16 @@ export default async function listUsers(fastify) {
   }
 
   async function execQuery(options, db) {
-    const base_query =
+    const baseQuery =
       'SELECT id, first_name, last_name, user_name, email, bio, is_blocked' +
       ', created_at, updated_at FROM users'
 
-    const db_obj = applyFilters(base_query, options.filters)
+    const dbObj = applyFilters(baseQuery, options.filters)
 
     const { query, inputs } = applyPagination(
-      db_obj.query,
+      dbObj.query,
       options.pagination,
-      db_obj.inputs
+      dbObj.inputs
     )
 
     const res = await db.execQuery(query, inputs)
