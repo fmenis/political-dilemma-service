@@ -56,3 +56,10 @@ To remove the user authentication from the system, call the `auth/logout` API.
 ## Tests
 
 To launch the test suite, run the `npm run test` script.
+
+## Access to containers
+
+Userful commands to directly access to the containers:
+
+- _postgres_ --> `docker container exec -it postgres-pd /bin/bash`
+- _postgres (psql)_ --> `docker container exec -it postgres-pd psql -U postgres`
