@@ -62,15 +62,13 @@ export default async function login(fastify) {
       { ttl: fastify.config.SESSION_TTL }
     )
 
-    // TODO controllare
     const cookieOptions = {
+      domain: 'localhost',
       path: '/api',
       httpOnly: true,
       signed: true,
-      SameSite: 'Lax',
-      domain: 'localhost',
-      // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Date
-      expire: moment().add(6, 'months').toDate().toUTCString(),
+      sameSite: 'none',
+      expires: moment().add(6, 'months').toDate(),
     }
 
     if (fastify.config.NODE_ENV === 'production') {

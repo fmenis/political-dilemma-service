@@ -45,7 +45,11 @@ export default async function app(fastify, opts) {
       },
     },
   })
-  fastify.register(Cors)
+  fastify.register(Cors, {
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    origin: true,
+    credentials: true
+  })
 
   fastify.register(swaggerPlugin)
   fastify.register(pgPlugin)
