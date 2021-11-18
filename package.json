@@ -15,7 +15,7 @@
     "test": "tap",
     "lint": "eslint . --ext .js",
     "prepare": "husky install",
-    "init-tools": "cd ./pd-stack && docker-compose up docker-compose-tools.yml -d",
+    "init-tools": "cd ./pd-stack && docker-compose -f docker-compose-tools.yml up -d",
     "init-stack": "cd ./pd-stack && docker-compose up -d",
     "rebuild-db": "./pd-stack/rebuild-db.sh",
     "genPw": "node -r dotenv/config scripts/generatePassword.js"

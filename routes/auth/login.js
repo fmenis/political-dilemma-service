@@ -68,7 +68,7 @@ export default async function login(fastify) {
       httpOnly: true,
       signed: true,
       sameSite: 'none',
-      expires: moment().add(6, 'months').toDate(),
+      expires: moment().add(fastify.config.COOKIE_TTL, 'days').toDate(),
     }
 
     if (fastify.config.NODE_ENV === 'production') {
