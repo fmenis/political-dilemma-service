@@ -46,8 +46,8 @@ export default async function listUsers(fastify) {
 
   async function execQuery(options, db) {
     const baseQuery =
-      'SELECT id, first_name, last_name, user_name, email, bio, is_blocked' +
-      ', created_at, updated_at FROM users'
+      'SELECT id, first_name, last_name, user_name, email, bio, birth_date, ' +
+      'joined_date, sex, is_blocked, created_at, updated_at FROM users'
 
     const dbObj = applyFilters(baseQuery, options.filters)
 

@@ -1,7 +1,13 @@
 import S from 'fluent-json-schema'
 
 export function sUserResponse() {
-  // TODO controllare utilità S.anyOf[null]
+  /**
+   * TODO
+   * controllare utilità S.anyOf[null]
+   * capire se ha senso "solo utenti sito": si lascia blanck no?
+   * capire se firstName e lastName devono essere required
+   * testare check a db su campi
+   */
   return S.object()
     .additionalProperties(false)
     .description('User')
@@ -26,6 +32,12 @@ export function sUserResponse() {
     .required()
     .prop('bio', S.oneOf[(S.string().maxLength(500), S.null())])
     .description('User biography.')
+    .prop('birthDate', S.string().format('date-time'))
+    .description('User birth date.')
+    .prop('joinedDate', S.string().format('date-time'))
+    .description('Defines when a user accepts the system invitation.')
+    .prop('sex', S.string().enum(['male', 'female', 'other']))
+    .description('User sex.')
     .prop('isBlocked', S.boolean())
     .description(
       `Define if the user is blocked, i.e. 
@@ -61,6 +73,12 @@ export function sCreateUser() {
     .required()
     .prop('bio', S.string().maxLength(500))
     .description('User biography.')
+    .prop('birthDate', S.string().format('date-time'))
+    .description('User birth date.')
+    .prop('joinedDate', S.string().format('date-time'))
+    .description('Defines when a user accepts the system invitation.')
+    .prop('sex', S.string().enum(['male', 'female', 'other']))
+    .description('User sex.')
     .prop('isBlocked', S.boolean())
     .description(
       `Define if the user is blocked, i.e.
@@ -74,7 +92,7 @@ export function sUpdateUser() {
     .prop('firstName', S.string().minLength(3).maxLength(50))
     .description('User first name.')
     .prop(
-      'last_name',
+      'lastName',
       S.anyOf[(S.string().minLength(3).maxLength(50), S.null())]
     )
     .description('User last name.')
@@ -84,6 +102,12 @@ export function sUpdateUser() {
     .description('User email. It must be unique.')
     .prop('bio', S.string().maxLength(500))
     .description('User biography.')
+    .prop('birthDate', S.string().format('date-time'))
+    .description('User birth date.')
+    .prop('joinedDate', S.string().format('date-time'))
+    .description('Defines when a user accepts the system invitation.')
+    .prop('sex', S.string().enum(['male', 'female', 'other']))
+    .description('User sex.')
     .prop('isBlocked', S.boolean())
     .description(
       `Define if the user is blocked, i.e. 

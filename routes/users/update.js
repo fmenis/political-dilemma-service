@@ -30,7 +30,18 @@ export default async function updateUser(fastify) {
   })
 
   async function onUpdateUser(req, reply) {
-    const { firstName, lastName, userName, email, bio, isBlocked } = req.body
+    const {
+      firstName,
+      lastName,
+      userName,
+      email,
+      bio,
+      birthDate,
+      joinedDate,
+      sex,
+      isBlocked,
+    } = req.body
+
     const { id } = req.params
 
     const user = await db.findOne('SELECT id FROM users WHERE id=$1', [id])
@@ -41,10 +52,10 @@ export default async function updateUser(fastify) {
     const query =
       'UPDATE users SET ' +
       'first_name=$2, last_name=$3, user_name=$4, email=$5, bio=$6, ' +
-      'is_blocked=$7, updated_at=$8 ' +
+      'birth_date=$7, joined_date=$8, sex=$9, is_blocked=$10, updated_at=$11 ' +
       'WHERE id=$1 ' +
       'RETURNING id, first_name, last_name, user_name, email, bio, ' +
-      'is_blocked, created_at, updated_at'
+      'birth_date, joined_date, sex, is_blocked, created_at, updated_at'
 
     const inputs = [
       id,
@@ -53,6 +64,9 @@ export default async function updateUser(fastify) {
       userName,
       email,
       bio,
+      birthDate,
+      joinedDate,
+      sex,
       isBlocked,
       new Date(),
     ]

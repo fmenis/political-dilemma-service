@@ -55,9 +55,9 @@ export default async function createUser(fastify) {
   async function execQuery(obj, db) {
     const query =
       'INSERT INTO users ' +
-      '(first_name, last_name, user_name, email, password, bio, is_blocked) ' +
-      'VALUES ($1, $2, $3, $4, $5, $6, $7) ' +
-      'RETURNING id, first_name, last_name, user_name, email, bio, is_blocked' +
+      '(first_name, last_name, user_name, email, password, bio, birth_date, joined_date, sex, is_blocked) ' +
+      'VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) ' +
+      'RETURNING id, first_name, last_name, user_name, email, bio, birth_date, joined_date, sex, is_blocked' +
       ', created_at, updated_at'
 
     const inputs = [
@@ -67,6 +67,9 @@ export default async function createUser(fastify) {
       obj.email,
       obj.password,
       obj.bio,
+      obj.birthDate,
+      obj.joinedDate,
+      obj.sex,
       obj.isBlocked,
     ]
     const res = await db.execQuery(query, inputs)
