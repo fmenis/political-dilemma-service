@@ -17,7 +17,7 @@ export default async function userMe(fastify) {
     handler: onUserMe,
   })
 
-  async function onUserMe(req, reply) {
+  async function onUserMe(req) {
     const { user } = req
     return user
   }

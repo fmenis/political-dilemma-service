@@ -7,6 +7,7 @@ export function sUserResponse() {
    * capire se ha senso "solo utenti sito": si lascia blanck no?
    * capire se firstName e lastName devono essere required
    * testare check a db su campi
+   * fixare husky
    */
   return S.object()
     .additionalProperties(false)
