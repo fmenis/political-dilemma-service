@@ -25,5 +25,4 @@ fastify.listen(port, address, err => {
 /**
  * TODO
  * - gracefull shutdown
- * - API versioning
  */
