@@ -17,7 +17,7 @@ export function sUserResponse() {
     .prop('email', S.string().format('email').minLength(6).maxLength(50))
     .description('User email. It must be unique.')
     .required()
-    .prop('bio', S.oneOf[(S.string().maxLength(500), S.null())])
+    .prop('bio', S.string().maxLength(500))
     .description('User biography.')
     .prop('birthDate', S.string().format('date-time'))
     .description('User birth date.')

@@ -1,9 +1,9 @@
 import { sUserResponse } from './lib/schema.js'
 
-export default async function userMe(fastify) {
+export default async function userWhoami(fastify) {
   fastify.route({
     method: 'GET',
-    path: '/me',
+    path: '/whoami',
     config: {
       public: false,
     },
@@ -14,10 +14,10 @@ export default async function userMe(fastify) {
         200: sUserResponse(),
       },
     },
-    handler: onUserMe,
+    handler: onUserWhoami,
   })
 
-  async function onUserMe(req) {
+  async function onUserWhoami(req) {
     const { user } = req
     return user
   }
