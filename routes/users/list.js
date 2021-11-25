@@ -32,7 +32,7 @@ export default async function listUsers(fastify) {
 
     const options = {
       filters: {
-        isBlocked: query.isBlocked,
+        is_blocked: query.isBlocked,
       },
       pagination: {
         limit: query.limit ?? 10,

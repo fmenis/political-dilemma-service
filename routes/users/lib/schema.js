@@ -1,29 +1,15 @@
 import S from 'fluent-json-schema'
 
 export function sUserResponse() {
-  /**
-   * TODO
-   * controllare utilità S.anyOf[null]
-   * capire se ha senso "solo utenti sito": si lascia blanck no?
-   * capire se firstName e lastName devono essere required
-   * testare check a db su campi
-   * fixare husky
-   */
   return S.object()
     .additionalProperties(false)
     .description('User')
     .prop('id', S.number())
     .description('User id.')
     .required()
-    .prop(
-      'firstName',
-      S.anyOf[(S.string().minLength(3).maxLength(50), S.null())]
-    )
+    .prop('firstName', S.string().minLength(3).maxLength(50))
     .description('User first name.')
-    .prop(
-      'lastName',
-      S.anyOf[(S.string().minLength(3).maxLength(50), S.null())]
-    )
+    .prop('lastName', S.string().minLength(3).maxLength(50))
     .description('User last name.')
     .prop('userName', S.string().minLength(3).maxLength(50))
     .description('User system name. It must be unique.')
@@ -55,10 +41,7 @@ export function sCreateUser() {
     .additionalProperties(false)
     .prop('firstName', S.string().minLength(3).maxLength(50))
     .description('User first name.')
-    .prop(
-      'lastName',
-      S.anyOf[(S.string().minLength(3).maxLength(50), S.null())]
-    )
+    .prop('lastName', S.string().minLength(3).maxLength(50))
     .description('User last name.')
     .prop('userName', S.string().minLength(3).maxLength(50))
     .description('User system name. It must be unique.')
@@ -76,8 +59,6 @@ export function sCreateUser() {
     .description('User biography.')
     .prop('birthDate', S.string().format('date-time'))
     .description('User birth date.')
-    .prop('joinedDate', S.string().format('date-time'))
-    .description('Defines when a user accepts the system invitation.')
     .prop('sex', S.string().enum(['male', 'female', 'other']))
     .description('User sex.')
     .prop('isBlocked', S.boolean())
@@ -92,10 +73,7 @@ export function sUpdateUser() {
     .additionalProperties(false)
     .prop('firstName', S.string().minLength(3).maxLength(50))
     .description('User first name.')
-    .prop(
-      'lastName',
-      S.anyOf[(S.string().minLength(3).maxLength(50), S.null())]
-    )
+    .prop('lastName', S.string().minLength(3).maxLength(50))
     .description('User last name.')
     .prop('userName', S.string().minLength(3).maxLength(50))
     .description('User system name. It must be unique.')
@@ -105,8 +83,6 @@ export function sUpdateUser() {
     .description('User biography.')
     .prop('birthDate', S.string().format('date-time'))
     .description('User birth date.')
-    .prop('joinedDate', S.string().format('date-time'))
-    .description('Defines when a user accepts the system invitation.')
     .prop('sex', S.string().enum(['male', 'female', 'other']))
     .description('User sex.')
     .prop('isBlocked', S.boolean())

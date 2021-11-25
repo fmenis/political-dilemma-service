@@ -37,7 +37,6 @@ export default async function updateUser(fastify) {
       email,
       bio,
       birthDate,
-      joinedDate,
       sex,
       isBlocked,
     } = req.body
@@ -52,7 +51,7 @@ export default async function updateUser(fastify) {
     const query =
       'UPDATE users SET ' +
       'first_name=$2, last_name=$3, user_name=$4, email=$5, bio=$6, ' +
-      'birth_date=$7, joined_date=$8, sex=$9, is_blocked=$10, updated_at=$11 ' +
+      'birth_date=$7, sex=$8, is_blocked=$9, updated_at=$10 ' +
       'WHERE id=$1 ' +
       'RETURNING id, first_name, last_name, user_name, email, bio, ' +
       'birth_date, joined_date, sex, is_blocked, created_at, updated_at'
@@ -65,7 +64,6 @@ export default async function updateUser(fastify) {
       email,
       bio,
       birthDate,
-      joinedDate,
       sex,
       isBlocked,
       new Date(),

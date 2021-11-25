@@ -25,4 +25,5 @@ fastify.listen(port, address, err => {
 /**
  * TODO
  * - gracefull shutdown
+ * - impostare la joinedDay dentro API di invito utente
  */
