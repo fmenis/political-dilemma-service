@@ -13,21 +13,28 @@ export default async function index(fastify) {
    * Log request body
    */
   fastify.addHook('preHandler', function (req, reply, done) {
-    // eslint-disable-line
-    //TODO completare con altri campi (updatePassword)
-    if (req.body) {
-      if (req.body.password) {
-        req.log.info(
-          {
-            body: {
-              ...req.body,
-              password: '*'.repeat(req.body.password.length),
-            },
-          },
-          'parsed body'
-        )
+    const { body } = req
+
+    if (body) {
+      const obscuredKeys = [
+        'password',
+        'oldPassword',
+        'newPassword',
+        'newPasswordConfirmation',
+      ]
+
+      if (Object.keys(body).some(key => obscuredKeys.includes(key))) {
+        const copy = { ...req.body }
+
+        Object.keys(copy).forEach(key => {
+          if (obscuredKeys.includes(key)) {
+            copy[key] = '*'.repeat(copy[key].length)
+          }
+        })
+
+        req.log.info(copy, 'parsed body')
       } else {
-        req.log.info({ body: req.body }, 'parsed body')
+        req.log.info(body, 'parsed body')
       }
     }
     done()
