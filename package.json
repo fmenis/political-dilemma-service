@@ -25,6 +25,11 @@
   ],
   "author": "filippomeniswork@gmail.com",
   "license": "ISC",
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint"
+    }
+  },
   "dependencies": {
     "@nearform/sql": "1.9.0",
     "bcrypt": "5.0.1",
