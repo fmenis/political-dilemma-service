@@ -24,22 +24,23 @@
 
 **Bold** env must be requred.
 
-| Name           |    Default     | Description                             |
-| -------------- | :------------: | --------------------------------------- |
-| SERVER_ADDRESS |   127.0.0.1    | Server address                          |
-| SERVER_PORT    |      3000      | Server port                             |
-| LOG_LEVEL      |      info      | Pino.js default log level               |
-| **PG_HOST**    |                | Postgres host                           |
-| **PG_PORT**    |                | Postgres port                           |
-| **PG_DB**      |                | Postgres database                       |
-| **PG_USER**    |                | Postgres user                           |
-| **PG_PW**      |                | Postgres password                       |
-| **REDIS_HOST** |                | Redis host                              |
-| **REDIS_PORT** |                | Redis port                              |
-| **SECRET**     |                | Secret string (used to sign the cookie) |
-| SESSION_TTL    | 86400 (1 day)  | Session TTL (in seconds)                |
-| COOKIE_TTL     | 180 (6 months) | Cookie max age (in days)                |
-| SALT_ROUNDS    |       10       | Bcrypt salt rounds value                |
+| Name            |    Default     | Description                                 |
+| --------------- | :------------: | ------------------------------------------- |
+| SERVER_ADDRESS  |   127.0.0.1    | Server address                              |
+| SERVER_PORT     |      3000      | Server port                                 |
+| **DOMAIN_PROD** |                | Production domain (eg: https://example.com) |
+| LOG_LEVEL       |      info      | Pino.js default log level                   |
+| **PG_HOST**     |                | Postgres host                               |
+| **PG_PORT**     |                | Postgres port                               |
+| **PG_DB**       |                | Postgres database                           |
+| **PG_USER**     |                | Postgres user                               |
+| **PG_PW**       |                | Postgres password                           |
+| **REDIS_HOST**  |                | Redis host                                  |
+| **REDIS_PORT**  |                | Redis port                                  |
+| **SECRET**      |                | Secret string (used to sign the cookie)     |
+| SESSION_TTL     | 1800 (30 min)  | Session TTL (in seconds)                    |
+| COOKIE_TTL      | 180 (6 months) | Cookie max age (in days)                    |
+| SALT_ROUNDS     |       10       | Bcrypt salt rounds value                    |
 
 PS: If you have difficulties to compiling the env file, ask the backend guy!
 

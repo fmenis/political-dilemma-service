@@ -67,12 +67,13 @@ export default async function login(fastify) {
       path: '/api',
       httpOnly: true,
       signed: true,
-      sameSite: 'none',
+      sameSite: 'lax', //TODO capire bene
+      secure: true,
       expires: moment().add(fastify.config.COOKIE_TTL, 'days').toDate(),
     }
 
     if (fastify.config.NODE_ENV === 'production') {
-      cookieOptions.secure = true
+      cookieOptions.sameSite = 'strict'
     }
 
     reply.setCookie('session', user.id.toString(), cookieOptions)

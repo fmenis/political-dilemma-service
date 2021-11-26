@@ -9,7 +9,9 @@ export function sUserResponse() {
     .required()
     .prop('firstName', S.string().minLength(3).maxLength(50))
     .description('User first name.')
+    .required()
     .prop('lastName', S.string().minLength(3).maxLength(50))
+    .required()
     .description('User last name.')
     .prop('userName', S.string().minLength(3).maxLength(50))
     .description('User system name. It must be unique.')
@@ -30,10 +32,6 @@ export function sUserResponse() {
       `Define if the user is blocked, i.e. 
       if he cannot use the API (until it is unblocked).`
     )
-    .prop('createdAt', S.string().format('date-time'))
-    .description('Defines when the user was created.')
-    .prop('updatedAt', S.string().format('date-time'))
-    .description('Defines the last time that the user was updated.')
 }
 
 export function sCreateUser() {
@@ -41,8 +39,10 @@ export function sCreateUser() {
     .additionalProperties(false)
     .prop('firstName', S.string().minLength(3).maxLength(50))
     .description('User first name.')
+    .required()
     .prop('lastName', S.string().minLength(3).maxLength(50))
     .description('User last name.')
+    .required()
     .prop('userName', S.string().minLength(3).maxLength(50))
     .description('User system name. It must be unique.')
     .required()

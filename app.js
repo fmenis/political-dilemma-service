@@ -21,6 +21,8 @@ export default async function app(fastify, opts) {
       )
       .prop('SERVER_ADDRESS', S.string().default('127.0.0.1'))
       .prop('SERVER_PORT', S.string().default('3000'))
+      .prop('DOMAIN_PROD', S.string())
+      .required()
       .prop('LOG_LEVEL', S.string().required())
       .prop('PG_HOST', S.string().required())
       .prop('PG_PORT', S.string().required())
@@ -29,7 +31,7 @@ export default async function app(fastify, opts) {
       .prop('REDIS_HOST', S.string().required())
       .prop('REDIS_PORT', S.string().required())
       .prop('SECRET', S.string().required())
-      .prop('SESSION_TTL', S.string().default(86400))
+      .prop('SESSION_TTL', S.string().default(1800))
       .prop('COOKIE_TTL', S.string().default(180))
       .prop('PG_USER', S.string().required())
       .valueOf(),
@@ -47,9 +49,11 @@ export default async function app(fastify, opts) {
     },
   })
   fastify.register(Cors, {
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    origin: true,
-    credentials: true
+    //TODO non dovrebbe servire per le POST, testare
+    methods: ['POST', 'PUT', 'DELETE'],
+    origin:
+      process.env.NODE_ENV === 'development' ? true : process.env.DOMAIN_PROD,
+    credentials: true,
   })
 
   fastify.register(swaggerPlugin)

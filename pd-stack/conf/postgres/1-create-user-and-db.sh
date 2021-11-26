@@ -19,7 +19,7 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
         bio VARCHAR (500),
         is_blocked BOOLEAN DEFAULT false,
         created_at timestamp DEFAULT NOW(),
-        updated_at timestamp
+        updated_at timestamp DEFAULT NOW()
     );
 
     GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO dev;

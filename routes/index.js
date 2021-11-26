@@ -12,12 +12,13 @@ export default async function index(fastify) {
   /**
    * Log request body
    */
-  fastify.addHook('preHandler', function (req, reply, done) {
+  fastify.addHook('preValidation', async (req, reply) => {
     const { body } = req
 
     if (body) {
       const obscuredKeys = [
         'password',
+        'confirmPassword',
         'oldPassword',
         'newPassword',
         'newPasswordConfirmation',
@@ -37,7 +38,6 @@ export default async function index(fastify) {
         req.log.info(body, 'parsed body')
       }
     }
-    done()
   })
 
   /**

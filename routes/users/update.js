@@ -54,7 +54,7 @@ export default async function updateUser(fastify) {
       'birth_date=$7, sex=$8, is_blocked=$9, updated_at=$10 ' +
       'WHERE id=$1 ' +
       'RETURNING id, first_name, last_name, user_name, email, bio, ' +
-      'birth_date, joined_date, sex, is_blocked, created_at, updated_at'
+      'birth_date, joined_date, sex, is_blocked'
 
     const inputs = [
       id,
