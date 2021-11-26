@@ -27,17 +27,18 @@ async function authentication(fastify) {
       throw httpErrors.unauthorized('Authentication error')
     }
 
-    const { value: userId } = unsignedCookie
+    const { value: sessionId } = unsignedCookie
+    const userId = sessionId.split('_')[1]
 
-    const session = await redis.get(userId)
+    const session = await redis.get(sessionId)
     if (!session) {
       clearCookie(reply)
-      log.debug(`Invalid access: session not found for user '${userId}'`)
+      log.debug(`Invalid access: session not found for user id '${userId}'`)
       throw httpErrors.unauthorized(`Authentication error`)
     }
 
     if (!session.isValid) {
-      log.debug(`Invalid access: session not valid for user '${userId}'`)
+      log.debug(`Invalid access: session not valid for user id '${userId}'`)
       throw httpErrors.unauthorized(`Authentication error`)
     }
 
@@ -52,7 +53,7 @@ async function authentication(fastify) {
       throw httpErrors.forbidden('Authentication error')
     }
 
-    await redis.setExpireTime(userId, fastify.config.SESSION_TTL)
+    await redis.setExpireTime(sessionId, fastify.config.SESSION_TTL)
     req.user = user
   }
 

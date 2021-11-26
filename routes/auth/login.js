@@ -1,7 +1,13 @@
 import S from 'fluent-json-schema'
 import moment from 'moment'
+import shortid from 'shortid'
 
 import { compareStrings } from '../../lib/hash.js'
+
+// use $ and @ instead of - and _
+shortid.characters(
+  '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$@'
+)
 
 export default async function login(fastify) {
   const { db, log, redis, httpErrors } = fastify
@@ -51,8 +57,10 @@ export default async function login(fastify) {
       throw httpErrors.unauthorized('Invalid email or password')
     }
 
+    const sessionId = `${shortid.generate()}_${user.id}`
+
     await redis.set(
-      user.id.toString(),
+      sessionId,
       {
         userId: user.id,
         email: user.email,
@@ -67,16 +75,17 @@ export default async function login(fastify) {
       path: '/api',
       httpOnly: true,
       signed: true,
-      sameSite: 'lax', //TODO capire bene
-      secure: true,
+      sameSite: 'lax',
       expires: moment().add(fastify.config.COOKIE_TTL, 'days').toDate(),
     }
 
     if (fastify.config.NODE_ENV === 'production') {
+      // 'secure' works in the browser, for localhost, but not for postman
+      cookieOptions.secure = true
       cookieOptions.sameSite = 'strict'
     }
 
-    reply.setCookie('session', user.id.toString(), cookieOptions)
+    reply.setCookie('session', sessionId, cookieOptions)
     reply.code(204)
   }
 }
