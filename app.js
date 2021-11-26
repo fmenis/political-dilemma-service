@@ -32,7 +32,7 @@ export default async function app(fastify, opts) {
       .prop('REDIS_PORT', S.string().required())
       .prop('SECRET', S.string().required())
       .prop('SESSION_TTL', S.string().default(1800))
-      .prop('COOKIE_TTL', S.string().default(180))
+      .prop('COOKIE_TTL', S.string().default(86400 * 180))
       .prop('PG_USER', S.string().required())
       .valueOf(),
   })
