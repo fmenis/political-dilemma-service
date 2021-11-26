@@ -20,13 +20,22 @@ export default async function changePassword(fastify) {
         .required(),
       body: S.object()
         .additionalProperties(false)
-        .prop('oldPassword', S.string().minLength(8))
+        .prop(
+          'oldPassword',
+          S.string().pattern(/(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/g)
+        )
         .description('Current password')
         .required()
-        .prop('newPassword', S.string().minLength(8))
+        .prop(
+          'newPassword',
+          S.string().pattern(/(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/g)
+        )
         .description('New password')
         .required()
-        .prop('newPasswordConfirmation', S.string().minLength(8))
+        .prop(
+          'newPasswordConfirmation',
+          S.string().pattern(/(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/g)
+        )
         .description('New password confirmation')
         .required(),
       response: {

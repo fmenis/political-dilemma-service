@@ -26,7 +26,10 @@ export default async function login(fastify) {
         .prop('email', S.string().format('email').minLength(6).maxLength(50))
         .description('User email')
         .required()
-        .prop('password', S.string().minLength(8))
+        .prop(
+          'password',
+          S.string().pattern(/(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/g)
+        )
         .description('User password')
         .required(),
       response: {

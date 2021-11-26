@@ -63,9 +63,9 @@ When the postgres container is created for the first time, some data is initiali
 For example, there are available some users, useful to log into the system.
 These are it's credentials
 
-- `dennis@acme.com`: _password_
-- `fiippo@acme.com`: _password_
-- `gaetano@acme.com`: _password_
+- `dennis@acme.com`: _Password1_
+- `fiippo@acme.com`: _Password1_
+- `gaetano@acme.com`: _Password1_
 
 NB: obviously this data is only available in the development environment.
 

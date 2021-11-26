@@ -49,10 +49,16 @@ export function sCreateUser() {
     .prop('email', S.string().format('email').minLength(6).maxLength(50))
     .description('User email. It must be unique.')
     .required()
-    .prop('password', S.string().minLength(8))
+    .prop(
+      'password',
+      S.string().pattern(/(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/g)
+    )
     .description('User password.')
     .required()
-    .prop('confirmPassword', S.string().minLength(8))
+    .prop(
+      'confirmPassword',
+      S.string().pattern(/(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/g)
+    )
     .description('Password confirmation.')
     .required()
     .prop('bio', S.string().maxLength(500))

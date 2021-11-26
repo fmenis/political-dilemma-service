@@ -12,7 +12,7 @@ export default async function index(fastify) {
   /**
    * Log request body
    */
-  fastify.addHook('preValidation', async (req, reply) => {
+  fastify.addHook('preValidation', async req => {
     const { body } = req
 
     if (body) {
