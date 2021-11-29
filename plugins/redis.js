@@ -1,14 +1,19 @@
 import redis from 'redis'
 import Fp from 'fastify-plugin'
 
-async function redisClient(fastify) {
+function redisClient(fastify, options, done) {
   const client = redis.createClient({
     host: fastify.config.REDIS_HOST,
     port: fastify.config.REDIS_PORT,
   })
 
-  client.on('error', function (error) {
-    fastify.log.error(error) //TODO capire se serve
+  client.on('connect', () => {
+    fastify.log.debug('Redis client correctly connetted')
+    done()
+  })
+
+  client.on('error', err => {
+    fastify.log.error(err)
   })
 
   function close() {

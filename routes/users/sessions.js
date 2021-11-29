@@ -25,7 +25,9 @@ export default async function userSessions(fastify) {
   async function onUserSessions(req) {
     const { id } = req.params
 
-    const user = await db.findOne('SELECT id FROM users WHERE id=$1', [id])
+    const user = await db.execQuery('SELECT id FROM users WHERE id=$1', [id], {
+      findOne: true,
+    })
     if (!user) {
       throw httpErrors.notFound(`User with id '${id}' not found`)
     }

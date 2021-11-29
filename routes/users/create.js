@@ -22,8 +22,9 @@ export default async function createUser(fastify) {
       const { userName, email, password, confirmPassword } = req.body
 
       const query = 'SELECT id FROM users ' + 'WHERE user_name=$1 OR email=$2'
-
-      const alreadyInsered = await db.findOne(query, [userName, email])
+      const alreadyInsered = await db.execQuery(query, [userName, email], {
+        findOne: true,
+      })
 
       if (alreadyInsered) {
         throw httpErrors.badRequest(`Username or email already used`)

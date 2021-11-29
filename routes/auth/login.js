@@ -42,7 +42,11 @@ export default async function login(fastify) {
   async function onLogin(req, reply) {
     const { email, password } = req.body
 
-    const user = await db.findOne('SELECT * FROM users WHERE email=$1', [email])
+    const user = await db.execQuery(
+      'SELECT * FROM users WHERE email=$1',
+      [email],
+      { findOne: true }
+    )
 
     if (!user) {
       log.debug(`Invalid access: user with email '${email}' not found`)

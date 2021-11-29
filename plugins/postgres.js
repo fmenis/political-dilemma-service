@@ -1,7 +1,7 @@
 import pg from 'pg'
 import Fp from 'fastify-plugin'
 
-async function postgresClient(fastify) {
+function postgresClient(fastify, options, done) {
   const pool = new pg.Pool({
     user: fastify.config.PG_USER,
     host: fastify.config.PG_HOST,
@@ -10,26 +10,32 @@ async function postgresClient(fastify) {
     port: fastify.config.PG_PORT,
   })
 
-  //TODO capire se serve
-  // pool.on('error', (err, client) => {
-  //   fastify.log.error(err)
-  // })
+  pool.query('SELECT NOW()', err => {
+    if (err) {
+      return done(err)
+    }
+    fastify.log.debug('Postgres client correctly connetted')
+    done()
+  })
 
-  function execQuery(query, inputs = [], client = pool) {
+  pool.on('error', err => {
+    fastify.log.error(err)
+  })
+
+  function execQuery(query, inputs = [], opts = {}) {
     return new Promise((resolve, reject) => {
+      const client = opts.client || pool
       client.query(query, inputs, (err, reply) => {
         if (err) {
           return reject(err)
         }
         reply.rows = reply.rows.map(row => changeFieldsCase(row))
+        if (opts.findOne) {
+          return resolve(reply.rows[0])
+        }
         resolve(reply)
       })
     })
-  }
-
-  async function findOne(query, inputs) {
-    const reply = await execQuery(query, inputs)
-    return reply.rows[0]
   }
 
   function changeFieldsCase(obj) {
@@ -49,7 +55,6 @@ async function postgresClient(fastify) {
 
   fastify.decorate('db', {
     execQuery,
-    findOne,
   })
 }
 

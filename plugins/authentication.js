@@ -42,7 +42,11 @@ async function authentication(fastify) {
       throw httpErrors.unauthorized(`Authentication error`)
     }
 
-    const user = await db.findOne('SELECT * FROM users WHERE id=$1', [userId])
+    const user = await db.execQuery(
+      'SELECT * FROM users WHERE id=$1',
+      [userId],
+      { findOne: true }
+    )
     if (!user) {
       log.debug(`Invalid access: user '${userId}' not found`)
       throw httpErrors.unauthorized(`Authentication error`)
