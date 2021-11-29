@@ -32,7 +32,7 @@ export default async function readUser(fastify) {
 
     const user = await execQuery(id, db)
     if (!user) {
-      throw httpErrors.notFound(`User '${id}' not found`)
+      throw httpErrors.notFound(`User with id '${id}' not found`)
     }
 
     return user

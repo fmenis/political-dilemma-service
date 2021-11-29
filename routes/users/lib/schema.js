@@ -93,7 +93,30 @@ export function sUpdateUser() {
     .description('User sex.')
     .prop('isBlocked', S.boolean())
     .description(
-      `Define if the user is blocked, i.e. 
+      `Defines if the user is blocked, i.e. 
       if he cannot use the API (until it is unblocked).`
     )
+}
+
+export function sUserSession() {
+  return S.object()
+    .additionalProperties(false)
+    .prop('userId', S.number())
+    .description('User id.')
+    .required()
+    .prop('email', S.string().format('email').minLength(6).maxLength(50))
+    .description('User email.')
+    .required()
+    .prop('userAgent', S.string())
+    .description('User agent')
+    .required()
+    .prop('createdAt', S.string().format('date-time'))
+    .description('Session creation date.')
+    .required()
+    .prop('lastActive', S.string().format('date-time'))
+    .description('Last API usage date.')
+    .required()
+    .prop('isValid', S.boolean())
+    .description('Defines if the session is valid.')
+    .required()
 }

@@ -4,7 +4,7 @@ import Fp from 'fastify-plugin'
 async function redisClient(fastify) {
   const client = redis.createClient({
     host: fastify.config.REDIS_HOST,
-    port: fastify.config.REDIS_PORT
+    port: fastify.config.REDIS_PORT,
   })
 
   client.on('error', function (error) {
@@ -27,6 +27,18 @@ async function redisClient(fastify) {
         }
         reply = JSON.parse(reply)
         resolve(reply)
+      })
+    })
+  }
+
+  function getMulti(...keys) {
+    return new Promise((resolve, reject) => {
+      client.mget(...keys, (err, results) => {
+        if (err) {
+          return reject(err)
+        }
+        results = results.map(res => JSON.parse(res))
+        return resolve(results)
       })
     })
   }
@@ -82,10 +94,27 @@ async function redisClient(fastify) {
     })
   }
 
+  function getKeys(pattern) {
+    return new Promise((resolve, reject) => {
+      pattern = pattern ? `*${pattern}*` : '*'
+      client.keys(pattern, (err, keys) => {
+        if (err) {
+          return reject(err)
+        }
+        resolve(keys)
+      })
+    })
+  }
+
   fastify.decorate('redis', {
-    close, get, set, del, setExpireTime
+    close,
+    get,
+    set,
+    del,
+    setExpireTime,
+    getKeys,
+    getMulti,
   })
 }
-
 
 export default Fp(redisClient)

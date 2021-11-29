@@ -53,7 +53,15 @@ async function authentication(fastify) {
       throw httpErrors.forbidden('Authentication error')
     }
 
-    await redis.setExpireTime(sessionId, fastify.config.SESSION_TTL)
+    await redis.set(
+      sessionId,
+      {
+        ...session,
+        lastActive: new Date(),
+      },
+      { ttl: fastify.config.SESSION_TTL }
+    )
+
     req.user = user
   }
 

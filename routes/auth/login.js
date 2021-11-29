@@ -68,6 +68,8 @@ export default async function login(fastify) {
         userId: user.id,
         email: user.email,
         createdAt: new Date(),
+        userAgent: req.headers['user-agent'],
+        lastActive: new Date(),
         isValid: true,
       },
       { ttl: fastify.config.SESSION_TTL }
