@@ -24,6 +24,7 @@ export default async function app(fastify, opts) {
       .prop('DOMAIN_PROD', S.string())
       .required()
       .prop('LOG_LEVEL', S.string().required())
+      .prop('SESSIONS_LIMIT', S.number().default(4))
       .prop('PG_HOST', S.string().required())
       .prop('PG_PORT', S.string().required())
       .prop('PG_DB', S.string().required())

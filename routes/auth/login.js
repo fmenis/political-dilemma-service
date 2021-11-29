@@ -50,18 +50,26 @@ export default async function login(fastify) {
 
     if (!user) {
       log.debug(`Invalid access: user with email '${email}' not found`)
-      throw httpErrors.unauthorized('Invalid email or password')
+      throw httpErrors.unauthorized('Invalid access: wrong email or password')
     }
 
     if (user.isBlocked) {
       log.debug(`Invalid access: login attempt from blocked user '${email}')`)
-      throw httpErrors.forbidden(`Invalid email or password`)
+      throw httpErrors.forbidden(
+        `Invalid access: access blocked by an administrator`
+      )
     }
 
     const match = await compareStrings(password, user.password)
     if (!match) {
       log.debug(`Invalid access: password for user ${email} does not match`)
-      throw httpErrors.unauthorized('Invalid email or password')
+      throw httpErrors.unauthorized('Invalid access: wrong email or password')
+    }
+
+    const sessionKeys = await redis.getKeys(`*_${user.id}`)
+    if (sessionKeys.length > fastify.config.SESSIONS_LIMIT - 1) {
+      log.debug(`Invalid access: session number limit for user '${email}'`)
+      throw httpErrors.forbidden('Invalid access: session number limit reached')
     }
 
     const sessionId = `${shortid.generate()}_${user.id}`
@@ -69,6 +77,7 @@ export default async function login(fastify) {
     await redis.set(
       sessionId,
       {
+        sessionId,
         userId: user.id,
         email: user.email,
         createdAt: new Date(),

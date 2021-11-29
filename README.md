@@ -30,6 +30,7 @@
 | SERVER_PORT     |        3000         | Server port                                 |
 | **DOMAIN_PROD** |                     | Production domain (eg: https://example.com) |
 | LOG_LEVEL       |        info         | Pino.js default log level                   |
+| SESSIONS_LIMIT  |          4          | Session number limit                        |
 | **PG_HOST**     |                     | Postgres host                               |
 | **PG_PORT**     |                     | Postgres port                               |
 | **PG_DB**       |                     | Postgres database                           |
