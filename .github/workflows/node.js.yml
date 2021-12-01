@@ -27,7 +27,7 @@ jobs:
           touch .env
           echo SERVER_ADDRESS=0.0.0.0 >> .env
           echo SERVER_PORT=3000 >> .env
-          echo DOMAIN_PROD=https://example.com >> .env
+          echo DOMAIN_PROD=api.dilemmapolitico.info >> .env
           echo LOG_LEVEL=debug >> .env
           echo SESSIONS_LIMIT=4 >> .env
           echo PG_HOST=${{ secrets.PG_HOST }} >> .env

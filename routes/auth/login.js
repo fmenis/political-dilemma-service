@@ -101,6 +101,7 @@ export default async function login(fastify) {
       // 'secure' works in the browser, for localhost, but not for postman
       cookieOptions.secure = true
       cookieOptions.sameSite = 'none'
+      cookieOptions.domain = fastify.config.DOMAIN_PROD
     }
 
     reply.setCookie('session', sessionId, cookieOptions)
