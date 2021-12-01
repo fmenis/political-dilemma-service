@@ -29,7 +29,6 @@ async function swaggerGenerator(fastify) {
         { name: 'misc', description: 'Miscellaneous related end-points' },
       ],
     },
-    exposeRoute: fastify.config.NODE_ENV !== 'production',
   })
 }
 
