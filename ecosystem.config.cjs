@@ -2,7 +2,7 @@ module.exports = {
   apps: [
     {
       name: 'dilemma',
-      cwd: '/opt/dilemma/dilemma/dilemma/dilemma',
+      cwd: '/opt/dilemma/dilemma/political-dilemma-service/political-dilemma-service',
       script: 'index.js',
       node_args: '-r dotenv/config',
       env: {
