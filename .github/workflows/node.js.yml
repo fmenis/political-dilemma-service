@@ -43,5 +43,5 @@ jobs:
           echo SALT_ROUNDS=10 >> .env
           cat .env
       - run: npm ci
-      - run: pm2 start ecosystem.config.cjs
+      - run: pm2 startOrRestart ecosystem.config.cjs
       - run: pm2 save

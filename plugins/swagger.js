@@ -29,6 +29,7 @@ async function swaggerGenerator(fastify) {
         { name: 'misc', description: 'Miscellaneous related end-points' },
       ],
     },
+    exposeRoute: true,
   })
 }
 
