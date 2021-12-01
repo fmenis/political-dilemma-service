@@ -18,7 +18,10 @@ async function swaggerGenerator(fastify) {
         url: 'https://github.com/fmenis/political-dilemma-service',
         description: 'Find more info here',
       },
-      host: 'localhost:3000',
+      host:
+        process.env.NODE_ENV === 'development'
+          ? `localhost:${process.env.SERVER_PORT}`
+          : process.env.DOMAIN_PROD,
       schemes: ['http', 'https'],
       consumes: ['application/json'],
       produces: ['application/json'],
