@@ -100,7 +100,7 @@ export default async function login(fastify) {
     if (fastify.config.NODE_ENV === 'production') {
       // 'secure' works in the browser, for localhost, but not for postman
       cookieOptions.secure = true
-      cookieOptions.sameSite = 'strict'
+      cookieOptions.sameSite = 'none'
     }
 
     reply.setCookie('session', sessionId, cookieOptions)
