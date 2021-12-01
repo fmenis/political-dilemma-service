@@ -11,12 +11,13 @@ export default async function index(fastify) {
   fastify.register(authentication)
 
   /**
-   * Log request body
+   * Log request body and redact sesible info
+   * TODO: https://getpino.io/#/docs/redaction?id=redaction
    */
   fastify.addHook('preValidation', async req => {
-    const { body } = req
+    const { body, log } = req
 
-    if (body) {
+    if (fastify.config.LOG_REQ_BODY && body) {
       const obscuredKeys = [
         'password',
         'confirmPassword',
@@ -34,9 +35,9 @@ export default async function index(fastify) {
           }
         })
 
-        req.log.info(copy, 'parsed body')
+        log.info(copy, 'parsed body')
       } else {
-        req.log.info(body, 'parsed body')
+        log.info(body, 'parsed body')
       }
     }
   })
@@ -64,6 +65,20 @@ export default async function index(fastify) {
           .description('Authentication cookie header')
           .required(),
       }
+    }
+  })
+
+  /**
+   * Log validation errors
+   */
+  fastify.addHook('onError', async (req, reply, error) => {
+    const { log } = req
+
+    if (reply.statusCode === 400) {
+      log.warn(
+        { message: error.message, validation: error.validation },
+        'validation error'
+      )
     }
   })
 

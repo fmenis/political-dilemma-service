@@ -41,6 +41,7 @@ jobs:
           echo SESSION_TTL=1800 >> .env
           echo COOKIE_TTL=15552000 >> .env
           echo SALT_ROUNDS=10 >> .env
+          echo LOG_REQ_BODY=true >> .env
           cat .env
       - run: npm ci
       - run: pm2 startOrRestart ecosystem.config.cjs

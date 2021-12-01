@@ -9,7 +9,8 @@ async function authentication(fastify) {
   })
 
   async function authenticate(req, reply) {
-    const { db, redis, httpErrors, log } = this
+    const { db, redis, httpErrors } = this
+    const { log } = req
 
     if (reply.context.config.public) {
       return

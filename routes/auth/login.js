@@ -10,7 +10,7 @@ shortid.characters(
 )
 
 export default async function login(fastify) {
-  const { db, log, redis, httpErrors } = fastify
+  const { db, redis, httpErrors } = fastify
 
   fastify.route({
     method: 'POST',
@@ -41,6 +41,7 @@ export default async function login(fastify) {
 
   async function onLogin(req, reply) {
     const { email, password } = req.body
+    const { log } = req
 
     const user = await db.execQuery(
       'SELECT * FROM users WHERE email=$1',

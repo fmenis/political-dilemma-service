@@ -42,6 +42,7 @@
 | SESSION_TTL     |  1800 (30 minutes)  | Session TTL (in seconds)                    |
 | COOKIE_TTL      | 15552000 (6 months) | Cookie max age (in seconds)                 |
 | SALT_ROUNDS     |         10          | Bcrypt salt rounds value                    |
+| LOG_REQ_BODY    |        false        | Enable request body logging                 |
 
 PS: If you have difficulties to compiling the env file, ask the backend guy!
 
