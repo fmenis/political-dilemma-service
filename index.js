@@ -7,6 +7,7 @@ const fastify = Fastify({
     level: process.env.LOG_LEVEL,
     prettyPrint: process.env.NODE_ENV !== 'production',
   },
+  trustProxy: true,
 })
 
 fastify.register(App)
