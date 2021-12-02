@@ -3,7 +3,7 @@ import S from 'fluent-json-schema'
 export function sSession() {
   return S.object()
     .additionalProperties(false)
-    .prop('sessionId', S.string())
+    .prop('id', S.string())
     .description('Session id.')
     .required()
     .prop('userId', S.number())
