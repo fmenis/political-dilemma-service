@@ -53,8 +53,8 @@ export default async function app(fastify, opts) {
   fastify.register(Cors, {
     //TODO non dovrebbe servire per le POST, testare
     methods: ['POST', 'PUT', 'DELETE'],
-    origin:
-      process.env.NODE_ENV === 'development' ? true : process.env.DOMAIN_PROD,
+    origin: true,
+    // process.env.NODE_ENV === 'development' ? true : process.env.DOMAIN_PROD,
     credentials: true,
   })
 
