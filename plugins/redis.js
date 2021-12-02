@@ -83,7 +83,7 @@ function redisClient(fastify, options, done) {
         if (err) {
           return reject(err)
         }
-        resolve(value)
+        resolve(value === 1)
       })
     })
   }
@@ -111,6 +111,17 @@ function redisClient(fastify, options, done) {
     })
   }
 
+  function exists(key) {
+    return new Promise((resolve, reject) => {
+      client.exists(key, (err, res) => {
+        if (err) {
+          return reject(err)
+        }
+        resolve(res === 1)
+      })
+    })
+  }
+
   fastify.decorate('redis', {
     close,
     get,
@@ -119,6 +130,7 @@ function redisClient(fastify, options, done) {
     setExpireTime,
     getKeys,
     getMulti,
+    exists,
   })
 }
 

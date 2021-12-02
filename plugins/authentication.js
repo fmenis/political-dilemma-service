@@ -67,7 +67,10 @@ async function authentication(fastify) {
       { ttl: fastify.config.SESSION_TTL }
     )
 
-    req.user = user
+    req.user = {
+      ...user,
+      session,
+    }
   }
 
   fastify.decorateRequest('user', null)

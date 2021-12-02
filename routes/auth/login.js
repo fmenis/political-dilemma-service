@@ -78,7 +78,7 @@ export default async function login(fastify) {
     await redis.set(
       sessionId,
       {
-        sessionId,
+        id: sessionId,
         userId: user.id,
         email: user.email,
         createdAt: new Date(),
