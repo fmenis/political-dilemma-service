@@ -49,6 +49,9 @@ export function sCreateUser() {
     .prop('email', S.string().format('email').minLength(6).maxLength(50))
     .description('User email. It must be unique.')
     .required()
+    .prop('confirmEmail', S.string().format('email').minLength(6).maxLength(50))
+    .description('Email confirmation')
+    .required()
     .prop(
       'password',
       S.string().pattern(/(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/g)
