@@ -90,11 +90,11 @@ export default async function login(fastify) {
     )
 
     const cookieOptions = {
-      domain: 'localhost',
       path: '/api',
       httpOnly: true,
       signed: true,
-      sameSite: 'lax',
+      secure: true,
+      sameSite: 'none',
       expires: moment().add(fastify.config.COOKIE_TTL, 'seconds').toDate(),
     }
 
