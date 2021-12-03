@@ -50,28 +50,27 @@ export default async function app(fastify, opts) {
       },
     },
   })
-  // fastify.register(Cors, {
-  //   //TODO non dovrebbe servire per le POST, testare
-  //   methods: ['POST', 'PUT', 'DELETE'],
-  //   origin:
-  //     process.env.NODE_ENV === 'development' ? true : process.env.DOMAIN_PROD,
-  //   credentials: true,
-  // })
-
-  fastify.register(Cors, function (instance) {
-    return (req, callback) => {
-      let corsOptions
-      const origin = req.headers.origin
-      // do not include CORS headers for requests from localhost
-      if (/localhost/.test(origin)) {
-        corsOptions = { origin: true }
-      } else {
-        corsOptions = { origin: true }
-      }
-      corsOptions.credentials = true
-      callback(null, corsOptions) // callback expects two parameters: error and options
-    }
+  fastify.register(Cors, {
+    //TODO non dovrebbe servire per le POST, testare
+    methods: ['POST', 'PUT', 'DELETE'],
+    origin: true,
+    credentials: true,
   })
+
+  // fastify.register(Cors, function (instance) {
+  //   return (req, callback) => {
+  //     let corsOptions
+  //     const origin = req.headers.origin
+  //     // do not include CORS headers for requests from localhost
+  //     if (/localhost/.test(origin)) {
+  //       corsOptions = { origin: true }
+  //     } else {
+  //       corsOptions = { origin: true }
+  //     }
+  //     corsOptions.credentials = true
+  //     callback(null, corsOptions) // callback expects two parameters: error and options
+  //   }
+  // })
 
   fastify.register(swaggerPlugin)
   fastify.register(pgPlugin)
