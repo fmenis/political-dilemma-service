@@ -36,9 +36,11 @@ async function authentication(fastify) {
     const session = await redis.get(sessionId)
     log.debug(session, 'session')
     if (!session) {
-      clearCookie(reply)
       log.debug(`Invalid access: session not found for user id '${userId}'`)
-      throw httpErrors.unauthorized(`Authentication error`)
+      clearCookie(reply)
+      throw httpErrors.createError(401, 'Authentication error', {
+        internalCode: '0001',
+      })
     }
 
     if (!session.isValid) {

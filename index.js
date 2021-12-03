@@ -8,6 +8,11 @@ const fastify = Fastify({
     prettyPrint: process.env.NODE_ENV !== 'production',
   },
   trustProxy: true,
+  ajv: {
+    customOptions: {
+      allErrors: true,
+    },
+  },
 })
 
 fastify.register(App)

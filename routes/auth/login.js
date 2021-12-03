@@ -10,7 +10,7 @@ shortid.characters(
 )
 
 export default async function login(fastify) {
-  const { db, redis, httpErrors } = fastify
+  const { db, redis, httpErrors, apiErros } = fastify
 
   fastify.route({
     method: 'POST',
@@ -51,20 +51,24 @@ export default async function login(fastify) {
 
     if (!user) {
       log.debug(`Invalid access: user with email '${email}' not found`)
-      throw httpErrors.unauthorized('Invalid access: wrong email or password')
+      throw httpErrors.createError(401, 'Invalid access', {
+        internalCode: apiErros.userNotFound,
+      })
     }
 
     if (user.isBlocked) {
       log.debug(`Invalid access: login attempt from blocked user '${email}')`)
-      throw httpErrors.forbidden(
-        `Invalid access: access blocked by an administrator`
-      )
+      throw httpErrors.createError(403, 'Invalid access', {
+        internalCode: '0002',
+      })
     }
 
     const match = await compareStrings(password, user.password)
     if (!match) {
       log.debug(`Invalid access: password for user ${email} does not match`)
-      throw httpErrors.unauthorized('Invalid access: wrong email or password')
+      throw httpErrors.createError(401, 'Invalid access', {
+        internalCode: '0003',
+      })
     }
 
     const sessionKeys = await redis.getKeys(`*_${user.id}`)
@@ -93,7 +97,7 @@ export default async function login(fastify) {
       path: '/api',
       httpOnly: true,
       signed: true,
-      secure: true,
+      // secure: true,
       sameSite: 'none',
       expires: moment().add(fastify.config.COOKIE_TTL, 'seconds').toDate(),
     }

@@ -74,11 +74,14 @@ export default async function index(fastify) {
   fastify.addHook('onError', async (req, reply, error) => {
     const { log } = req
 
+    error.internalCode = error.internalCode || '0000'
+    error.details = {}
+
     if (reply.statusCode === 400) {
-      log.warn(
-        { message: error.message, validation: error.validation },
-        'validation error'
-      )
+      log.warn({ validation: error.validation }, 'invalid input')
+
+      error.details.validation = error.validation
+      error.message = 'Invalid input'
     }
   })
 

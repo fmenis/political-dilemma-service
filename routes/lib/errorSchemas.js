@@ -1,13 +1,5 @@
 import S from 'fluent-json-schema'
 
-export function sNoContent() {
-  return {
-    $id: 'sNoContent',
-    description: 'No content',
-    type: 'null'
-  }
-}
-
 export function sBadRequest() {
   return S.object()
     .id('sBadRequest')
@@ -23,6 +15,12 @@ export function sBadRequest() {
     .required()
     .prop('message', S.string())
     .description('Message')
+    .required()
+    .prop('internalCode', S.string())
+    .description('Internal code')
+    .required()
+    .prop('details', S.object().additionalProperties(true))
+    .description('Error details')
     .required()
 }
 
@@ -42,6 +40,17 @@ export function sUnauthorized() {
     .prop('message', S.string())
     .description('Message')
     .required()
+    .prop('internalCode', S.string())
+    .description('Internal code')
+    .enum([
+      '0000: no specific error code',
+      '0001: invalid access: user not found',
+      '0001: authentication session not found',
+    ])
+    .required()
+    .prop('details', S.object().additionalProperties(true))
+    .description('Error details')
+    .required()
 }
 
 export function sForbidden() {
@@ -59,6 +68,16 @@ export function sForbidden() {
     .required()
     .prop('message', S.string())
     .description('Message')
+    .required()
+    .prop('internalCode', S.string())
+    .description('Internal code')
+    .enum([
+      '0000: no specific error code',
+      '0001: invalid access: user blocked by an administrator',
+    ])
+    .required()
+    .prop('details', S.object().additionalProperties(true))
+    .description('Error details')
     .required()
 }
 
@@ -78,6 +97,12 @@ export function sNotFound() {
     .prop('message', S.string())
     .description('Message')
     .required()
+    .prop('internalCode', S.string())
+    .description('Internal code')
+    .required()
+    .prop('details', S.object().additionalProperties(true))
+    .description('Error details')
+    .required()
 }
 
 export function sConflict() {
@@ -95,5 +120,11 @@ export function sConflict() {
     .required()
     .prop('message', S.string())
     .description('Message')
+    .required()
+    .prop('internalCode', S.string())
+    .description('Internal code')
+    .required()
+    .prop('details', S.object().additionalProperties(true))
+    .description('Error details')
     .required()
 }
