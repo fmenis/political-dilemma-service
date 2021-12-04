@@ -19,7 +19,8 @@ export default async function createUser(fastify) {
       },
     },
     preHandler: async function (req) {
-      const { userName, email, password, confirmPassword } = req.body
+      const { userName, email, confirmEmail, password, confirmPassword } =
+        req.body
 
       const query = 'SELECT id FROM users ' + 'WHERE user_name=$1 OR email=$2'
       const alreadyInsered = await db.execQuery(query, [userName, email], {
@@ -33,6 +34,12 @@ export default async function createUser(fastify) {
       if (password !== confirmPassword) {
         throw httpErrors.badRequest(
           'Password and password confirmation are not equal'
+        )
+      }
+
+      if (email !== confirmEmail) {
+        throw httpErrors.badRequest(
+          'Email and email confirmation are not equal'
         )
       }
     },

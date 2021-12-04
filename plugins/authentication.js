@@ -29,12 +29,9 @@ async function authentication(fastify) {
     }
 
     const { value: sessionId } = unsignedCookie
-    log.debug(sessionId, 'sessionId')
-
     const userId = sessionId.split('_')[1]
 
     const session = await redis.get(sessionId)
-    log.debug(session, 'session')
     if (!session) {
       log.debug(`Invalid access: session not found for user id '${userId}'`)
       clearCookie(reply)

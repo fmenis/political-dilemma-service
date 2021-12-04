@@ -26,6 +26,41 @@ export default async function updateUser(fastify) {
         409: fastify.getSchema('sConflict'),
       },
     },
+    preHandler: async function (req) {
+      const { userName, email } = req.body
+      const { id } = req.params
+
+      const user = await db.execQuery(
+        'SELECT id FROM users WHERE id=$1',
+        [id],
+        {
+          findOne: true,
+        }
+      )
+      if (!user) {
+        throw httpErrors.notFound(`User with id '${id}' not found`)
+      }
+
+      if (userName) {
+        const { rows: rowsUsername } = await db.execQuery(
+          'SELECT id FROM users WHERE user_name=$2 AND id<>$1',
+          [id, userName]
+        )
+        if (rowsUsername.length) {
+          throw httpErrors.badRequest(`Username '${userName}' already used`)
+        }
+      }
+
+      if (email) {
+        const { rows: rowsEmail } = await db.execQuery(
+          'SELECT id FROM users WHERE email=$2 AND id<>$1',
+          [id, email]
+        )
+        if (rowsEmail.length) {
+          throw httpErrors.badRequest(`Email '${email}' already used`)
+        }
+      }
+    },
     handler: onUpdateUser,
   })
 
@@ -42,13 +77,6 @@ export default async function updateUser(fastify) {
     } = req.body
 
     const { id } = req.params
-
-    const user = await db.execQuery('SELECT id FROM users WHERE id=$1', [id], {
-      findOne: true,
-    })
-    if (!user) {
-      throw httpErrors.notFound(`User with id '${id}' not found`)
-    }
 
     const query =
       'UPDATE users SET ' +
@@ -71,23 +99,11 @@ export default async function updateUser(fastify) {
       new Date(),
     ]
 
-    let updatedUser
-
-    try {
-      const { rowCount, rows } = await db.execQuery(query, inputs)
-      if (!rowCount) {
-        throw httpErrors.conflict('The action had no effect')
-      }
-
-      updatedUser = rows[0]
-    } catch (error) {
-      if (error.code && error.code === '23505') {
-        // duplicate unique value error
-        throw httpErrors.conflict(error.message.replace(/"/g, ''))
-      }
-      throw error
+    const { rowCount, rows } = await db.execQuery(query, inputs)
+    if (!rowCount) {
+      throw httpErrors.conflict('The action had no effect')
     }
 
-    reply.send(updatedUser)
+    return rows[0]
   }
 }
