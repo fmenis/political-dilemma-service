@@ -1,8 +1,6 @@
 import Fp from 'fastify-plugin'
 import cookie from 'fastify-cookie'
 
-import { clearCookie } from '../lib/cookie.js'
-
 async function authentication(fastify) {
   fastify.register(cookie, {
     secret: fastify.config.SECRET,
