@@ -1,6 +1,7 @@
 import S from 'fluent-json-schema'
 
 import authentication from '../plugins/authentication.js'
+import authorization from '../plugins/authorization.js'
 
 import authRoutes from './auth/index.js'
 import userRoutes from './users/index.js'
@@ -9,6 +10,7 @@ import sessionsRoutes from './sessions/index.js'
 
 export default async function index(fastify) {
   fastify.register(authentication)
+  fastify.register(authorization)
 
   /**
    * Log request body and redact sesible info

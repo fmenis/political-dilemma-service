@@ -54,17 +54,11 @@ async function authentication(fastify) {
       [userId],
       { findOne: true }
     )
+
     if (!user) {
       log.debug(`Invalid access: user '${userId}' not found`)
       throw createError(401, 'Invalid access', {
         internalCode: '0007',
-      })
-    }
-
-    if (user.isBlocked) {
-      log.warn(`Invalid access: user '${userId}' is blocked`)
-      throw createError(403, 'Invalid access', {
-        internalCode: '0002',
       })
     }
 
