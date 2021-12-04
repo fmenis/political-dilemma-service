@@ -15,7 +15,17 @@ export default async function index(fastify) {
    * TODO: https://getpino.io/#/docs/redaction?id=redaction
    */
   fastify.addHook('preValidation', async req => {
-    const { body, log } = req
+    const { body, log, user } = req
+
+    if (user) {
+      log.debug(
+        {
+          id: user.id,
+          email: user.email,
+        },
+        'user'
+      )
+    }
 
     if (fastify.config.LOG_REQ_BODY && body) {
       const obscuredKeys = [
@@ -35,9 +45,9 @@ export default async function index(fastify) {
           }
         })
 
-        log.info(copy, 'parsed body')
+        log.debug(copy, 'parsed body')
       } else {
-        log.info(body, 'parsed body')
+        log.debug(body, 'parsed body')
       }
     }
   })

@@ -10,6 +10,7 @@ async function authentication(fastify) {
 
   async function authenticate(req, reply) {
     const { db, redis, httpErrors } = this
+    const { createError } = httpErrors
     const { log } = req
 
     if (reply.context.config.public) {
@@ -19,13 +20,17 @@ async function authentication(fastify) {
     const cookie = req.cookies.session
     if (!cookie) {
       log.debug(`Invalid access: cookie not found`)
-      throw httpErrors.unauthorized('Authentication error')
+      throw createError(401, 'Invalid access', {
+        internalCode: '0004',
+      })
     }
 
     const unsignedCookie = req.unsignCookie(cookie)
     if (!unsignedCookie.valid) {
       log.debug(`Invalid access: malformed cookie`)
-      throw httpErrors.unauthorized('Authentication error')
+      throw createError(401, 'Invalid access', {
+        internalCode: '0004',
+      })
     }
 
     const { value: sessionId } = unsignedCookie
@@ -34,15 +39,16 @@ async function authentication(fastify) {
     const session = await redis.get(sessionId)
     if (!session) {
       log.debug(`Invalid access: session not found for user id '${userId}'`)
-      clearCookie(reply)
-      throw httpErrors.createError(401, 'Authentication error', {
-        internalCode: '0001',
+      throw createError(401, 'Invalid access', {
+        internalCode: '0005',
       })
     }
 
     if (!session.isValid) {
       log.debug(`Invalid access: session not valid for user id '${userId}'`)
-      throw httpErrors.unauthorized(`Authentication error`)
+      throw createError(403, 'Invalid access', {
+        internalCode: '0006',
+      })
     }
 
     const user = await db.execQuery(
@@ -52,12 +58,16 @@ async function authentication(fastify) {
     )
     if (!user) {
       log.debug(`Invalid access: user '${userId}' not found`)
-      throw httpErrors.unauthorized(`Authentication error`)
+      throw createError(401, 'Invalid access', {
+        internalCode: '0007',
+      })
     }
 
     if (user.isBlocked) {
       log.warn(`Invalid access: user '${userId}' is blocked`)
-      throw httpErrors.forbidden('Authentication error')
+      throw createError(403, 'Invalid access', {
+        internalCode: '0002',
+      })
     }
 
     await redis.set(

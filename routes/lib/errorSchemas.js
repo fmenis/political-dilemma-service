@@ -17,7 +17,7 @@ export function sBadRequest() {
     .description('Message')
     .required()
     .prop('internalCode', S.string())
-    .description('Internal code')
+    .description('Internal code.\n' + '0000: no specific error code')
     .required()
     .prop('details', S.object().additionalProperties(true))
     .description('Error details')
@@ -41,12 +41,14 @@ export function sUnauthorized() {
     .description('Message')
     .required()
     .prop('internalCode', S.string())
-    .description('Internal code')
-    .enum([
-      '0000: no specific error code',
-      '0001: invalid access: user not found',
-      '0001: authentication session not found',
-    ])
+    .description(
+      'Internal code.\n' +
+        '0000: no specific error code.\n' +
+        '0001: invalid credentials, wrong email or password.\n' +
+        '0004: invalid access, cookie expired or malformed.\n' +
+        '0005: invalid access, session expired or not present.\n' +
+        '0007: invalid access, user not found.'
+    )
     .required()
     .prop('details', S.object().additionalProperties(true))
     .description('Error details')
@@ -70,11 +72,13 @@ export function sForbidden() {
     .description('Message')
     .required()
     .prop('internalCode', S.string())
-    .description('Internal code')
-    .enum([
-      '0000: no specific error code',
-      '0001: invalid access: user blocked by an administrator',
-    ])
+    .description(
+      'Internal code.\n' +
+        '0000: no specific error code.\n' +
+        '0002: invalid access, user blocked by an administrator.\n' +
+        '0003: invalid access, max session number reached.\n' +
+        '0006: invalid access, session not valid.'
+    )
     .required()
     .prop('details', S.object().additionalProperties(true))
     .description('Error details')
@@ -99,6 +103,7 @@ export function sNotFound() {
     .required()
     .prop('internalCode', S.string())
     .description('Internal code')
+    .enum(['0000: no specific error code'])
     .required()
     .prop('details', S.object().additionalProperties(true))
     .description('Error details')
@@ -122,7 +127,7 @@ export function sConflict() {
     .description('Message')
     .required()
     .prop('internalCode', S.string())
-    .description('Internal code')
+    .description('Internal code.\n' + '0000: no specific error code')
     .required()
     .prop('details', S.object().additionalProperties(true))
     .description('Error details')

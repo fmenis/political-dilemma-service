@@ -10,7 +10,8 @@ shortid.characters(
 )
 
 export default async function login(fastify) {
-  const { db, redis, httpErrors, apiErros } = fastify
+  const { db, redis, httpErrors } = fastify
+  const { createError } = httpErrors
 
   fastify.route({
     method: 'POST',
@@ -51,14 +52,14 @@ export default async function login(fastify) {
 
     if (!user) {
       log.debug(`Invalid access: user with email '${email}' not found`)
-      throw httpErrors.createError(401, 'Invalid access', {
-        internalCode: apiErros.userNotFound,
+      throw createError(401, 'Invalid access', {
+        internalCode: '0001',
       })
     }
 
     if (user.isBlocked) {
       log.debug(`Invalid access: login attempt from blocked user '${email}')`)
-      throw httpErrors.createError(403, 'Invalid access', {
+      throw createError(403, 'Invalid access', {
         internalCode: '0002',
       })
     }
@@ -66,15 +67,17 @@ export default async function login(fastify) {
     const match = await compareStrings(password, user.password)
     if (!match) {
       log.debug(`Invalid access: password for user ${email} does not match`)
-      throw httpErrors.createError(401, 'Invalid access', {
-        internalCode: '0003',
+      throw createError(401, 'Invalid access', {
+        internalCode: '0001',
       })
     }
 
     const sessionKeys = await redis.getKeys(`*_${user.id}`)
     if (sessionKeys.length > fastify.config.SESSIONS_LIMIT - 1) {
       log.debug(`Invalid access: session number limit for user '${email}'`)
-      throw httpErrors.forbidden('Invalid access: session number limit reached')
+      throw createError(403, 'Invalid access', {
+        internalCode: '0003',
+      })
     }
 
     const sessionId = `${shortid.generate()}_${user.id}`
@@ -97,7 +100,7 @@ export default async function login(fastify) {
       path: '/api',
       httpOnly: true,
       signed: true,
-      // secure: true,
+      secure: true,
       sameSite: 'none',
       expires: moment().add(fastify.config.COOKIE_TTL, 'seconds').toDate(),
     }
