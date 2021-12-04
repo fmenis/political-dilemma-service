@@ -3,6 +3,7 @@ import { compareStrings, hashString } from '../../lib/hash.js'
 
 export default async function changePassword(fastify) {
   const { db, config, httpErrors } = fastify
+  const { createError } = httpErrors
 
   fastify.route({
     method: 'POST',
@@ -52,17 +53,21 @@ export default async function changePassword(fastify) {
 
     const match = await compareStrings(oldPassword, user.password)
     if (!match) {
-      throw httpErrors.badRequest(`Old password not valid`)
+      throw createError(400, 'Bad Request', {
+        validation: [`Old password not valid`],
+      })
     }
 
     if (newPassword === oldPassword) {
-      throw httpErrors.badRequest(`New password is the same as the previous`)
+      throw createError(400, 'Bad Request', {
+        validation: [`New password is the same as the previous`],
+      })
     }
 
     if (newPassword !== newPasswordConfirmation) {
-      throw httpErrors.badRequest(
-        `The 'new' and 'confirmation' password does't match`
-      )
+      throw createError(400, 'Bad Request', {
+        validation: [`The 'new' and 'confirmation' password does't match`],
+      })
     }
 
     const inputs = [
