@@ -20,7 +20,7 @@ export function sBadRequest() {
     .description('Internal code.\n' + '0000: no specific error code')
     .required()
     .prop('details', S.object().additionalProperties(true))
-    .description('Error details')
+    .description('Error details (unstructured data)')
     .required()
 }
 
@@ -51,7 +51,7 @@ export function sUnauthorized() {
     )
     .required()
     .prop('details', S.object().additionalProperties(true))
-    .description('Error details')
+    .description('Error details (unstructured data)')
     .required()
 }
 
@@ -81,7 +81,7 @@ export function sForbidden() {
     )
     .required()
     .prop('details', S.object().additionalProperties(true))
-    .description('Error details')
+    .description('Error details (unstructured data)')
     .required()
 }
 
@@ -106,7 +106,7 @@ export function sNotFound() {
     .enum(['0000: no specific error code'])
     .required()
     .prop('details', S.object().additionalProperties(true))
-    .description('Error details')
+    .description('Error details (unstructured data)')
     .required()
 }
 
@@ -130,6 +130,6 @@ export function sConflict() {
     .description('Internal code.\n' + '0000: no specific error code')
     .required()
     .prop('details', S.object().additionalProperties(true))
-    .description('Error details')
+    .description('Error details (unstructured data)')
     .required()
 }
