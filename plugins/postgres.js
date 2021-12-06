@@ -14,7 +14,7 @@ function postgresClient(fastify, options, done) {
     if (err) {
       return done(err)
     }
-    fastify.log.debug('Postgres client correctly connetted')
+    fastify.log.debug('Postgres client correctly connected')
     done()
   })
 

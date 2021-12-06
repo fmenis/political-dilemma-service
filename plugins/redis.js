@@ -8,7 +8,7 @@ function redisClient(fastify, options, done) {
   })
 
   client.on('connect', () => {
-    fastify.log.debug('Redis client correctly connetted')
+    fastify.log.debug('Redis client correctly connected')
     done()
   })
 
