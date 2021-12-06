@@ -27,7 +27,7 @@ async function authentication(fastify) {
     if (!unsignedCookie.valid) {
       log.debug(`Invalid access: malformed cookie`)
       throw createError(401, 'Invalid access', {
-        internalCode: '0004',
+        internalCode: '0005',
       })
     }
 
@@ -38,14 +38,14 @@ async function authentication(fastify) {
     if (!session) {
       log.debug(`Invalid access: session not found for user id '${userId}'`)
       throw createError(401, 'Invalid access', {
-        internalCode: '0005',
+        internalCode: '0006',
       })
     }
 
     if (!session.isValid) {
       log.debug(`Invalid access: session not valid for user id '${userId}'`)
       throw createError(403, 'Invalid access', {
-        internalCode: '0006',
+        internalCode: '0007',
       })
     }
 
@@ -58,7 +58,7 @@ async function authentication(fastify) {
     if (!user) {
       log.debug(`Invalid access: user '${userId}' not found`)
       throw createError(401, 'Invalid access', {
-        internalCode: '0007',
+        internalCode: '0008',
       })
     }
 

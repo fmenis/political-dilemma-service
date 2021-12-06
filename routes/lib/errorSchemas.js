@@ -43,11 +43,10 @@ export function sUnauthorized() {
     .prop('internalCode', S.string())
     .description(
       'Internal code.\n' +
-        '0000: no specific error code.\n' +
-        '0001: invalid credentials, wrong email or password.\n' +
-        '0004: invalid access, cookie expired or malformed.\n' +
-        '0005: invalid access, session expired or not present.\n' +
-        '0007: invalid access, user not found.'
+        '0001: invalid access, invalid credentials.\n' +
+        '0004: invalid access, cookie not found (not present or expired).\n' +
+        '0005: invalid access, malformed cookie.\n' +
+        '0006: invalid access, session not found (not present or expired).\n'
     )
     .required()
     .prop('details', S.object().additionalProperties(true))
@@ -74,10 +73,10 @@ export function sForbidden() {
     .prop('internalCode', S.string())
     .description(
       'Internal code.\n' +
-        '0000: no specific error code.\n' +
         '0002: invalid access, user blocked by an administrator.\n' +
         '0003: invalid access, max session number reached.\n' +
-        '0006: invalid access, session not valid.'
+        '0007: invalid access, session not valid.\n' +
+        '0008: invalid access, user not found.'
     )
     .required()
     .prop('details', S.object().additionalProperties(true))
