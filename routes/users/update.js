@@ -49,7 +49,7 @@ export default async function updateUser(fastify) {
         )
         if (rowsUsername.length) {
           throw createError(400, 'Bad Request', {
-            validation: [`Username '${userName}' already used`],
+            validation: [{ message: `Username '${userName}' already used` }],
           })
         }
       }
@@ -61,7 +61,7 @@ export default async function updateUser(fastify) {
         )
         if (rowsEmail.length) {
           throw createError(400, 'Bad Request', {
-            validation: [`Email '${email}' already used`],
+            validation: [{ message: `Email '${email}' already used` }],
           })
         }
       }

@@ -30,19 +30,23 @@ export default async function createUser(fastify) {
 
       if (alreadyInsered) {
         throw createError(400, 'Bad Request', {
-          validation: [`Username or email already used`],
+          validation: [{ message: 'Username or email already used' }],
         })
       }
 
       if (password !== confirmPassword) {
         throw createError(400, 'Bad Request', {
-          validation: [`Password and password confirmation are not equal`],
+          validation: [
+            { message: 'Password and password confirmation are not equal' },
+          ],
         })
       }
 
       if (email !== confirmEmail) {
         throw createError(400, 'Bad Request', {
-          validation: [`Email and email confirmation are not equal`],
+          validation: [
+            { message: 'Email and email confirmation are not equal' },
+          ],
         })
       }
     },

@@ -55,20 +55,22 @@ export default async function changePassword(fastify) {
     const match = await compareStrings(oldPassword, user.password)
     if (!match) {
       throw createError(400, 'Bad Request', {
-        validation: [`Old password not valid`],
+        validation: [{ message: 'Old password not valid' }],
       })
     }
 
     if (newPassword === oldPassword) {
       throw createError(400, 'Bad Request', {
-        validation: [`New password is the same as the previous`],
+        validation: [{ message: 'New password is the same as the previous' }],
       })
     }
 
     if (newPassword !== newPasswordConfirmation) {
       throw createError(400, 'Bad Request', {
         validation: [
-          `The 'new' and 'confirmation' password fields doesn't match`,
+          {
+            message: `The 'new' and 'confirmation' password fields doesn't match`,
+          },
         ],
       })
     }
