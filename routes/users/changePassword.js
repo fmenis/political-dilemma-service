@@ -66,7 +66,9 @@ export default async function changePassword(fastify) {
 
     if (newPassword !== newPasswordConfirmation) {
       throw createError(400, 'Bad Request', {
-        validation: [`The 'new' and 'confirmation' password does't match`],
+        validation: [
+          `The 'new' and 'confirmation' password fields doesn't match`,
+        ],
       })
     }
 
