@@ -69,7 +69,7 @@ export default async function updateUser(fastify) {
     handler: onUpdateUser,
   })
 
-  async function onUpdateUser(req, reply) {
+  async function onUpdateUser(req) {
     const {
       firstName,
       lastName,
