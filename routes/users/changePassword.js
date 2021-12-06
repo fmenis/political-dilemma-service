@@ -13,7 +13,8 @@ export default async function changePassword(fastify) {
     },
     schema: {
       summary: 'Change user password',
-      description: 'Change user password.',
+      description:
+        'Change user password. API to be used when the user is logged in.',
       params: S.object()
         .additionalProperties(false)
         .prop('id', S.integer().minimum(1))
