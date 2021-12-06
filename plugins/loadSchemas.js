@@ -1,13 +1,18 @@
 import fp from 'fastify-plugin'
 
-import { 
-  sBadRequest, sForbidden, sNoContent, sUnauthorized, sNotFound, sConflict
+import { sNoContent } from '../routes/lib/responseSchemas.js'
+import {
+  sBadRequest,
+  sForbidden,
+  sUnauthorized,
+  sNotFound,
+  sConflict,
 } from '../routes/lib/errorSchemas.js'
 
-async function loadSchemas (fastify) {
+async function loadSchemas(fastify) {
+  fastify.addSchema(sNoContent())
   fastify.addSchema(sBadRequest())
   fastify.addSchema(sForbidden())
-  fastify.addSchema(sNoContent())
   fastify.addSchema(sUnauthorized())
   fastify.addSchema(sNotFound())
   fastify.addSchema(sConflict())

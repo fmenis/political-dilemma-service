@@ -3,6 +3,7 @@ import { sUserResponse, sCreateUser } from './lib/schema.js'
 
 export default async function createUser(fastify) {
   const { db, config, httpErrors } = fastify
+  const { createError } = httpErrors
 
   fastify.route({
     method: 'POST',
@@ -28,19 +29,21 @@ export default async function createUser(fastify) {
       })
 
       if (alreadyInsered) {
-        throw httpErrors.badRequest(`Username or email already used`)
+        throw createError(400, 'Bad Request', {
+          validation: [`Username or email already used`],
+        })
       }
 
       if (password !== confirmPassword) {
-        throw httpErrors.badRequest(
-          'Password and password confirmation are not equal'
-        )
+        throw createError(400, 'Bad Request', {
+          validation: [`Password and password confirmation are not equal`],
+        })
       }
 
       if (email !== confirmEmail) {
-        throw httpErrors.badRequest(
-          'Email and email confirmation are not equal'
-        )
+        throw createError(400, 'Bad Request', {
+          validation: [`Email and email confirmation are not equal`],
+        })
       }
     },
     handler: onCreateUser,

@@ -11,6 +11,7 @@ shortid.characters(
 
 export default async function login(fastify) {
   const { db, redis, httpErrors } = fastify
+  const { createError } = httpErrors
 
   fastify.route({
     method: 'POST',
@@ -51,26 +52,32 @@ export default async function login(fastify) {
 
     if (!user) {
       log.debug(`Invalid access: user with email '${email}' not found`)
-      throw httpErrors.unauthorized('Invalid access: wrong email or password')
+      throw createError(401, 'Invalid access', {
+        internalCode: '0001',
+      })
     }
 
     if (user.isBlocked) {
       log.debug(`Invalid access: login attempt from blocked user '${email}')`)
-      throw httpErrors.forbidden(
-        `Invalid access: access blocked by an administrator`
-      )
+      throw createError(403, 'Invalid access', {
+        internalCode: '0002',
+      })
     }
 
     const match = await compareStrings(password, user.password)
     if (!match) {
       log.debug(`Invalid access: password for user ${email} does not match`)
-      throw httpErrors.unauthorized('Invalid access: wrong email or password')
+      throw createError(401, 'Invalid access', {
+        internalCode: '0001',
+      })
     }
 
     const sessionKeys = await redis.getKeys(`*_${user.id}`)
     if (sessionKeys.length > fastify.config.SESSIONS_LIMIT - 1) {
       log.debug(`Invalid access: session number limit for user '${email}'`)
-      throw httpErrors.forbidden('Invalid access: session number limit reached')
+      throw createError(403, 'Invalid access', {
+        internalCode: '0003',
+      })
     }
 
     const sessionId = `${shortid.generate()}_${user.id}`

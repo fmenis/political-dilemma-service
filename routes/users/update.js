@@ -4,6 +4,7 @@ import { sUpdateUser, sUserResponse } from './lib/schema.js'
 
 export default async function updateUser(fastify) {
   const { db, httpErrors } = fastify
+  const { createError } = httpErrors
 
   fastify.route({
     method: 'PUT',
@@ -47,7 +48,9 @@ export default async function updateUser(fastify) {
           [id, userName]
         )
         if (rowsUsername.length) {
-          throw httpErrors.badRequest(`Username '${userName}' already used`)
+          throw createError(400, 'Bad Request', {
+            validation: [`Username '${userName}' already used`],
+          })
         }
       }
 
@@ -57,7 +60,9 @@ export default async function updateUser(fastify) {
           [id, email]
         )
         if (rowsEmail.length) {
-          throw httpErrors.badRequest(`Email '${email}' already used`)
+          throw createError(400, 'Bad Request', {
+            validation: [`Email '${email}' already used`],
+          })
         }
       }
     },

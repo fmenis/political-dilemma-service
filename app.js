@@ -68,7 +68,7 @@ export default async function app(fastify, opts) {
   //       corsOptions = { origin: true }
   //     }
   //     corsOptions.credentials = true
-  //     callback(null, corsOptions) // callback expects two parameters: error and options
+  //     callback(null, corsOptions)
   //   }
   // })
 

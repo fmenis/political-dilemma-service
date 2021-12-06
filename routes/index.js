@@ -1,6 +1,7 @@
 import S from 'fluent-json-schema'
 
 import authentication from '../plugins/authentication.js'
+import authorization from '../plugins/authorization.js'
 
 import authRoutes from './auth/index.js'
 import userRoutes from './users/index.js'
@@ -9,13 +10,24 @@ import sessionsRoutes from './sessions/index.js'
 
 export default async function index(fastify) {
   fastify.register(authentication)
+  fastify.register(authorization)
 
   /**
    * Log request body and redact sesible info
    * TODO: https://getpino.io/#/docs/redaction?id=redaction
    */
   fastify.addHook('preValidation', async req => {
-    const { body, log } = req
+    const { body, log, user } = req
+
+    if (user) {
+      log.debug(
+        {
+          id: user.id,
+          email: user.email,
+        },
+        'user'
+      )
+    }
 
     if (fastify.config.LOG_REQ_BODY && body) {
       const obscuredKeys = [
@@ -35,9 +47,9 @@ export default async function index(fastify) {
           }
         })
 
-        log.info(copy, 'parsed body')
+        log.debug(copy, 'parsed body')
       } else {
-        log.info(body, 'parsed body')
+        log.debug(body, 'parsed body')
       }
     }
   })
@@ -74,11 +86,14 @@ export default async function index(fastify) {
   fastify.addHook('onError', async (req, reply, error) => {
     const { log } = req
 
+    error.internalCode = error.internalCode || '0000'
+    error.details = {}
+
     if (reply.statusCode === 400) {
-      log.warn(
-        { message: error.message, validation: error.validation },
-        'validation error'
-      )
+      log.warn({ validation: error.validation }, 'invalid input')
+
+      error.details.validation = error.validation
+      error.message = 'Invalid input'
     }
   })
 

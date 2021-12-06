@@ -1,13 +1,5 @@
 import S from 'fluent-json-schema'
 
-export function sNoContent() {
-  return {
-    $id: 'sNoContent',
-    description: 'No content',
-    type: 'null'
-  }
-}
-
 export function sBadRequest() {
   return S.object()
     .id('sBadRequest')
@@ -23,6 +15,12 @@ export function sBadRequest() {
     .required()
     .prop('message', S.string())
     .description('Message')
+    .required()
+    .prop('internalCode', S.string())
+    .description('Internal code.\n' + '0000: no specific error code')
+    .required()
+    .prop('details', S.object().additionalProperties(true))
+    .description('Error details (unstructured data)')
     .required()
 }
 
@@ -42,6 +40,19 @@ export function sUnauthorized() {
     .prop('message', S.string())
     .description('Message')
     .required()
+    .prop('internalCode', S.string())
+    .description(
+      'Internal code.\n' +
+        '0000: no specific error code.\n' +
+        '0001: invalid credentials, wrong email or password.\n' +
+        '0004: invalid access, cookie expired or malformed.\n' +
+        '0005: invalid access, session expired or not present.\n' +
+        '0007: invalid access, user not found.'
+    )
+    .required()
+    .prop('details', S.object().additionalProperties(true))
+    .description('Error details (unstructured data)')
+    .required()
 }
 
 export function sForbidden() {
@@ -59,6 +70,18 @@ export function sForbidden() {
     .required()
     .prop('message', S.string())
     .description('Message')
+    .required()
+    .prop('internalCode', S.string())
+    .description(
+      'Internal code.\n' +
+        '0000: no specific error code.\n' +
+        '0002: invalid access, user blocked by an administrator.\n' +
+        '0003: invalid access, max session number reached.\n' +
+        '0006: invalid access, session not valid.'
+    )
+    .required()
+    .prop('details', S.object().additionalProperties(true))
+    .description('Error details (unstructured data)')
     .required()
 }
 
@@ -78,6 +101,13 @@ export function sNotFound() {
     .prop('message', S.string())
     .description('Message')
     .required()
+    .prop('internalCode', S.string())
+    .description('Internal code')
+    .enum(['0000: no specific error code'])
+    .required()
+    .prop('details', S.object().additionalProperties(true))
+    .description('Error details (unstructured data)')
+    .required()
 }
 
 export function sConflict() {
@@ -95,5 +125,11 @@ export function sConflict() {
     .required()
     .prop('message', S.string())
     .description('Message')
+    .required()
+    .prop('internalCode', S.string())
+    .description('Internal code.\n' + '0000: no specific error code')
+    .required()
+    .prop('details', S.object().additionalProperties(true))
+    .description('Error details (unstructured data)')
     .required()
 }

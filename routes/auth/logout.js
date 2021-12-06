@@ -1,7 +1,5 @@
 import S from 'fluent-json-schema'
 
-import { clearCookie } from '../../lib/cookie.js'
-
 export default async function logout(fastify) {
   const { redis, httpErrors } = fastify
 
@@ -41,7 +39,7 @@ export default async function logout(fastify) {
       throw httpErrors.conflict('The action had no effect')
     }
 
-    clearCookie(reply)
     reply.code(204)
+    reply.clearCookie('session', { path: '/api' })
   }
 }
