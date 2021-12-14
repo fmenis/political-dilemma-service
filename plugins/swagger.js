@@ -32,6 +32,46 @@ async function swaggerGenerator(fastify) {
         { name: 'misc', description: 'Miscellaneous related end-points' },
       ],
     },
+    // TODO passare a openApi v3
+    // openapi: {
+    //   info: {
+    //     title: 'Political Dilemma Service',
+    //     description: 'Political Dilemma API documentation',
+    //     version,
+    //     contact: {
+    //       name: 'API support',
+    //       email: 'filippomeniswork@gmail.com',
+    //     },
+    //   },
+    //   externalDocs: {
+    //     url: 'https://github.com/fmenis/political-dilemma-service',
+    //     description: 'Code',
+    //   },
+    //   servers: [
+    //     {
+    //       url:
+    //         process.env.NODE_ENV === 'development'
+    //           ? `http://localhost:${process.env.SERVER_PORT}`
+    //           : process.env.DOMAIN_PROD,
+    //       description: `${process.env.NODE_ENV} server`,
+    //       variables: {
+    //         port: {
+    //           enum: ['443'],
+    //           // description: 'Http port',
+    //         },
+    //         basePath: {
+    //           default: '/api/v1',
+    //         },
+    //       },
+    //     },
+    //   ],
+    //   tags: [
+    //     { name: 'auth', description: 'Auth related end-points' },
+    //     { name: 'users', description: 'User related end-points' },
+    //     { name: 'sessions', description: 'Session related end-points' },
+    //     { name: 'misc', description: 'Miscellaneous related end-points' },
+    //   ],
+    // },
     exposeRoute: true,
   })
 }

@@ -29,7 +29,7 @@ function postgresClient(fastify, options, done) {
         if (err) {
           return reject(err)
         }
-        reply.rows = reply.rows.map(row => changeFieldsCase(row))
+        reply.rows = reply.rows.map(row => parseRow(row))
         if (opts.findOne) {
           return resolve(reply.rows[0])
         }
@@ -38,8 +38,16 @@ function postgresClient(fastify, options, done) {
     })
   }
 
-  function changeFieldsCase(obj) {
+  /**
+   * Remove null values and convert db snake case identifiers
+   * into camel case names
+   */
+  function parseRow(obj) {
     return Object.keys(obj).reduce((acc, key) => {
+      if (obj[key] === null) {
+        return acc
+      }
+
       const camelCaseKey = key.split('_').reduce((str, item, index) => {
         if (index === 0) {
           str = item
@@ -48,6 +56,7 @@ function postgresClient(fastify, options, done) {
         }
         return str
       }, '')
+
       acc[camelCaseKey] = obj[key]
       return acc
     }, {})
