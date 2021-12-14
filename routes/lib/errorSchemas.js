@@ -19,7 +19,21 @@ export function sBadRequest() {
     .prop('internalCode', S.string())
     .description('Internal code.\n' + '0000: no specific error code')
     .required()
-    .prop('details', S.object().additionalProperties(true))
+    .prop(
+      'details',
+      S.object()
+        .additionalProperties(true)
+        .prop(
+          'validation',
+          S.array().items(
+            S.object()
+              .additionalProperties(true)
+              .prop('message', S.string())
+              .description('Validation message')
+              .required()
+          )
+        )
+    )
     .description('Error details (unstructured data)')
     .required()
 }
