@@ -38,7 +38,7 @@ jobs:
           echo REDIS_HOST=${{ secrets.REDIS_HOST }} >> .env
           echo REDIS_PORT=${{ secrets.REDIS_PORT }} >> .env
           echo SECRET=${{ secrets.SECRET }} >> .env
-          echo SESSION_TTL=1800 >> .env
+          echo SESSION_TTL=86400 >> .env
           echo COOKIE_TTL=15552000 >> .env
           echo SALT_ROUNDS=10 >> .env
           echo LOG_REQ_BODY=true >> .env
