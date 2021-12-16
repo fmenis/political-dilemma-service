@@ -1,4 +1,5 @@
 import S from 'fluent-json-schema'
+import moment from 'moment'
 
 import { sUpdateUser, sUserResponse } from './lib/schema.js'
 
@@ -28,7 +29,7 @@ export default async function updateUser(fastify) {
       },
     },
     preHandler: async function (req) {
-      const { userName, email } = req.body
+      const { userName, email, birthDate } = req.body
       const { id } = req.params
 
       const user = await db.execQuery(
@@ -62,6 +63,19 @@ export default async function updateUser(fastify) {
         if (rowsEmail.length) {
           throw createError(400, 'Bad Request', {
             validation: [{ message: `Email '${email}' already used` }],
+          })
+        }
+      }
+
+      if (birthDate) {
+        const today = moment().format('YYYY-MM-DD')
+        if (birthDate > today || birthDate === today) {
+          throw createError(400, 'Bad Request', {
+            validation: [
+              {
+                message: 'Birth date cannot be greater than or equal to today',
+              },
+            ],
           })
         }
       }
