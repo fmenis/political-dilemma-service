@@ -30,6 +30,7 @@ async function swaggerGenerator(fastify) {
         { name: 'users', description: 'User related end-points' },
         { name: 'sessions', description: 'Session related end-points' },
         { name: 'misc', description: 'Miscellaneous related end-points' },
+        { name: 'permissions', description: 'Permissions related end-points' },
       ],
     },
     // TODO passare a openApi v3

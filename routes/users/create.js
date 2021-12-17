@@ -74,16 +74,10 @@ export default async function createUser(fastify) {
 
     const userObj = {
       ...body,
-      //TODO capire se non serve dal momento in cui la colonna è not null
       isBlocked: body.isBlocked ?? false,
       password: await hashString(body.password, parseInt(config.SALT_ROUNDS)),
     }
 
-    const user = await execQuery(userObj, db)
-    reply.code(201).send(user)
-  }
-
-  async function execQuery(obj, db) {
     const query =
       'INSERT INTO users ' +
       '(first_name, last_name, user_name, email, password, bio, ' +
@@ -103,7 +97,12 @@ export default async function createUser(fastify) {
       obj.sex,
       obj.isBlocked,
     ]
-    const res = await db.execQuery(query, inputs)
-    return res.rows[0]
+
+    const user = await execQuery(userObj, db)
+    reply.code(201).send(user)
+  }
+
+  function execQuery(obj, db) {
+    return db.execQuery(query, inputs, { findOne: true })
   }
 }

@@ -7,6 +7,7 @@ import authRoutes from './auth/index.js'
 import userRoutes from './users/index.js'
 import miscRoutes from './misc/index.js'
 import sessionsRoutes from './sessions/index.js'
+import permissionsRoutes from './permissions/index.js'
 
 export default async function index(fastify) {
   fastify.register(authentication)
@@ -101,4 +102,5 @@ export default async function index(fastify) {
   fastify.register(userRoutes)
   fastify.register(miscRoutes)
   fastify.register(sessionsRoutes)
+  fastify.register(permissionsRoutes)
 }
