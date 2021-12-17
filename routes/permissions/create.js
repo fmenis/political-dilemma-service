@@ -1,7 +1,8 @@
 import { sCreatePermission, sPermissionResponse } from './lib/schema.js'
 
 export default async function createPermission(fastify, options) {
-  const { db } = fastify
+  const { db, httpErrors } = fastify
+  const { createError } = httpErrors
 
   fastify.route({
     method: 'POST',
@@ -16,6 +17,19 @@ export default async function createPermission(fastify, options) {
       response: {
         201: sPermissionResponse(),
       },
+    },
+    preHandler: async function (req, reply) {
+      const { resource, action, ownership } = req.body
+      const query =
+        'SELECT id FROM permissions WHERE resource=$1 AND action=$2 AND ownership=$3'
+      const match = await db.execQuery(query, [resource, action, ownership], {
+        findOne: true,
+      })
+      if (match) {
+        throw createError(400, 'Bad Request', {
+          validation: [{ message: 'Permission already exists' }],
+        })
+      }
     },
     handler: onCreatePermission,
   })
