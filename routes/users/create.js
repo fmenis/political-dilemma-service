@@ -2,7 +2,7 @@ import { hashString } from '../../lib/hash.js'
 import { sUserResponse, sCreateUser } from './lib/schema.js'
 import moment from 'moment'
 
-export default async function createUser(fastify) {
+export default async function createUser(fastify, options) {
   const { db, config, httpErrors } = fastify
   const { createError } = httpErrors
 
@@ -20,7 +20,7 @@ export default async function createUser(fastify) {
         201: sUserResponse(),
       },
     },
-    preHandler: async function (req) {
+    preHandler: async function (req, reply) {
       const {
         userName,
         email,
@@ -87,22 +87,18 @@ export default async function createUser(fastify) {
       'birth_date, joined_date, sex, is_blocked'
 
     const inputs = [
-      obj.firstName,
-      obj.lastName,
-      obj.userName,
-      obj.email,
-      obj.password,
-      obj.bio,
-      obj.birthDate,
-      obj.sex,
-      obj.isBlocked,
+      userObj.firstName,
+      userObj.lastName,
+      userObj.userName,
+      userObj.email,
+      userObj.password,
+      userObj.bio,
+      userObj.birthDate,
+      userObj.sex,
+      userObj.isBlocked,
     ]
 
-    const user = await execQuery(userObj, db)
+    const user = await db.execQuery(query, inputs, { findOne: true })
     reply.code(201).send(user)
-  }
-
-  function execQuery(obj, db) {
-    return db.execQuery(query, inputs, { findOne: true })
   }
 }
