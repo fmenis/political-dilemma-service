@@ -38,6 +38,24 @@ function postgresClient(fastify, options, done) {
     })
   }
 
+  async function beginTransaction() {
+    const client = await pool.connect()
+    await client.query('BEGIN')
+    return client
+  }
+
+  async function commitTransaction(client) {
+    await client.query('COMMIT')
+    client.release()
+  }
+
+  async function rollbackTransaction(client) {
+    await client.query('ROLLBACK')
+    client.release()
+  }
+
+  //################################ HELPERS ################################
+
   /**
    * Remove null values and convert db snake case identifiers
    * into camel case names
@@ -64,6 +82,9 @@ function postgresClient(fastify, options, done) {
 
   fastify.decorate('db', {
     execQuery,
+    beginTransaction,
+    commitTransaction,
+    rollbackTransaction,
   })
 }
 
