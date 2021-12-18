@@ -32,6 +32,7 @@ export function sUserResponse() {
       `Define if the user is blocked, i.e. 
       if he cannot use the API (until it is unblocked).`
     )
+    .required()
 }
 
 export function sCreateUser() {

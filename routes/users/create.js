@@ -70,19 +70,20 @@ export default async function createUser(fastify) {
   })
 
   async function onCreateUser(req, reply) {
-    const { body } = req
+    const { body, user: owner } = req
 
     const userObj = {
       ...body,
       isBlocked: body.isBlocked ?? false,
+      ownerId: owner.id,
       password: await hashString(body.password, parseInt(config.SALT_ROUNDS)),
     }
 
     const query =
       'INSERT INTO users ' +
       '(first_name, last_name, user_name, email, password, bio, ' +
-      'birth_date, sex, is_blocked) ' +
-      'VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) ' +
+      'birth_date, sex, is_blocked, owner_id) ' +
+      'VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) ' +
       'RETURNING id, first_name, last_name, user_name, email, bio, ' +
       'birth_date, joined_date, sex, is_blocked'
 
@@ -96,6 +97,7 @@ export default async function createUser(fastify) {
       userObj.birthDate,
       userObj.sex,
       userObj.isBlocked,
+      userObj.ownerId,
     ]
 
     const user = await db.execQuery(query, inputs, { findOne: true })
