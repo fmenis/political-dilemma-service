@@ -36,13 +36,13 @@ export default async function createUser(fastify) {
       })
 
       if (alreadyInsered) {
-        throw createError(400, 'Bad Request', {
+        throw createError(400, 'Invalid input', {
           validation: [{ message: 'Username or email already used' }],
         })
       }
 
       if (password !== confirmPassword) {
-        throw createError(400, 'Bad Request', {
+        throw createError(400, 'Invalid input', {
           validation: [
             { message: 'Password and password confirmation are not equal' },
           ],
@@ -50,7 +50,7 @@ export default async function createUser(fastify) {
       }
 
       if (email !== confirmEmail) {
-        throw createError(400, 'Bad Request', {
+        throw createError(400, 'Invalid input', {
           validation: [
             { message: 'Email and email confirmation are not equal' },
           ],
@@ -59,7 +59,7 @@ export default async function createUser(fastify) {
 
       const today = moment().format('YYYY-MM-DD')
       if (birthDate > today || birthDate === today) {
-        throw createError(400, 'Bad Request', {
+        throw createError(400, 'Invalid input', {
           validation: [
             { message: 'Birth date cannot be greater than or equal to today' },
           ],
