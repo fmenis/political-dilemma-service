@@ -1,6 +1,6 @@
 import { sCreatePermission, sPermissionResponse } from './lib/schema.js'
 
-export default async function createPermission(fastify, options) {
+export default async function createPermission(fastify) {
   const { db, httpErrors } = fastify
   const { createError } = httpErrors
 
@@ -18,10 +18,11 @@ export default async function createPermission(fastify, options) {
         201: sPermissionResponse(),
       },
     },
-    preHandler: async function (req, reply) {
+    preHandler: async function (req) {
       const { resource, action, ownership } = req.body
       const query =
-        'SELECT id FROM permissions WHERE resource=$1 AND action=$2 AND ownership=$3'
+        'SELECT id FROM permissions WHERE resource=$1 AND action=$2 ' +
+        'AND ownership=$3'
       const match = await db.execQuery(query, [resource, action, ownership], {
         findOne: true,
       })
@@ -34,7 +35,7 @@ export default async function createPermission(fastify, options) {
     handler: onCreatePermission,
   })
 
-  async function onCreatePermission(req, reply) {
+  async function onCreatePermission(req) {
     const { resource, action, ownership, description } = req.body
 
     const query =

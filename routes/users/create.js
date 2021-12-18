@@ -2,7 +2,7 @@ import { hashString } from '../../lib/hash.js'
 import { sUserResponse, sCreateUser } from './lib/schema.js'
 import moment from 'moment'
 
-export default async function createUser(fastify, options) {
+export default async function createUser(fastify) {
   const { db, config, httpErrors } = fastify
   const { createError } = httpErrors
 
@@ -20,7 +20,7 @@ export default async function createUser(fastify, options) {
         201: sUserResponse(),
       },
     },
-    preHandler: async function (req, reply) {
+    preHandler: async function (req) {
       const {
         userName,
         email,

@@ -2,7 +2,7 @@ import S from 'fluent-json-schema'
 
 import { sPermissionResponse } from './lib/schema.js'
 
-export default async function listPermissions(fastify, options) {
+export default async function listPermissions(fastify) {
   const { db } = fastify
 
   fastify.route({
@@ -23,7 +23,7 @@ export default async function listPermissions(fastify, options) {
     handler: onListPermissions,
   })
 
-  async function onListPermissions(req, reply) {
+  async function onListPermissions() {
     const query = 'SELECT * FROM permissions'
     const res = await db.execQuery(query)
     return { results: res.rows }

@@ -2,7 +2,7 @@ import _ from 'lodash'
 
 import { sCreateRole } from './lib/schema.js'
 
-export default async function createRole(fastify, options) {
+export default async function createRole(fastify) {
   const { db, httpErrors } = fastify
   const { createError } = httpErrors
 
@@ -24,7 +24,7 @@ export default async function createRole(fastify, options) {
     handler: onCreateRole,
   })
 
-  async function onPreHandler(req, reply) {
+  async function onPreHandler(req) {
     const { permissionsIds } = req.body
 
     const { rows } = await db.execQuery(
@@ -46,8 +46,8 @@ export default async function createRole(fastify, options) {
     }
   }
 
-  async function onCreateRole(req, reply) {
-    const { name, description, permissionsIds } = req.body
+  async function onCreateRole(req) {
+    const { name, description /*, permissionsIds*/ } = req.body
 
     let client
 

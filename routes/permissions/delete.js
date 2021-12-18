@@ -1,6 +1,6 @@
 import S from 'fluent-json-schema'
 
-export default async function deletePermission(fastify, options) {
+export default async function deletePermission(fastify) {
   const { db, httpErrors } = fastify
 
   fastify.route({
@@ -27,7 +27,7 @@ export default async function deletePermission(fastify, options) {
     handler: onDeletePermission,
   })
 
-  async function onPreHandler(req, reply) {
+  async function onPreHandler(req) {
     const { id } = req.params
 
     const permission = await db.execQuery(
