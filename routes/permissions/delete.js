@@ -1,7 +1,7 @@
 import S from 'fluent-json-schema'
 
 export default async function deletePermission(fastify) {
-  const { db, httpErrors } = fastify
+  const { pg, httpErrors } = fastify
 
   fastify.route({
     method: 'DELETE',
@@ -30,7 +30,7 @@ export default async function deletePermission(fastify) {
   async function onPreHandler(req) {
     const { id } = req.params
 
-    const permission = await db.execQuery(
+    const permission = await pg.execQuery(
       'SELECT id FROM permissions WHERE id=$1',
       [id],
       { findOne: true }
@@ -40,7 +40,7 @@ export default async function deletePermission(fastify) {
     }
 
     //TODO testare
-    const assignToRole = await db.execQuery(
+    const assignToRole = await pg.execQuery(
       'SELECT role_id FROM permissions_roles WHERE role_id=$1',
       [id],
       { findOne: true }
@@ -55,7 +55,7 @@ export default async function deletePermission(fastify) {
   async function onDeletePermission(req, reply) {
     const { id } = req.params
 
-    const { rowCount } = await db.execQuery(
+    const { rowCount } = await pg.execQuery(
       'DELETE FROM permissions WHERE id=$1',
       [id]
     )

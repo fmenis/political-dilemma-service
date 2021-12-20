@@ -1,7 +1,7 @@
 import { sCreatePermission, sPermissionResponse } from './lib/schema.js'
 
 export default async function createPermission(fastify) {
-  const { db, httpErrors } = fastify
+  const { pg, httpErrors } = fastify
   const { createError } = httpErrors
 
   fastify.route({
@@ -23,7 +23,7 @@ export default async function createPermission(fastify) {
       const query =
         'SELECT id FROM permissions WHERE resource=$1 AND action=$2 ' +
         'AND ownership=$3'
-      const match = await db.execQuery(query, [resource, action, ownership], {
+      const match = await pg.execQuery(query, [resource, action, ownership], {
         findOne: true,
       })
       if (match) {
@@ -45,7 +45,7 @@ export default async function createPermission(fastify) {
       'RETURNING id, resource, action, ownership, description'
 
     const inputs = [resource, action, ownership, description]
-    const permission = await db.execQuery(query, inputs, { findOne: true })
+    const permission = await pg.execQuery(query, inputs, { findOne: true })
     return permission
   }
 }

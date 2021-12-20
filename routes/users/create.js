@@ -3,7 +3,7 @@ import { sUserResponse, sCreateUser } from './lib/schema.js'
 import moment from 'moment'
 
 export default async function createUser(fastify) {
-  const { db, config, httpErrors } = fastify
+  const { pg, config, httpErrors } = fastify
   const { createError } = httpErrors
 
   fastify.route({
@@ -31,7 +31,7 @@ export default async function createUser(fastify) {
       } = req.body
 
       const query = 'SELECT id FROM users ' + 'WHERE user_name=$1 OR email=$2'
-      const alreadyInsered = await db.execQuery(query, [userName, email], {
+      const alreadyInsered = await pg.execQuery(query, [userName, email], {
         findOne: true,
       })
 
@@ -100,7 +100,7 @@ export default async function createUser(fastify) {
       userObj.ownerId,
     ]
 
-    const user = await db.execQuery(query, inputs, { findOne: true })
+    const user = await pg.execQuery(query, inputs, { findOne: true })
     reply.code(201).send(user)
   }
 }

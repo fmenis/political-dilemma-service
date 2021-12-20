@@ -57,7 +57,7 @@ function postgresClient(fastify, options, done) {
   //################################ HELPERS ################################
 
   /**
-   * Remove null values and convert db snake case identifiers
+   * Remove null values and convert pg snake case identifiers
    * into camel case names
    */
   function parseRow(obj) {
@@ -80,7 +80,7 @@ function postgresClient(fastify, options, done) {
     }, {})
   }
 
-  fastify.decorate('db', {
+  fastify.decorate('pg', {
     execQuery,
     beginTransaction,
     commitTransaction,

@@ -3,7 +3,7 @@ import S from 'fluent-json-schema'
 import { sUserResponse } from './lib/schema.js'
 
 export default async function readUser(fastify) {
-  const { db, httpErrors } = fastify
+  const { pg, httpErrors } = fastify
 
   fastify.route({
     method: 'GET',
@@ -30,7 +30,7 @@ export default async function readUser(fastify) {
   async function onReadUser(req) {
     const { id } = req.params
 
-    const user = await execQuery(id, db)
+    const user = await execQuery(id, pg)
     if (!user) {
       throw httpErrors.notFound(`User with id '${id}' not found`)
     }
@@ -38,11 +38,11 @@ export default async function readUser(fastify) {
     return user
   }
 
-  async function execQuery(id, db) {
+  async function execQuery(id, pg) {
     const query =
       'SELECT id, first_name, last_name, user_name, email, bio, birth_date, ' +
       'joined_date, sex, is_blocked FROM users WHERE id = $1'
-    const res = await db.execQuery(query, [id])
+    const res = await pg.execQuery(query, [id])
     return res.rows[0]
   }
 }

@@ -3,7 +3,7 @@ import _ from 'lodash'
 import { sCreateRole } from './lib/schema.js'
 
 export default async function createRole(fastify) {
-  const { db, httpErrors } = fastify
+  const { pg, httpErrors } = fastify
   const { createError } = httpErrors
 
   fastify.route({
@@ -27,7 +27,7 @@ export default async function createRole(fastify) {
   async function onPreHandler(req) {
     const { permissionsIds } = req.body
 
-    const { rows } = await db.execQuery(
+    const { rows } = await pg.execQuery(
       'SELECT id FROM permissions WHERE id = ANY ($1)',
       permissionsIds
     )
@@ -52,7 +52,7 @@ export default async function createRole(fastify) {
     let client
 
     try {
-      client = await db.beginTransaction()
+      client = await pg.beginTransaction()
 
       const query =
         'INSERT INTO roles ' +
@@ -60,14 +60,14 @@ export default async function createRole(fastify) {
         'VALUES ($1, $2) ' +
         'RETURNING id, name, description'
 
-      const role = await db.execQuery(query, [name, description], {
+      const role = await pg.execQuery(query, [name, description], {
         findOne: true,
       })
 
-      await db.commitTransaction(client)
+      await pg.commitTransaction(client)
       return role
     } catch (error) {
-      await db.rollbackTransaction(client)
+      await pg.rollbackTransaction(client)
       throw error
     }
   }

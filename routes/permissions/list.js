@@ -3,7 +3,7 @@ import S from 'fluent-json-schema'
 import { sPermissionResponse } from './lib/schema.js'
 
 export default async function listPermissions(fastify) {
-  const { db } = fastify
+  const { pg } = fastify
 
   fastify.route({
     method: 'POST',
@@ -25,7 +25,7 @@ export default async function listPermissions(fastify) {
 
   async function onListPermissions() {
     const query = 'SELECT * FROM permissions'
-    const res = await db.execQuery(query)
+    const res = await pg.execQuery(query)
     return { results: res.rows }
   }
 }

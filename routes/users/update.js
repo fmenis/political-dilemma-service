@@ -4,7 +4,7 @@ import moment from 'moment'
 import { sUpdateUser, sUserResponse } from './lib/schema.js'
 
 export default async function updateUser(fastify) {
-  const { db, httpErrors } = fastify
+  const { pg, httpErrors } = fastify
   const { createError } = httpErrors
 
   fastify.route({
@@ -32,7 +32,7 @@ export default async function updateUser(fastify) {
       const { userName, email, birthDate } = req.body
       const { id } = req.params
 
-      const user = await db.execQuery(
+      const user = await pg.execQuery(
         'SELECT id FROM users WHERE id=$1',
         [id],
         {
@@ -44,7 +44,7 @@ export default async function updateUser(fastify) {
       }
 
       if (userName) {
-        const { rows: rowsUsername } = await db.execQuery(
+        const { rows: rowsUsername } = await pg.execQuery(
           'SELECT id FROM users WHERE user_name=$2 AND id<>$1',
           [id, userName]
         )
@@ -56,7 +56,7 @@ export default async function updateUser(fastify) {
       }
 
       if (email) {
-        const { rows: rowsEmail } = await db.execQuery(
+        const { rows: rowsEmail } = await pg.execQuery(
           'SELECT id FROM users WHERE email=$2 AND id<>$1',
           [id, email]
         )
@@ -118,7 +118,7 @@ export default async function updateUser(fastify) {
       new Date(),
     ]
 
-    const { rowCount, rows } = await db.execQuery(query, inputs)
+    const { rowCount, rows } = await pg.execQuery(query, inputs)
     if (!rowCount) {
       throw httpErrors.conflict('The action had no effect')
     }

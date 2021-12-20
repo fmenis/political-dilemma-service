@@ -2,7 +2,7 @@ import S from 'fluent-json-schema'
 import { compareStrings, hashString } from '../../lib/hash.js'
 
 export default async function changePassword(fastify) {
-  const { db, config, httpErrors } = fastify
+  const { pg, config, httpErrors } = fastify
   const { createError } = httpErrors
 
   fastify.route({
@@ -80,7 +80,7 @@ export default async function changePassword(fastify) {
       await hashString(newPassword, parseInt(config.SALT_ROUNDS)),
     ]
 
-    const { rowCount } = await db.execQuery(
+    const { rowCount } = await pg.execQuery(
       'UPDATE users SET password=$2 WHERE id=$1',
       inputs
     )

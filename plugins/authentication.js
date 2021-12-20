@@ -7,7 +7,7 @@ async function authentication(fastify) {
   })
 
   async function authenticate(req, reply) {
-    const { db, redis, httpErrors } = this
+    const { pg, redis, httpErrors } = this
     const { createError } = httpErrors
     const { log } = req
 
@@ -49,7 +49,7 @@ async function authentication(fastify) {
       })
     }
 
-    const user = await db.execQuery(
+    const user = await pg.execQuery(
       'SELECT * FROM users WHERE id=$1',
       [userId],
       { findOne: true }
