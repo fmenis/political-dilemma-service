@@ -6,8 +6,8 @@ export default async function listPermissions(fastify) {
   const { pg } = fastify
 
   fastify.route({
-    method: 'POST',
-    path: '/list',
+    method: 'GET',
+    path: '',
     config: {
       public: false,
     },
