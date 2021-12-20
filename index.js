@@ -1,4 +1,5 @@
 import Fastify from 'fastify'
+import { stdTimeFunctions } from 'pino'
 
 import App from './app.js'
 
@@ -6,6 +7,7 @@ const fastify = Fastify({
   logger: {
     level: process.env.LOG_LEVEL,
     prettyPrint: process.env.NODE_ENV !== 'production',
+    timestamp: () => stdTimeFunctions.isoTime(),
   },
   trustProxy: true,
   ajv: {

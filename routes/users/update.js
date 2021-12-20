@@ -49,7 +49,7 @@ export default async function updateUser(fastify) {
           [id, userName]
         )
         if (rowsUsername.length) {
-          throw createError(400, 'Bad Request', {
+          throw createError(400, 'Invalid input', {
             validation: [{ message: `Username '${userName}' already used` }],
           })
         }
@@ -61,7 +61,7 @@ export default async function updateUser(fastify) {
           [id, email]
         )
         if (rowsEmail.length) {
-          throw createError(400, 'Bad Request', {
+          throw createError(400, 'Invalid input', {
             validation: [{ message: `Email '${email}' already used` }],
           })
         }
@@ -70,7 +70,7 @@ export default async function updateUser(fastify) {
       if (birthDate) {
         const today = moment().format('YYYY-MM-DD')
         if (birthDate > today || birthDate === today) {
-          throw createError(400, 'Bad Request', {
+          throw createError(400, 'Invalid input', {
             validation: [
               {
                 message: 'Birth date cannot be greater than or equal to today',
