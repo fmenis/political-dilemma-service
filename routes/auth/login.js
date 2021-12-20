@@ -64,6 +64,13 @@ export default async function login(fastify) {
       })
     }
 
+    if (user.isDeleted) {
+      log.debug(`Invalid access: login attempt from deleted user '${email}')`)
+      throw createError(403, 'Invalid access', {
+        internalCode: '0009',
+      })
+    }
+
     const match = await compareStrings(password, user.password)
     if (!match) {
       log.debug(`Invalid access: password for user ${email} does not match`)

@@ -17,6 +17,13 @@ async function authorization(fastify) {
         internalCode: '0002',
       })
     }
+
+    if (user.isDeleted) {
+      log.warn(`Invalid access: user '${user.id}' is deleted`)
+      throw createError(403, 'Invalid access', {
+        internalCode: '0009',
+      })
+    }
   }
 
   fastify.addHook('onRequest', authorize)

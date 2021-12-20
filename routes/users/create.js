@@ -30,7 +30,7 @@ export default async function createUser(fastify) {
         birthDate,
       } = req.body
 
-      const query = 'SELECT id FROM users ' + 'WHERE user_name=$1 OR email=$2'
+      const query = 'SELECT id FROM users WHERE user_name=$1 OR email=$2'
       const alreadyInsered = await db.execQuery(query, [userName, email], {
         findOne: true,
       })
@@ -74,8 +74,6 @@ export default async function createUser(fastify) {
 
     const userObj = {
       ...body,
-      //TODO capire se non serve dal momento in cui la colonna è not null
-      isBlocked: body.isBlocked ?? false,
       password: await hashString(body.password, parseInt(config.SALT_ROUNDS)),
     }
 
@@ -87,10 +85,10 @@ export default async function createUser(fastify) {
     const query =
       'INSERT INTO users ' +
       '(first_name, last_name, user_name, email, password, bio, ' +
-      'birth_date, sex, is_blocked) ' +
-      'VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) ' +
+      'birth_date, sex) ' +
+      'VALUES ($1, $2, $3, $4, $5, $6, $7, $8) ' +
       'RETURNING id, first_name, last_name, user_name, email, bio, ' +
-      'birth_date, joined_date, sex, is_blocked'
+      'birth_date, joined_date, sex, is_blocked, is_deleted'
 
     const inputs = [
       obj.firstName,
@@ -101,7 +99,6 @@ export default async function createUser(fastify) {
       obj.bio,
       obj.birthDate,
       obj.sex,
-      obj.isBlocked,
     ]
     const res = await db.execQuery(query, inputs)
     return res.rows[0]
