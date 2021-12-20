@@ -69,7 +69,7 @@ export default async function changePassword(fastify) {
       throw createError(400, 'Invalid input', {
         validation: [
           {
-            message: `The 'new' and 'confirmation' password fields doesn't match`,
+            message: `The 'new' and 'confirmation' password doesn't match`,
           },
         ],
       })

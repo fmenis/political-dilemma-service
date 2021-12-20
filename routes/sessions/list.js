@@ -7,7 +7,7 @@ export default async function listSessions(fastify) {
 
   fastify.route({
     method: 'GET',
-    path: '/list',
+    path: '',
     config: {
       public: false,
     },
