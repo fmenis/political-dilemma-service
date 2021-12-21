@@ -28,60 +28,58 @@ export default async function updateUser(fastify) {
         409: fastify.getSchema('sConflict'),
       },
     },
-    preHandler: async function (req) {
-      const { userName, email, birthDate } = req.body
-      const { id } = req.params
-
-      const user = await db.execQuery(
-        'SELECT id FROM users WHERE id=$1',
-        [id],
-        {
-          findOne: true,
-        }
-      )
-      if (!user) {
-        throw httpErrors.notFound(`User with id '${id}' not found`)
-      }
-
-      if (userName) {
-        const { rows: rowsUsername } = await db.execQuery(
-          'SELECT id FROM users WHERE user_name=$2 AND id<>$1',
-          [id, userName]
-        )
-        if (rowsUsername.length) {
-          throw createError(400, 'Invalid input', {
-            validation: [{ message: `Username '${userName}' already used` }],
-          })
-        }
-      }
-
-      if (email) {
-        const { rows: rowsEmail } = await db.execQuery(
-          'SELECT id FROM users WHERE email=$2 AND id<>$1',
-          [id, email]
-        )
-        if (rowsEmail.length) {
-          throw createError(400, 'Invalid input', {
-            validation: [{ message: `Email '${email}' already used` }],
-          })
-        }
-      }
-
-      if (birthDate) {
-        const today = moment().format('YYYY-MM-DD')
-        if (birthDate > today || birthDate === today) {
-          throw createError(400, 'Invalid input', {
-            validation: [
-              {
-                message: 'Birth date cannot be greater than or equal to today',
-              },
-            ],
-          })
-        }
-      }
-    },
+    preHandler: preHandler,
     handler: onUpdateUser,
   })
+
+  async function preHandler(req) {
+    const { userName, email, birthDate } = req.body
+    const { id } = req.params
+
+    const user = await db.execQuery('SELECT id FROM users WHERE id=$1', [id], {
+      findOne: true,
+    })
+    if (!user) {
+      throw httpErrors.notFound(`User with id '${id}' not found`)
+    }
+
+    if (userName) {
+      const { rows: rowsUsername } = await db.execQuery(
+        'SELECT id FROM users WHERE user_name=$2 AND id<>$1',
+        [id, userName]
+      )
+      if (rowsUsername.length) {
+        throw createError(400, 'Invalid input', {
+          validation: [{ message: `Username '${userName}' already used` }],
+        })
+      }
+    }
+
+    if (email) {
+      const { rows: rowsEmail } = await db.execQuery(
+        'SELECT id FROM users WHERE email=$2 AND id<>$1',
+        [id, email]
+      )
+      if (rowsEmail.length) {
+        throw createError(400, 'Invalid input', {
+          validation: [{ message: `Email '${email}' already used` }],
+        })
+      }
+    }
+
+    if (birthDate) {
+      const today = moment().format('YYYY-MM-DD')
+      if (birthDate > today || birthDate === today) {
+        throw createError(400, 'Invalid input', {
+          validation: [
+            {
+              message: 'Birth date cannot be greater than or equal to today',
+            },
+          ],
+        })
+      }
+    }
+  }
 
   async function onUpdateUser(req) {
     const {
@@ -103,7 +101,7 @@ export default async function updateUser(fastify) {
       'birth_date=$7, sex=$8, is_blocked=$9, updated_at=$10 ' +
       'WHERE id=$1 ' +
       'RETURNING id, first_name, last_name, user_name, email, bio, ' +
-      'birth_date, joined_date, sex, is_blocked'
+      'birth_date, joined_date, sex, is_blocked, is_deleted'
 
     const inputs = [
       id,

@@ -20,54 +20,54 @@ export default async function createUser(fastify) {
         201: sUserResponse(),
       },
     },
-    preHandler: async function (req) {
-      const {
-        userName,
-        email,
-        confirmEmail,
-        password,
-        confirmPassword,
-        birthDate,
-      } = req.body
-
-      const query = 'SELECT id FROM users WHERE user_name=$1 OR email=$2'
-      const alreadyInsered = await db.execQuery(query, [userName, email], {
-        findOne: true,
-      })
-
-      if (alreadyInsered) {
-        throw createError(400, 'Invalid input', {
-          validation: [{ message: 'Username or email already used' }],
-        })
-      }
-
-      if (password !== confirmPassword) {
-        throw createError(400, 'Invalid input', {
-          validation: [
-            { message: 'Password and password confirmation are not equal' },
-          ],
-        })
-      }
-
-      if (email !== confirmEmail) {
-        throw createError(400, 'Invalid input', {
-          validation: [
-            { message: 'Email and email confirmation are not equal' },
-          ],
-        })
-      }
-
-      const today = moment().format('YYYY-MM-DD')
-      if (birthDate > today || birthDate === today) {
-        throw createError(400, 'Invalid input', {
-          validation: [
-            { message: 'Birth date cannot be greater than or equal to today' },
-          ],
-        })
-      }
-    },
+    preHandler: preHandler,
     handler: onCreateUser,
   })
+
+  async function preHandler(req) {
+    const {
+      userName,
+      email,
+      confirmEmail,
+      password,
+      confirmPassword,
+      birthDate,
+    } = req.body
+
+    const query = 'SELECT id FROM users WHERE user_name=$1 OR email=$2'
+    const alreadyInsered = await db.execQuery(query, [userName, email], {
+      findOne: true,
+    })
+
+    if (alreadyInsered) {
+      throw createError(400, 'Invalid input', {
+        validation: [{ message: 'Username or email already used' }],
+      })
+    }
+
+    if (password !== confirmPassword) {
+      throw createError(400, 'Invalid input', {
+        validation: [
+          { message: 'Password and password confirmation are not equal' },
+        ],
+      })
+    }
+
+    if (email !== confirmEmail) {
+      throw createError(400, 'Invalid input', {
+        validation: [{ message: 'Email and email confirmation are not equal' }],
+      })
+    }
+
+    const today = moment().format('YYYY-MM-DD')
+    if (birthDate > today || birthDate === today) {
+      throw createError(400, 'Invalid input', {
+        validation: [
+          { message: 'Birth date cannot be greater than or equal to today' },
+        ],
+      })
+    }
+  }
 
   async function onCreateUser(req, reply) {
     const { body } = req
