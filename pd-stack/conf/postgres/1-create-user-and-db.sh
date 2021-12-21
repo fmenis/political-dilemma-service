@@ -17,7 +17,8 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
         joined_date timestamp CHECK (joined_date > birth_date),
         sex VARCHAR(10) CHECK (sex in ('male', 'female', 'other')),
         bio VARCHAR (500),
-        is_blocked BOOLEAN DEFAULT false,
+        is_blocked BOOLEAN NOT NULL DEFAULT false,
+        is_deleted BOOLEAN NOT NULL DEFAULT false,
         created_at timestamp DEFAULT NOW(),
         updated_at timestamp DEFAULT NOW()
     );
