@@ -82,6 +82,9 @@ export default async function updateUser(fastify) {
   }
 
   async function onUpdateUser(req) {
+    const { id } = req.params
+    const { id: ownerId } = req.user
+
     const {
       firstName,
       lastName,
@@ -93,15 +96,13 @@ export default async function updateUser(fastify) {
       isBlocked,
     } = req.body
 
-    const { id } = req.params
-
     const query =
       'UPDATE users SET ' +
       'first_name=$2, last_name=$3, user_name=$4, email=$5, bio=$6, ' +
-      'birth_date=$7, sex=$8, is_blocked=$9, updated_at=$10 ' +
+      'birth_date=$7, sex=$8, is_blocked=$9, updated_at=$10, updated_by=$11 ' +
       'WHERE id=$1 ' +
       'RETURNING id, first_name, last_name, user_name, email, bio, ' +
-      'birth_date, joined_date, sex, is_blocked, is_deleted'
+      'birth_date, joined_date, sex'
 
     const inputs = [
       id,
@@ -114,6 +115,7 @@ export default async function updateUser(fastify) {
       sex,
       isBlocked,
       new Date(),
+      ownerId,
     ]
 
     const { rowCount, rows } = await pg.execQuery(query, inputs)

@@ -41,7 +41,8 @@ export default async function readUser(fastify) {
   async function execQuery(id, pg) {
     const query =
       'SELECT id, first_name, last_name, user_name, email, bio, birth_date, ' +
-      'joined_date, sex, is_blocked, is_deleted FROM users WHERE id = $1'
+      'joined_date, sex, is_blocked, is_deleted, deleted_by, updated_by ' +
+      'FROM users WHERE id = $1'
     const res = await pg.execQuery(query, [id])
     return res.rows[0]
   }

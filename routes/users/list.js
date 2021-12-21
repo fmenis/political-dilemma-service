@@ -47,7 +47,8 @@ export default async function listUsers(fastify) {
   async function execQuery(options, pg) {
     const baseQuery =
       'SELECT id, first_name, last_name, user_name, email, bio, birth_date, ' +
-      'joined_date, sex, is_blocked, is_deleted FROM users'
+      'joined_date, sex, is_blocked, is_deleted, deleted_by, updated_by ' +
+      'FROM users'
 
     const dbObj = applyFilters(baseQuery, options.filters)
 

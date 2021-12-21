@@ -36,6 +36,10 @@ export function sUserResponse() {
     .prop('isDeleted', S.boolean())
     .description(`Defines if the user is deleted`)
     .required()
+    .prop('deletedBy', S.number())
+    .description(`Defines which user delete the resource`)
+    .prop('updatedBy', S.number())
+    .description(`Defines which user update the resource`)
 }
 
 export function sCreateUser() {

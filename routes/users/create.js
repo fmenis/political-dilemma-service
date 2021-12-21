@@ -84,7 +84,8 @@ export default async function createUser(fastify) {
       'birth_date, sex, owner_id) ' +
       'VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) ' +
       'RETURNING id, first_name, last_name, user_name, email, bio, ' +
-      'birth_date, joined_date, sex, is_blocked, is_deleted'
+      'birth_date, joined_date, sex, is_blocked, is_deleted, ' +
+      'deleted_by, updated_by'
 
     const inputs = [
       userObj.firstName,
