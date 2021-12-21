@@ -2,6 +2,7 @@ import S from 'fluent-json-schema'
 
 export default async function deleteSession(fastify) {
   const { redis, httpErrors } = fastify
+  const { createError } = httpErrors
 
   fastify.route({
     method: 'DELETE',
@@ -22,8 +23,20 @@ export default async function deleteSession(fastify) {
         404: fastify.getSchema('sNotFound'),
       },
     },
+    preHandler: onPrepreHandler,
     handler: onDeleteSession,
   })
+
+  async function onPrepreHandler(req) {
+    const { id } = req.params
+    const { session } = req.user
+
+    if (session.id === id) {
+      throw createError(400, 'Invalid input', {
+        validation: [{ message: 'Cannot delete the curreet session' }],
+      })
+    }
+  }
 
   async function onDeleteSession(req, reply) {
     const { id } = req.params

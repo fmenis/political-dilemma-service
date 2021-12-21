@@ -24,4 +24,7 @@ export function sSession() {
     .prop('isValid', S.boolean())
     .description('Defines if the session is valid.')
     .required()
+    .prop('isCurrent', S.boolean())
+    .description('Defines if the session is the current.')
+    .required()
 }
