@@ -23,10 +23,11 @@ export default async function deleteUser(fastify) {
         409: fastify.getSchema('sConflict'),
       },
     },
+    preHandler: preHandler,
     handler: onDeleteUser,
   })
 
-  async function onDeleteUser(req, reply) {
+  async function preHandler(req) {
     const { id } = req.params
     const { user: owner } = req
 
@@ -41,10 +42,13 @@ export default async function deleteUser(fastify) {
     if (user.id === owner.id) {
       throw httpErrors.conflict(`Cannot delete your own user`)
     }
+  }
 
-    const { rowCount } = await pg.execQuery('DELETE FROM users WHERE id=$1', [
-      id,
-    ])
+  async function onDeleteUser(req, reply) {
+    const { id } = req.params
+
+    const query = 'UPDATE users SET is_deleted=true WHERE id=$1'
+    const { rowCount } = await pg.execQuery(query, [id])
 
     if (!rowCount) {
       throw httpErrors.conflict('The action had no effect')

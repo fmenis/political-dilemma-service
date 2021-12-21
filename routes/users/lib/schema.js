@@ -29,9 +29,12 @@ export function sUserResponse() {
     .description('User sex.')
     .prop('isBlocked', S.boolean())
     .description(
-      `Define if the user is blocked, i.e. 
+      `Defines if the user is blocked, i.e. 
       if he cannot use the API (until it is unblocked).`
     )
+    .required()
+    .prop('isDeleted', S.boolean())
+    .description(`Defines if the user is deleted`)
     .required()
 }
 
@@ -71,11 +74,6 @@ export function sCreateUser() {
     .description('User birth date.')
     .prop('sex', S.string().enum(['male', 'female', 'other']))
     .description('User sex.')
-    .prop('isBlocked', S.boolean())
-    .description(
-      `Define if the user is blocked, i.e.
-      if he cannot use the API (until it is unblocked).`
-    )
 }
 
 export function sUpdateUser() {

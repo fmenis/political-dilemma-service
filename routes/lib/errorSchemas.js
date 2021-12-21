@@ -90,7 +90,8 @@ export function sForbidden() {
         '0002: invalid access, user blocked by an administrator.\n' +
         '0003: invalid access, max session number reached.\n' +
         '0007: invalid access, session not valid.\n' +
-        '0008: invalid access, user not found.'
+        '0008: invalid access, user not found.\n' +
+        '0009: invalid access, user deleted'
     )
     .required()
     .prop('details', S.object().additionalProperties(true))
