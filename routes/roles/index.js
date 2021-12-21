@@ -1,5 +1,5 @@
 import createRoute from './create.js'
-// import listRoute from '../permissions/list.js'
+import listRoute from './list.js'
 // import deleteRoute from '../permissions/delete.js'
 
 export default async function index(fastify) {
@@ -13,6 +13,6 @@ export default async function index(fastify) {
   const prefix = '/v1/roles'
 
   fastify.register(createRoute, { prefix })
-  // fastify.register(listRoute, { prefix })
+  fastify.register(listRoute, { prefix })
   // fastify.register(deleteRoute, { prefix })
 }

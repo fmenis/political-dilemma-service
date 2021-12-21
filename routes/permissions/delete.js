@@ -35,6 +35,7 @@ export default async function deletePermission(fastify) {
       [id],
       { findOne: true }
     )
+
     if (!permission) {
       throw httpErrors.notFound(`Permission with id '${id}' not found`)
     }
@@ -45,6 +46,7 @@ export default async function deletePermission(fastify) {
       [id],
       { findOne: true }
     )
+
     if (assignToRole) {
       throw httpErrors.conflict(
         `Cannot delete permission with id '${id}', its assigned to a role`

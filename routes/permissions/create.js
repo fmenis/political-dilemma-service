@@ -18,22 +18,27 @@ export default async function createPermission(fastify) {
         201: sPermissionResponse(),
       },
     },
-    preHandler: async function (req) {
-      const { resource, action, ownership } = req.body
-      const query =
-        'SELECT id FROM permissions WHERE resource=$1 AND action=$2 ' +
-        'AND ownership=$3'
-      const match = await pg.execQuery(query, [resource, action, ownership], {
-        findOne: true,
-      })
-      if (match) {
-        throw createError(400, 'Bad Request', {
-          validation: [{ message: 'Permission already exists' }],
-        })
-      }
-    },
+    preHandler: onPreHandler,
     handler: onCreatePermission,
   })
+
+  async function onPreHandler(req) {
+    const { resource, action, ownership } = req.body
+
+    const query =
+      'SELECT id FROM permissions WHERE resource=$1 AND action=$2 ' +
+      'AND ownership=$3'
+
+    const match = await pg.execQuery(query, [resource, action, ownership], {
+      findOne: true,
+    })
+
+    if (match) {
+      throw createError(400, 'Bad Request', {
+        validation: [{ message: 'Permission already exists' }],
+      })
+    }
+  }
 
   async function onCreatePermission(req) {
     const { resource, action, ownership, description } = req.body

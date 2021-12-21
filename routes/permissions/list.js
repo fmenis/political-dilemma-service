@@ -24,7 +24,9 @@ export default async function listPermissions(fastify) {
   })
 
   async function onListPermissions() {
-    const query = 'SELECT * FROM permissions'
+    const query =
+      'SELECT id, resource, action, ownership, description ' +
+      'FROM permissions'
     const res = await pg.execQuery(query)
     return { results: res.rows }
   }
