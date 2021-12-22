@@ -1,10 +1,10 @@
-// import _ from 'lodash'
+import _ from 'lodash'
 
 import { sCreateRole, sRoleResponse } from './lib/schema.js'
 
 export default async function createRole(fastify) {
-  const { pg /*, httpErrors*/ } = fastify
-  // const { createError } = httpErrors
+  const { pg, httpErrors } = fastify
+  const { createError } = httpErrors
 
   fastify.route({
     method: 'POST',
@@ -20,31 +20,49 @@ export default async function createRole(fastify) {
         201: sRoleResponse(),
       },
     },
-    // preHandler: onPreHandler,
+    preHandler: onPreHandler,
     handler: onCreateRole,
   })
 
-  // async function onPreHandler(req) {
-  //   const { permissionsIds } = req.body
+  async function onPreHandler(req) {
+    const { permissionsIds } = req.body
 
-  //   const { rows } = await pg.execQuery(
-  //     'SELECT id FROM permissions WHERE id = ANY ($1)',
-  //     permissionsIds
-  //   )
+    const duplicates = permissionsIds.reduce((acc, id, index, array) => {
+      if (array.indexOf(id) !== index && !acc.includes(id)) {
+        acc.push(id)
+      }
+      return acc
+    }, [])
 
-  //   //TODO testare
-  //   if (rows.length !== permissionsIds.length) {
-  //     const missingPermissionsIds = _.difference(rows, permissionsIds)
+    if (duplicates.length) {
+      throw createError(400, 'Invalid input', {
+        validation: [
+          {
+            message: `Duplicate permissions: ${duplicates.join(', ')}`,
+          },
+        ],
+      })
+    }
 
-  //     throw createError(400, 'Invalid input', {
-  //       validation: [
-  //         {
-  //           message: `Missing: ${missingPermissionsIds.join(', ')}`,
-  //         },
-  //       ],
-  //     })
-  //   }
-  // }
+    const { rows } = await pg.execQuery(
+      'SELECT id FROM permissions WHERE id = ANY ($1)',
+      [permissionsIds]
+    )
+
+    const formattedRows = rows.map(item => item.id)
+
+    if (formattedRows.length !== permissionsIds.length) {
+      const missing = _.difference(permissionsIds, formattedRows)
+
+      throw createError(400, 'Invalid input', {
+        validation: [
+          {
+            message: `Permissions id ${missing.join(', ')} not found`,
+          },
+        ],
+      })
+    }
+  }
 
   async function onCreateRole(req) {
     const { name, description, permissionsIds } = req.body
