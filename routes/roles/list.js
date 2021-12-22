@@ -24,19 +24,35 @@ export default async function listPermissions(fastify) {
   })
 
   async function onListPermissions() {
-    const query = 'SELECT id, name, description FROM roles'
-    const res = await pg.execQuery(query)
+    const query =
+      'SELECT roles.id AS role_id, roles.name, roles.description, ' +
+      'pr.id AS permission_id, pr.resource, pr.action, pr.ownership, ' +
+      'pr.description AS permdesc FROM permissions_roles ' +
+      'LEFT JOIN roles ON permissions_roles.role_id = roles.id ' +
+      'LEFT JOIN permissions AS pr ON permissions_roles.permission_id = pr.id'
 
-    /**
-     * SELECT roles.id, roles.name, roles.description, permissions.id, 
-     * permissions.resource, permissions.action, permissions.ownership
-      FROM permissions_roles
-      LEFT JOIN roles 
-      ON permissions_roles.role_id = roles.id
-      LEFT JOIN permissions 
-      ON permissions_roles.permission_id = permissions.id
-     */
+    const { rows } = await pg.execQuery(query)
 
-    return { results: res.rows }
+    const groupRolesPermissions = rows.reduce((acc, item, index, array) => {
+      const rolePermissions = array.filter(obj => obj.roleId === item.roleId)
+
+      if (!acc.some(obj => obj.id === item.roleId)) {
+        acc.push({
+          id: item.roleId,
+          name: item.name,
+          description: item.description,
+          permissions: rolePermissions.map(obj => ({
+            id: obj.permissionId,
+            resource: obj.resource,
+            action: obj.action,
+            ownership: obj.ownership,
+            description: obj.permdesc,
+          })),
+        })
+      }
+      return acc
+    }, [])
+
+    return { results: groupRolesPermissions }
   }
 }
