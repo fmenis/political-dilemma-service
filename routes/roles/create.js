@@ -87,6 +87,7 @@ export default async function createRole(fastify) {
     }
   }
 
+  //TODO refactor con insert multiplo
   async function associatePermissions(roleId, permissionsIds, client) {
     const query =
       'INSERT INTO permissions_roles (role_id, permission_id) ' +
