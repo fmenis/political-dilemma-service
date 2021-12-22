@@ -30,5 +30,5 @@ export function sRoleResponse() {
     .required()
     .prop('permissions', S.array().items[sPermissionResponse()])
     .description('Role permissions ids list')
-    .required()
+  // .required() TODO rimettere quando finita API lista
 }

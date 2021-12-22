@@ -40,16 +40,15 @@ export default async function deletePermission(fastify) {
       throw httpErrors.notFound(`Permission with id '${id}' not found`)
     }
 
-    //TODO testare
-    const assignToRole = await pg.execQuery(
-      'SELECT role_id FROM permissions_roles WHERE role_id=$1',
-      [id],
-      { findOne: true }
+    const { rows } = await pg.execQuery(
+      'SELECT role_id FROM permissions_roles WHERE permission_id=$1',
+      [id]
     )
 
-    if (assignToRole) {
+    if (rows.length) {
+      const rowsIds = rows.map(item => item.roleId).join(', ')
       throw httpErrors.conflict(
-        `Cannot delete permission with id '${id}', its assigned to a role`
+        `Cannot delete permission with id '${id}', assigned to roles ${rowsIds}`
       )
     }
   }

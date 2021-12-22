@@ -63,7 +63,7 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
         role_id INT NOT NULL,
         permission_id INT NOT NULL,
         created_at timestamp DEFAULT NOW(),
-        CONSTRAINT fk_role FOREIGN KEY(role_id) REFERENCES roles(id) ON DELETE NO ACTION,
+        CONSTRAINT fk_role FOREIGN KEY(role_id) REFERENCES roles(id) ON DELETE CASCADE,
         CONSTRAINT fk_permission FOREIGN KEY(permission_id) REFERENCES permissions(id) ON DELETE NO ACTION
     );
 
