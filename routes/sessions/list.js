@@ -37,9 +37,12 @@ export default async function listSessions(fastify) {
 
     const sessions = await redis.getMulti(keys)
 
-    return sessions.map(obj => ({
-      ...obj,
-      isCurrent: obj.id === currentSession.id,
-    }))
+    // marks current session and places it first
+    return sessions
+      .map(obj => ({
+        ...obj,
+        isCurrent: obj.id === currentSession.id,
+      }))
+      .sort((x, y) => (x.isCurrent === y.isCurrent ? 0 : x.isCurrent ? -1 : 1))
   }
 }
