@@ -1,6 +1,7 @@
 import _ from 'lodash'
 
 import { sCreateRole, sRoleResponse } from './lib/schema.js'
+import { getRolePermissions } from './lib/utils.js'
 
 export default async function createRole(fastify) {
   const { pg, httpErrors } = fastify
@@ -78,7 +79,8 @@ export default async function createRole(fastify) {
 
       await pg.commitTransaction(client)
 
-      role.permissions = await getRolePermissions(permissionsIds)
+      // TODO testare
+      role.permissions = await getRolePermissions(role.id, pg, permissionsIds)
 
       return role
     } catch (error) {
@@ -115,12 +117,12 @@ export default async function createRole(fastify) {
     return role
   }
 
-  async function getRolePermissions(permissionsIds) {
-    const { rows } = await pg.execQuery(
-      'SELECT id, resource, action, ownership ' +
-        'FROM permissions WHERE id = ANY ($1)',
-      [permissionsIds]
-    )
-    return rows
-  }
+  // async function getRolePermissions(permissionsIds) {
+  //   const { rows } = await pg.execQuery(
+  //     'SELECT id, resource, action, ownership ' +
+  //       'FROM permissions WHERE id = ANY ($1)',
+  //     [permissionsIds]
+  //   )
+  //   return rows
+  // }
 }

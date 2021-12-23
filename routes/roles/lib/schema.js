@@ -11,7 +11,7 @@ export function sCreateRole() {
     .prop('description', S.string().minLength(3).maxLength(200))
     .description('Role description')
     .required()
-    .prop('permissionsIds', S.array().items([S.number()]).maxItems(50))
+    .prop('permissionsIds', S.array().items([S.number()]).minItems(1))
     .description('Role permissions ids list')
     .required()
 }

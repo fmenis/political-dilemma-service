@@ -18,7 +18,7 @@ export default async function assignRoles(fastify) {
         .prop('userId', S.number())
         .description('TODO')
         .required()
-        .prop('rolesIds', S.array().items([S.number()]).maxItems(50))
+        .prop('rolesIds', S.array().items([S.number()]).minItems(1))
         .description('Role ids to be assigned to the user')
         .required(),
       response: {
@@ -59,6 +59,7 @@ export default async function assignRoles(fastify) {
       })
     }
 
+    // TODO
     // controllare che uno dei ruoli non sia stato già assegnato
     // controllare che tutti i ruoli esistano
   }
