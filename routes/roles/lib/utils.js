@@ -7,7 +7,7 @@ export async function getRolePermissions(roleId, pg, permissionsIds) {
   }
 
   const { rows } = await pg.execQuery(
-    'SELECT id, resource, action, ownership ' +
+    'SELECT id, resource, action, ownership, description ' +
       'FROM permissions WHERE id = ANY ($1)',
     [permissionsIds]
   )

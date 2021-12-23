@@ -52,13 +52,18 @@ export default async function updateRole(fastify) {
 
   async function onUpdateRole(req) {
     const { id } = req.params
-    const { description } = req.body
+    const { name, description } = req.body
 
     const query =
-      'UPDATE roles SET name=$2 description=$3 WHERE id=$1' +
+      'UPDATE roles SET name=$2, description=$3 WHERE id=$1' +
       'RETURNING id, name, description, is_active'
 
-    const { rowCount, rows } = await pg.execQuery(query, [id, description])
+    const { rowCount, rows } = await pg.execQuery(query, [
+      id,
+      name,
+      description,
+    ])
+
     if (!rowCount) {
       throw httpErrors.conflict('The action had no effect')
     }
