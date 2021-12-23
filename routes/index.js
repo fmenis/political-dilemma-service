@@ -43,7 +43,7 @@ export default async function index(fastify) {
 
         Object.keys(copy).forEach(key => {
           if (obscuredKeys.includes(key)) {
-            copy[key] = '*'.repeat(copy[key].length)
+            copy[key] = '*'.repeat(8)
           }
         })
 
