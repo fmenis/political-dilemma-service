@@ -28,11 +28,11 @@ export default async function updateUser(fastify) {
         409: fastify.getSchema('sConflict'),
       },
     },
-    preHandler: preHandler,
+    preHandler: onPreHandler,
     handler: onUpdateUser,
   })
 
-  async function preHandler(req) {
+  async function onPreHandler(req) {
     const { userName, email, birthDate } = req.body
     const { id } = req.params
 

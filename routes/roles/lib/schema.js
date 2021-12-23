@@ -28,7 +28,10 @@ export function sRoleResponse() {
     .prop('description', S.string().minLength(3).maxLength(200))
     .description('Role description')
     .required()
+    .prop('isActive', S.string().minLength(3).maxLength(50))
+    .description('Defines if the role is active')
+    .required()
     .prop('permissions', S.array().items[sPermissionResponse()])
     .description('Role permissions ids list')
-  // .required() TODO rimettere quando finita API lista
+    .required()
 }

@@ -26,8 +26,8 @@ export default async function listPermissions(fastify) {
   async function onListPermissions() {
     const query =
       'SELECT roles.id AS role_id, roles.name, roles.description, ' +
-      'pr.id AS permission_id, pr.resource, pr.action, pr.ownership, ' +
-      'pr.description AS permdesc FROM permissions_roles ' +
+      'roles.is_active, pr.id AS permission_id, pr.resource, pr.action, ' +
+      'pr.ownership, pr.description AS permdesc FROM permissions_roles ' +
       'LEFT JOIN roles ON permissions_roles.role_id = roles.id ' +
       'LEFT JOIN permissions AS pr ON permissions_roles.permission_id = pr.id'
 
@@ -41,6 +41,7 @@ export default async function listPermissions(fastify) {
           id: item.roleId,
           name: item.name,
           description: item.description,
+          isActive: item.isActive,
           permissions: rolePermissions.map(obj => ({
             id: obj.permissionId,
             resource: obj.resource,

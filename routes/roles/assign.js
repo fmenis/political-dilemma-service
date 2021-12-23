@@ -65,13 +65,14 @@ export default async function assignRoles(fastify) {
 
   async function onAssignRoles(req) {
     const { userId, rolesIds } = req.body
+    const { id: reqUserId } = req.user
 
     let client
 
     try {
       client = await pg.beginTransaction()
 
-      await associateRoles(userId, rolesIds, client)
+      await associateRoles(userId, reqUserId, rolesIds, client)
 
       await pg.commitTransaction(client)
       return 'OK' //TODO togliere appena si capisce
@@ -81,14 +82,15 @@ export default async function assignRoles(fastify) {
     }
   }
 
-  function associateRoles(userId, rolesIds, client) {
-    const baseQuery = 'INSERT INTO users_roles (user_id, role_id) VALUES'
-    const inputs = [userId]
+  function associateRoles(userId, reqUserId, rolesIds, client) {
+    const baseQuery =
+      'INSERT INTO users_roles (user_id, assign_by, role_id) VALUES'
+    const inputs = [userId, reqUserId]
 
     const valuesQuery = rolesIds
       .reduce((acc, roleId) => {
         inputs.push(roleId)
-        const values = `($1, $${inputs.length})`
+        const values = `($1, $2, $${inputs.length})`
         acc.push(values)
         return acc
       }, [])

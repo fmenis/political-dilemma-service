@@ -21,7 +21,7 @@ export default async function updatePermission(fastify) {
         .required(),
       body: S.object()
         .additionalProperties(false)
-        .prop('description', S.string())
+        .prop('description', S.string().maxLength(200))
         .description('Permission description')
         .required(),
       response: {

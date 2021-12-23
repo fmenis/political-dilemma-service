@@ -105,7 +105,7 @@ export default async function createRole(fastify) {
   async function insertRole(name, description, client) {
     const query =
       'INSERT INTO roles (name, description) ' +
-      'VALUES ($1, $2) RETURNING id, name, description'
+      'VALUES ($1, $2) RETURNING id, name, description, is_active'
 
     const role = await pg.execQuery(query, [name, description], {
       findOne: true,
