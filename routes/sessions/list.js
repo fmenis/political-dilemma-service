@@ -26,6 +26,7 @@ export default async function listSessions(fastify) {
 
   async function onListSessions(req) {
     const { userId } = req.query
+    const { session: currentSession } = req.user
 
     const pattern = userId ? `*_${userId}` : '*'
 
@@ -35,6 +36,13 @@ export default async function listSessions(fastify) {
     }
 
     const sessions = await redis.getMulti(keys)
+
+    // marks current session and places it first
     return sessions
+      .map(obj => ({
+        ...obj,
+        isCurrent: obj.id === currentSession.id,
+      }))
+      .sort((x, y) => (x.isCurrent === y.isCurrent ? 0 : x.isCurrent ? -1 : 1))
   }
 }

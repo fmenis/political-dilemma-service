@@ -2,40 +2,60 @@ import S from 'fluent-json-schema'
 
 export default async function deleteSession(fastify) {
   const { redis, httpErrors } = fastify
+  const { createError } = httpErrors
 
   fastify.route({
     method: 'DELETE',
-    path: '/:id',
+    path: '',
     config: {
       public: false,
     },
     schema: {
-      summary: 'Delete session',
-      description: 'Delete session by id.',
-      params: S.object()
+      summary: 'Delete sessions',
+      description: 'Delete sessions by ids (bulk deletion).',
+      querystring: S.object()
         .additionalProperties(false)
-        .prop('id', S.string())
-        .description('Session id')
+        .prop('ids', S.array())
+        .description('Session ids')
         .required(),
       response: {
         204: fastify.getSchema('sNoContent'),
-        404: fastify.getSchema('sNotFound'),
       },
     },
+    preValidation: async function (req) {
+      req.query.ids = req.query.ids.split(',')
+    },
+    preHandler: onPrepreHandler,
     handler: onDeleteSession,
   })
 
-  async function onDeleteSession(req, reply) {
-    const { id } = req.params
+  async function onPrepreHandler(req) {
+    const { ids } = req.query
+    const { session } = req.user
 
-    const session = await redis.get(id)
-
-    if (!session) {
-      throw httpErrors.notFound(`Session with id '${id}' not found`)
+    if (ids.includes(session.id)) {
+      throw createError(400, 'Invalid input', {
+        validation: [
+          { message: `Cannot delete the current session '${session.id}'` },
+        ],
+      })
     }
 
-    await redis.del(id)
+    const sessions = await redis.getMulti(ids)
+    if (sessions.length !== ids.length) {
+      const difference = ids
+        .filter(id => !sessions.some(obj => obj.id === id))
+        .join(', ')
 
+      throw createError(400, 'Invalid input', {
+        validation: [{ message: `Cannot find sessions '${difference}'` }],
+      })
+    }
+  }
+
+  async function onDeleteSession(req, reply) {
+    const { ids } = req.query
+    await redis.del(ids)
     reply.code(204)
   }
 }
