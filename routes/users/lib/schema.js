@@ -58,13 +58,17 @@ export function sCreateUser() {
     .required()
     .prop(
       'password',
-      S.string().pattern(/(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/g)
+      S.string().pattern(
+        /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})(?=.*[!@#$%^&*])/g
+      )
     )
     .description('User password.')
     .required()
     .prop(
       'confirmPassword',
-      S.string().pattern(/(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/g)
+      S.string().pattern(
+        /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})(?=.*[!@#$%^&*])/g
+      )
     )
     .description('Password confirmation.')
     .required()
