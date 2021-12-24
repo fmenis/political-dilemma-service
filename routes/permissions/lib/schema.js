@@ -19,7 +19,7 @@ export function sCreatePermission() {
 export function sPermissionResponse() {
   return S.object()
     .additionalProperties(false)
-    .prop('id', S.number())
+    .prop('id', S.number().minimum(1))
     .description('Permission id.')
     .required()
     .prop('resource', S.string())

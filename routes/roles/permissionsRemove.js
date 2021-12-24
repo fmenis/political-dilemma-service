@@ -1,7 +1,7 @@
 import S from 'fluent-json-schema'
 
 export default async function addPermissions(fastify) {
-  // const { pg, httpErrors } = fastify
+  const { pg /*, httpErrors*/ } = fastify
   // const { createError } = httpErrors
 
   fastify.route({
@@ -15,7 +15,7 @@ export default async function addPermissions(fastify) {
       description: 'Remove permissions from a role.',
       params: S.object()
         .additionalProperties(false)
-        .prop('id', S.string())
+        .prop('id', S.number().minimum(1))
         .description('Role Id')
         .required(),
       body: S.object()
@@ -24,7 +24,7 @@ export default async function addPermissions(fastify) {
         .description('Permission ids to be assigned to the roles')
         .required(),
       response: {
-        204: fastify.getSchema('sNoContent'),
+        // 204: fastify.getSchema('sNoContent'), TODO
       },
     },
     preHandler: onPreHandler,
@@ -32,10 +32,25 @@ export default async function addPermissions(fastify) {
   })
 
   async function onPreHandler() {
-    //TODO
+    /**
+     * Controllare:
+     * - esistenza ruolo
+     * - esistenza permessi
+     * - permessi NON associati
+     */
   }
 
-  async function onAddPermissions() {
-    //TODO
+  async function onAddPermissions(req) {
+    const { id } = req.params
+    const { permissionsIds } = req.body
+
+    const query =
+      'DELETE FROM permissions_roles WHERE permission_id = ANY($2)' +
+      ' AND role_id=$1'
+
+    const inputs = [id, permissionsIds]
+
+    await pg.execQuery(query, inputs)
+    return 'OK'
   }
 }

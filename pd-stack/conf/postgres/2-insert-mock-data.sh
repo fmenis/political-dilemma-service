@@ -4,11 +4,11 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
     \connect politicaldilemma;
 
     INSERT INTO users (first_name, last_name, user_name, email, password, owner_id)
-    VALUES ('Dennis', 'Boanini', 'Il Boa', 'dennis@acme.com', '\$2b\$10\$wqXwWprQ6i6HS5ygo2DCWu4yJnkYzXFHYvSiFYnaqQNN0m7YoCqti', 1);  
+    VALUES ('Dennis', 'Boanini', 'Il Boa', 'dennis@acme.com', '\$2b\$10\$oh8HpfhMWtwGB2KRFokb7uXlHCJgFsrlPtG0hBAewnUGTsL.fC/IW', 1);  
 
     INSERT INTO users (first_name, last_name, user_name, email, password, owner_id)
-    VALUES ('Filippo', 'Menis', 'Pippo', 'filippo@acme.com', '\$2b\$10\$wqXwWprQ6i6HS5ygo2DCWu4yJnkYzXFHYvSiFYnaqQNN0m7YoCqti', 2);
+    VALUES ('Filippo', 'Menis', 'Pippo', 'filippo@acme.com', '\$2b\$10\$oh8HpfhMWtwGB2KRFokb7uXlHCJgFsrlPtG0hBAewnUGTsL.fC/IW', 2);
 
     INSERT INTO users (first_name, last_name, user_name, email, password, owner_id)
-    VALUES ('Gaetano', 'Danelli', 'MaiSenzaPigiama', 'gaetano@acme.com', '\$2b\$10\$wqXwWprQ6i6HS5ygo2DCWu4yJnkYzXFHYvSiFYnaqQNN0m7YoCqti', 3);  
+    VALUES ('Gaetano', 'Danelli', 'MaiSenzaPigiama', 'gaetano@acme.com', '\$2b\$10\$oh8HpfhMWtwGB2KRFokb7uXlHCJgFsrlPtG0hBAewnUGTsL.fC/IW', 3);  
 EOSQL

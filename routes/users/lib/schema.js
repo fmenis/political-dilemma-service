@@ -4,7 +4,7 @@ export function sUserResponse() {
   return S.object()
     .additionalProperties(false)
     .description('User')
-    .prop('id', S.number())
+    .prop('id', S.number().minimum(1))
     .description('User id.')
     .required()
     .prop('firstName', S.string().minLength(1).maxLength(50))

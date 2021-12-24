@@ -19,7 +19,7 @@ export function sCreateRole() {
 export function sRoleResponse() {
   return S.object()
     .additionalProperties(false)
-    .prop('id', S.number())
+    .prop('id', S.number().minimum(1))
     .description('Role id')
     .required()
     .prop('name', S.string().minLength(3).maxLength(50))

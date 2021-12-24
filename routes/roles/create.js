@@ -1,7 +1,7 @@
 import _ from 'lodash'
 
 import { sCreateRole, sRoleResponse } from './lib/schema.js'
-import { getRolePermissions } from './lib/utils.js'
+import { getRolePermissions, associatePermissions } from './lib/utils.js'
 
 export default async function createRole(fastify) {
   const { pg, httpErrors } = fastify
@@ -75,11 +75,10 @@ export default async function createRole(fastify) {
 
       const role = await insertRole(name, description, client)
 
-      await associatePermissions(role.id, permissionsIds, client)
+      await associatePermissions(role.id, permissionsIds, pg, client)
 
       await pg.commitTransaction(client)
 
-      // TODO testare
       role.permissions = await getRolePermissions(role.id, pg, permissionsIds)
 
       return role
@@ -87,21 +86,6 @@ export default async function createRole(fastify) {
       await pg.rollbackTransaction(client)
       throw error
     }
-  }
-
-  //TODO refactor con insert multiplo
-  async function associatePermissions(roleId, permissionsIds, client) {
-    const query =
-      'INSERT INTO permissions_roles (role_id, permission_id) ' +
-      'VALUES ($1, $2)'
-
-    await Promise.all(
-      permissionsIds.map(id => {
-        pg.execQuery(query, [roleId, id], {
-          client,
-        })
-      })
-    )
   }
 
   async function insertRole(name, description, client) {
@@ -116,13 +100,4 @@ export default async function createRole(fastify) {
 
     return role
   }
-
-  // async function getRolePermissions(permissionsIds) {
-  //   const { rows } = await pg.execQuery(
-  //     'SELECT id, resource, action, ownership ' +
-  //       'FROM permissions WHERE id = ANY ($1)',
-  //     [permissionsIds]
-  //   )
-  //   return rows
-  // }
 }

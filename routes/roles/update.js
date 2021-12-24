@@ -17,7 +17,7 @@ export default async function updateRole(fastify) {
       description: 'Update role by id.',
       parmas: S.object()
         .additionalProperties(false)
-        .prop('id', S.string())
+        .prop('id', S.number().minimum(1))
         .description('Role id')
         .required(),
       body: S.object()
