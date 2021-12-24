@@ -42,7 +42,8 @@ function redisClient(fastify, options, done) {
         if (err) {
           return reject(err)
         }
-        results = results.map(res => JSON.parse(res))
+        // parse and remove null values (key not found)
+        results = results.map(res => JSON.parse(res)).filter(item => item)
         return resolve(results)
       })
     })
@@ -77,9 +78,9 @@ function redisClient(fastify, options, done) {
     })
   }
 
-  function del(key) {
+  function del(...keys) {
     return new Promise((resolve, reject) => {
-      client.unlink(key, (err, value) => {
+      client.unlink(...keys, (err, value) => {
         if (err) {
           return reject(err)
         }
