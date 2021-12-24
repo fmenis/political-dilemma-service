@@ -25,14 +25,16 @@ export default async function login(fastify) {
       body: S.object()
         .additionalProperties(false)
         .prop('email', S.string().format('email').minLength(6).maxLength(50))
-        .description('User email')
+        .description('User email.')
         .required()
         .prop(
           'password',
           S.string().pattern(/(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/g)
         )
-        .description('User password')
-        .required(),
+        .description('User password.')
+        .required()
+        .prop('deleteOldest', S.boolean())
+        .description('Delete the oldest used session.'),
       response: {
         204: fastify.getSchema('sNoContent'),
       },
@@ -41,7 +43,7 @@ export default async function login(fastify) {
   })
 
   async function onLogin(req, reply) {
-    const { email, password } = req.body
+    const { email, password, deleteOldest } = req.body
     const { log } = req
 
     const user = await db.execQuery(
@@ -79,12 +81,16 @@ export default async function login(fastify) {
       })
     }
 
-    const sessionKeys = await redis.getKeys(`*_${user.id}`)
+    const sessionKeys = await getUserSessions(user.id, redis)
     if (sessionKeys.length > fastify.config.SESSIONS_LIMIT - 1) {
       log.debug(`Invalid access: session number limit for user '${email}'`)
       throw createError(403, 'Invalid access', {
         internalCode: '0003',
       })
+    }
+
+    if (deleteOldest) {
+      await deleteOldestUsedSession(user.id, redis)
     }
 
     const sessionId = `${shortid.generate()}_${user.id}`
@@ -121,5 +127,21 @@ export default async function login(fastify) {
 
     reply.setCookie('session', sessionId, cookieOptions)
     reply.code(204)
+  }
+
+  function getUserSessions(userId, redis) {
+    return redis.getKeys(`*_${userId}`)
+  }
+
+  async function deleteOldestUsedSession(userId, redis) {
+    const userSessionKeys = await getUserSessions(userId, redis)
+    const userSessions = await redis.getMulti(userSessionKeys)
+
+    const firstOldest = userSessions.sort(
+      (a, b) => new Date(a.lastActive) - new Date(b.lastActive)
+    )
+
+    const targetSessionId = firstOldest[0].id
+    await redis.del(targetSessionId)
   }
 }
