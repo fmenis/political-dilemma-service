@@ -40,6 +40,8 @@ export function sUserResponse() {
     .description(`Defines which user delete the resource`)
     .prop('updatedBy', S.number())
     .description(`Defines which user update the resource`)
+    .prop('permissions', S.array().items(S.string()))
+    .description(`User permissions`)
 }
 
 export function sCreateUser() {

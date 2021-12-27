@@ -20,6 +20,12 @@ export default async function userWhoami(fastify) {
 
   async function onUserWhoami(req) {
     const { user } = req
+
+    user.permissions = user.permissions.map(item => {
+      const splitted = item.split(':')
+      return `${splitted[0]}:${splitted[1]}`
+    })
+
     return user
   }
 }

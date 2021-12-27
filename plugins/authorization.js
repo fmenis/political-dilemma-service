@@ -42,6 +42,7 @@ async function authorization(fastify) {
       })
     }
 
+    user.permissions = userPermissions
     return
   }
 
