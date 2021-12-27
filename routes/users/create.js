@@ -11,6 +11,7 @@ export default async function createUser(fastify) {
     path: '',
     config: {
       public: false,
+      permission: 'user:create',
     },
     schema: {
       summary: 'Create user',

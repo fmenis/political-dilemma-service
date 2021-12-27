@@ -10,6 +10,7 @@ export default async function listUsers(fastify) {
     path: '',
     config: {
       public: false,
+      permission: 'user:list',
     },
     schema: {
       summary: 'List users',

@@ -9,7 +9,8 @@ export default async function status(fastify) {
     method: 'GET',
     path: '/status',
     config: {
-      public: false
+      public: false,
+      permission: 'misc:status',
     },
     schema: {
       summary: 'Get application status and version',
@@ -19,10 +20,10 @@ export default async function status(fastify) {
           .prop('status', S.string())
           .description('Status')
           .prop('version', S.string())
-          .description('Server version')
-      }
+          .description('Server version'),
+      },
     },
-    handler: onStatus
+    handler: onStatus,
   })
 
   async function onStatus() {

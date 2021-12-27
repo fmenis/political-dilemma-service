@@ -12,6 +12,7 @@ export default async function updateUser(fastify) {
     path: '/:id',
     config: {
       public: false,
+      permission: 'user:update',
     },
     schema: {
       summary: 'Update user',

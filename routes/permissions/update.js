@@ -10,6 +10,7 @@ export default async function updatePermission(fastify) {
     path: '/:id',
     config: {
       public: false,
+      permission: 'permission:update',
     },
     schema: {
       summary: 'Update permission',

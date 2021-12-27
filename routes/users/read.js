@@ -10,6 +10,7 @@ export default async function readUser(fastify) {
     path: '/:id',
     config: {
       public: false,
+      permission: 'user:read',
     },
     schema: {
       summary: 'Get user',

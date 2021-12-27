@@ -8,6 +8,7 @@ export default async function deletePermission(fastify) {
     path: '/:id',
     config: {
       public: false,
+      permission: 'permission:delete',
     },
     schema: {
       summary: 'Delete permission',

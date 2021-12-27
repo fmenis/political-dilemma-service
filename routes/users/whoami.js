@@ -6,6 +6,7 @@ export default async function userWhoami(fastify) {
     path: '/whoami',
     config: {
       public: false,
+      permission: 'user:whoami',
     },
     schema: {
       summary: 'Get authenticated user',

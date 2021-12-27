@@ -10,6 +10,7 @@ export default async function changePassword(fastify) {
     path: '/:id/change-password',
     config: {
       public: false,
+      permission: 'user:change-password',
     },
     schema: {
       summary: 'Change user password',

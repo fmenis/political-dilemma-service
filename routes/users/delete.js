@@ -8,6 +8,7 @@ export default async function deleteUser(fastify) {
     path: '/:id',
     config: {
       public: false,
+      permission: 'user:delete',
     },
     schema: {
       summary: 'Delete user',
