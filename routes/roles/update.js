@@ -11,6 +11,7 @@ export default async function updateRole(fastify) {
     path: '/:id',
     config: {
       public: false,
+      permission: 'role:update',
     },
     schema: {
       summary: 'Update role',

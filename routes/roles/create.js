@@ -12,6 +12,7 @@ export default async function createRole(fastify) {
     path: '',
     config: {
       public: false,
+      permission: 'role:create',
     },
     schema: {
       summary: 'Create role',

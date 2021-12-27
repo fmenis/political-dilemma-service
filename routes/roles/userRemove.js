@@ -9,6 +9,7 @@ export default async function removeRoles(fastify) {
     path: '/remove',
     config: {
       public: false,
+      permission: 'role:user-remove',
     },
     schema: {
       summary: 'Remove roles',

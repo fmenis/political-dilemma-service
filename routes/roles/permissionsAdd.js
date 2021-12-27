@@ -11,6 +11,7 @@ export default async function addPermissions(fastify) {
     path: '/:id/permissions/add',
     config: {
       public: false,
+      permission: 'role:add-permission',
     },
     schema: {
       summary: 'Add permissions',

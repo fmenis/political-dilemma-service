@@ -9,6 +9,7 @@ export default async function assignRoles(fastify) {
     path: '/assign',
     config: {
       public: false,
+      permission: 'role:user-assign',
     },
     schema: {
       summary: 'Assign roles',
