@@ -3,16 +3,6 @@
 psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-EOSQL
     \connect politicaldilemma;
 
-    INSERT INTO users (first_name, last_name, user_name, email, password)
-    VALUES ('Dennis', 'Boanini', 'Il Boa', 'dennis@acme.com', '\$2b\$10\$5i8SB6NIqTGbx7qqU0l3lOHYfH5BuKPp4UTe4YCp1JffL6p426b2a');  
-
-    INSERT INTO users (first_name, last_name, user_name, email, password)
-    VALUES ('Filippo', 'Menis', 'Pippo', 'filippo@acme.com', '\$2b\$10\$5i8SB6NIqTGbx7qqU0l3lOHYfH5BuKPp4UTe4YCp1JffL6p426b2a');
-
-    INSERT INTO users (first_name, last_name, user_name, email, password)
-    VALUES ('Gaetano', 'Danelli', 'MaiSenzaPigiama', 'gaetano@acme.com', '\$2b\$10\$5i8SB6NIqTGbx7qqU0l3lOHYfH5BuKPp4UTe4YCp1JffL6p426b2a');
-
-
     INSERT INTO regions (name) VALUES ('Marche');
     INSERT INTO regions (name) VALUES ('Abruzzo');
     INSERT INTO regions (name) VALUES ('Basilicata');
@@ -144,5 +134,14 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
     INSERT INTO provinces (name, code, id_region) VALUES ('Vibo-Valentia', 'VV', 7);
     INSERT INTO provinces (name, code, id_region) VALUES ('Vicenza', 'VI', 17);
     INSERT INTO provinces (name, code, id_region) VALUES ('Viterbo', 'VT', 9);
+
+    INSERT INTO users (first_name, last_name, user_name, email, password, id_region, id_province)
+    VALUES ('Dennis', 'Boanini', 'Il Boa', 'dennis@acme.com', '\$2b\$10\$5i8SB6NIqTGbx7qqU0l3lOHYfH5BuKPp4UTe4YCp1JffL6p426b2a', 12, 36);  
+
+    INSERT INTO users (first_name, last_name, user_name, email, password, id_region, id_province)
+    VALUES ('Filippo', 'Menis', 'Pippo', 'filippo@acme.com', '\$2b\$10\$5i8SB6NIqTGbx7qqU0l3lOHYfH5BuKPp4UTe4YCp1JffL6p426b2a', 15, 102);
+
+    INSERT INTO users (first_name, last_name, user_name, email, password, id_region, id_province)
+    VALUES ('Gaetano', 'Danelli', 'MaiSenzaPigiama', 'gaetano@acme.com', '\$2b\$10\$5i8SB6NIqTGbx7qqU0l3lOHYfH5BuKPp4UTe4YCp1JffL6p426b2a', 19, 58);
 
 EOSQL
