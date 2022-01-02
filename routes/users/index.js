@@ -5,6 +5,7 @@ import updateRoute from './update.js'
 import deleteRoute from './delete.js'
 import changePwRoute from './changePassword.js'
 import whoamiRoute from './whoami.js'
+import blockRoute from './block.js'
 
 export default async function index(fastify) {
   fastify.addHook('onRoute', options => {
@@ -23,4 +24,5 @@ export default async function index(fastify) {
   fastify.register(deleteRoute, { prefix })
   fastify.register(changePwRoute, { prefix })
   fastify.register(whoamiRoute, { prefix })
+  fastify.register(blockRoute, { prefix })
 }
