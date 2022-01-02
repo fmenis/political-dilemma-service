@@ -1,5 +1,6 @@
 import statusRoute from './status.js'
 import regionsRoute from './regions.js'
+import ProvinceRoute from './provinces.js'
 
 export default async function index(fastify) {
   fastify.addHook('onRoute', options => {
@@ -13,4 +14,5 @@ export default async function index(fastify) {
 
   fastify.register(statusRoute, { prefix })
   fastify.register(regionsRoute, { prefix })
+  fastify.register(ProvinceRoute, { prefix })
 }
