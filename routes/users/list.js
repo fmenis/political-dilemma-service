@@ -1,6 +1,6 @@
 import S from 'fluent-json-schema'
 
-import { sUserResponse } from './lib/schema.js'
+import { sUserList } from './lib/schema.js'
 
 export default async function listUsers(fastify) {
   const { pg } = fastify
@@ -22,7 +22,7 @@ export default async function listUsers(fastify) {
       response: {
         200: S.object()
           .additionalProperties(false)
-          .prop('results', S.array().items(sUserResponse())),
+          .prop('results', S.array().items(sUserList())),
       },
     },
     handler: onListUsers,
@@ -47,9 +47,8 @@ export default async function listUsers(fastify) {
 
   async function execQuery(options, pg) {
     const baseQuery =
-      'SELECT id, first_name, last_name, user_name, email, bio, birth_date, ' +
-      'joined_date, sex, is_blocked, is_deleted, deleted_by, updated_by ' +
-      'FROM users'
+      'SELECT id, first_name, last_name, user_name, email, ' +
+      'joined_date, is_blocked, is_deleted FROM users'
 
     const dbObj = applyFilters(baseQuery, options.filters)
 

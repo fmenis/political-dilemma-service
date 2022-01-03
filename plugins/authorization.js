@@ -32,7 +32,7 @@ async function authorization(fastify) {
 
     const userPermissions = await getUserPermissions(user.id, pg)
 
-    if (!userPermissions.includes(permission)) {
+    if (userPermissions.includes(permission)) {
       const route = `${req.raw.method} ${req.raw.url}`
       log.warn(
         `Invalid access: permission '${permission}' not found.Route '${route}'`

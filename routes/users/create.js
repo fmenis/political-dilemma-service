@@ -1,6 +1,8 @@
-import { hashString } from '../../lib/hash.js'
-import { sUserResponse, sCreateUser } from './lib/schema.js'
 import moment from 'moment'
+
+import { hashString } from '../../lib/hash.js'
+import { sUserDetail, sCreateUser } from './lib/schema.js'
+import { populateUser } from './lib/utils.js'
 
 export default async function createUser(fastify) {
   const { pg, config, httpErrors } = fastify
@@ -18,7 +20,7 @@ export default async function createUser(fastify) {
       description: 'Create user.',
       body: sCreateUser(),
       response: {
-        201: sUserResponse(),
+        201: sUserDetail(),
       },
     },
     preHandler: preHandler,
@@ -33,6 +35,8 @@ export default async function createUser(fastify) {
       password,
       confirmPassword,
       birthDate,
+      regionId,
+      provinceId,
     } = req.body
 
     const query = 'SELECT id FROM users WHERE user_name=$1 OR email=$2'
@@ -68,6 +72,28 @@ export default async function createUser(fastify) {
         ],
       })
     }
+
+    const region = await pg.execQuery(
+      'SELECT id FROM regions WHERE id=$1',
+      [regionId],
+      { findOne: true }
+    )
+    if (!region) {
+      throw createError(400, 'Invalid input', {
+        validation: [{ message: `Region with id '${regionId}' not found` }],
+      })
+    }
+
+    const province = await pg.execQuery(
+      'SELECT id FROM provinces WHERE id=$1',
+      [provinceId],
+      { findOne: true }
+    )
+    if (!province) {
+      throw createError(400, 'Invalid input', {
+        validation: [{ message: `Province with id '${regionId}' not found` }],
+      })
+    }
   }
 
   async function onCreateUser(req, reply) {
@@ -79,28 +105,36 @@ export default async function createUser(fastify) {
       password: await hashString(body.password, parseInt(config.SALT_ROUNDS)),
     }
 
+    let user = await execQuery(userObj, pg)
+    user = await populateUser(user, pg)
+    reply.code(201).send(user)
+  }
+
+  async function execQuery(obj, pg) {
     const query =
       'INSERT INTO users ' +
       '(first_name, last_name, user_name, email, password, bio, ' +
-      'birth_date, sex, owner_id) ' +
-      'VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) ' +
+      'birth_date, sex, owner_id, id_region, id_province) ' +
+      'VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) ' +
       'RETURNING id, first_name, last_name, user_name, email, bio, ' +
       'birth_date, joined_date, sex, is_blocked, is_deleted, ' +
-      'deleted_by, updated_by'
+      'id_region, id_province'
 
     const inputs = [
-      userObj.firstName,
-      userObj.lastName,
-      userObj.userName,
-      userObj.email,
-      userObj.password,
-      userObj.bio,
-      userObj.birthDate,
-      userObj.sex,
-      userObj.ownerId,
+      obj.firstName,
+      obj.lastName,
+      obj.userName,
+      obj.email,
+      obj.password,
+      obj.bio,
+      obj.birthDate,
+      obj.sex,
+      obj.ownerId,
+      obj.regionId,
+      obj.provinceId,
     ]
 
-    const user = await pg.execQuery(query, inputs, { findOne: true })
-    reply.code(201).send(user)
+    const res = await pg.execQuery(query, inputs)
+    return res.rows[0]
   }
 }

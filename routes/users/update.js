@@ -1,7 +1,8 @@
 import S from 'fluent-json-schema'
 import moment from 'moment'
 
-import { sUpdateUser, sUserResponse } from './lib/schema.js'
+import { sUpdateUser, sUserDetail } from './lib/schema.js'
+import { populateUser } from './lib/utils.js'
 
 export default async function updateUser(fastify) {
   const { pg, httpErrors } = fastify
@@ -24,7 +25,7 @@ export default async function updateUser(fastify) {
         .required(),
       body: sUpdateUser(),
       response: {
-        200: sUserResponse(),
+        200: sUserDetail(),
         404: fastify.getSchema('sNotFound'),
         409: fastify.getSchema('sConflict'),
       },
@@ -34,7 +35,7 @@ export default async function updateUser(fastify) {
   })
 
   async function onPreHandler(req) {
-    const { userName, email, birthDate } = req.body
+    const { userName, email, birthDate, regionId, provinceId } = req.body
     const { id } = req.params
 
     const user = await pg.execQuery('SELECT id FROM users WHERE id=$1', [id], {
@@ -44,28 +45,24 @@ export default async function updateUser(fastify) {
       throw httpErrors.notFound(`User with id '${id}' not found`)
     }
 
-    if (userName) {
-      const { rows: rowsUsername } = await pg.execQuery(
-        'SELECT id FROM users WHERE user_name=$2 AND id<>$1',
-        [id, userName]
-      )
-      if (rowsUsername.length) {
-        throw createError(400, 'Invalid input', {
-          validation: [{ message: `Username '${userName}' already used` }],
-        })
-      }
+    const { rows: rowsUsername } = await pg.execQuery(
+      'SELECT id FROM users WHERE user_name=$2 AND id<>$1',
+      [id, userName]
+    )
+    if (rowsUsername.length) {
+      throw createError(400, 'Invalid input', {
+        validation: [{ message: `Username '${userName}' already used` }],
+      })
     }
 
-    if (email) {
-      const { rows: rowsEmail } = await pg.execQuery(
-        'SELECT id FROM users WHERE email=$2 AND id<>$1',
-        [id, email]
-      )
-      if (rowsEmail.length) {
-        throw createError(400, 'Invalid input', {
-          validation: [{ message: `Email '${email}' already used` }],
-        })
-      }
+    const { rows: rowsEmail } = await pg.execQuery(
+      'SELECT id FROM users WHERE email=$2 AND id<>$1',
+      [id, email]
+    )
+    if (rowsEmail.length) {
+      throw createError(400, 'Invalid input', {
+        validation: [{ message: `Email '${email}' already used` }],
+      })
     }
 
     if (birthDate) {
@@ -79,6 +76,28 @@ export default async function updateUser(fastify) {
           ],
         })
       }
+    }
+
+    const region = await pg.execQuery(
+      'SELECT id FROM regions WHERE id=$1',
+      [regionId],
+      { findOne: true }
+    )
+    if (!region) {
+      throw createError(400, 'Invalid input', {
+        validation: [{ message: `Region with id '${regionId}' not found` }],
+      })
+    }
+
+    const province = await pg.execQuery(
+      'SELECT id FROM provinces WHERE id=$1',
+      [provinceId],
+      { findOne: true }
+    )
+    if (!province) {
+      throw createError(400, 'Invalid input', {
+        validation: [{ message: `Province with id '${regionId}' not found` }],
+      })
     }
   }
 
@@ -94,16 +113,19 @@ export default async function updateUser(fastify) {
       bio,
       birthDate,
       sex,
-      isBlocked,
+      regionId,
+      provinceId,
     } = req.body
 
     const query =
       'UPDATE users SET ' +
       'first_name=$2, last_name=$3, user_name=$4, email=$5, bio=$6, ' +
-      'birth_date=$7, sex=$8, is_blocked=$9, updated_at=$10, updated_by=$11 ' +
-      'WHERE id=$1 ' +
+      'birth_date=$7, sex=$8, updated_at=$9, updated_by=$10 ' +
+      'id_region=$11, id_province=$12 '
+    'WHERE id=$1 ' +
       'RETURNING id, first_name, last_name, user_name, email, bio, ' +
-      'birth_date, joined_date, sex'
+      'birth_date, joined_date, sex, is_blocked, is_deleted, ' +
+      'id_region, id_province'
 
     const inputs = [
       id,
@@ -114,9 +136,10 @@ export default async function updateUser(fastify) {
       bio,
       birthDate,
       sex,
-      isBlocked,
       new Date(),
       ownerId,
+      regionId,
+      provinceId,
     ]
 
     const { rowCount, rows } = await pg.execQuery(query, inputs)
@@ -124,6 +147,7 @@ export default async function updateUser(fastify) {
       throw httpErrors.conflict('The action had no effect')
     }
 
-    return rows[0]
+    const user = await populateUser(rows[0], pg)
+    return user
   }
 }
