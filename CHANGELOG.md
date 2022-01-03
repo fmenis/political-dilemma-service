@@ -15,4 +15,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **[auth]** login / logout API's.
 - **[users]** basic CRUD API's.
 - **[users]** change password API's.
-- **[misc]** status API.
+- **[misc]** status API, regions and provices lists
