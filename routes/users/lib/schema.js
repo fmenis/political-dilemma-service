@@ -97,7 +97,8 @@ export function sCreateUser() {
     .prop(
       'password',
       S.string().pattern(
-        /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})(?=.*[!@#$%^&*])/g
+        // eslint-disable-next-line max-len
+        /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})(?=.*[;:_,.\-ç°§òàù@#é*è+[\]{}|!"£$%&/()=?^\\'ì<>])/g
       )
     )
     .description('User password.')
@@ -105,7 +106,8 @@ export function sCreateUser() {
     .prop(
       'confirmPassword',
       S.string().pattern(
-        /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})(?=.*[!@#$%^&*])/g
+        // eslint-disable-next-line max-len
+        /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})(?=.*[;:_,.\-ç°§òàù@#é*è+[\]{}|!"£$%&/()=?^\\'ì<>])/g
       )
     )
     .description('Password confirmation.')

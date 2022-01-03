@@ -25,7 +25,8 @@ export default async function changePassword(fastify) {
         .prop(
           'oldPassword',
           S.string().pattern(
-            /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})(?=.*[!@#$%^&*])/g
+            // eslint-disable-next-line max-len
+            /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})(?=.*[;:_,.\-ç°§òàù@#é*è+[\]{}|!"£$%&/()=?^\\'ì<>])/g
           )
         )
         .description('Current password')
@@ -33,7 +34,8 @@ export default async function changePassword(fastify) {
         .prop(
           'newPassword',
           S.string().pattern(
-            /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})(?=.*[!@#$%^&*])/g
+            // eslint-disable-next-line max-len
+            /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})(?=.*[;:_,.\-ç°§òàù@#é*è+[\]{}|!"£$%&/()=?^\\'ì<>])/g
           )
         )
         .description('New password')
@@ -41,7 +43,8 @@ export default async function changePassword(fastify) {
         .prop(
           'newPasswordConfirmation',
           S.string().pattern(
-            /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})(?=.*[!@#$%^&*])/g
+            // eslint-disable-next-line max-len
+            /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})(?=.*[;:_,.\-ç°§òàù@#é*è+[\]{}|!"£$%&/()=?^\\'ì<>])/g
           )
         )
         .description('New password confirmation')
