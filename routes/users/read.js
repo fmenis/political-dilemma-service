@@ -1,6 +1,6 @@
 import S from 'fluent-json-schema'
 
-import { sUserResponse } from './lib/schema.js'
+import { sUserDetail } from './lib/schema.js'
 
 export default async function readUser(fastify) {
   const { db, httpErrors } = fastify
@@ -20,7 +20,7 @@ export default async function readUser(fastify) {
         .description('User id')
         .required(),
       response: {
-        200: sUserResponse(),
+        200: sUserDetail(),
         404: fastify.getSchema('sNotFound'),
       },
     },
@@ -40,9 +40,12 @@ export default async function readUser(fastify) {
 
   async function execQuery(id, db) {
     const query =
-      'SELECT id, first_name, last_name, user_name, email, bio, birth_date, ' +
-      'joined_date, sex, is_blocked, is_deleted FROM users WHERE id = $1'
-    const res = await db.execQuery(query, [id])
-    return res.rows[0]
+      'SELECT u.id, u.first_name, u.last_name, u.user_name, u.email, ' +
+      'r.name AS region, p.name AS province, u.bio, u.birth_date, ' +
+      'u.joined_date, u.sex, u.is_blocked, u.is_deleted FROM users AS u ' +
+      'JOIN regions AS r  ON u.id_region = r.id JOIN provinces AS p ' +
+      'ON u.id_province = p.id WHERE u.id = $1'
+    const user = await db.execQuery(query, [id], { findOne: true })
+    return user
   }
 }

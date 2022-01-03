@@ -1,6 +1,6 @@
 import S from 'fluent-json-schema'
 
-export function sUserResponse() {
+export function sUserDetail() {
   return S.object()
     .additionalProperties(false)
     .description('User')
@@ -19,6 +19,12 @@ export function sUserResponse() {
     .prop('email', S.string().format('email').minLength(6).maxLength(50))
     .description('User email. It must be unique.')
     .required()
+    .prop('region', S.string().minLength(3))
+    .description('User region.')
+    .required()
+    .prop('province', S.string().minLength(3))
+    .description('User province.')
+    .required()
     .prop('bio', S.string().maxLength(500))
     .description('User biography.')
     .prop('birthDate', S.string().format('date'))
@@ -27,6 +33,38 @@ export function sUserResponse() {
     .description('Defines when a user accepts the system invitation.')
     .prop('sex', S.string().enum(['male', 'female', 'other']))
     .description('User sex.')
+    .prop('isBlocked', S.boolean())
+    .description(
+      `Defines if the user is blocked, i.e. 
+      if he cannot use the API (until it is unblocked).`
+    )
+    .required()
+    .prop('isDeleted', S.boolean())
+    .description(`Defines if the user is deleted`)
+    .required()
+}
+
+export function sUserList() {
+  return S.object()
+    .additionalProperties(false)
+    .description('User')
+    .prop('id', S.number())
+    .description('User id.')
+    .required()
+    .prop('firstName', S.string().minLength(1).maxLength(50))
+    .description('User first name.')
+    .required()
+    .prop('lastName', S.string().minLength(1).maxLength(50))
+    .required()
+    .description('User last name.')
+    .prop('userName', S.string().minLength(3).maxLength(50))
+    .description('User system name. It must be unique.')
+    .required()
+    .prop('email', S.string().format('email').minLength(6).maxLength(50))
+    .description('User email. It must be unique.')
+    .required()
+    .prop('joinedDate', S.string().format('date-time'))
+    .description('Defines when a user accepts the system invitation.')
     .prop('isBlocked', S.boolean())
     .description(
       `Defines if the user is blocked, i.e. 
@@ -59,7 +97,8 @@ export function sCreateUser() {
     .prop(
       'password',
       S.string().pattern(
-        /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})(?=.*[!@#$%^&*])/g
+        // eslint-disable-next-line max-len
+        /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})(?=.*[;:_,.\-ç°§òàù@#é*è+[\]{}|!"£$%&/()=?^\\'ì<>])/g
       )
     )
     .description('User password.')
@@ -67,7 +106,8 @@ export function sCreateUser() {
     .prop(
       'confirmPassword',
       S.string().pattern(
-        /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})(?=.*[!@#$%^&*])/g
+        // eslint-disable-next-line max-len
+        /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})(?=.*[;:_,.\-ç°§òàù@#é*è+[\]{}|!"£$%&/()=?^\\'ì<>])/g
       )
     )
     .description('Password confirmation.')
@@ -78,6 +118,12 @@ export function sCreateUser() {
     .description('User birth date.')
     .prop('sex', S.string().enum(['male', 'female', 'other']))
     .description('User sex.')
+    .prop('regionId', S.integer().minimum(1))
+    .description('User region reference.')
+    .required()
+    .prop('provinceId', S.integer().minimum(1))
+    .description('User province reference.')
+    .required()
 }
 
 export function sUpdateUser() {
@@ -101,4 +147,10 @@ export function sUpdateUser() {
     .description('User birth date.')
     .prop('sex', S.string().enum(['male', 'female', 'other']))
     .description('User sex.')
+    .prop('regionId', S.integer().minimum(1))
+    .description('User region reference.')
+    .required()
+    .prop('provinceId', S.integer().minimum(1))
+    .description('User province reference.')
+    .required()
 }
