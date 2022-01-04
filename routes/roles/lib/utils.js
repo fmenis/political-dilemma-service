@@ -33,3 +33,21 @@ export async function associatePermissions(roleId, permissionsIds, pg, client) {
     client,
   })
 }
+
+export function getRole(id, pg) {
+  return getRoles([id], pg)
+}
+
+export function getRoles(ids, pg) {
+  return pg.execQuery('SELECT id FROM roles WHERE id= ANY ($1)', [ids], {
+    findOne: true,
+  })
+}
+
+export async function getPermissions(ids, pg) {
+  const { rows: permissions } = await pg.execQuery(
+    'SELECT id FROM permissions WHERE id= ANY ($1)',
+    [ids]
+  )
+  return permissions
+}

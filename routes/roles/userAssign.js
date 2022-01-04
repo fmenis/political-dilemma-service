@@ -1,4 +1,7 @@
 import S from 'fluent-json-schema'
+import _ from 'lodash'
+
+import { getRoles } from './lib/utils.js'
 
 export default async function assignRoles(fastify) {
   const { pg, httpErrors } = fastify
@@ -33,16 +36,17 @@ export default async function assignRoles(fastify) {
   async function onPreHandler(req) {
     const { userId, rolesIds } = req.body
 
+    // check user existance
     const user = await pg.execQuery(
       'SELECT id FROM users WHERE id=$1',
       [userId],
       { findOne: true }
     )
-
     if (!user) {
       throw httpErrors.notFound(`User with id '${userId}' not found`)
     }
 
+    // check duplicated roles
     const duplicates = rolesIds.reduce((acc, id, index, array) => {
       if (array.indexOf(id) !== index && !acc.includes(id)) {
         acc.push(id)
@@ -60,12 +64,26 @@ export default async function assignRoles(fastify) {
       })
     }
 
-    // TODO
-    // controllare che uno dei ruoli non sia stato già assegnato
-    // controllare che tutti i ruoli esistano
+    // check missing roles
+    const roles = await getRoles(rolesIds, pg)
+    const ids = roles.map(item => item.id)
+
+    if (ids.length !== roles.length) {
+      const missing = _.difference(roles, ids)
+
+      throw createError(400, 'Invalid input', {
+        validation: [
+          {
+            message: `Permissions id ${missing.join(', ')} not found`,
+          },
+        ],
+      })
+    }
+
+    //TODO controllare che uno dei ruoli non sia stato già assegnato
   }
 
-  async function onAssignRoles(req) {
+  async function onAssignRoles(req, reply) {
     const { userId, rolesIds } = req.body
     const { id: reqUserId } = req.user
 
@@ -77,7 +95,7 @@ export default async function assignRoles(fastify) {
       await associateRoles(userId, reqUserId, rolesIds, client)
 
       await pg.commitTransaction(client)
-      return 'OK' //TODO togliere appena si capisce
+      reply.code(204)
     } catch (error) {
       await pg.rollbackTransaction(client)
       throw error

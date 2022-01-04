@@ -1,8 +1,11 @@
 import S from 'fluent-json-schema'
+import _ from 'lodash'
+
+import { getRole, getPermissions } from './lib/utils.js'
 
 export default async function addPermissions(fastify) {
-  const { pg /*, httpErrors*/ } = fastify
-  // const { createError } = httpErrors
+  const { pg, httpErrors } = fastify
+  const { createError } = httpErrors
 
   fastify.route({
     method: 'POST',
@@ -25,23 +28,43 @@ export default async function addPermissions(fastify) {
         .description('Permission ids to be assigned to the roles')
         .required(),
       response: {
-        // 204: fastify.getSchema('sNoContent'), TODO
+        204: fastify.getSchema('sNoContent'),
       },
     },
     preHandler: onPreHandler,
     handler: onAddPermissions,
   })
 
-  async function onPreHandler() {
-    /**
-     * Controllare:
-     * - esistenza ruolo
-     * - esistenza permessi
-     * - permessi NON associati
-     */
+  async function onPreHandler(req) {
+    const { id } = req.params
+    const { permissionsIds } = req.body
+
+    // check role existance
+    const role = await getRole(id, pg)
+    if (!role) {
+      throw httpErrors.notFound(`Role with id '${id}' not found`)
+    }
+
+    // check missing permissions
+    const permissions = await getPermissions(permissionsIds, pg)
+    const ids = permissions.map(item => item.id)
+
+    if (ids.length !== permissionsIds.length) {
+      const missing = _.difference(permissionsIds, ids)
+
+      throw createError(400, 'Invalid input', {
+        validation: [
+          {
+            message: `Permissions id ${missing.join(', ')} not found`,
+          },
+        ],
+      })
+    }
+
+    //TODO check permessi NON associati
   }
 
-  async function onAddPermissions(req) {
+  async function onAddPermissions(req, reply) {
     const { id } = req.params
     const { permissionsIds } = req.body
 
@@ -52,6 +75,6 @@ export default async function addPermissions(fastify) {
     const inputs = [id, permissionsIds]
 
     await pg.execQuery(query, inputs)
-    return 'OK'
+    reply.code(204)
   }
 }
