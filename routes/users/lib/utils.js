@@ -1,6 +1,6 @@
-export async function populateUser(user, db) {
+export async function populateUser(user, pg) {
   async function getRegion(regionId) {
-    const res = await db.execQuery(
+    const res = await pg.execQuery(
       'SELECT name FROM regions WHERE id=$1',
       [regionId],
       { findOne: true }
@@ -9,7 +9,7 @@ export async function populateUser(user, db) {
   }
 
   async function getProvince(provinceId) {
-    const res = await db.execQuery(
+    const res = await pg.execQuery(
       'SELECT name FROM provinces WHERE id=$1',
       [provinceId],
       { findOne: true }

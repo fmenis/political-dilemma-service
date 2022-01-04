@@ -5,7 +5,7 @@ import { sUpdateUser, sUserDetail } from './lib/schema.js'
 import { populateUser } from './lib/utils.js'
 
 export default async function updateUser(fastify) {
-  const { db, httpErrors } = fastify
+  const { pg, httpErrors } = fastify
   const { createError } = httpErrors
 
   fastify.route({
@@ -13,6 +13,7 @@ export default async function updateUser(fastify) {
     path: '/:id',
     config: {
       public: false,
+      permission: 'user:update',
     },
     schema: {
       summary: 'Update user',
@@ -29,22 +30,22 @@ export default async function updateUser(fastify) {
         409: fastify.getSchema('sConflict'),
       },
     },
-    preHandler: preHandler,
+    preHandler: onPreHandler,
     handler: onUpdateUser,
   })
 
-  async function preHandler(req) {
+  async function onPreHandler(req) {
     const { userName, email, birthDate, regionId, provinceId } = req.body
     const { id } = req.params
 
-    const user = await db.execQuery('SELECT id FROM users WHERE id=$1', [id], {
+    const user = await pg.execQuery('SELECT id FROM users WHERE id=$1', [id], {
       findOne: true,
     })
     if (!user) {
       throw httpErrors.notFound(`User with id '${id}' not found`)
     }
 
-    const { rows: rowsUsername } = await db.execQuery(
+    const { rows: rowsUsername } = await pg.execQuery(
       'SELECT id FROM users WHERE user_name=$2 AND id<>$1',
       [id, userName]
     )
@@ -54,7 +55,7 @@ export default async function updateUser(fastify) {
       })
     }
 
-    const { rows: rowsEmail } = await db.execQuery(
+    const { rows: rowsEmail } = await pg.execQuery(
       'SELECT id FROM users WHERE email=$2 AND id<>$1',
       [id, email]
     )
@@ -77,7 +78,7 @@ export default async function updateUser(fastify) {
       }
     }
 
-    const region = await db.execQuery(
+    const region = await pg.execQuery(
       'SELECT id FROM regions WHERE id=$1',
       [regionId],
       { findOne: true }
@@ -88,7 +89,7 @@ export default async function updateUser(fastify) {
       })
     }
 
-    const province = await db.execQuery(
+    const province = await pg.execQuery(
       'SELECT id FROM provinces WHERE id=$1',
       [provinceId],
       { findOne: true }
@@ -101,6 +102,9 @@ export default async function updateUser(fastify) {
   }
 
   async function onUpdateUser(req) {
+    const { id } = req.params
+    const { id: ownerId } = req.user
+
     const {
       firstName,
       lastName,
@@ -113,13 +117,12 @@ export default async function updateUser(fastify) {
       provinceId,
     } = req.body
 
-    const { id } = req.params
-
     const query =
       'UPDATE users SET ' +
       'first_name=$2, last_name=$3, user_name=$4, email=$5, bio=$6, ' +
-      'birth_date=$7, sex=$8, updated_at=$9, id_region=$10, id_province=$11 ' +
-      'WHERE id=$1 ' +
+      'birth_date=$7, sex=$8, updated_at=$9, updated_by=$10 ' +
+      'id_region=$11, id_province=$12 '
+    'WHERE id=$1 ' +
       'RETURNING id, first_name, last_name, user_name, email, bio, ' +
       'birth_date, joined_date, sex, is_blocked, is_deleted, ' +
       'id_region, id_province'
@@ -134,16 +137,17 @@ export default async function updateUser(fastify) {
       birthDate,
       sex,
       new Date(),
+      ownerId,
       regionId,
       provinceId,
     ]
 
-    const { rowCount, rows } = await db.execQuery(query, inputs)
+    const { rowCount, rows } = await pg.execQuery(query, inputs)
     if (!rowCount) {
       throw httpErrors.conflict('The action had no effect')
     }
 
-    const user = await populateUser(rows[0], db)
+    const user = await populateUser(rows[0], pg)
     return user
   }
 }

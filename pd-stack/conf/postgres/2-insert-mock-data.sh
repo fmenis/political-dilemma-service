@@ -135,13 +135,109 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
     INSERT INTO provinces (name, code, id_region) VALUES ('Vicenza', 'VI', 17);
     INSERT INTO provinces (name, code, id_region) VALUES ('Viterbo', 'VT', 9);
 
-    INSERT INTO users (first_name, last_name, user_name, email, password, id_region, id_province)
-    VALUES ('Dennis', 'Boanini', 'Il Boa', 'dennis@acme.com', '\$2b\$10\$5i8SB6NIqTGbx7qqU0l3lOHYfH5BuKPp4UTe4YCp1JffL6p426b2a', 12, 36);  
+    INSERT INTO users (first_name, last_name, user_name, email, password, owner_id, id_region, id_province)
+    VALUES ('Dennis', 'Boanini', 'Il Boa', 'dennis@acme.com', '\$2b\$10\$5i8SB6NIqTGbx7qqU0l3lOHYfH5BuKPp4UTe4YCp1JffL6p426b2a', 1, 12, 36);  
 
-    INSERT INTO users (first_name, last_name, user_name, email, password, id_region, id_province)
-    VALUES ('Filippo', 'Menis', 'Pippo', 'filippo@acme.com', '\$2b\$10\$5i8SB6NIqTGbx7qqU0l3lOHYfH5BuKPp4UTe4YCp1JffL6p426b2a', 15, 102);
+    INSERT INTO users (first_name, last_name, user_name, email, password, owner_id, id_region, id_province)
+    VALUES ('Filippo', 'Menis', 'Pippo', 'filippo@acme.com', '\$2b\$10\$5i8SB6NIqTGbx7qqU0l3lOHYfH5BuKPp4UTe4YCp1JffL6p426b2a', 2, 15, 102);
 
-    INSERT INTO users (first_name, last_name, user_name, email, password, id_region, id_province)
-    VALUES ('Gaetano', 'Danelli', 'MaiSenzaPigiama', 'gaetano@acme.com', '\$2b\$10\$5i8SB6NIqTGbx7qqU0l3lOHYfH5BuKPp4UTe4YCp1JffL6p426b2a', 19, 58);
+    INSERT INTO users (first_name, last_name, user_name, email, password, owner_id, id_region, id_province)
+    VALUES ('Gaetano', 'Danelli', 'MaiSenzaPigiama', 'gaetano@acme.com', '\$2b\$10\$5i8SB6NIqTGbx7qqU0l3lOHYfH5BuKPp4UTe4YCp1JffL6p426b2a', 3, 19, 58);
+
+    INSERT INTO permissions (resource, action, description)
+    VALUES ('auth', 'logout', 'Logout permission');
+    
+    INSERT INTO permissions (resource, action, description)
+    VALUES ('misc', 'status', 'Status permission');
+
+    INSERT INTO permissions (resource, action, description)
+    VALUES ('permission', 'create', 'Create permisssion permission');
+
+    INSERT INTO permissions (resource, action, description)
+    VALUES ('permission', 'delete', 'Delete permisssion permission');
+
+    INSERT INTO permissions (resource, action, description)
+    VALUES ('permission', 'list', 'List permisssion permission');
+
+    INSERT INTO permissions (resource, action, description)
+    VALUES ('permission', 'update', 'Update permisssion permission');
+
+    INSERT INTO permissions (resource, action, description)
+    VALUES ('role', 'create', 'Create role permission');
+
+    INSERT INTO permissions (resource, action, description)
+    VALUES ('role', 'delete', 'Delete role permission');
+
+    INSERT INTO permissions (resource, action, description)
+    VALUES ('role', 'list', 'List role permission');
+
+    INSERT INTO permissions (resource, action, description)
+    VALUES ('role', 'add-permission', 'Add role permissions permission');
+
+    INSERT INTO permissions (resource, action, description)
+    VALUES ('role', 'remove-permission', 'Remove role permissions permission');
+
+    INSERT INTO permissions (resource, action, description)
+    VALUES ('role', 'update', 'Update role permission');
+
+    INSERT INTO permissions (resource, action, description)
+    VALUES ('role', 'user-assign', 'Add role assignment permission');
+
+    INSERT INTO permissions (resource, action, description)
+    VALUES ('role', 'user-remove', 'Remove role assignment permission');
+
+    INSERT INTO permissions (resource, action, description)
+    VALUES ('session', 'delete', 'Delete session permission');
+
+    INSERT INTO permissions (resource, action, description)
+    VALUES ('session', 'list', 'List session permission');
+
+    INSERT INTO permissions (resource, action, description)
+    VALUES ('user', 'change-password', 'User change password permission');
+
+    INSERT INTO permissions (resource, action, description)
+    VALUES ('user', 'create', 'User create permission');
+
+    INSERT INTO permissions (resource, action, description)
+    VALUES ('user', 'delete', 'User delete permission');
+
+    INSERT INTO permissions (resource, action, description)
+    VALUES ('user', 'list', 'List users permission');
+
+    INSERT INTO permissions (resource, action, description)
+    VALUES ('user', 'read', 'Read users permission');
+
+    INSERT INTO permissions (resource, action, description)
+    VALUES ('user', 'update', 'Update users permission');
+
+    INSERT INTO permissions (resource, action, description)
+    VALUES ('user', 'whoami', 'Whoami users permission');
+
+    INSERT INTO permissions (resource, action, description)
+    VALUES ('user', 'block', 'Block user permission');
+
+    INSERT INTO permissions (resource, action, description)
+    VALUES ('user', 'unblock', 'Unblock user permission');
+
+    INSERT INTO permissions (resource, action, description)
+    VALUES ('regions', 'list', 'List regions permission');
+
+    INSERT INTO permissions (resource, action, description)
+    VALUES ('provinces', 'list', 'List provinces permission');
+
+    INSERT INTO roles (name, description)
+    VALUES ('Root', 'Full access');
+
+    INSERT INTO permissions_roles (role_id, permission_id)
+    VALUES (1, 1), (1, 2), (1, 3),(1, 4),(1, 5),(1, 6),(1, 7),(1, 8),(1, 9),(1, 10),(1, 11),(1, 12),(1, 13),(1, 14),(1, 15),(1, 16),(1, 17),(1, 18),(1, 19),(1, 20),(1, 21),(1, 22),(1, 23),(1, 24), (1, 25), (1, 26), (1, 27);
+
+    INSERT INTO users_roles (user_id, role_id, assign_by)
+    VALUES (1, 1, 1);
+
+    INSERT INTO users_roles (user_id, role_id, assign_by)
+    VALUES (2, 1, 2);
+
+    INSERT INTO users_roles (user_id, role_id, assign_by)
+    VALUES (3, 1, 3);
 
 EOSQL

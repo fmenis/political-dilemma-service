@@ -3,13 +3,14 @@ import S from 'fluent-json-schema'
 import { sUserList } from './lib/schema.js'
 
 export default async function listUsers(fastify) {
-  const { db } = fastify
+  const { pg } = fastify
 
   fastify.route({
     method: 'GET',
     path: '',
     config: {
       public: false,
+      permission: 'user:list',
     },
     schema: {
       summary: 'List users',
@@ -40,11 +41,11 @@ export default async function listUsers(fastify) {
       },
     }
 
-    const users = await execQuery(options, db)
+    const users = await execQuery(options, pg)
     return { results: users }
   }
 
-  async function execQuery(options, db) {
+  async function execQuery(options, pg) {
     const baseQuery =
       'SELECT id, first_name, last_name, user_name, email, ' +
       'joined_date, is_blocked, is_deleted FROM users'
@@ -57,7 +58,7 @@ export default async function listUsers(fastify) {
       dbObj.inputs
     )
 
-    const res = await db.execQuery(query, inputs)
+    const res = await pg.execQuery(query, inputs)
     return res.rows
   }
 

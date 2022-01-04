@@ -4,7 +4,7 @@ export function sUserDetail() {
   return S.object()
     .additionalProperties(false)
     .description('User')
-    .prop('id', S.number())
+    .prop('id', S.number().minimum(1))
     .description('User id.')
     .required()
     .prop('firstName', S.string().minLength(1).maxLength(50))
@@ -42,6 +42,12 @@ export function sUserDetail() {
     .prop('isDeleted', S.boolean())
     .description(`Defines if the user is deleted`)
     .required()
+    .prop('deletedBy', S.number())
+    .description(`Defines which user delete the resource`)
+    .prop('updatedBy', S.number())
+    .description(`Defines which user update the resource`)
+    .prop('permissions', S.array().items(S.string()))
+    .description(`User permissions`)
 }
 
 export function sUserList() {

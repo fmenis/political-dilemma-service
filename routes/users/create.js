@@ -5,7 +5,7 @@ import { sUserDetail, sCreateUser } from './lib/schema.js'
 import { populateUser } from './lib/utils.js'
 
 export default async function createUser(fastify) {
-  const { db, config, httpErrors } = fastify
+  const { pg, config, httpErrors } = fastify
   const { createError } = httpErrors
 
   fastify.route({
@@ -13,6 +13,7 @@ export default async function createUser(fastify) {
     path: '',
     config: {
       public: false,
+      permission: 'user:create',
     },
     schema: {
       summary: 'Create user',
@@ -39,7 +40,7 @@ export default async function createUser(fastify) {
     } = req.body
 
     const query = 'SELECT id FROM users WHERE user_name=$1 OR email=$2'
-    const alreadyInsered = await db.execQuery(query, [userName, email], {
+    const alreadyInsered = await pg.execQuery(query, [userName, email], {
       findOne: true,
     })
 
@@ -72,7 +73,7 @@ export default async function createUser(fastify) {
       })
     }
 
-    const region = await db.execQuery(
+    const region = await pg.execQuery(
       'SELECT id FROM regions WHERE id=$1',
       [regionId],
       { findOne: true }
@@ -83,7 +84,7 @@ export default async function createUser(fastify) {
       })
     }
 
-    const province = await db.execQuery(
+    const province = await pg.execQuery(
       'SELECT id FROM provinces WHERE id=$1',
       [provinceId],
       { findOne: true }
@@ -96,23 +97,24 @@ export default async function createUser(fastify) {
   }
 
   async function onCreateUser(req, reply) {
-    const { body } = req
+    const { body, user: owner } = req
 
     const userObj = {
       ...body,
+      ownerId: owner.id,
       password: await hashString(body.password, parseInt(config.SALT_ROUNDS)),
     }
 
-    let user = await execQuery(userObj, db)
-    user = await populateUser(user, db)
+    let user = await execQuery(userObj, pg)
+    user = await populateUser(user, pg)
     reply.code(201).send(user)
   }
 
-  async function execQuery(obj, db) {
+  async function execQuery(obj, pg) {
     const query =
       'INSERT INTO users ' +
       '(first_name, last_name, user_name, email, password, bio, ' +
-      'birth_date, sex, id_region, id_province) ' +
+      'birth_date, sex, owner_id, id_region, id_province) ' +
       'VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) ' +
       'RETURNING id, first_name, last_name, user_name, email, bio, ' +
       'birth_date, joined_date, sex, is_blocked, is_deleted, ' +
@@ -127,11 +129,12 @@ export default async function createUser(fastify) {
       obj.bio,
       obj.birthDate,
       obj.sex,
+      obj.ownerId,
       obj.regionId,
       obj.provinceId,
     ]
 
-    const res = await db.execQuery(query, inputs)
+    const res = await pg.execQuery(query, inputs)
     return res.rows[0]
   }
 }

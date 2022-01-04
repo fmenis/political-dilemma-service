@@ -10,7 +10,7 @@ shortid.characters(
 )
 
 export default async function login(fastify) {
-  const { db, redis, httpErrors } = fastify
+  const { pg, redis, httpErrors } = fastify
   const { createError } = httpErrors
 
   fastify.route({
@@ -49,7 +49,7 @@ export default async function login(fastify) {
     const { email, password, deleteOldest } = req.body
     const { log } = req
 
-    const user = await db.execQuery(
+    const user = await pg.execQuery(
       'SELECT * FROM users WHERE email=$1',
       [email],
       { findOne: true }
@@ -116,7 +116,7 @@ export default async function login(fastify) {
       path: '/api',
       httpOnly: true,
       signed: true,
-      secure: true,
+      // secure: true,
       sameSite: 'none',
       expires: moment().add(fastify.config.COOKIE_TTL, 'seconds').toDate(),
     }

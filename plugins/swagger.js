@@ -27,8 +27,10 @@ async function swaggerGenerator(fastify) {
       produces: ['application/json'],
       tags: [
         { name: 'auth', description: 'Auth related end-points' },
-        { name: 'users', description: 'User related end-points' },
         { name: 'sessions', description: 'Session related end-points' },
+        { name: 'permissions', description: 'Permissions related end-points' },
+        { name: 'roles', description: 'Roles related end-points' },
+        { name: 'users', description: 'User related end-points' },
         { name: 'misc', description: 'Miscellaneous related end-points' },
       ],
     },

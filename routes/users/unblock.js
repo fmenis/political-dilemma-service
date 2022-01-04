@@ -8,6 +8,7 @@ export default async function unblockUser(fastify) {
     path: '/:id/unblock',
     config: {
       public: false,
+      permission: 'user:unblock',
     },
     schema: {
       summary: 'Unblock user',

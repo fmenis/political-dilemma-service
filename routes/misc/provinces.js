@@ -1,13 +1,14 @@
 import S from 'fluent-json-schema'
 
 export default async function listRegions(fastify) {
-  const { db, httpErrors } = fastify
+  const { pg, httpErrors } = fastify
 
   fastify.route({
     method: 'GET',
     path: '/provinces',
     config: {
       public: false,
+      permission: 'provinces:list',
     },
     schema: {
       summary: 'Italian provinces',
@@ -47,7 +48,7 @@ export default async function listRegions(fastify) {
     const { regionId } = req.query
 
     if (regionId) {
-      const region = await db.execQuery(
+      const region = await pg.execQuery(
         'SELECT name FROM regions WHERE id=$1',
         [regionId],
         { findOne: true }
@@ -68,8 +69,8 @@ export default async function listRegions(fastify) {
     const query = regionId ? `${baseQuery} WHERE id_region=$1` : baseQuery
 
     const promise = regionId
-      ? db.execQuery(query, [regionId])
-      : db.execQuery(query)
+      ? pg.execQuery(query, [regionId])
+      : pg.execQuery(query)
 
     const { rows } = await promise
     return { results: rows }

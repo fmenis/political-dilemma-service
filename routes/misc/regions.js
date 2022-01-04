@@ -1,13 +1,14 @@
 import S from 'fluent-json-schema'
 
 export default async function listRegions(fastify) {
-  const { db } = fastify
+  const { pg } = fastify
 
   fastify.route({
     method: 'GET',
     path: '/regions',
     config: {
       public: false,
+      permission: 'regions:list',
     },
     schema: {
       summary: 'Italian regions',
@@ -32,7 +33,7 @@ export default async function listRegions(fastify) {
   })
 
   async function onListRegions() {
-    const { rows } = await db.execQuery('SELECT * FROM regions')
+    const { rows } = await pg.execQuery('SELECT * FROM regions')
     return { results: rows }
   }
 }

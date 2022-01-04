@@ -9,6 +9,7 @@ export default async function deleteSession(fastify) {
     path: '',
     config: {
       public: false,
+      permission: 'session:delete',
     },
     schema: {
       summary: 'Delete sessions',

@@ -8,6 +8,7 @@ export default async function blockUser(fastify) {
     path: '/:id/block',
     config: {
       public: false,
+      permission: 'user:block',
     },
     schema: {
       summary: 'Block user',

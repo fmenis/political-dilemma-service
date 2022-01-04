@@ -1,13 +1,14 @@
 import S from 'fluent-json-schema'
 
 export default async function deleteUser(fastify) {
-  const { db, httpErrors } = fastify
+  const { pg, httpErrors } = fastify
 
   fastify.route({
     method: 'DELETE',
     path: '/:id',
     config: {
       public: false,
+      permission: 'user:delete',
     },
     schema: {
       summary: 'Delete user',
@@ -31,8 +32,7 @@ export default async function deleteUser(fastify) {
     const { id } = req.params
     const { user: owner } = req
 
-    //TODO delete all for site users
-    const user = await db.execQuery('SELECT id FROM users WHERE id=$1', [id], {
+    const user = await pg.execQuery('SELECT id FROM users WHERE id=$1', [id], {
       findOne: true,
     })
 
@@ -47,9 +47,10 @@ export default async function deleteUser(fastify) {
 
   async function onDeleteUser(req, reply) {
     const { id } = req.params
+    const { user } = req
 
-    const query = 'UPDATE users SET is_deleted=true WHERE id=$1'
-    const { rowCount } = await db.execQuery(query, [id])
+    const query = 'UPDATE users SET is_deleted=true, deleted_by=$2 WHERE id=$1'
+    const { rowCount } = await pg.execQuery(query, [id, user.id])
 
     if (!rowCount) {
       throw httpErrors.conflict('The action had no effect')
