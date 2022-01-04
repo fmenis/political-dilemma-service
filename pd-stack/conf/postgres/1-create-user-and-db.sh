@@ -95,7 +95,6 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
         CONSTRAINT fk_role_id FOREIGN KEY(role_id) REFERENCES roles(id) ON DELETE NO ACTION,
         CONSTRAINT fk_assign_by FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE NO ACTION
     );
-    
 
     GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO dev;
     GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO dev;

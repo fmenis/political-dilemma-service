@@ -31,8 +31,9 @@ async function authorization(fastify) {
     }
 
     const userPermissions = await getUserPermissions(user.id, pg)
+    const matchPermission = userPermissions.includes(permission)
 
-    if (userPermissions.includes(permission)) {
+    if (!matchPermission) {
       const route = `${req.raw.method} ${req.raw.url}`
       log.warn(
         `Invalid access: permission '${permission}' not found.Route '${route}'`
@@ -41,6 +42,26 @@ async function authorization(fastify) {
         internalCode: '0010',
       })
     }
+
+    //TODO
+    // if (permission.includes('own')) {
+    //   const resourceId = req.params.id
+    //   const table = matchPermission.split(':')[0]
+    //   const resource = await pg.execQuery(
+    //     `SELECT owner_id FROM ${table} WHERE id=$1`,
+    //     [resourceId],
+    //     { findOne: true }
+    //   )
+
+    //   if (resource.ownerId !== user.id) {
+    //     log.warn(
+    //       `Invalid access '${permission}' not found.Route '${route}'`
+    //     )
+    //     throw createError(403, 'Invalid access', {
+    //       internalCode: '0010',
+    //     })
+    //   }
+    // }
 
     user.permissions = userPermissions
     return
