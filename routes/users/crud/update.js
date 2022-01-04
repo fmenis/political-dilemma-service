@@ -1,8 +1,8 @@
 import S from 'fluent-json-schema'
 import moment from 'moment'
 
-import { sUpdateUser, sUserDetail } from './lib/schema.js'
-import { populateUser } from './lib/utils.js'
+import { sUpdateUser, sUserDetail } from '../lib/schema.js'
+import { populateUser } from '../lib/utils.js'
 
 export default async function updateUser(fastify) {
   const { pg, httpErrors } = fastify

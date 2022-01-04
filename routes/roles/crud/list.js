@@ -1,6 +1,6 @@
 import S from 'fluent-json-schema'
 
-import { sRoleResponse } from './lib/schema.js'
+import { sRoleResponse } from '../lib/schema.js'
 
 export default async function listPermissions(fastify) {
   const { pg } = fastify

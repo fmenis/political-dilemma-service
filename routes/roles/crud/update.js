@@ -1,7 +1,7 @@
 import S from 'fluent-json-schema'
 
-import { sRoleResponse } from './lib/schema.js'
-import { getRolePermissions } from './lib/utils.js'
+import { sRoleResponse } from '../lib/schema.js'
+import { getRolePermissions } from '../lib/utils.js'
 
 export default async function updateRole(fastify) {
   const { pg, httpErrors } = fastify

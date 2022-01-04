@@ -1,6 +1,6 @@
 import S from 'fluent-json-schema'
 
-import { sUserList } from './lib/schema.js'
+import { sUserList } from '../lib/schema.js'
 
 export default async function listUsers(fastify) {
   const { pg } = fastify

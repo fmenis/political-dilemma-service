@@ -1,7 +1,7 @@
-import createRoute from './create.js'
-import listRoute from './list.js'
-import update from './update.js'
-import deleteRoute from './delete.js'
+import createRoute from './crud/create.js'
+import listRoute from './crud/list.js'
+import update from './crud/update.js'
+import deleteRoute from './crud/delete.js'
 
 import assingRoute from './userAssign.js'
 import removeRoute from './userRemove.js'

@@ -1,6 +1,6 @@
 import S from 'fluent-json-schema'
 
-import { sUserDetail } from './lib/schema.js'
+import { sUserDetail } from '../lib/schema.js'
 
 export default async function readUser(fastify) {
   const { pg, httpErrors } = fastify

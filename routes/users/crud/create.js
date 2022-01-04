@@ -1,8 +1,8 @@
 import moment from 'moment'
 
-import { hashString } from '../../lib/hash.js'
-import { sUserDetail, sCreateUser } from './lib/schema.js'
-import { populateUser } from './lib/utils.js'
+import { hashString } from '../../../lib/hash.js'
+import { sUserDetail, sCreateUser } from '../lib/schema.js'
+import { populateUser } from '../lib/utils.js'
 
 export default async function createUser(fastify) {
   const { pg, config, httpErrors } = fastify

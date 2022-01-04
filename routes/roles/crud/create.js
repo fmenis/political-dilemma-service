@@ -1,7 +1,7 @@
 import _ from 'lodash'
 
-import { sCreateRole, sRoleResponse } from './lib/schema.js'
-import { getRolePermissions, associatePermissions } from './lib/utils.js'
+import { sCreateRole, sRoleResponse } from '../lib/schema.js'
+import { getRolePermissions, associatePermissions } from '../lib/utils.js'
 
 export default async function createRole(fastify) {
   const { pg, httpErrors } = fastify

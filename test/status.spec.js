@@ -1,12 +1,16 @@
 import t from 'tap'
 import Fastify from 'fastify'
+import { join, resolve } from 'path'
+import { readFileSync } from 'fs'
 import { config } from 'dotenv'
 config()
 
-import App from '../../app.js'
+import App from '../app.js'
 
-t.test('Create User API OK', async t => {
-  t.plan(3)
+const { version } = JSON.parse(readFileSync(join(resolve(), 'package.json')))
+
+t.test('Status API', async t => {
+  t.plan(4)
 
   const fastify = Fastify()
   fastify.register(App, { envData: { NODE_ENV: 'development' } })
@@ -29,12 +33,13 @@ t.test('Create User API OK', async t => {
   t.ok(loginRes.cookies[0].value)
 
   const statusRes = await fastify.inject({
-    method: 'DELETE',
-    path: 'api/v1/users/12',
+    method: 'GET',
+    path: 'api/v1/status',
     cookies: {
       session: `${loginRes.cookies[0].value}`,
     },
   })
 
-  t.equal(statusRes.statusCode, 204)
+  t.equal(statusRes.statusCode, 200)
+  t.match(statusRes.json(), { status: 'ok', version })
 })
