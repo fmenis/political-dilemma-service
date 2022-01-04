@@ -1,17 +1,17 @@
 import S from 'fluent-json-schema'
 
-export default async function blockUser(fastify) {
+export default async function unblockUser(fastify) {
   const { db, httpErrors } = fastify
 
   fastify.route({
     method: 'POST',
-    path: '/:id/block',
+    path: '/:id/unblock',
     config: {
       public: false,
     },
     schema: {
-      summary: 'Block user',
-      description: 'Block user.',
+      summary: 'Unblock user',
+      description: 'Unblock user.',
       params: S.object()
         .additionalProperties(false)
         .prop('id', S.integer().minimum(1))
@@ -24,7 +24,7 @@ export default async function blockUser(fastify) {
       },
     },
     preHandler: preHandler,
-    handler: onBlockUser,
+    handler: onUnblockUser,
   })
 
   async function preHandler(req) {
@@ -32,7 +32,7 @@ export default async function blockUser(fastify) {
     const { id } = req.user
 
     if (userId === id) {
-      throw httpErrors.conflict(`Cannot block your own user`)
+      throw httpErrors.conflict(`Cannot unblock your own user`)
     }
 
     const user = await db.execQuery(
@@ -47,17 +47,17 @@ export default async function blockUser(fastify) {
       throw httpErrors.notFound(`User with id '${userId}' not found`)
     }
 
-    if (user.isBlocked) {
-      throw httpErrors.conflict(`User is already blocked`)
+    if (!user.isBlocked) {
+      throw httpErrors.conflict(`User is already unblocked`)
     }
   }
 
-  async function onBlockUser(req, reply) {
+  async function onUnblockUser(req, reply) {
     const { id } = req.params
 
     const { rowCount } = await db.execQuery(
       'UPDATE users SET is_blocked=$2 WHERE id=$1',
-      [id, true]
+      [id, false]
     )
 
     if (!rowCount) {
