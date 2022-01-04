@@ -39,7 +39,6 @@ export default async function deleteRole(fastify) {
       throw httpErrors.notFound(`Role with id '${id}' not found`)
     }
 
-    //TODO testare quando users_roles è pronta
     const { rows } = await pg.execQuery(
       'SELECT user_id, role_id  FROM users_roles WHERE role_id=$1',
       [id]
