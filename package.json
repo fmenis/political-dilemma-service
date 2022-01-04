@@ -2,7 +2,7 @@
   "name": "political-dilemma-service",
   "version": "0.0.1",
   "description": "Political dilemma service",
-  "main": "src/index.js",
+  "main": "index.js",
   "type": "module",
   "engines": {
     "node": ">=16.13.x",
@@ -10,8 +10,8 @@
   },
   "private": true,
   "scripts": {
-    "start": "cross-env NODE_ENV=production node -r dotenv/config src/index.js",
-    "dev": "cross-env NODE_ENV=development nodemon --config nodemon.json --inspect -r dotenv/config src/index.js",
+    "start": "cross-env NODE_ENV=production node -r dotenv/config index.js",
+    "dev": "cross-env NODE_ENV=development nodemon --config nodemon.json --inspect -r dotenv/config index.js",
     "test": "tap",
     "lint": "eslint . --ext .js",
     "prepare": "husky install",

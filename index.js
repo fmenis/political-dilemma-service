@@ -1,7 +1,7 @@
 import Fastify from 'fastify'
 import { stdTimeFunctions } from 'pino'
 
-import App from './app.js'
+import App from './src/app.js'
 
 const fastify = Fastify({
   logger: {
