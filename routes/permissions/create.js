@@ -26,11 +26,14 @@ export default async function createPermission(fastify) {
   async function onPreHandler(req) {
     const { resource, action, ownership } = req.body
 
-    const query =
-      'SELECT id FROM permissions WHERE resource=$1 AND action=$2 ' +
-      'AND ownership=$3'
+    let query = 'SELECT id FROM permissions WHERE resource=$1 AND action=$2'
+    query = ownership ? `${query} AND ownership=$3` : query
 
-    const match = await pg.execQuery(query, [resource, action, ownership], {
+    const inputs = ownership
+      ? [resource, action, ownership]
+      : [resource, action]
+
+    const match = await pg.execQuery(query, inputs, {
       findOne: true,
     })
 
