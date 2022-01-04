@@ -2,7 +2,7 @@
   "name": "political-dilemma-service",
   "version": "0.0.1",
   "description": "Political dilemma service",
-  "main": "index.js",
+  "main": "src/index.js",
   "type": "module",
   "engines": {
     "node": ">=16.13.x",
@@ -10,15 +10,15 @@
   },
   "private": true,
   "scripts": {
-    "start": "cross-env NODE_ENV=production node -r dotenv/config index.js",
-    "dev": "cross-env NODE_ENV=development nodemon --config nodemon.json --inspect -r dotenv/config index.js",
+    "start": "cross-env NODE_ENV=production node -r dotenv/config src/index.js",
+    "dev": "cross-env NODE_ENV=development nodemon --config nodemon.json --inspect -r dotenv/config src/index.js",
     "test": "tap",
     "lint": "eslint . --ext .js",
     "prepare": "husky install",
     "init-tools": "cd ./pd-stack && docker-compose -f docker-compose-tools.yml up -d",
     "init-stack": "cd ./pd-stack && docker-compose up -d",
     "rebuild-db": "./pd-stack/rebuild-db.sh",
-    "genPw": "node -r dotenv/config scripts/generatePassword.js"
+    "genPw": "node -r dotenv/config src/scripts/generatePassword.js"
   },
   "keywords": [
     "political-dilemma"

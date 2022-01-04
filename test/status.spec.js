@@ -5,7 +5,7 @@ import { readFileSync } from 'fs'
 import { config } from 'dotenv'
 config()
 
-import App from '../app.js'
+import App from '../src/app.js'
 
 const { version } = JSON.parse(readFileSync(join(resolve(), 'package.json')))
 

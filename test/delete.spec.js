@@ -3,7 +3,7 @@ import Fastify from 'fastify'
 import { config } from 'dotenv'
 config()
 
-import App from '../app.js'
+import App from '../src/app.js'
 
 t.test('Create User API OK', async t => {
   t.plan(3)
