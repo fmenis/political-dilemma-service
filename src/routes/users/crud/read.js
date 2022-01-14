@@ -41,12 +41,16 @@ export default async function readUser(fastify) {
 
   async function execQuery(id, pg) {
     const query =
-      'SELECT u.id, u.first_name, u.last_name, u.user_name, u.email, ' +
-      'r.name AS region, p.name AS province, u.bio, u.birth_date, ' +
-      'u.joined_date, u.sex, u.is_blocked, u.is_deleted FROM users AS u ' +
-      'JOIN regions AS r  ON u.id_region = r.id JOIN provinces AS p ' +
-      'ON u.id_province = p.id WHERE u.id = $1'
+      'SELECT id, first_name, last_name, user_name, email, ' +
+      'id_region, id_province, bio, birth_date, ' +
+      'joined_date, sex, is_blocked, is_deleted FROM users ' +
+      'WHERE id = $1'
+
     const user = await pg.execQuery(query, [id], { findOne: true })
-    return user
+    return {
+      ...user,
+      regionId: user.idRegion,
+      provinceId: user.idProvince,
+    }
   }
 }

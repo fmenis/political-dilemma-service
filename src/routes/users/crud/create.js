@@ -2,7 +2,6 @@ import moment from 'moment'
 
 import { hashString } from '../../../lib/hash.js'
 import { sUserDetail, sCreateUser } from '../lib/schema.js'
-import { populateUser } from '../lib/utils.js'
 
 export default async function createUser(fastify) {
   const { pg, config, httpErrors } = fastify
@@ -105,9 +104,15 @@ export default async function createUser(fastify) {
       password: await hashString(body.password, parseInt(config.SALT_ROUNDS)),
     }
 
-    let user = await execQuery(userObj, pg)
-    user = await populateUser(user, pg)
-    reply.code(201).send(user)
+    const user = await execQuery(userObj, pg)
+
+    reply.status(201)
+
+    return {
+      ...user,
+      regionId: user.idRegion,
+      provinceId: user.idProvince,
+    }
   }
 
   async function execQuery(obj, pg) {
@@ -115,7 +120,7 @@ export default async function createUser(fastify) {
       'INSERT INTO users ' +
       '(first_name, last_name, user_name, email, password, bio, ' +
       'birth_date, sex, owner_id, id_region, id_province) ' +
-      'VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) ' +
+      'VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) ' +
       'RETURNING id, first_name, last_name, user_name, email, bio, ' +
       'birth_date, joined_date, sex, is_blocked, is_deleted, ' +
       'id_region, id_province'

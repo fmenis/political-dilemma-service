@@ -2,7 +2,6 @@ import S from 'fluent-json-schema'
 import moment from 'moment'
 
 import { sUpdateUser, sUserDetail } from '../lib/schema.js'
-import { populateUser } from '../lib/utils.js'
 
 export default async function updateUser(fastify) {
   const { pg, httpErrors } = fastify
@@ -120,9 +119,9 @@ export default async function updateUser(fastify) {
     const query =
       'UPDATE users SET ' +
       'first_name=$2, last_name=$3, user_name=$4, email=$5, bio=$6, ' +
-      'birth_date=$7, sex=$8, updated_at=$9, updated_by=$10 ' +
-      'id_region=$11, id_province=$12 '
-    'WHERE id=$1 ' +
+      'birth_date=$7, sex=$8, updated_at=$9, updated_by=$10, ' +
+      'id_region=$11, id_province=$12 ' +
+      'WHERE id=$1 ' +
       'RETURNING id, first_name, last_name, user_name, email, bio, ' +
       'birth_date, joined_date, sex, is_blocked, is_deleted, ' +
       'id_region, id_province'
@@ -147,7 +146,12 @@ export default async function updateUser(fastify) {
       throw httpErrors.conflict('The action had no effect')
     }
 
-    const user = await populateUser(rows[0], pg)
-    return user
+    const user = rows[0]
+
+    return {
+      ...user,
+      regionId: user.idRegion,
+      provinceId: user.idProvince,
+    }
   }
 }
