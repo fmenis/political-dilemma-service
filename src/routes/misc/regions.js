@@ -33,7 +33,8 @@ export default async function listRegions(fastify) {
   })
 
   async function onListRegions() {
-    const { rows } = await pg.execQuery('SELECT * FROM regions')
+    const query = 'SELECT * FROM regions ORDER BY name ASC'
+    const { rows } = await pg.execQuery(query)
     return { results: rows }
   }
 }

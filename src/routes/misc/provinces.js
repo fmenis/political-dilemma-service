@@ -32,9 +32,6 @@ export default async function listRegions(fastify) {
               .prop('code', S.string().minLength(2).maxLength(2))
               .description('Province name')
               .required()
-              .prop('region', S.string().minLength(2))
-              .description('Region name')
-              .required()
           )
         ),
         404: fastify.getSchema('sNotFound'),
@@ -64,9 +61,11 @@ export default async function listRegions(fastify) {
     const { regionId } = req.query
 
     const baseQuery =
-      'SELECT p.id, p.name, p.code, r.name AS region FROM provinces AS p ' +
-      'JOIN regions AS r ON p.id_region = r.id'
-    const query = regionId ? `${baseQuery} WHERE id_region=$1` : baseQuery
+      'SELECT p.id, p.name, p.code FROM provinces AS p ' +
+      'JOIN regions AS r ON p.id_region = r.id '
+
+    let query = regionId ? `${baseQuery} WHERE id_region=$1` : baseQuery
+    query += ' ORDER BY p.name ASC'
 
     const promise = regionId
       ? pg.execQuery(query, [regionId])
