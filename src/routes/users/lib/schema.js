@@ -33,19 +33,6 @@ export function sUserDetail() {
     .description('Defines when a user accepts the system invitation.')
     .prop('sex', S.string().enum(['male', 'female', 'other']))
     .description('User sex.')
-    .prop('isBlocked', S.boolean())
-    .description(
-      `Defines if the user is blocked, i.e. 
-      if he cannot use the API (until it is unblocked).`
-    )
-    .required()
-    .prop('isDeleted', S.boolean())
-    .description(`Defines if the user is deleted`)
-    .required()
-    .prop('deletedBy', S.number())
-    .description(`Defines which user delete the resource`)
-    .prop('updatedBy', S.number())
-    .description(`Defines which user update the resource`)
     .prop('permissions', S.array().items(S.string()))
     .description(`User permissions`)
 }
@@ -76,9 +63,6 @@ export function sUserList() {
       `Defines if the user is blocked, i.e. 
       if he cannot use the API (until it is unblocked).`
     )
-    .required()
-    .prop('isDeleted', S.boolean())
-    .description(`Defines if the user is deleted`)
     .required()
 }
 
