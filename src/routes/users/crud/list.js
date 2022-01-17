@@ -1,6 +1,7 @@
 import S from 'fluent-json-schema'
 
 import { sUserList } from '../lib/schema.js'
+import { getUserRoles } from '../lib/utils.js'
 
 export default async function listUsers(fastify) {
   const { pg } = fastify
@@ -48,7 +49,7 @@ export default async function listUsers(fastify) {
   async function execQuery(options, pg) {
     const baseQuery =
       'SELECT id, first_name, last_name, user_name, email, ' +
-      'joined_date, is_blocked, is_deleted FROM users'
+      'joined_date, is_blocked FROM users'
 
     const dbObj = applyFilters(baseQuery, options.filters)
 
@@ -58,8 +59,23 @@ export default async function listUsers(fastify) {
       dbObj.inputs
     )
 
-    const res = await pg.execQuery(query, inputs)
-    return res.rows
+    const { rows } = await pg.execQuery(query, inputs)
+
+    const roles = await getUserRoles(
+      rows.map(item => item.id),
+      pg
+    )
+
+    const userList = rows.map(user => {
+      return {
+        ...user,
+        roles: roles
+          .filter(item => item.userId === user.id)
+          .map(item => item.name),
+      }
+    })
+
+    return userList
   }
 
   function applyFilters(query, filters, inputs = []) {

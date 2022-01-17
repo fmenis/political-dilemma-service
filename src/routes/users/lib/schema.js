@@ -33,8 +33,6 @@ export function sUserDetail() {
     .description('Defines when a user accepts the system invitation.')
     .prop('sex', S.string().enum(['male', 'female', 'other']))
     .description('User sex.')
-    .prop('permissions', S.array().items(S.string()))
-    .description(`User permissions`)
 }
 
 export function sUserList() {
@@ -63,6 +61,9 @@ export function sUserList() {
       `Defines if the user is blocked, i.e. 
       if he cannot use the API (until it is unblocked).`
     )
+    .required()
+    .prop('roles', S.array().items(S.string()).minItems(1))
+    .description(`User roles`)
     .required()
 }
 
