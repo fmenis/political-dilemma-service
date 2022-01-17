@@ -118,9 +118,9 @@ export default async function createUser(fastify) {
   async function execQuery(obj, pg) {
     const query =
       'INSERT INTO users ' +
-      '(first_name, last_name, user_name, email, password, bio, ' +
+      '(first_name, last_name, user_name, email, type, password, bio, ' +
       'birth_date, sex, owner_id, id_region, id_province) ' +
-      'VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) ' +
+      'VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) ' +
       'RETURNING id, first_name, last_name, user_name, email, bio, ' +
       'birth_date, joined_date, sex, is_blocked, is_deleted, ' +
       'id_region, id_province'
@@ -130,6 +130,7 @@ export default async function createUser(fastify) {
       obj.lastName,
       obj.userName,
       obj.email,
+      obj.type,
       obj.password,
       obj.bio,
       obj.birthDate,

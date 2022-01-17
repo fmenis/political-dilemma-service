@@ -25,6 +25,7 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
         last_name VARCHAR(50) NOT NULL,
         user_name VARCHAR(50) UNIQUE NOT NULL,
         email VARCHAR(50) UNIQUE NOT NULL,
+        type VARCHAR(10) NOT NULL CHECK (type in ('backoffice', 'site')),
         password VARCHAR(60) NOT NULL,
         birth_date timestamp CHECK (birth_date > '1900-01-01'),
         joined_date timestamp CHECK (joined_date > birth_date),
