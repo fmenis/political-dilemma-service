@@ -13,6 +13,9 @@ export async function getRolePermissions(roleId, pg, permissionsIds) {
   return rows
 }
 
+/**
+ * Associate permissions to a role
+ */
 export async function associatePermissions(roleId, permissionsIds, pg, client) {
   const baseQuery =
     'INSERT INTO permissions_roles (role_id, permission_id) VALUES'
@@ -38,10 +41,12 @@ export function getRole(id, pg) {
   return getRoles([id], pg)
 }
 
-export function getRoles(ids, pg) {
-  return pg.execQuery('SELECT id FROM roles WHERE id= ANY ($1)', [ids], {
-    findOne: true,
-  })
+export async function getRoles(ids, pg) {
+  const { rows } = await pg.execQuery(
+    'SELECT id FROM roles WHERE id= ANY ($1)',
+    [ids]
+  )
+  return rows
 }
 
 export async function getPermissions(ids, pg) {
@@ -50,4 +55,27 @@ export async function getPermissions(ids, pg) {
     [ids]
   )
   return permissions
+}
+
+/**
+ * Associate roles to a user
+ */
+export function associateRoles(userId, reqUserId, rolesIds, pg, client) {
+  const baseQuery =
+    'INSERT INTO users_roles (user_id, assign_by, role_id) VALUES'
+  const inputs = [userId, reqUserId]
+
+  const valuesQuery = rolesIds
+    .reduce((acc, roleId) => {
+      inputs.push(roleId)
+      const values = `($1, $2, $${inputs.length})`
+      acc.push(values)
+      return acc
+    }, [])
+    .join(', ')
+
+  const query = `${baseQuery} ${valuesQuery}`
+  return pg.execQuery(query, inputs, {
+    client,
+  })
 }

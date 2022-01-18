@@ -1,7 +1,9 @@
 import moment from 'moment'
+import _ from 'lodash'
 
 import { hashString } from '../../../lib/hash.js'
 import { sUserDetail, sCreateUser } from '../lib/schema.js'
+import { getRoles, associateRoles } from '../../roles/lib/utils.js'
 
 export default async function createUser(fastify) {
   const { pg, config, httpErrors } = fastify
@@ -36,6 +38,7 @@ export default async function createUser(fastify) {
       birthDate,
       regionId,
       provinceId,
+      rolesIds,
     } = req.body
 
     const query = 'SELECT id FROM users WHERE user_name=$1 OR email=$2'
@@ -93,6 +96,34 @@ export default async function createUser(fastify) {
         validation: [{ message: `Province with id '${regionId}' not found` }],
       })
     }
+
+    // check missing roles
+    const roles = await getRoles(rolesIds, pg)
+    if (!roles.length) {
+      throw createError(400, 'Invalid input', {
+        validation: [
+          {
+            message: `Roles ids ${rolesIds.join(', ')} not found`,
+          },
+        ],
+      })
+    }
+
+    if (roles.length < rolesIds.length) {
+      const missing = _.difference(
+        rolesIds,
+        roles.map(item => item.id)
+      )
+      throw createError(400, 'Invalid input', {
+        validation: [
+          {
+            message: `Roles ids ${missing.join(', ')} not found`,
+          },
+        ],
+      })
+    }
+
+    //TODO controllare che uno dei ruoli non sia stato già assegnato
   }
 
   async function onCreateUser(req, reply) {
@@ -104,18 +135,29 @@ export default async function createUser(fastify) {
       password: await hashString(body.password, parseInt(config.SALT_ROUNDS)),
     }
 
-    const user = await execQuery(userObj, pg)
+    let client
 
-    reply.status(201)
+    try {
+      client = await pg.beginTransaction()
 
-    return {
-      ...user,
-      regionId: user.idRegion,
-      provinceId: user.idProvince,
+      const user = await createUser(userObj, pg, client)
+      await associateRoles(user.id, owner.id, body.rolesIds, pg, client)
+
+      await pg.commitTransaction(client)
+
+      reply.status(201)
+      return {
+        ...user,
+        regionId: user.idRegion,
+        provinceId: user.idProvince,
+      }
+    } catch (error) {
+      await pg.rollbackTransaction(client)
+      throw error
     }
   }
 
-  async function execQuery(obj, pg) {
+  async function createUser(obj, pg, client) {
     const query =
       'INSERT INTO users ' +
       '(first_name, last_name, user_name, email, type, password, bio, ' +
@@ -140,7 +182,7 @@ export default async function createUser(fastify) {
       obj.provinceId,
     ]
 
-    const res = await pg.execQuery(query, inputs)
+    const res = await pg.execQuery(query, inputs, { client })
     return res.rows[0]
   }
 }

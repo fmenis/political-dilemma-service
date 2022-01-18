@@ -1,7 +1,7 @@
 import S from 'fluent-json-schema'
 import _ from 'lodash'
 
-import { getRoles } from './lib/utils.js'
+import { getRoles, associateRoles } from './lib/utils.js'
 
 export default async function assignRoles(fastify) {
   const { pg, httpErrors } = fastify
@@ -66,15 +66,25 @@ export default async function assignRoles(fastify) {
 
     // check missing roles
     const roles = await getRoles(rolesIds, pg)
-    const ids = roles.map(item => item.id)
-
-    if (ids.length !== roles.length) {
-      const missing = _.difference(roles, ids)
-
+    if (!roles.length) {
       throw createError(400, 'Invalid input', {
         validation: [
           {
-            message: `Permissions id ${missing.join(', ')} not found`,
+            message: `Roles ids ${rolesIds.join(', ')} not found`,
+          },
+        ],
+      })
+    }
+
+    if (roles.length < rolesIds.length) {
+      const missing = _.difference(
+        rolesIds,
+        roles.map(item => item.id)
+      )
+      throw createError(400, 'Invalid input', {
+        validation: [
+          {
+            message: `Roles ids ${missing.join(', ')} not found`,
           },
         ],
       })
@@ -91,34 +101,12 @@ export default async function assignRoles(fastify) {
 
     try {
       client = await pg.beginTransaction()
-
-      await associateRoles(userId, reqUserId, rolesIds, client)
-
+      await associateRoles(userId, reqUserId, rolesIds, pg, client)
       await pg.commitTransaction(client)
       reply.code(204)
     } catch (error) {
       await pg.rollbackTransaction(client)
       throw error
     }
-  }
-
-  function associateRoles(userId, reqUserId, rolesIds, client) {
-    const baseQuery =
-      'INSERT INTO users_roles (user_id, assign_by, role_id) VALUES'
-    const inputs = [userId, reqUserId]
-
-    const valuesQuery = rolesIds
-      .reduce((acc, roleId) => {
-        inputs.push(roleId)
-        const values = `($1, $2, $${inputs.length})`
-        acc.push(values)
-        return acc
-      }, [])
-      .join(', ')
-
-    const query = `${baseQuery} ${valuesQuery}`
-    return pg.execQuery(query, inputs, {
-      client,
-    })
   }
 }
