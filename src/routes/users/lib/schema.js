@@ -62,6 +62,9 @@ export function sUserList() {
       if he cannot use the API (until it is unblocked).`
     )
     .required()
+    .prop('isDeleted', S.boolean())
+    .description(`Defines if the user is deleted.`)
+    .required()
     .prop('roles', S.array().items(S.string()).minItems(1))
     .description(`User roles`)
     .required()
