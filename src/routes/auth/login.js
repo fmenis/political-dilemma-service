@@ -42,11 +42,12 @@ export default async function login(fastify) {
         204: fastify.getSchema('sNoContent'),
       },
     },
+    preHandler: onPreHandler,
     handler: onLogin,
   })
 
-  async function onLogin(req, reply) {
-    const { email, password, deleteOldest } = req.body
+  async function onPreHandler(req) {
+    const { email, password } = req.body
     const { log } = req
 
     const user = await pg.execQuery(
@@ -92,12 +93,18 @@ export default async function login(fastify) {
       })
     }
 
+    req.user = user
+  }
+
+  async function onLogin(req, reply) {
+    const { deleteOldest } = req.body
+    const { user } = req
+
     if (deleteOldest) {
       await deleteOldestUsedSession(user.id, redis)
     }
 
     const sessionId = `${shortid.generate()}_${user.id}`
-
     await redis.set(
       sessionId,
       {
@@ -111,6 +118,11 @@ export default async function login(fastify) {
       },
       { ttl: fastify.config.SESSION_TTL }
     )
+
+    await pg.execQuery('UPDATE users SET last_access=$2 WHERE id=$1', [
+      user.id,
+      new Date(),
+    ])
 
     const cookieOptions = {
       path: '/api',
@@ -131,6 +143,8 @@ export default async function login(fastify) {
     reply.setCookie('session', sessionId, cookieOptions)
     reply.code(204)
   }
+
+  //-------------------------------------- HELPERS ----------------------------
 
   function getUserSessions(userId, redis) {
     return redis.getKeys(`*_${userId}`)

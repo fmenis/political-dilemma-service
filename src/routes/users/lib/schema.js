@@ -68,6 +68,8 @@ export function sUserList() {
     .prop('roles', S.array().items(S.string()).minItems(1))
     .description(`User roles`)
     .required()
+    .prop('lastAccess', S.string().format('date-time'))
+    .description(`Last user authentication date`)
 }
 
 export function sCreateUser() {

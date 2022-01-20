@@ -38,6 +38,7 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
         updated_at timestamp DEFAULT NOW(),
         updated_by INT,
         deleted_by INT,
+        last_access timestamp,
         id_region INT NOT NULL,
         id_province INT NOT NULL,
         CONSTRAINT fk_owner_id FOREIGN KEY(owner_id) REFERENCES users(id) ON DELETE NO ACTION,
