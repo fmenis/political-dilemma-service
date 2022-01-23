@@ -41,6 +41,7 @@
 | **SECRET**      |                     | Secret string (used to sign the cookie)     |
 | SESSION_TTL     |  1800 (30 minutes)  | Session TTL (in seconds)                    |
 | COOKIE_TTL      | 15552000 (6 months) | Cookie max age (in seconds)                 |
+| RESET_LINK_TTL  |   7200 (2 hours)    | Reset link TTL (in seconds)                 |
 | SALT_ROUNDS     |         10          | Bcrypt salt rounds value                    |
 | LOG_REQ_BODY    |        false        | Enable request body logging                 |
 

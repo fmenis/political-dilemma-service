@@ -35,6 +35,7 @@ export default async function app(fastify, opts) {
       .prop('SECRET', S.string().required())
       .prop('SESSION_TTL', S.string().default(1800))
       .prop('COOKIE_TTL', S.string().default(86400 * 180))
+      .prop('RESET_LINK_TTL', S.number().default(7200))
       .prop('LOG_REQ_BODY', S.boolean().default(false))
       .valueOf(),
   })
