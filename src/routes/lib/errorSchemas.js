@@ -60,7 +60,8 @@ export function sUnauthorized() {
         '0001: invalid access, invalid credentials.\n' +
         '0004: invalid access, cookie not found (not present or expired).\n' +
         '0005: invalid access, malformed cookie.\n' +
-        '0006: invalid access, session not found (not present or expired).\n'
+        '0006: invalid access, session not found.\n' +
+        '0011: invalid access, session expired.\n'
     )
     .required()
     .prop('details', S.object().additionalProperties(true))

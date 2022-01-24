@@ -1,7 +1,7 @@
 import S from 'fluent-json-schema'
 
 export default async function logout(fastify) {
-  const { redis, httpErrors } = fastify
+  const { pg, httpErrors } = fastify
 
   fastify.route({
     method: 'POST',
@@ -28,15 +28,21 @@ export default async function logout(fastify) {
   })
 
   async function onLogout(req, reply) {
-    const { id } = req.user.session
+    const { id: sessionId } = await pg.execQuery(
+      'SELECT id FROM sessions WHERE id=$1',
+      [req.user.session.id],
+      { findOne: true }
+    )
 
-    const exists = await redis.exists(id)
-    if (!exists) {
-      throw httpErrors.notFound(`Session with id '${id}' not found`)
+    if (!sessionId) {
+      throw httpErrors.notFound(`Session with id '${sessionId}' not found`)
     }
 
-    const deleted = await redis.del(id)
-    if (!deleted) {
+    const { rowCount } = await pg.execQuery(
+      'DELETE FROM sessions WHERE id=$1',
+      [sessionId]
+    )
+    if (!rowCount) {
       throw httpErrors.conflict('The action had no effect')
     }
 

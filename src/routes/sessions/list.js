@@ -3,7 +3,7 @@ import S from 'fluent-json-schema'
 import { sSession } from './lib/schema.js'
 
 export default async function listSessions(fastify) {
-  const { redis } = fastify
+  const { pg } = fastify
 
   fastify.route({
     method: 'GET',
@@ -29,14 +29,11 @@ export default async function listSessions(fastify) {
     const { userId } = req.query
     const { session: currentSession } = req.user
 
-    const pattern = userId ? `*_${userId}` : '*'
+    const baseQuery = 'SELECT * FROM sessions'
+    const query = userId ? `${baseQuery} WHERE user_id=$1` : baseQuery
+    const inputs = userId ? [userId] : []
 
-    const keys = await redis.getKeys(pattern)
-    if (!keys.length) {
-      return []
-    }
-
-    const sessions = await redis.getMulti(keys)
+    const { rows: sessions } = await pg.execQuery(query, inputs)
 
     // marks current session and places it first
     return sessions
