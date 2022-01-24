@@ -1,5 +1,6 @@
 import Fp from 'fastify-plugin'
 import cookie from 'fastify-cookie'
+import moment from 'moment'
 
 async function authentication(fastify) {
   fastify.register(cookie, {
@@ -7,7 +8,7 @@ async function authentication(fastify) {
   })
 
   async function authenticate(req, reply) {
-    const { pg, redis, httpErrors } = this
+    const { pg, httpErrors, config } = this
     const { createError } = httpErrors
     const { log } = req
 
@@ -32,18 +33,29 @@ async function authentication(fastify) {
     }
 
     const { value: sessionId } = unsignedCookie
-    const userId = sessionId.split('_')[1]
 
-    const session = await redis.get(sessionId)
+    const session = await pg.execQuery(
+      'SELECT * FROM sessions WHERE id=$1',
+      [sessionId],
+      { findOne: true }
+    )
+
     if (!session) {
-      log.debug(`Invalid access: session not found for user id '${userId}'`)
+      log.debug(`Invalid access: session not found`)
       throw createError(401, 'Invalid access', {
         internalCode: '0006',
       })
     }
 
+    if (new Date().toISOString() > new Date(session.expiredAt).toISOString()) {
+      log.debug(`Invalid access: session expired`)
+      throw createError(401, 'Invalid access', {
+        internalCode: '0011',
+      })
+    }
+
     if (!session.isValid) {
-      log.debug(`Invalid access: session not valid for user id '${userId}'`)
+      log.debug(`Invalid access: session not valid`)
       throw createError(403, 'Invalid access', {
         internalCode: '0007',
       })
@@ -51,24 +63,24 @@ async function authentication(fastify) {
 
     const user = await pg.execQuery(
       'SELECT * FROM users WHERE id=$1',
-      [userId],
+      [session.userId],
       { findOne: true }
     )
 
     if (!user) {
-      log.debug(`Invalid access: user '${userId}' not found`)
+      log.debug(`Invalid access: user not found`)
       throw createError(401, 'Invalid access', {
         internalCode: '0008',
       })
     }
 
-    await redis.set(
-      sessionId,
-      {
-        ...session,
-        lastActive: new Date(),
-      },
-      { ttl: fastify.config.SESSION_TTL }
+    await pg.execQuery(
+      'UPDATE sessions SET last_active=$2, expired_at=$3 WHERE id=$1',
+      [
+        session.id,
+        new Date(),
+        moment().add(config.SESSION_TTL, 'seconds').toDate(),
+      ]
     )
 
     req.user = {

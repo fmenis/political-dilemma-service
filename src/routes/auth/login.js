@@ -1,16 +1,10 @@
 import S from 'fluent-json-schema'
 import moment from 'moment'
-import shortid from 'shortid'
 
 import { compareStrings } from '../../lib/hash.js'
 
-// use $ and @ instead of - and _
-shortid.characters(
-  '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$@'
-)
-
 export default async function login(fastify) {
-  const { pg, redis, httpErrors } = fastify
+  const { pg, httpErrors, config } = fastify
   const { createError } = httpErrors
 
   fastify.route({
@@ -85,8 +79,8 @@ export default async function login(fastify) {
       })
     }
 
-    const sessionKeys = await getUserSessions(user.id, redis)
-    if (sessionKeys.length > fastify.config.SESSIONS_LIMIT - 1) {
+    const userSessionsCount = await countUserSessions(user.id, pg)
+    if (userSessionsCount === config.SESSIONS_LIMIT) {
       log.debug(`Invalid access: session number limit for user '${email}'`)
       throw createError(403, 'Invalid access', {
         internalCode: '0003',
@@ -101,23 +95,23 @@ export default async function login(fastify) {
     const { user } = req
 
     if (deleteOldest) {
-      await deleteOldestUsedSession(user.id, redis)
+      await deleteOldestUsedSession(user.id, pg)
     }
 
-    const sessionId = `${shortid.generate()}_${user.id}`
-    await redis.set(
-      sessionId,
-      {
-        id: sessionId,
-        userId: user.id,
-        email: user.email,
-        createdAt: new Date(),
-        userAgent: req.headers['user-agent'],
-        lastActive: new Date(),
-        isValid: true,
-      },
-      { ttl: fastify.config.SESSION_TTL }
-    )
+    const query =
+      'INSERT INTO sessions (user_id, email, user_agent, expired_at)' +
+      'VALUES($1, $2, $3, $4)' +
+      'RETURNING id'
+
+    const inputs = [
+      user.id,
+      user.email,
+      req.headers['user-agent'],
+      moment().add(config.SESSION_TTL, 'seconds').toDate(),
+    ]
+
+    const { rows } = await pg.execQuery(query, inputs)
+    const sessionId = rows[0].id
 
     await pg.execQuery('UPDATE users SET last_access=$2 WHERE id=$1', [
       user.id,
@@ -146,19 +140,27 @@ export default async function login(fastify) {
 
   //-------------------------------------- HELPERS ----------------------------
 
-  function getUserSessions(userId, redis) {
-    return redis.getKeys(`*_${userId}`)
+  async function countUserSessions(userId, pg) {
+    const { rows } = await pg.execQuery(
+      'SELECT COUNT(id) num_sessions FROM sessions WHERE user_id=$1',
+      [userId]
+    )
+
+    return parseInt(rows[0].numSessions)
   }
 
-  async function deleteOldestUsedSession(userId, redis) {
-    const userSessionKeys = await getUserSessions(userId, redis)
-    const userSessions = await redis.getMulti(userSessionKeys)
+  async function deleteOldestUsedSession(userId, pg) {
+    const { rows: userSessions } = await pg.execQuery(
+      'SELECT * FROM sessions WHERE user_id=$1',
+      [userId]
+    )
 
     const firstOldest = userSessions.sort(
       (a, b) => new Date(a.lastActive) - new Date(b.lastActive)
     )
 
     const targetSessionId = firstOldest[0].id
-    await redis.del(targetSessionId)
+
+    await pg.execQuery('DELETE FROM sessions WHERE id=$1', [targetSessionId])
   }
 }
