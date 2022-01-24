@@ -1,7 +1,7 @@
 import S from 'fluent-json-schema'
 
 export default async function deleteSession(fastify) {
-  const { redis, httpErrors } = fastify
+  const { pg, httpErrors } = fastify
   const { createError } = httpErrors
 
   fastify.route({
@@ -16,7 +16,12 @@ export default async function deleteSession(fastify) {
       description: 'Delete sessions by ids (bulk deletion).',
       querystring: S.object()
         .additionalProperties(false)
-        .prop('ids', S.array())
+        .prop(
+          'ids',
+          S.array()
+            .minItems(1)
+            .items([S.string().format('uuid')])
+        )
         .description('Session ids')
         .required(),
       response: {
@@ -42,7 +47,11 @@ export default async function deleteSession(fastify) {
       })
     }
 
-    const sessions = await redis.getMulti(ids)
+    const { rows: sessions } = await pg.execQuery(
+      'SELECT * FROM sessions WHERE id=ANY($1)',
+      [ids]
+    )
+
     if (sessions.length !== ids.length) {
       const difference = ids
         .filter(id => !sessions.some(obj => obj.id === id))
@@ -56,7 +65,7 @@ export default async function deleteSession(fastify) {
 
   async function onDeleteSession(req, reply) {
     const { ids } = req.query
-    await redis.del(ids)
+    await pg.execQuery('DELETE FROM sessions WHERE id=ANY($1)', [ids])
     reply.code(204)
   }
 }
