@@ -5,7 +5,7 @@ import { hashString } from '../../../lib/hash.js'
 import { generateRandomToken } from '../lib/utils.js'
 
 export default async function sendResetPasswordLink(fastify) {
-  const { pg, config } = fastify
+  const { pg, config, mailer } = fastify
 
   fastify.route({
     method: 'POST',
@@ -34,27 +34,22 @@ export default async function sendResetPasswordLink(fastify) {
     reply.code(204)
 
     let baseMessage = `Cannot send reset link. User with email '${email}'`
-    let error = false
 
     const user = await getUserByEmail(email)
 
     if (!user) {
       log.warn(`${baseMessage} not found`)
-      error = true
+      return reply.send()
     }
 
     if (user.isBlocked) {
       log.warn(`${baseMessage} is blocked`)
-      error = true
+      return reply.send()
     }
 
     if (user.isDeleted) {
       log.warn(`${baseMessage} is deleted`)
-      error = true
-    }
-
-    if (error) {
-      return
+      return reply.send()
     }
 
     req.user = user
@@ -91,12 +86,11 @@ export default async function sendResetPasswordLink(fastify) {
 
       //TODO forse non ha senso, in quanto se l'email sta 10s a essere inviata
       // l'intera API resta bloccata
-      await sendEmail(email, resetLink)
+      await sendEmailMock(email, resetLink)
 
       await pg.commitTransaction(client)
     } catch (error) {
       await pg.rollbackTransaction(client)
-      //TODO capire se mettere log.error
       throw error
     }
   }
@@ -111,8 +105,14 @@ export default async function sendResetPasswordLink(fastify) {
     )
   }
 
-  async function sendEmail(email, resetLink) {
-    console.log(email, resetLink)
-    throw new Error('failed to send email')
+  async function sendEmailMock(email, resetLink) {
+    const params = {
+      from: config.SENDER_EMAIL,
+      to: email,
+      subject: 'Message',
+      text: `I hope this message gets sent! ${resetLink}`,
+    }
+
+    await mailer.sendMail(params)
   }
 }

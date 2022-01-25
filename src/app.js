@@ -8,6 +8,7 @@ import swaggerPlugin from './plugins/swagger.js'
 import pgPlugin from './plugins/postgres.js'
 import redisPlugin from './plugins/redis.js'
 import loadSchemasPlugin from './plugins/loadSchemas.js'
+import mailerPlugin from './plugins/mailer.js'
 
 import apiPlugin from './routes/index.js'
 
@@ -37,6 +38,10 @@ export default async function app(fastify, opts) {
       .prop('COOKIE_TTL', S.string().default(86400 * 180))
       .prop('RESET_LINK_TTL', S.number().default(7200))
       .prop('LOG_REQ_BODY', S.boolean().default(false))
+      .prop('AWS_REGION', S.string().required())
+      .prop('AWS_ACCESS_KEY_ID', S.string().required())
+      .prop('AWS_SECRET_ACCESS_KEY', S.string().required())
+      .prop('SENDER_EMAIL', S.string().required())
       .valueOf(),
   })
   fastify.register(Sensible)
@@ -77,6 +82,7 @@ export default async function app(fastify, opts) {
   fastify.register(pgPlugin)
   fastify.register(redisPlugin)
   fastify.register(loadSchemasPlugin)
+  fastify.register(mailerPlugin)
 
   fastify.register(apiPlugin, { prefix: '/api' })
 }
