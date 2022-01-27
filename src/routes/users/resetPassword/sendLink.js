@@ -1,7 +1,7 @@
 import S from 'fluent-json-schema'
 import moment from 'moment'
 
-import { hashString } from '../../../lib/hash.js'
+// import { hashString } from '../../../lib/hash.js'
 import { generateRandomToken } from '../lib/utils.js'
 
 export default async function sendResetPasswordLink(fastify) {
@@ -15,7 +15,7 @@ export default async function sendResetPasswordLink(fastify) {
     },
     schema: {
       summary: 'Reset password email',
-      description: 'Reset password email.',
+      description: 'Reset password email.', //TODO
       body: S.object()
         .additionalProperties(false)
         .prop('email', S.string().format('email'))
