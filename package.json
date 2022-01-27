@@ -43,11 +43,13 @@
     "fastify-plugin": "3.0.0",
     "fastify-sensible": "3.1.1",
     "fluent-json-schema": "3.0.1",
+    "handlebars": "4.7.7",
     "lodash": "4.17.21",
     "moment": "2.29.1",
     "nodemailer": "6.7.2",
     "pg": "8.7.1",
     "pino": "7.6.0",
+    "point-of-view": "5.0.0",
     "redis": "3.1.2"
   },
   "devDependencies": {

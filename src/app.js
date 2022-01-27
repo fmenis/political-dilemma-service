@@ -3,6 +3,9 @@ import Helmet from 'fastify-helmet'
 import Cors from 'fastify-cors'
 import S from 'fluent-json-schema'
 import Env from 'fastify-env'
+import Pov from 'point-of-view'
+import handlebars from 'handlebars'
+import { join, resolve } from 'path'
 
 import swaggerPlugin from './plugins/swagger.js'
 import pgPlugin from './plugins/postgres.js'
@@ -56,6 +59,15 @@ export default async function app(fastify, opts) {
       },
     },
   })
+
+  fastify.register(Pov, {
+    engine: {
+      handlebars,
+    },
+    root: join(resolve(), 'src/public/views'),
+    propertyName: 'render',
+  })
+
   fastify.register(Cors, {
     //TODO non dovrebbe servire per le POST, testare
     methods: ['POST', 'PUT', 'DELETE'],

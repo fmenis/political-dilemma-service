@@ -14,13 +14,16 @@ export default async function sendResetPasswordLink(fastify) {
       public: true,
     },
     schema: {
+      summary: 'Reset password email',
+      description: 'Reset password email.',
       body: S.object()
         .additionalProperties(false)
         .prop('email', S.string().format('email'))
         .description('Email address to which the reset link will be sent')
         .required(),
       response: {
-        204: fastify.getSchema('sNoContent'),
+        //TODO
+        // 204: fastify.getSchema('sNoContent'),
       },
     },
     preHandler: onPreHandler,
@@ -63,7 +66,10 @@ export default async function sendResetPasswordLink(fastify) {
     // renderli inutilizzabili
 
     const token = await generateRandomToken(30)
-    const hashedToken = await hashString(token, parseInt(config.SALT_ROUNDS))
+    //TODO!!!
+    // const hashedToken = await hashString(token, parseInt(config.SALT_ROUNDS))
+    const hashedToken = token
+
     const expiredAt = moment().add(config.RESET_LINK_TTL, 'seconds').toDate()
 
     let client
@@ -82,7 +88,7 @@ export default async function sendResetPasswordLink(fastify) {
           ? `https://${config.DOMAIN_PROD}`
           : `http://127.0.0.1:${config.SERVER_PORT}`
 
-      const resetLink = `${baseUrl}/reset-password/${token}`
+      const resetLink = `${baseUrl}/api/v1/users/reset-password/${token}`
 
       //TODO forse non ha senso, in quanto se l'email sta 10s a essere inviata
       // l'intera API resta bloccata
