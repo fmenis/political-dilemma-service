@@ -41,7 +41,7 @@ export default async function login(fastify) {
   })
 
   async function onPreHandler(req) {
-    const { email, password } = req.body
+    const { email, password, deleteOldest } = req.body
     const { log } = req
 
     const user = await pg.execQuery(
@@ -79,8 +79,13 @@ export default async function login(fastify) {
       })
     }
 
-    const userSessionsCount = await countUserSessions(user.id, pg)
-    if (userSessionsCount === config.SESSIONS_LIMIT) {
+    const userSessionsCount = await countActiveUserSessions(user.id, pg)
+    /**
+     * Don't stop the logic if the user have reached the sessons
+     * limit and 'deleteOldest' is true. Is the only way to allow
+     * the user to login in that situation
+     */
+    if (userSessionsCount === config.SESSIONS_LIMIT && !deleteOldest) {
       log.debug(`Invalid access: session number limit for user '${email}'`)
       throw createError(403, 'Invalid access', {
         internalCode: '0003',
@@ -140,11 +145,12 @@ export default async function login(fastify) {
 
   //-------------------------------------- HELPERS ----------------------------
 
-  async function countUserSessions(userId, pg) {
-    const { rows } = await pg.execQuery(
-      'SELECT COUNT(id) num_sessions FROM sessions WHERE user_id=$1',
-      [userId]
-    )
+  async function countActiveUserSessions(userId, pg) {
+    const query =
+      'SELECT COUNT(id) num_sessions FROM sessions ' +
+      'WHERE user_id=$1 AND expired_at > $2'
+
+    const { rows } = await pg.execQuery(query, [userId, new Date()])
 
     return parseInt(rows[0].numSessions)
   }
