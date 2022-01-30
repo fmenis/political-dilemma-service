@@ -1,5 +1,7 @@
 import S from 'fluent-json-schema'
 
+import { deleteSessions } from './lib/utils.js'
+
 export default async function deleteSession(fastify) {
   const { pg, httpErrors } = fastify
   const { createError } = httpErrors
@@ -65,7 +67,7 @@ export default async function deleteSession(fastify) {
 
   async function onDeleteSession(req, reply) {
     const { ids } = req.query
-    await pg.execQuery('DELETE FROM sessions WHERE id=ANY($1)', [ids])
+    await deleteSessions(ids, pg)
     reply.code(204)
   }
 }

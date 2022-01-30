@@ -2,6 +2,7 @@ import S from 'fluent-json-schema'
 import moment from 'moment'
 
 import { compareStrings } from '../../lib/hash.js'
+import { deleteSessions } from '../sessions/lib/utils.js'
 
 export default async function login(fastify) {
   const { pg, httpErrors, config } = fastify
@@ -168,6 +169,6 @@ export default async function login(fastify) {
     )
 
     const targetSessionId = firstOldest[0].id
-    await pg.execQuery('DELETE FROM sessions WHERE id=$1', [targetSessionId])
+    await deleteSessions([targetSessionId, pg])
   }
 }
