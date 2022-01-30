@@ -1,6 +1,7 @@
 import S from 'fluent-json-schema'
 
 import { hashString } from '../../../lib/hash.js'
+// import { passwordRexExp } from '../../../config/main.js'
 
 export default async function resetPassword(fastify) {
   const { pg, httpErrors, config } = fastify
@@ -22,14 +23,14 @@ export default async function resetPassword(fastify) {
       description: 'Reset password.',
       body: S.object()
         .additionalProperties(false)
+        .prop('token', S.string())
+        .description('Reset password token')
+        .required()
         .prop('newPassword', S.string().pattern(emailRegExp))
         .description('New password')
         .required()
         .prop('newPasswordConfirmation', S.string().pattern(emailRegExp))
         .description('New paassword confirmation')
-        .required()
-        .prop('email', S.string().format('email'))
-        .description('User email')
         .required(),
       response: {
         204: fastify.getSchema('sNoContent'),
@@ -41,25 +42,35 @@ export default async function resetPassword(fastify) {
 
   async function onPreHandler(req) {
     const { log } = req
-    const { newPassword, newPasswordConfirmation, email } = req.params
+    const { token, newPassword, newPasswordConfirmation } = req.body
 
-    if (newPassword !== newPasswordConfirmation) {
-      throw createError(400, 'Invalid input', {
-        validation: [
-          {
-            message: `The 'new' and 'confirmation' password doesn't match`,
-          },
-        ],
-      })
-    }
-
-    const user = await pg.execQuery(
-      'SELECT * FROM users WHERE email=$1',
-      [email],
+    const resetLink = await pg.execQuery(
+      'SELECT * FROM reset_links WHERE token=$1',
+      [token],
       { findOne: true }
     )
 
-    //TODO rivedere errori
+    if (!resetLink) {
+      log.debug('[reset password] failed: rest link not found')
+      throw httpErrors.conflict(`Reset link not found`)
+    }
+
+    if (resetLink.alreadyUsed) {
+      log.debug('[reset password] failed: rest link already used')
+      throw httpErrors.conflict(`Reset link already used`)
+    }
+
+    if (new Date().toISOString() > resetLink.expiredAt.toISOString()) {
+      log.debug('[reset password] failed: rest link expired')
+      throw httpErrors.conflict(`Reset link expired`)
+    }
+
+    const user = await pg.execQuery(
+      'SELECT * FROM users WHERE id=$1',
+      [resetLink.userId],
+      { findOne: true }
+    )
+
     if (!user) {
       log.debug(`[reset password] failed: user not found (${user.email})`)
       throw httpErrors.conflict(`User with id '${user.id}' not found`)
@@ -75,25 +86,52 @@ export default async function resetPassword(fastify) {
       throw httpErrors.conflict(`User with id '${user.id}' is deleted`)
     }
 
-    req.user = user
+    if (newPassword !== newPasswordConfirmation) {
+      throw createError(400, 'Invalid input', {
+        validation: [
+          {
+            message: `The 'new' and 'confirmation' password doesn't match`,
+          },
+        ],
+      })
+    }
+
+    req.user = {
+      ...user,
+      resetLinkId: resetLink.id,
+    }
   }
 
   async function onResetPassword(req, reply) {
     const { user } = req
     const { newPassword } = req.body
 
-    //TODO cancellare tutte le sessioni
+    let client
 
-    //TODO codice uguale a changePassword. capire se si può fare un service
-    const { rowCount } = await pg.execQuery(
-      'UPDATE users SET password=$2 WHERE id=$1',
-      [user.id, await hashString(newPassword, parseInt(config.SALT_ROUNDS))]
-    )
+    try {
+      client = await pg.beginTransaction()
 
-    if (!rowCount) {
-      throw httpErrors.conflict('The action had no effect')
+      await pg.execQuery(
+        'UPDATE users SET password=$2 WHERE id=$1',
+        [user.id, await hashString(newPassword, parseInt(config.SALT_ROUNDS))],
+        { client }
+      )
+
+      await pg.execQuery(
+        'UPDATE reset_links SET already_used=$2 WHERE id=$1',
+        [user.resetLinkId, true],
+        { client }
+      )
+
+      await pg.execQuery('DELETE FROM sessions WHERE user_id=$1', [user.id], {
+        client,
+      })
+
+      await pg.commitTransaction(client)
+      reply.code(204)
+    } catch (error) {
+      await pg.rollbackTransaction(client)
+      throw error
     }
-
-    reply.code(204)
   }
 }

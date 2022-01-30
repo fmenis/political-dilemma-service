@@ -38,6 +38,7 @@ export default async function index(fastify) {
         'oldPassword',
         'newPassword',
         'newPasswordConfirmation',
+        'token',
       ]
 
       if (Object.keys(body).some(key => obscuredKeys.includes(key))) {
