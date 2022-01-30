@@ -143,7 +143,7 @@ export function sUpdateUser() {
     .prop('email', S.string().format('email').minLength(6).maxLength(50))
     .description('User email. It must be unique.')
     .required()
-    .prop('bio', S.string().maxLength(500))
+    .prop('bio', S.string().minLength(1).maxLength(500))
     .description('User biography.')
     .prop('birthDate', S.string().format('date'))
     .description('User birth date.')
