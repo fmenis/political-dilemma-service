@@ -100,7 +100,7 @@ export default async function login(fastify) {
     const { user } = req
 
     if (deleteOldest) {
-      await deleteOldestUsedSession(user.id, pg)
+      await deleteOldestActiveUserSession(user.id, pg)
     }
 
     const query =
@@ -155,18 +155,19 @@ export default async function login(fastify) {
     return parseInt(rows[0].numSessions)
   }
 
-  async function deleteOldestUsedSession(userId, pg) {
-    const { rows: userSessions } = await pg.execQuery(
-      'SELECT * FROM sessions WHERE user_id=$1',
-      [userId]
-    )
+  async function deleteOldestActiveUserSession(userId, pg) {
+    const query = 'SELECT * FROM sessions WHERE user_id=$1 AND expired_at > $2'
+
+    const { rows: userSessions } = await pg.execQuery(query, [
+      userId,
+      new Date(),
+    ])
 
     const firstOldest = userSessions.sort(
       (a, b) => new Date(a.lastActive) - new Date(b.lastActive)
     )
 
     const targetSessionId = firstOldest[0].id
-
     await pg.execQuery('DELETE FROM sessions WHERE id=$1', [targetSessionId])
   }
 }
