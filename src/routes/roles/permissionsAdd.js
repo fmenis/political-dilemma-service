@@ -24,7 +24,7 @@ export default async function addPermissions(fastify) {
         .required(),
       body: S.object()
         .additionalProperties(false)
-        .prop('permissionsIds', S.array().items([S.number()]).minItems(1))
+        .prop('permissionsIds', S.array().items(S.number()).minItems(1))
         .description('Permission ids to be assigned to the roles')
         .required(),
       response: {

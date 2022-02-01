@@ -22,7 +22,7 @@ export default async function removeRoles(fastify) {
         .prop('userId', S.number())
         .description('User id')
         .required()
-        .prop('rolesIds', S.array().items([S.number()]).minItems(1))
+        .prop('rolesIds', S.array().items(S.number()).minItems(1))
         .description('Role ids to be removed from the user')
         .required(),
       response: {

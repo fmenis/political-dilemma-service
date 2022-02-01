@@ -11,8 +11,8 @@ export function sCreateRole() {
     .prop('description', S.string().minLength(3).maxLength(200))
     .description('Role description')
     .required()
-    .prop('permissionsIds', S.array().items([S.number()]).minItems(1))
-    .description('Role permissions ids list')
+    .prop('permissionsIds', S.array().items(S.number()).minItems(1))
+    .description('Role permissions ids')
     .required()
 }
 
@@ -28,10 +28,10 @@ export function sRoleResponse() {
     .prop('description', S.string().minLength(3).maxLength(200))
     .description('Role description')
     .required()
-    .prop('isActive', S.string().minLength(3).maxLength(50))
+    .prop('isActive', S.boolean())
     .description('Defines if the role is active')
     .required()
-    .prop('permissions', S.array().items[sPermissionResponse()])
-    .description('Role permissions ids list')
+    .prop('permissions', S.array().items(sPermissionResponse()))
+    .description('Role permissions ids')
     .required()
 }

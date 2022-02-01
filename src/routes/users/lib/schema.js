@@ -123,7 +123,7 @@ export function sCreateUser() {
     .prop('provinceId', S.integer().minimum(1))
     .description('User province reference.')
     .required()
-    .prop('rolesIds', S.array().items([S.integer()]).minItems(1))
+    .prop('rolesIds', S.array().items(S.integer()).minItems(1))
     .description('User roles ids')
     .required()
 }
