@@ -1,8 +1,7 @@
 import S from 'fluent-json-schema'
 import moment from 'moment'
 
-// import { hashString } from '../../../lib/hash.js'
-import { generateRandomToken } from '../lib/utils.js'
+import { generateRandomToken, deleteUserResetLinks } from './lib/utils.js'
 
 export default async function sendResetPasswordLink(fastify) {
   const { pg, config, mailer } = fastify
@@ -15,15 +14,14 @@ export default async function sendResetPasswordLink(fastify) {
     },
     schema: {
       summary: 'Reset password email',
-      description: 'Reset password email.', //TODO
+      description: 'Send reset password link by email.',
       body: S.object()
         .additionalProperties(false)
         .prop('email', S.string().format('email'))
         .description('Email address to which the reset link will be sent')
         .required(),
       response: {
-        //TODO
-        // 204: fastify.getSchema('sNoContent'),
+        204: fastify.getSchema('sNoContent'),
       },
     },
     preHandler: onPreHandler,
@@ -62,12 +60,13 @@ export default async function sendResetPasswordLink(fastify) {
     const { email } = req.body
     const { user } = req
 
-    //TODO se presente altri link in sospeso per lo stesso utente,
-    // renderli inutilizzabili
+    /**
+     * If the user request other reset links, for securiy reasons,
+     * they must be delete before generete a new one
+     */
+    await deleteUserResetLinks(user.id, pg)
 
     const token = await generateRandomToken(30)
-    //TODO!!!
-    // const hashedToken = await hashString(token, parseInt(config.SALT_ROUNDS))
     const hashedToken = token
 
     const expiredAt = moment().add(config.RESET_LINK_TTL, 'seconds').toDate()
@@ -88,10 +87,8 @@ export default async function sendResetPasswordLink(fastify) {
           ? `https://${config.DOMAIN_PROD}`
           : `http://127.0.0.1:${config.SERVER_PORT}`
 
-      const resetLink = `${baseUrl}/api/v1/users/reset-password/${token}`
+      const resetLink = `${baseUrl}/api/v1/reset-password/${token}`
 
-      //TODO forse non ha senso, in quanto se l'email sta 10s a essere inviata
-      // l'intera API resta bloccata
       await sendEmailMock(email, resetLink)
 
       await pg.commitTransaction(client)
@@ -112,11 +109,14 @@ export default async function sendResetPasswordLink(fastify) {
   }
 
   async function sendEmailMock(email, resetLink) {
+    const text =
+      `Clicca il seguente link reimpostare la password \n` + `${resetLink}`
+
     const params = {
       from: config.SENDER_EMAIL,
       to: email,
-      subject: 'Message',
-      text: `I hope this message gets sent! ${resetLink}`,
+      subject: 'Reset password',
+      text,
     }
 
     await mailer.sendMail(params)

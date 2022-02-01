@@ -8,9 +8,6 @@ import changePwRoute from './changePassword.js'
 import whoamiRoute from './whoami.js'
 import blockRoute from './block.js'
 import unblockRoute from './unblock.js'
-import sendResetPasswordLink from './resetPassword/sendLink.js'
-import checkLink from './resetPassword/checkLink.js'
-import resetPassword from './resetPassword/resetPassword.js'
 
 export default async function index(fastify) {
   fastify.addHook('onRoute', options => {
@@ -31,7 +28,4 @@ export default async function index(fastify) {
   fastify.register(whoamiRoute, { prefix })
   fastify.register(blockRoute, { prefix })
   fastify.register(unblockRoute, { prefix })
-  fastify.register(sendResetPasswordLink, { prefix })
-  fastify.register(checkLink, { prefix })
-  fastify.register(resetPassword, { prefix })
 }

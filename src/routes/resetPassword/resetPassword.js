@@ -1,7 +1,7 @@
 import S from 'fluent-json-schema'
 
-import { hashString } from '../../../lib/hash.js'
-// import { passwordRexExp } from '../../../config/main.js'
+import { hashString } from '../../lib/hash.js'
+import { deleteUserResetLinks } from './lib/utils.js'
 
 export default async function resetPassword(fastify) {
   const { pg, httpErrors, config } = fastify
@@ -20,7 +20,7 @@ export default async function resetPassword(fastify) {
     },
     schema: {
       summary: 'Reset password',
-      description: 'Reset password.',
+      description: 'Check token and reset user password.',
       body: S.object()
         .additionalProperties(false)
         .prop('token', S.string())
@@ -34,6 +34,7 @@ export default async function resetPassword(fastify) {
         .required(),
       response: {
         204: fastify.getSchema('sNoContent'),
+        409: fastify.getSchema('sConflict'),
       },
     },
     preHandler: onPreHandler,
@@ -117,11 +118,7 @@ export default async function resetPassword(fastify) {
         { client }
       )
 
-      await pg.execQuery(
-        'UPDATE reset_links SET already_used=$2 WHERE id=$1',
-        [user.resetLinkId, true],
-        { client }
-      )
+      await deleteUserResetLinks(user.id, pg)
 
       await pg.execQuery('DELETE FROM sessions WHERE user_id=$1', [user.id], {
         client,

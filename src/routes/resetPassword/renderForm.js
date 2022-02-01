@@ -1,6 +1,6 @@
 import S from 'fluent-json-schema'
 
-export default async function checkLink(fastify) {
+export default async function renderForm(fastify) {
   fastify.route({
     method: 'GET',
     path: '/reset-password/:token',
@@ -8,8 +8,8 @@ export default async function checkLink(fastify) {
       public: true,
     },
     schema: {
-      summary: 'Reset link check', //TODO
-      description: 'Check the rest link and related info.', //TODO
+      summary: 'Render reset password form',
+      description: 'Render reset password form.',
       params: S.object()
         .additionalProperties(false)
         .prop('token', S.string().minLength(60).maxLength(60))
@@ -19,12 +19,10 @@ export default async function checkLink(fastify) {
         204: fastify.getSchema('sNoContent'),
       },
     },
-    handler: onCheckLink,
+    handler: onRenderForm,
   })
 
-  async function onCheckLink(req, reply) {
-    return reply.render('/reset-password-form.html', {
-      firstName: 'Phil',
-    })
+  async function onRenderForm(req, reply) {
+    return reply.render('/reset-password-form.html')
   }
 }

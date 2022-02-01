@@ -1,5 +1,3 @@
-import { randomBytes } from 'crypto'
-
 export async function getUserRoles(usersIds, pg) {
   const query =
     'SELECT u.id AS user_id, ro.name ' +
@@ -10,15 +8,4 @@ export async function getUserRoles(usersIds, pg) {
 
   const { rows } = await pg.execQuery(query, [usersIds])
   return rows
-}
-
-export function generateRandomToken(bytes) {
-  return new Promise((resolve, reject) => {
-    randomBytes(bytes, (err, buffer) => {
-      if (err) {
-        return reject(err)
-      }
-      resolve(buffer.toString('hex'))
-    })
-  })
 }
