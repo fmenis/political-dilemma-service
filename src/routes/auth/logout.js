@@ -10,7 +10,6 @@ export default async function logout(fastify) {
     path: '/logout',
     config: {
       public: false,
-      permission: 'auth:logout',
     },
     schema: {
       summary: 'Logout',

@@ -4,12 +4,6 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
     \connect politicaldilemma;
 
     INSERT INTO permissions (resource, action, description)
-    VALUES ('auth', 'logout', 'Logout permission');
-    
-    INSERT INTO permissions (resource, action, description)
-    VALUES ('misc', 'status', 'Status permission');
-
-    INSERT INTO permissions (resource, action, description)
     VALUES ('permission', 'create', 'Create permisssion permission');
 
     INSERT INTO permissions (resource, action, description)
@@ -40,19 +34,10 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
     VALUES ('role', 'update', 'Update role permission');
 
     INSERT INTO permissions (resource, action, description)
-    VALUES ('role', 'user-assign', 'Add role assignment permission');
-
-    INSERT INTO permissions (resource, action, description)
-    VALUES ('role', 'user-remove', 'Remove role assignment permission');
-
-    INSERT INTO permissions (resource, action, description)
     VALUES ('session', 'delete', 'Delete session permission');
 
     INSERT INTO permissions (resource, action, description)
     VALUES ('session', 'list', 'List session permission');
-
-    INSERT INTO permissions (resource, action, description)
-    VALUES ('user', 'change-password', 'User change password permission');
 
     INSERT INTO permissions (resource, action, description)
     VALUES ('user', 'create', 'User create permission');
@@ -70,17 +55,8 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
     VALUES ('user', 'update', 'Update users permission');
 
     INSERT INTO permissions (resource, action, description)
-    VALUES ('user', 'whoami', 'Whoami users permission');
-
-    INSERT INTO permissions (resource, action, description)
     VALUES ('user', 'block', 'Block user permission');
 
     INSERT INTO permissions (resource, action, description)
     VALUES ('user', 'unblock', 'Unblock user permission');
-
-    INSERT INTO permissions (resource, action, description)
-    VALUES ('regions', 'list', 'List regions permission');
-
-    INSERT INTO permissions (resource, action, description)
-    VALUES ('provinces', 'list', 'List provinces permission');
 EOSQL

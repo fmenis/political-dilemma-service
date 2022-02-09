@@ -15,6 +15,7 @@ export default async function assignRoles(fastify) {
       permission: 'role:user-assign',
     },
     schema: {
+      hide: true,
       summary: 'Assign roles',
       description: 'Assign roles to a user.',
       body: S.object()
@@ -22,7 +23,7 @@ export default async function assignRoles(fastify) {
         .prop('userId', S.number())
         .description('User id')
         .required()
-        .prop('rolesIds', S.array().items([S.number()]).minItems(1))
+        .prop('rolesIds', S.array().items(S.number()).minItems(1))
         .description('Role ids to be assigned to the user')
         .required(),
       response: {

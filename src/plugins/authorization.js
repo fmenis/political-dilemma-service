@@ -1,4 +1,5 @@
 import Fp from 'fastify-plugin'
+import { getRawUserPermissions } from '../routes/users/lib/utils.js'
 
 async function authorization(fastify) {
   const { httpErrors, pg } = fastify
@@ -6,6 +7,7 @@ async function authorization(fastify) {
 
   async function authorize(req, reply) {
     const { log, user } = req
+    const { permission } = reply.context.config
 
     if (reply.context.config.public) {
       return
@@ -25,12 +27,11 @@ async function authorization(fastify) {
       })
     }
 
-    const { permission } = reply.context.config
     if (!permission) {
       return
     }
 
-    const userPermissions = await getUserPermissions(user.id, pg)
+    const userPermissions = await getRawUserPermissions(user.id, pg)
     const matchPermission = userPermissions.includes(permission)
 
     if (!matchPermission) {
@@ -42,6 +43,10 @@ async function authorization(fastify) {
         internalCode: '0010',
       })
     }
+
+    user.permissions = userPermissions
+
+    return
 
     //TODO
     // if (permission.includes('own')) {
@@ -62,26 +67,6 @@ async function authorization(fastify) {
     //     })
     //   }
     // }
-
-    user.permissions = userPermissions
-    return
-  }
-
-  async function getUserPermissions(userId) {
-    const query =
-      'SELECT p.resource, p.action, p.ownership FROM permissions_roles ' +
-      'AS pr LEFT JOIN permissions AS p ON pr.permission_id = p.id ' +
-      'WHERE pr.role_id=ANY(SELECT role_id FROM users_roles WHERE user_id=$1)'
-
-    const { rows } = await pg.execQuery(query, [userId])
-
-    const permissions = rows.map(row => {
-      return row.ownership
-        ? `${row.resource}:${row.action}:${row.ownership}`
-        : `${row.resource}:${row.action}`
-    })
-
-    return permissions
   }
 
   fastify.addHook('onRequest', authorize)

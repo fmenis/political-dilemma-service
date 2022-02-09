@@ -1,4 +1,5 @@
 import S from 'fluent-json-schema'
+import { getRawUserPermissions } from './lib/utils.js'
 
 export default async function userWhoami(fastify) {
   const { pg } = fastify
@@ -8,7 +9,6 @@ export default async function userWhoami(fastify) {
     path: '/whoami',
     config: {
       public: false,
-      permission: 'user:whoami',
     },
     schema: {
       summary: 'Get authenticated user',
@@ -41,13 +41,15 @@ export default async function userWhoami(fastify) {
 
     const query =
       'SELECT id, first_name, last_name, email FROM users WHERE id=$1'
-    const user = await pg.execQuery(query, [id], { findOne: true })
 
-    user.permissions = req.user.permissions.map(item => {
-      const splitted = item.split(':')
-      return `${splitted[0]}:${splitted[1]}`
-    })
+    const [user, permissions] = await Promise.all([
+      pg.execQuery(query, [id], { findOne: true }),
+      getRawUserPermissions(id, pg),
+    ])
 
-    return user
+    return {
+      ...user,
+      permissions,
+    }
   }
 }

@@ -8,7 +8,6 @@ export default async function listRegions(fastify) {
     path: '/provinces',
     config: {
       public: false,
-      permission: 'provinces:list',
     },
     schema: {
       summary: 'Italian provinces',
