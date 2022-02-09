@@ -67,7 +67,6 @@ export default async function sendResetPasswordLink(fastify) {
     await deleteUserResetLinks(user.id, pg)
 
     const token = await generateRandomToken(30)
-    const hashedToken = token
 
     const expiredAt = moment().add(config.RESET_LINK_TTL, 'seconds').toDate()
 
@@ -79,15 +78,10 @@ export default async function sendResetPasswordLink(fastify) {
       const query =
         'INSERT INTO reset_links (user_id, token, expired_at) ' +
         'VALUES ($1, $2, $3)'
+      await pg.execQuery(query, [user.id, token, expiredAt], { client })
 
-      await pg.execQuery(query, [user.id, hashedToken, expiredAt], { client })
-
-      const baseUrl =
-        config.NODE_ENV === 'production'
-          ? `https://${config.DOMAIN_PROD}`
-          : `http://127.0.0.1:${config.SERVER_PORT}`
-
-      const resetLink = `${baseUrl}/api/v1/reset-password/${token}`
+      const baseUrl = req.headers.origin || 'http://127.0.0.1:4200'
+      const resetLink = `${baseUrl}/reset-password?token=${token}`
 
       await sendEmailMock(email, resetLink)
 
@@ -109,14 +103,16 @@ export default async function sendResetPasswordLink(fastify) {
   }
 
   async function sendEmailMock(email, resetLink) {
-    const text =
-      `Clicca il seguente link reimpostare la password \n` + `${resetLink}`
+    const html = `<div>
+        Clicca il seguente <a href="${resetLink}">link</a>
+        per reimpostare la password.
+      </div>`
 
     const params = {
       from: config.SENDER_EMAIL,
       to: email,
       subject: 'Reset password',
-      text,
+      html,
     }
 
     await mailer.sendMail(params)
