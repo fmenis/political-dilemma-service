@@ -1,5 +1,7 @@
 import S from 'fluent-json-schema'
 
+import { deleteSessions } from '../sessions/lib/utils.js'
+
 export default async function logout(fastify) {
   const { pg, httpErrors } = fastify
 
@@ -20,7 +22,6 @@ export default async function logout(fastify) {
       response: {
         204: fastify.getSchema('sNoContent'),
         404: fastify.getSchema('sNotFound'),
-        409: fastify.getSchema('sConflict'),
       },
     },
     handler: onLogout,
@@ -37,13 +38,7 @@ export default async function logout(fastify) {
       throw httpErrors.notFound(`Session with id '${sessionId}' not found`)
     }
 
-    const { rowCount } = await pg.execQuery(
-      'DELETE FROM sessions WHERE id=$1',
-      [sessionId]
-    )
-    if (!rowCount) {
-      throw httpErrors.conflict('The action had no effect')
-    }
+    await deleteSessions([sessionId], pg)
 
     reply.code(204)
     reply.clearCookie('session', { path: '/api' })

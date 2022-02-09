@@ -24,25 +24,30 @@
 
 **Bold** env must be requred.
 
-| Name            |       Default       | Description                                 |
-| --------------- | :-----------------: | ------------------------------------------- |
-| SERVER_ADDRESS  |      127.0.0.1      | Server address                              |
-| SERVER_PORT     |        3000         | Server port                                 |
-| **DOMAIN_PROD** |                     | Production domain (eg: https://example.com) |
-| LOG_LEVEL       |        info         | Pino.js default log level                   |
-| SESSIONS_LIMIT  |          4          | Session number limit                        |
-| **PG_HOST**     |                     | Postgres host                               |
-| **PG_PORT**     |                     | Postgres port                               |
-| **PG_DB**       |                     | Postgres database                           |
-| **PG_USER**     |                     | Postgres user                               |
-| **PG_PW**       |                     | Postgres password                           |
-| **REDIS_HOST**  |                     | Redis host                                  |
-| **REDIS_PORT**  |                     | Redis port                                  |
-| **SECRET**      |                     | Secret string (used to sign the cookie)     |
-| SESSION_TTL     |  1800 (30 minutes)  | Session TTL (in seconds)                    |
-| COOKIE_TTL      | 15552000 (6 months) | Cookie max age (in seconds)                 |
-| SALT_ROUNDS     |         10          | Bcrypt salt rounds value                    |
-| LOG_REQ_BODY    |        false        | Enable request body logging                 |
+| Name                      |       Default       | Description                                 |
+| ------------------------- | :-----------------: | ------------------------------------------- |
+| SERVER_ADDRESS            |      127.0.0.1      | Server address                              |
+| SERVER_PORT               |        3000         | Server port                                 |
+| **DOMAIN_PROD**           |                     | Production domain (eg: https://example.com) |
+| LOG_LEVEL                 |        info         | Pino.js default log level                   |
+| SESSIONS_LIMIT            |          4          | Session number limit                        |
+| **PG_HOST**               |                     | Postgres host                               |
+| **PG_PORT**               |                     | Postgres port                               |
+| **PG_DB**                 |                     | Postgres database                           |
+| **PG_USER**               |                     | Postgres user                               |
+| **PG_PW**                 |                     | Postgres password                           |
+| **REDIS_HOST**            |                     | Redis host                                  |
+| **REDIS_PORT**            |                     | Redis port                                  |
+| **SECRET**                |                     | Secret string (used to sign the cookie)     |
+| SESSION_TTL               |  1800 (30 minutes)  | Session TTL (in seconds)                    |
+| COOKIE_TTL                | 15552000 (6 months) | Cookie max age (in seconds)                 |
+| RESET_LINK_TTL            |   7200 (2 hours)    | Reset link TTL (in seconds)                 |
+| SALT_ROUNDS               |         10          | Bcrypt salt rounds value                    |
+| LOG_REQ_BODY              |        false        | Enable request body logging                 |
+| **AWS_REGION**            |                     | AWS REGION                                  |
+| **AWS_ACCESS_KEY_ID**     |                     | AWS access key id                           |
+| **AWS_SECRET_ACCESS_KEY** |                     | AWS access key key                          |
+| **SENDER_EMAIL**          |                     | Email address used to send email from       |
 
 PS: If you have difficulties to compiling the env file, ask the backend guy!
 

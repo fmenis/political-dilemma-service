@@ -31,6 +31,10 @@ async function swaggerGenerator(fastify) {
         { name: 'permissions', description: 'Permissions related end-points' },
         { name: 'roles', description: 'Roles related end-points' },
         { name: 'users', description: 'User related end-points' },
+        {
+          name: 'reset password',
+          description: 'Reset password related end-points',
+        },
         { name: 'misc', description: 'Miscellaneous related end-points' },
       ],
     },
