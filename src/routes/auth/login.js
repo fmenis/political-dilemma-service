@@ -3,10 +3,12 @@ import moment from 'moment'
 
 import { compareStrings } from '../../lib/hash.js'
 import { deleteSessions } from '../sessions/lib/utils.js'
+import { config as mainConfig } from '../../config/main.js'
 
 export default async function login(fastify) {
   const { pg, httpErrors, config } = fastify
   const { createError } = httpErrors
+  const { passwordRexExp } = mainConfig
 
   fastify.route({
     method: 'POST',
@@ -22,13 +24,7 @@ export default async function login(fastify) {
         .prop('email', S.string().format('email').minLength(6).maxLength(50))
         .description('User email.')
         .required()
-        .prop(
-          'password',
-          S.string().pattern(
-            // eslint-disable-next-line max-len
-            /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})(?=.*[;:_,.\-ç°§òàù@#é*è+[\]{}|!"£$%&/()=?^\\'ì<>])/g
-          )
-        )
+        .prop('password', S.string().pattern(passwordRexExp))
         .description('User password.')
         .required()
         .prop('deleteOldest', S.boolean())

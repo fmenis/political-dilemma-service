@@ -1,9 +1,11 @@
 import S from 'fluent-json-schema'
 import { compareStrings, hashString } from '../../lib/hash.js'
+import { config as mainConfig } from '../../config/main.js'
 
 export default async function changePassword(fastify) {
   const { pg, config, httpErrors } = fastify
   const { createError } = httpErrors
+  const { passwordRexExp } = mainConfig
 
   fastify.route({
     method: 'POST',
@@ -23,31 +25,13 @@ export default async function changePassword(fastify) {
         .required(),
       body: S.object()
         .additionalProperties(false)
-        .prop(
-          'oldPassword',
-          S.string().pattern(
-            // eslint-disable-next-line max-len
-            /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})(?=.*[;:_,.\-ç°§òàù@#é*è+[\]{}|!"£$%&/()=?^\\'ì<>])/g
-          )
-        )
+        .prop('oldPassword', S.string().pattern(passwordRexExp))
         .description('Current password')
         .required()
-        .prop(
-          'newPassword',
-          S.string().pattern(
-            // eslint-disable-next-line max-len
-            /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})(?=.*[;:_,.\-ç°§òàù@#é*è+[\]{}|!"£$%&/()=?^\\'ì<>])/g
-          )
-        )
+        .prop('newPassword', S.string().pattern(passwordRexExp))
         .description('New password')
         .required()
-        .prop(
-          'newPasswordConfirmation',
-          S.string().pattern(
-            // eslint-disable-next-line max-len
-            /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})(?=.*[;:_,.\-ç°§òàù@#é*è+[\]{}|!"£$%&/()=?^\\'ì<>])/g
-          )
-        )
+        .prop('newPasswordConfirmation', S.string().pattern(passwordRexExp))
         .description('New password confirmation')
         .required(),
       response: {

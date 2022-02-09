@@ -18,12 +18,7 @@ export default async function deleteSession(fastify) {
       description: 'Delete sessions by ids (bulk deletion).',
       querystring: S.object()
         .additionalProperties(false)
-        .prop(
-          'ids',
-          S.array()
-            .minItems(1)
-            .items([S.string().format('uuid')])
-        )
+        .prop('ids', S.array().minItems(1).items(S.string().format('uuid')))
         .description('Session ids')
         .required(),
       response: {

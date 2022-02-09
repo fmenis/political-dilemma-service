@@ -2,15 +2,12 @@ import S from 'fluent-json-schema'
 
 import { hashString } from '../../lib/hash.js'
 import { deleteUserResetLinks } from './lib/utils.js'
+import { config as mainConfig } from '../../config/main.js'
 
 export default async function resetPassword(fastify) {
   const { pg, httpErrors, config } = fastify
   const { createError } = httpErrors
-
-  const emailRegExp =
-    // eslint-disable-next-line max-len
-    /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})(?=.*[;:_,.\-ç°§òàù@#é*è+[\]{}|!"£$%&/()=?^\\'ì<>])/g
-  //TODO capire come fare un file config e metterci questa regexp
+  const { passwordRexExp } = mainConfig
 
   fastify.route({
     method: 'POST',
@@ -26,10 +23,10 @@ export default async function resetPassword(fastify) {
         .prop('token', S.string())
         .description('Reset password token')
         .required()
-        .prop('newPassword', S.string().pattern(emailRegExp))
+        .prop('newPassword', S.string().pattern(passwordRexExp))
         .description('New password')
         .required()
-        .prop('newPasswordConfirmation', S.string().pattern(emailRegExp))
+        .prop('newPasswordConfirmation', S.string().pattern(passwordRexExp))
         .description('New paassword confirmation')
         .required(),
       response: {
