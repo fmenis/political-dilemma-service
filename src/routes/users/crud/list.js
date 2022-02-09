@@ -48,8 +48,11 @@ export default async function listUsers(fastify) {
 
   async function execQuery(options, pg) {
     const baseQuery =
-      'SELECT id, first_name, last_name, user_name, email, ' +
-      'joined_date, is_blocked, is_deleted, last_access FROM users'
+      'SELECT u.id, u.first_name, u.last_name, u.user_name, u.email, ' +
+      'u.joined_date, u.is_blocked, u.is_deleted, last_access, ' +
+      'r.name AS region, p.name AS province FROM users AS u ' +
+      'JOIN provinces AS p ON u.id_province = p.id ' +
+      'JOIN regions AS r ON u.id_region = r.id '
 
     const dbObj = applyFilters(baseQuery, options.filters)
 
@@ -71,7 +74,11 @@ export default async function listUsers(fastify) {
         ...user,
         roles: roles
           .filter(item => item.userId === user.id)
-          .map(item => item.name),
+          .map(item => item.name)[0],
+        publishedLaws: 0,
+        draftLaws: 0,
+        publishedArticles: 0,
+        draftArticles: 0,
       }
     })
 
