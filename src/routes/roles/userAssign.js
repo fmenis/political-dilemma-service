@@ -15,6 +15,7 @@ export default async function assignRoles(fastify) {
       permission: 'role:user-assign',
     },
     schema: {
+      hide: true,
       summary: 'Assign roles',
       description: 'Assign roles to a user.',
       body: S.object()

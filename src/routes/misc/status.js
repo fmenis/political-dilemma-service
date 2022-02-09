@@ -10,7 +10,6 @@ export default async function status(fastify) {
     path: '/status',
     config: {
       public: false,
-      permission: 'misc:status',
     },
     schema: {
       summary: 'Get application status and version',
