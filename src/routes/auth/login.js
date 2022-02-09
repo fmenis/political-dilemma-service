@@ -160,6 +160,10 @@ export default async function login(fastify) {
       new Date(),
     ])
 
+    if (!userSessions.length) {
+      return
+    }
+
     const firstOldest = userSessions.sort(
       (a, b) => new Date(a.lastActive) - new Date(b.lastActive)
     )
