@@ -6,6 +6,7 @@ async function authorization(fastify) {
 
   async function authorize(req, reply) {
     const { log, user } = req
+    const { permission, loadUserPermissions } = reply.context.config
 
     if (reply.context.config.public) {
       return
@@ -25,12 +26,17 @@ async function authorization(fastify) {
       })
     }
 
-    const { permission } = reply.context.config
-    if (!permission) {
+    if (!permission && !loadUserPermissions) {
       return
     }
 
     const userPermissions = await getUserPermissions(user.id, pg)
+    user.permissions = userPermissions
+
+    if (!permission) {
+      return
+    }
+
     const matchPermission = userPermissions.includes(permission)
 
     if (!matchPermission) {
@@ -63,7 +69,6 @@ async function authorization(fastify) {
     //   }
     // }
 
-    user.permissions = userPermissions
     return
   }
 
