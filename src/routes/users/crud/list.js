@@ -1,10 +1,18 @@
 import S from 'fluent-json-schema'
+import path from 'path'
+
+import { readFile } from 'fs'
+import { promisify } from 'util'
+const readFileAsync = promisify(readFile)
 
 import { sUserList } from '../lib/schema.js'
-import { getUserRoles } from '../lib/utils.js'
 
 export default async function listUsers(fastify) {
   const { pg } = fastify
+  let userListQuery
+
+  // allow only letters and spaces (between letters)
+  const regExp = /^[a-zA-Z\s]*$/g
 
   fastify.route({
     method: 'GET',
@@ -18,12 +26,31 @@ export default async function listUsers(fastify) {
       description: 'Get all users.',
       querystring: S.object()
         .additionalProperties(false)
+        .prop('type', S.string().enum(['backoffice', 'site']))
+        .description('Filter by user type.')
+        .prop('firstName', S.string().minLength(3).pattern(regExp))
+        .description('Filter by user first name.')
+        .prop('lastName', S.string().minLength(3).pattern(regExp))
+        .description('Filter by user last name.')
+        .prop('userName', S.string().minLength(3).pattern(regExp))
+        .description('Filter by user name.')
+        .prop('email', S.string().minLength(3).pattern(regExp))
+        .description('Filter by user email.')
         .prop('isBlocked', S.boolean())
-        .description('Returns blocked or non blocked users.'),
+        .description('Returns blocked or not blocked users.')
+        .prop('isDeleted', S.boolean())
+        .description('Returns deleted or not deleted users.')
+        .prop('role', S.string().minLength(1).pattern(regExp))
+        .description('Filter by user role.')
+        .prop('search', S.string().minLength(3).pattern(regExp))
+        .description('Full text search field.'),
       response: {
         200: S.object()
           .additionalProperties(false)
-          .prop('results', S.array().items(sUserList())),
+          .prop('items', S.array().items(sUserList()))
+          .required()
+          .prop('count', S.integer())
+          .required(),
       },
     },
     handler: onListUsers,
@@ -34,7 +61,23 @@ export default async function listUsers(fastify) {
 
     const options = {
       filters: {
-        is_blocked: query.isBlocked,
+        type: { value: query.type, mode: 'equal' },
+        first_name: { value: query.firstName, mode: 'contains' },
+        last_name: { value: query.lastName, mode: 'contains' },
+        user_name: { value: query.userName, mode: 'contains' },
+        email: { value: query.email, mode: 'contains' },
+        is_blocked: { value: query.isBlocked, mode: 'equal' },
+        is_deleted: { value: query.isDeleted, mode: 'equal' },
+        role: {
+          value: query.role,
+          mode: 'contains',
+          dbField: 'name',
+          table: 'roles',
+        },
+      },
+      fullText: {
+        value: query.search,
+        fields: ['first_name', 'last_name', 'user_name', 'email'],
       },
       pagination: {
         limit: query.limit ?? 10,
@@ -42,19 +85,24 @@ export default async function listUsers(fastify) {
       },
     }
 
-    const users = await execQuery(options, pg)
-    return { results: users }
+    const { users, count } = await getUsersList(options, pg)
+
+    return {
+      items: users,
+      count: count,
+    }
   }
 
-  async function execQuery(options, pg) {
-    const baseQuery =
-      'SELECT u.id, u.first_name, u.last_name, u.user_name, u.email, ' +
-      'u.joined_date, u.is_blocked, u.is_deleted, last_access, ' +
-      'r.name AS region, p.name AS province FROM users AS u ' +
-      'JOIN provinces AS p ON u.id_province = p.id ' +
-      'JOIN regions AS r ON u.id_region = r.id '
+  //-------------------------------------- HELPERS ----------------------------
 
-    const dbObj = applyFilters(baseQuery, options.filters)
+  async function getUsersList(options, pg) {
+    const baseQuery = await getAndCacheBaseQuery()
+
+    let dbObj = applyFilters(baseQuery, options.filters)
+
+    dbObj = applyFullTextSearch(dbObj.query, options.fullText, dbObj.inputs)
+
+    const count = await getRowCount(dbObj)
 
     const { query, inputs } = applyPagination(
       dbObj.query,
@@ -62,39 +110,57 @@ export default async function listUsers(fastify) {
       dbObj.inputs
     )
 
-    const { rows } = await pg.execQuery(query, inputs)
+    const { rows } = await pg.execQuery(query.replace(/{columns}/g, ''), inputs)
 
-    const roles = await getUserRoles(
-      rows.map(item => item.id),
-      pg
-    )
+    const users = await populateUserList(rows)
 
-    const userList = rows.map(user => {
-      return {
-        ...user,
-        roles: roles
-          .filter(item => item.userId === user.id)
-          .map(item => item.name)[0],
-        publishedLaws: 0,
-        draftLaws: 0,
-        publishedArticles: 0,
-        draftArticles: 0,
-      }
-    })
+    return {
+      users,
+      count,
+    }
+  }
 
-    return userList
+  async function getAndCacheBaseQuery() {
+    if (!userListQuery) {
+      const relativePath = 'src/routes/users/crud/sql/list.sql'
+      const sqlFilePath = path.join(path.resolve(), relativePath)
+      userListQuery = await readFileAsync(sqlFilePath, 'utf8')
+    }
+
+    return userListQuery
+  }
+
+  async function getRowCount(dbObj) {
+    const splitted = dbObj.query.split('{columns}')
+    let query = [splitted[0]]
+    query.push('COUNT(users.id) AS count')
+    query.push(splitted[2])
+
+    query = query.join(' ')
+
+    const { rows } = await pg.execQuery(query, dbObj.inputs)
+    return parseInt(rows[0].count)
   }
 
   function applyFilters(query, filters, inputs = []) {
-    const where = Object.entries(filters).reduce((acc, item) => {
-      const [field, value] = item
+    const where = Object.keys(filters).reduce((acc, field) => {
+      const { value, mode, table, dbField } = filters[field]
 
       if (value === undefined) {
         return acc
       }
 
-      inputs.push(value)
-      acc.push(`${field} = $${inputs.length}`)
+      if (mode === 'equal') {
+        inputs.push(value)
+        acc.push(`${table || 'users'}.${dbField || field} = $${inputs.length}`)
+      }
+
+      if (mode === 'contains') {
+        inputs.push(`%${value}%`)
+        acc.push(
+          `${table || 'users'}.${dbField || field} ILIKE $${inputs.length}`
+        )
+      }
 
       return acc
     }, [])
@@ -106,9 +172,43 @@ export default async function listUsers(fastify) {
     return { query, inputs }
   }
 
+  function applyFullTextSearch(query, fullText, inputs = []) {
+    if (!fullText.value) {
+      return { query, inputs }
+    }
+
+    inputs.push(`%${fullText.value}%`)
+
+    const searchWhereStatement = fullText.fields.reduce((acc, field) => {
+      acc.push(`${field} ILIKE $${inputs.length}`)
+      return acc
+    }, [])
+
+    if (query.includes('WHERE')) {
+      query = `${query} AND (${searchWhereStatement.join(' OR ')})`
+    } else {
+      query = `${query} WHERE ${searchWhereStatement.join(' OR ')}`
+    }
+
+    return { query, inputs }
+  }
+
   function applyPagination(query, pagination, inputs) {
     query += ` LIMIT $${inputs.length + 1} OFFSET $${inputs.length + 2}`
     inputs.push(pagination.limit, pagination.offset)
     return { query, inputs }
+  }
+
+  async function populateUserList(users) {
+    // TODO mock data
+    return users.map(user => {
+      return {
+        ...user,
+        publishedLaws: 0,
+        draftLaws: 0,
+        publishedArticles: 0,
+        draftArticles: 0,
+      }
+    })
   }
 }
