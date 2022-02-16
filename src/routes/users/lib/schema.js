@@ -65,7 +65,7 @@ export function sUserList() {
     .prop('isDeleted', S.boolean())
     .description(`Defines if the user is deleted.`)
     .required()
-    .prop('role', S.string().minLength(3))
+    .prop('role', S.string().minLength(2))
     .description(`User roles`)
     .required()
     .prop('lastAccess', S.string().format('date-time'))

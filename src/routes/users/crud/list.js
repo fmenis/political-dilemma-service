@@ -11,6 +11,9 @@ export default async function listUsers(fastify) {
   const { pg } = fastify
   let userListQuery
 
+  // allow only letters and spaces (between letters)
+  const regExp = /^[a-zA-Z\s]*$/g
+
   fastify.route({
     method: 'GET',
     path: '',
@@ -25,28 +28,28 @@ export default async function listUsers(fastify) {
         .additionalProperties(false)
         .prop('type', S.string().enum(['backoffice', 'site']))
         .description('Filter by user type.')
-        .prop('firstName', S.string().minLength(3))
+        .prop('firstName', S.string().minLength(3).pattern(regExp))
         .description('Filter by user first name.')
-        .prop('lastName', S.string().minLength(3))
+        .prop('lastName', S.string().minLength(3).pattern(regExp))
         .description('Filter by user last name.')
-        .prop('userName', S.string().minLength(3))
+        .prop('userName', S.string().minLength(3).pattern(regExp))
         .description('Filter by user name.')
-        .prop('email', S.string().minLength(3))
+        .prop('email', S.string().minLength(3).pattern(regExp))
         .description('Filter by user email.')
         .prop('isBlocked', S.boolean())
         .description('Returns blocked or not blocked users.')
         .prop('isDeleted', S.boolean())
         .description('Returns deleted or not deleted users.')
-        .prop('role', S.string().minLength(2))
+        .prop('role', S.string().minLength(1).pattern(regExp))
         .description('Filter by user role.')
-        .prop('search', S.string().minLength(3))
+        .prop('search', S.string().minLength(3).pattern(regExp))
         .description('Full text search field.'),
       response: {
         200: S.object()
           .additionalProperties(false)
           .prop('items', S.array().items(sUserList()))
           .required()
-          .prop('totItems', S.integer())
+          .prop('count', S.integer())
           .required(),
       },
     },
@@ -59,10 +62,7 @@ export default async function listUsers(fastify) {
     const options = {
       filters: {
         type: { value: query.type, mode: 'equal' },
-        first_name: {
-          value: query.firstName,
-          mode: 'contains',
-        },
+        first_name: { value: query.firstName, mode: 'contains' },
         last_name: { value: query.lastName, mode: 'contains' },
         user_name: { value: query.userName, mode: 'contains' },
         email: { value: query.email, mode: 'contains' },
@@ -77,6 +77,7 @@ export default async function listUsers(fastify) {
       },
       fullText: {
         value: query.search,
+        fields: ['first_name', 'last_name', 'user_name', 'email'],
       },
       pagination: {
         limit: query.limit ?? 10,
@@ -84,25 +85,17 @@ export default async function listUsers(fastify) {
       },
     }
 
-    const { users, count } = await execQuery(options, pg)
+    const { users, count } = await getUsersList(options, pg)
 
     return {
       items: users,
-      totItems: count,
+      count: count,
     }
   }
 
-  async function getAndCacheBaseQuery() {
-    if (!userListQuery) {
-      const relativePath = 'src/routes/users/crud/sql/list.sql'
-      const sqlFilePath = path.join(path.resolve(), relativePath)
-      userListQuery = await readFileAsync(sqlFilePath, 'utf8')
-    }
+  //-------------------------------------- HELPERS ----------------------------
 
-    return userListQuery
-  }
-
-  async function execQuery(options, pg) {
+  async function getUsersList(options, pg) {
     const baseQuery = await getAndCacheBaseQuery()
 
     let dbObj = applyFilters(baseQuery, options.filters)
@@ -125,6 +118,16 @@ export default async function listUsers(fastify) {
       users,
       count,
     }
+  }
+
+  async function getAndCacheBaseQuery() {
+    if (!userListQuery) {
+      const relativePath = 'src/routes/users/crud/sql/list.sql'
+      const sqlFilePath = path.join(path.resolve(), relativePath)
+      userListQuery = await readFileAsync(sqlFilePath, 'utf8')
+    }
+
+    return userListQuery
   }
 
   async function getRowCount(dbObj) {
@@ -176,9 +179,7 @@ export default async function listUsers(fastify) {
 
     inputs.push(`%${fullText.value}%`)
 
-    const searchabeFields = ['first_name', 'last_name', 'user_name', 'email']
-
-    const searchWhereStatement = searchabeFields.reduce((acc, field) => {
+    const searchWhereStatement = fullText.fields.reduce((acc, field) => {
       acc.push(`${field} ILIKE $${inputs.length}`)
       return acc
     }, [])
