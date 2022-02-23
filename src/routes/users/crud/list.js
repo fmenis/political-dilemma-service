@@ -11,9 +11,6 @@ export default async function listUsers(fastify) {
   const { pg } = fastify
   let userListQuery
 
-  // allow only letters and spaces (between letters)
-  const regExp = /^[a-zA-Z\s]*$/g
-
   fastify.route({
     method: 'GET',
     path: '',
@@ -28,26 +25,73 @@ export default async function listUsers(fastify) {
         .additionalProperties(false)
         .prop('type', S.string().enum(['backoffice', 'site']))
         .description('Filter by user type.')
-        .prop('firstName', S.string().minLength(3).pattern(regExp))
+        .prop(
+          'firstName',
+          S.string()
+            .minLength(3)
+            .pattern(/^[a-zA-Z\s]*$/g)
+        )
         .description('Filter by user first name.')
-        .prop('lastName', S.string().minLength(3).pattern(regExp))
+        .prop(
+          'lastName',
+          S.string()
+            .minLength(3)
+            .pattern(/^[a-zA-Z'\s]*$/g)
+        )
         .description('Filter by user last name.')
-        .prop('userName', S.string().minLength(3).pattern(regExp))
+        .prop(
+          'userName',
+          S.string()
+            .minLength(3)
+            .pattern(/^[a-zA-Z'\s\d-_]*$/g)
+        )
         .description('Filter by user name.')
-        .prop('email', S.string().minLength(3).pattern(regExp))
+        .prop(
+          'email',
+          S.string()
+            .minLength(3)
+            .pattern(/^[a-zA-Z@.\d-_]*$/g)
+        )
         .description('Filter by user email.')
         .prop('isBlocked', S.boolean())
         .description('Returns blocked or not blocked users.')
         .prop('isDeleted', S.boolean())
         .description('Returns deleted or not deleted users.')
-        .prop('role', S.string().minLength(1).pattern(regExp))
+        .prop(
+          'role',
+          S.string()
+            .minLength(1)
+            .pattern(/^[a-zA-Z\s]*$/g)
+        )
         .description('Filter by user role.')
-        .prop('search', S.string().minLength(3).pattern(regExp))
-        .description('Full text search field.'),
+        .prop(
+          'search',
+          S.string()
+            .minLength(3)
+            .pattern(/^[a-zA-Z@.\d\s-_']*$/g)
+        )
+        .description('Full text search field.')
+        .prop(
+          'sortBy',
+          S.string().enum([
+            'firstName',
+            'lastName',
+            'userName',
+            'email',
+            'lastAccess',
+            'region',
+            'province',
+          ])
+        )
+        .prop('order', S.string().enum(['ASC', 'DESC']))
+        .prop('limit', S.number())
+        .description('Number of results (pagination).')
+        .prop('offset', S.number())
+        .description('Items to skip (pagination).'),
       response: {
         200: S.object()
           .additionalProperties(false)
-          .prop('items', S.array().items(sUserList()))
+          .prop('results', S.array().items(sUserList()))
           .required()
           .prop('count', S.integer())
           .required(),
@@ -79,6 +123,10 @@ export default async function listUsers(fastify) {
         value: query.search,
         fields: ['first_name', 'last_name', 'user_name', 'email'],
       },
+      sortings: {
+        field: query.sortBy || 'created_at',
+        order: query.order || 'ASC',
+      },
       pagination: {
         limit: query.limit ?? 10,
         offset: query.offset ?? 0,
@@ -88,7 +136,7 @@ export default async function listUsers(fastify) {
     const { users, count } = await getUsersList(options, pg)
 
     return {
-      items: users,
+      results: users,
       count: count,
     }
   }
@@ -102,15 +150,16 @@ export default async function listUsers(fastify) {
 
     dbObj = applyFullTextSearch(dbObj.query, options.fullText, dbObj.inputs)
 
-    const count = await getRowCount(dbObj)
+    const count = await getRowCount(dbObj.query, dbObj.inputs)
 
-    const { query, inputs } = applyPagination(
-      dbObj.query,
-      options.pagination,
+    dbObj = applySortings(dbObj.query, options.sortings, dbObj.inputs)
+
+    dbObj = applyPagination(dbObj.query, options.pagination, dbObj.inputs)
+
+    const { rows } = await pg.execQuery(
+      dbObj.query.replace(/{columns}/g, ''),
       dbObj.inputs
     )
-
-    const { rows } = await pg.execQuery(query.replace(/{columns}/g, ''), inputs)
 
     const users = await populateUserList(rows)
 
@@ -130,15 +179,15 @@ export default async function listUsers(fastify) {
     return userListQuery
   }
 
-  async function getRowCount(dbObj) {
-    const splitted = dbObj.query.split('{columns}')
-    let query = [splitted[0]]
+  async function getRowCount(query, inputs) {
+    const splitted = query.split('{columns}')
+    query = [splitted[0]]
     query.push('COUNT(users.id) AS count')
     query.push(splitted[2])
 
     query = query.join(' ')
 
-    const { rows } = await pg.execQuery(query, dbObj.inputs)
+    const { rows } = await pg.execQuery(query, inputs)
     return parseInt(rows[0].count)
   }
 
@@ -190,6 +239,27 @@ export default async function listUsers(fastify) {
       query = `${query} WHERE ${searchWhereStatement.join(' OR ')}`
     }
 
+    return { query, inputs }
+  }
+
+  // function applySortings(query, sortings, inputs) {
+  //   query += ` ORDER BY $${inputs.length + 1} $${inputs.length + 2}`
+  //   let field = sortings.field.replace(
+  //     /[A-Z]/g,
+  //     letter => `_${letter.toLowerCase()}`
+  //   )
+  //   field = `users.${field}`
+  //   inputs.push(field, sortings.order)
+  //     return { query, inputs }
+  // }
+
+  function applySortings(query, sortings, inputs) {
+    let field = sortings.field.replace(
+      /[A-Z]/g,
+      letter => `_${letter.toLowerCase()}`
+    )
+    field = `users.${field}`
+    query += ` ORDER BY ${field} ${sortings.order}`
     return { query, inputs }
   }
 
