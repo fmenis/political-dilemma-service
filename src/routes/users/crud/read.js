@@ -1,9 +1,16 @@
 import S from 'fluent-json-schema'
+import { readFile } from 'fs'
+import path from 'path'
+
+import { promisify } from 'util'
+const readFileAsync = promisify(readFile)
 
 import { sUserDetail } from '../lib/schema.js'
 
 export default async function readUser(fastify) {
   const { pg, httpErrors } = fastify
+
+  let userReadQuery
 
   fastify.route({
     method: 'GET',
@@ -40,11 +47,7 @@ export default async function readUser(fastify) {
   }
 
   async function execQuery(id, pg) {
-    const query =
-      'SELECT id, first_name, last_name, user_name, email, type, ' +
-      'id_region, id_province, bio, birth_date, ' +
-      'joined_date, sex, is_blocked, is_deleted FROM users ' +
-      'WHERE id = $1'
+    const query = await getAndCacheQuery()
 
     const user = await pg.execQuery(query, [id], { findOne: true })
     return {
@@ -52,5 +55,15 @@ export default async function readUser(fastify) {
       regionId: user.idRegion,
       provinceId: user.idProvince,
     }
+  }
+
+  async function getAndCacheQuery() {
+    if (!userReadQuery) {
+      const relativePath = 'src/routes/users/crud/sql/read.sql'
+      const sqlFilePath = path.join(path.resolve(), relativePath)
+      userReadQuery = await readFileAsync(sqlFilePath, 'utf8')
+    }
+
+    return userReadQuery
   }
 }
