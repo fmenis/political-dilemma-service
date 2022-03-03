@@ -258,7 +258,7 @@ export default async function listUsers(fastify) {
     }
 
     // cannot lower a timestamp!
-    if (field !== 'users.last_access') {
+    if (field !== 'users.last_access' && field !== 'users.created_at') {
       field = `lower(${field})`
     }
 
