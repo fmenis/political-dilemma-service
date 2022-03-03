@@ -243,6 +243,7 @@ export default async function listUsers(fastify) {
   }
 
   function applySortings(query, sortings, inputs) {
+    // convert to snake case
     let field = sortings.field.replace(
       /[A-Z]/g,
       letter => `_${letter.toLowerCase()}`
@@ -254,6 +255,11 @@ export default async function listUsers(fastify) {
       field = `provinces.name`
     } else {
       field = `users.${field}`
+    }
+
+    // cannot lower a timestamp!
+    if (field !== 'users.last_access') {
+      field = `lower(${field})`
     }
 
     query += ` ORDER BY ${field} ${sortings.order}`
