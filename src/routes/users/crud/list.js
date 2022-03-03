@@ -242,23 +242,20 @@ export default async function listUsers(fastify) {
     return { query, inputs }
   }
 
-  // function applySortings(query, sortings, inputs) {
-  //   query += ` ORDER BY $${inputs.length + 1} $${inputs.length + 2}`
-  //   let field = sortings.field.replace(
-  //     /[A-Z]/g,
-  //     letter => `_${letter.toLowerCase()}`
-  //   )
-  //   field = `users.${field}`
-  //   inputs.push(field, sortings.order)
-  //     return { query, inputs }
-  // }
-
   function applySortings(query, sortings, inputs) {
     let field = sortings.field.replace(
       /[A-Z]/g,
       letter => `_${letter.toLowerCase()}`
     )
-    field = `users.${field}`
+
+    if (field === 'region') {
+      field = `regions.name`
+    } else if (field === 'province') {
+      field = `provinces.name`
+    } else {
+      field = `users.${field}`
+    }
+
     query += ` ORDER BY ${field} ${sortings.order}`
     return { query, inputs }
   }
