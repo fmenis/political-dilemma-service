@@ -17,7 +17,10 @@ export default async function listSessions(fastify) {
       description: 'Retrieve sessions.',
       querystring: S.object()
         .additionalProperties(false)
-        .prop('userId', S.string()),
+        .prop('userId', S.number().minimum(1))
+        .description('Retrieve user sessions')
+        .prop('active', S.boolean())
+        .description('Retrieve only active sessions'),
       response: {
         200: S.array().items(sSession()),
       },
@@ -26,12 +29,21 @@ export default async function listSessions(fastify) {
   })
 
   async function onListSessions(req) {
-    const { userId } = req.query
+    const { userId, active } = req.query
     const { session: currentSession } = req.user
 
-    const baseQuery = 'SELECT * FROM sessions'
-    const query = userId ? `${baseQuery} WHERE user_id=$1` : baseQuery
-    const inputs = userId ? [userId] : []
+    let query = 'SELECT * FROM sessions'
+    const inputs = []
+
+    if (userId) {
+      inputs.push(userId)
+      query += ` WHERE user_id=$1`
+    }
+
+    if (active) {
+      inputs.push(new Date())
+      query += ` AND expired_at > $2`
+    }
 
     const { rows: sessions } = await pg.execQuery(query, inputs)
 
