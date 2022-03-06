@@ -36,6 +36,7 @@ async function swaggerGenerator(fastify) {
           description: 'Reset password related end-points',
         },
         { name: 'misc', description: 'Miscellaneous related end-points' },
+        { name: 'articles', description: 'Articles related end-points' },
       ],
     },
     // TODO passare a openApi v3

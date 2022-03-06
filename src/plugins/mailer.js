@@ -14,13 +14,17 @@ function mailer(fastify, options, done) {
     SES: { ses, aws },
   })
 
-  transporter.verify(err => {
-    if (err) {
-      done(err)
-    }
-    log.debug('Email trasporter correctly verified')
+  if (fastify.config.NODE_ENV !== 'development') {
+    transporter.verify(err => {
+      if (err) {
+        done(err)
+      }
+      log.debug('Email trasporter correctly verified')
+      done()
+    })
+  } else {
     done()
-  })
+  }
 
   fastify.decorate('mailer', transporter)
 }

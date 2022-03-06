@@ -122,6 +122,23 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
         CONSTRAINT fk_user_id FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE NO ACTION
     );
 
+    CREATE TABLE IF NOT EXISTS articles (
+        "id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        "title" VARCHAR(200) NOT NULL,
+        "text" TEXT,
+        "category" VARCHAR(50) NOT NULL CHECK (category in ('decreti', 'estero')),
+        "status" VARCHAR(50) NOT NULL CHECK (status in ('drafted', 'published')),
+        "ownerId" INT NOT NULL,
+        "createdAt" timestamp DEFAULT NOW(),
+        "updatedAt" timestamp DEFAULT NOW(),
+        "publishedAt" timestamp,
+        "updatedBy" INT,
+        "deletedBy" INT,
+        CONSTRAINT fk_ownerId FOREIGN KEY("ownerId") REFERENCES users("id") ON DELETE NO ACTION,
+        CONSTRAINT fk_updatedBy FOREIGN KEY("updatedBy") REFERENCES users("id") ON DELETE NO ACTION,
+        CONSTRAINT fk_deletedBy FOREIGN KEY("deletedBy") REFERENCES users("id") ON DELETE NO ACTION
+    );
+
     GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO dev;
     GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO dev;
 EOSQL

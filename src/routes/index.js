@@ -10,6 +10,7 @@ import sessionsRoutes from './sessions/index.js'
 import permissionsRoutes from './permissions/index.js'
 import rolesRoutes from './roles/index.js'
 import resetPasswordRoutes from './resetPassword/index.js'
+import articleRoutes from './articles/index.js'
 
 export default async function index(fastify) {
   fastify.register(authentication)
@@ -108,4 +109,5 @@ export default async function index(fastify) {
   fastify.register(permissionsRoutes)
   fastify.register(rolesRoutes)
   fastify.register(resetPasswordRoutes)
+  fastify.register(articleRoutes)
 }

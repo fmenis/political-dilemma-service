@@ -1,8 +1,9 @@
-import Sensible from 'fastify-sensible'
-import Helmet from 'fastify-helmet'
-import Cors from 'fastify-cors'
+import sensible from 'fastify-sensible'
+import helmet from 'fastify-helmet'
+import cors from 'fastify-cors'
 import S from 'fluent-json-schema'
-import Env from 'fastify-env'
+import env from 'fastify-env'
+import massive from 'fastify-massive'
 
 import swaggerPlugin from './plugins/swagger.js'
 import pgPlugin from './plugins/postgres.js'
@@ -13,7 +14,7 @@ import mailerPlugin from './plugins/mailer.js'
 import apiPlugin from './routes/index.js'
 
 export default async function app(fastify, opts) {
-  fastify.register(Env, {
+  fastify.register(env, {
     data: opts.envData,
     schema: S.object()
       .prop(
@@ -44,8 +45,8 @@ export default async function app(fastify, opts) {
       .prop('SENDER_EMAIL', S.string().required())
       .valueOf(),
   })
-  fastify.register(Sensible)
-  fastify.register(Helmet, {
+  fastify.register(sensible)
+  fastify.register(helmet, {
     contentSecurityPolicy: {
       // helmet + swagger configs
       directives: {
@@ -57,7 +58,7 @@ export default async function app(fastify, opts) {
     },
   })
 
-  fastify.register(Cors, {
+  fastify.register(cors, {
     //TODO non dovrebbe servire per le POST, testare
     methods: ['POST', 'PUT', 'DELETE'],
     origin: true,
@@ -78,6 +79,16 @@ export default async function app(fastify, opts) {
   //     callback(null, corsOptions)
   //   }
   // })
+
+  fastify.register(massive, {
+    massive: {
+      host: process.env.PG_HOST,
+      port: process.env.PG_PORT,
+      database: process.env.PG_DB,
+      user: process.env.PG_USER,
+      password: process.env.PG_PW,
+    },
+  })
 
   fastify.register(swaggerPlugin)
   fastify.register(pgPlugin)

@@ -37,7 +37,7 @@ async function authorization(fastify) {
     if (!matchPermission) {
       const route = `${req.raw.method} ${req.raw.url}`
       log.warn(
-        `Invalid access: permission '${permission}' not found.Route '${route}'`
+        `Invalid access: permission '${permission}' not found. Route '${route}'`
       )
       throw createError(403, 'Invalid access', {
         internalCode: '0010',

@@ -40,6 +40,7 @@
     "fastify-cors": "6.0.2",
     "fastify-env": "2.1.1",
     "fastify-helmet": "5.3.2",
+    "fastify-massive": "0.4.0",
     "fastify-plugin": "3.0.0",
     "fastify-sensible": "3.1.1",
     "fluent-json-schema": "3.0.1",
