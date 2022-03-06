@@ -169,6 +169,6 @@ export default async function login(fastify) {
     )
 
     const targetSessionId = firstOldest[0].id
-    await deleteSessions([targetSessionId, pg])
+    await deleteSessions([targetSessionId], pg)
   }
 }
