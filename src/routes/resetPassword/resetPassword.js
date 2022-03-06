@@ -21,13 +21,13 @@ export default async function resetPassword(fastify) {
       body: S.object()
         .additionalProperties(false)
         .prop('token', S.string())
-        .description('Reset password token')
+        .description('Reset password token.')
         .required()
         .prop('newPassword', S.string().pattern(passwordRexExp))
-        .description('New password')
+        .description('New password.')
         .required()
         .prop('newPasswordConfirmation', S.string().pattern(passwordRexExp))
-        .description('New paassword confirmation')
+        .description('New paassword confirmation.')
         .required(),
       response: {
         204: fastify.getSchema('sNoContent'),

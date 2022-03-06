@@ -7,7 +7,7 @@ export function sSession() {
     .description('Session id.')
     .required()
     .prop('userAgent', S.string())
-    .description('User agent')
+    .description('User agent.')
     .required()
     .prop('createdAt', S.string().format('date-time'))
     .description('Session creation date.')

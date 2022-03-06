@@ -25,7 +25,7 @@ export default async function readUser(fastify) {
       params: S.object()
         .additionalProperties(false)
         .prop('id', S.integer().minimum(1))
-        .description('User id')
+        .description('User id.')
         .required(),
       response: {
         200: sUserDetail(),

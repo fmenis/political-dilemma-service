@@ -20,18 +20,18 @@ export default async function changePassword(fastify) {
       params: S.object()
         .additionalProperties(false)
         .prop('id', S.integer().minimum(1))
-        .description('User id')
+        .description('User id.')
         .required(),
       body: S.object()
         .additionalProperties(false)
         .prop('oldPassword', S.string().pattern(passwordRexExp))
-        .description('Current password')
+        .description('Current password.')
         .required()
         .prop('newPassword', S.string().pattern(passwordRexExp))
-        .description('New password')
+        .description('New password.')
         .required()
         .prop('newPasswordConfirmation', S.string().pattern(passwordRexExp))
-        .description('New password confirmation')
+        .description('New password confirmation.')
         .required(),
       response: {
         200: fastify.getSchema('sNoContent'),

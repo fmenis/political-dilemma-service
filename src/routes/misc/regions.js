@@ -19,10 +19,10 @@ export default async function listRegions(fastify) {
             S.object()
               .additionalProperties(false)
               .prop('id', S.integer().minimum(1))
-              .description('Region id')
+              .description('Region id.')
               .required()
               .prop('name', S.string().minLength(3))
-              .description('Region name')
+              .description('Region name.')
               .required()
           )
         ),

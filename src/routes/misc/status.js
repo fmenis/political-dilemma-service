@@ -17,9 +17,9 @@ export default async function status(fastify) {
       response: {
         200: S.object()
           .prop('status', S.string())
-          .description('Status')
+          .description('Status.')
           .prop('version', S.string())
-          .description('Server version'),
+          .description('Server version.'),
       },
     },
     handler: onStatus,

@@ -19,7 +19,7 @@ export default async function deleteSession(fastify) {
       querystring: S.object()
         .additionalProperties(false)
         .prop('ids', S.array().minItems(1).items(S.string().format('uuid')))
-        .description('Session ids')
+        .description('Session ids.')
         .required(),
       response: {
         204: fastify.getSchema('sNoContent'),

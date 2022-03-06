@@ -18,12 +18,12 @@ export default async function updatePermission(fastify) {
       parmas: S.object()
         .additionalProperties(false)
         .prop('id', S.number().minimum(1))
-        .description('Permission id')
+        .description('Permission id.')
         .required(),
       body: S.object()
         .additionalProperties(false)
         .prop('description', S.string().maxLength(200))
-        .description('Permission description')
+        .description('Permission description.')
         .required(),
       response: {
         200: sPermissionResponse(),

@@ -19,15 +19,15 @@ export default async function updateRole(fastify) {
       parmas: S.object()
         .additionalProperties(false)
         .prop('id', S.number().minimum(1))
-        .description('Role id')
+        .description('Role id.')
         .required(),
       body: S.object()
         .additionalProperties(false)
         .prop('name', S.string().minLength(3).maxLength(50))
-        .description('Role name')
+        .description('Role name.')
         .required()
         .prop('description', S.string().minLength(3).maxLength(200))
-        .description('Role description')
+        .description('Role description.')
         .required(),
       response: {
         200: sRoleResponse(),

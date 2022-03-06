@@ -18,7 +18,7 @@ export default async function sendResetPasswordLink(fastify) {
       body: S.object()
         .additionalProperties(false)
         .prop('email', S.string().format('email'))
-        .description('Email address to which the reset link will be sent')
+        .description('Email address to which the reset link will be sent.')
         .required(),
       response: {
         204: fastify.getSchema('sNoContent'),

@@ -21,10 +21,10 @@ export default async function assignRoles(fastify) {
       body: S.object()
         .additionalProperties(false)
         .prop('userId', S.number())
-        .description('User id')
+        .description('User id.')
         .required()
         .prop('rolesIds', S.array().items(S.number()).minItems(1))
-        .description('Role ids to be assigned to the user')
+        .description('Role ids to be assigned to the user.')
         .required(),
       response: {
         204: fastify.getSchema('sNoContent'),

@@ -78,7 +78,7 @@ export default async function index(fastify) {
         headers: S.object()
           .additionalProperties(true)
           .prop('Cookie', S.string())
-          .description('Authentication cookie header')
+          .description('Authentication cookie header.')
           .required(),
       }
     }

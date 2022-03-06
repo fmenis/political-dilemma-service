@@ -16,7 +16,7 @@ export default async function blockUser(fastify) {
       params: S.object()
         .additionalProperties(false)
         .prop('id', S.integer().minimum(1))
-        .description('User id')
+        .description('User id.')
         .required(),
       response: {
         204: fastify.getSchema('sNoContent'),

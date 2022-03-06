@@ -21,10 +21,10 @@ export default async function removeRoles(fastify) {
       body: S.object()
         .additionalProperties(false)
         .prop('userId', S.number())
-        .description('User id')
+        .description('User id.')
         .required()
         .prop('rolesIds', S.array().items(S.number()).minItems(1))
-        .description('Role ids to be removed from the user')
+        .description('Role ids to be removed from the user.')
         .required(),
       response: {
         204: fastify.getSchema('sNoContent'),

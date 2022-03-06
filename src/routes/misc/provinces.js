@@ -15,7 +15,7 @@ export default async function listRegions(fastify) {
       querystring: S.object()
         .additionalProperties(false)
         .prop('regionId', S.integer().minimum(1))
-        .description('Region id'),
+        .description('Region id.'),
       response: {
         200: S.object().prop(
           'results',
@@ -23,13 +23,13 @@ export default async function listRegions(fastify) {
             S.object()
               .additionalProperties(false)
               .prop('id', S.integer().minimum(1))
-              .description('Province id')
+              .description('Province id.')
               .required()
               .prop('name', S.string().minLength(3))
-              .description('Province name')
+              .description('Province name.')
               .required()
               .prop('code', S.string().minLength(2).maxLength(2))
-              .description('Province name')
+              .description('Province name.')
               .required()
           )
         ),
