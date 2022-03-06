@@ -19,3 +19,8 @@ Possibili risoluzioni:
 Utilizzare pg rende piuttosto complicato e pastrocciato il codice.  
 Unito al punto precedente, tutto indica che è il caso di utilizzare una libreria un pò più ad alto livello.  
 Guardare massive.js
+
+### Sistema aggiornamento campi
+
+Al momento, se all'update non viene passato il campo x dell'entità, a db verrà automaticamente messa a null.
+Pericoloso, cambiare facendo un modo che se non venga passata non succeda nulla.

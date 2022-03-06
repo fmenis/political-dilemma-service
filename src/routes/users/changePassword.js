@@ -1,11 +1,11 @@
 import S from 'fluent-json-schema'
 import { compareStrings, hashString } from '../../lib/hash.js'
-import { config as mainConfig } from '../../config/main.js'
+import { appConfig } from '../../config/main.js'
 
 export default async function changePassword(fastify) {
   const { pg, config, httpErrors } = fastify
   const { createError } = httpErrors
-  const { passwordRexExp } = mainConfig
+  const { passwordRexExp } = appConfig
 
   fastify.route({
     method: 'POST',

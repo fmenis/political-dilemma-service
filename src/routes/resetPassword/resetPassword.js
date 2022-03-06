@@ -2,12 +2,12 @@ import S from 'fluent-json-schema'
 
 import { hashString } from '../../lib/hash.js'
 import { deleteUserResetLinks } from './lib/utils.js'
-import { config as mainConfig } from '../../config/main.js'
+import { appConfig } from '../../config/main.js'
 
 export default async function resetPassword(fastify) {
   const { pg, httpErrors, config } = fastify
   const { createError } = httpErrors
-  const { passwordRexExp } = mainConfig
+  const { passwordRexExp } = appConfig
 
   fastify.route({
     method: 'POST',

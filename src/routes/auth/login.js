@@ -3,12 +3,12 @@ import moment from 'moment'
 
 import { compareStrings } from '../../lib/hash.js'
 import { deleteSessions } from '../sessions/lib/utils.js'
-import { config as mainConfig } from '../../config/main.js'
+import { appConfig } from '../../config/main.js'
 
 export default async function login(fastify) {
   const { pg, httpErrors, config } = fastify
   const { createError } = httpErrors
-  const { passwordRexExp } = mainConfig
+  const { passwordRexExp } = appConfig
 
   fastify.route({
     method: 'POST',
