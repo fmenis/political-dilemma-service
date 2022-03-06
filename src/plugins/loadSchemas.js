@@ -1,6 +1,6 @@
 import fp from 'fastify-plugin'
 
-import { sNoContent } from '../routes/lib/responseSchemas.js'
+import { sNoContent, sPaginatedInfo } from '../routes/lib/responseSchemas.js'
 import {
   sBadRequest,
   sForbidden,
@@ -11,6 +11,7 @@ import {
 
 async function loadSchemas(fastify) {
   fastify.addSchema(sNoContent())
+  fastify.addSchema(sPaginatedInfo())
   fastify.addSchema(sBadRequest())
   fastify.addSchema(sForbidden())
   fastify.addSchema(sUnauthorized())

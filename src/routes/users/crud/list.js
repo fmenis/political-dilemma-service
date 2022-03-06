@@ -6,6 +6,7 @@ import { promisify } from 'util'
 const readFileAsync = promisify(readFile)
 
 import { sUserList } from '../lib/schema.js'
+import { buildPaginatedInfo } from '../../lib/common.js'
 
 export default async function listUsers(fastify) {
   const { pg } = fastify
@@ -93,7 +94,7 @@ export default async function listUsers(fastify) {
           .additionalProperties(false)
           .prop('results', S.array().items(sUserList()))
           .required()
-          .prop('count', S.integer())
+          .prop('paginatedInfo', fastify.getSchema('sPaginatedInfo'))
           .required(),
       },
     },
@@ -137,7 +138,7 @@ export default async function listUsers(fastify) {
 
     return {
       results: users,
-      count: count,
+      paginatedInfo: buildPaginatedInfo(count, options.pagination),
     }
   }
 
