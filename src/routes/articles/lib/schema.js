@@ -1,5 +1,5 @@
 import S from 'fluent-json-schema'
-import { STATUS } from '../lib/enums.js'
+import { getStates } from '../lib/common.js'
 
 export function sCreateArticle() {
   return S.object()
@@ -16,6 +16,7 @@ export function sCreateArticle() {
 
 export function sArticleResponse() {
   return S.object()
+    .description('Article.')
     .additionalProperties(false)
     .prop('id', S.string().format('uuid'))
     .description('Article id.')
@@ -27,7 +28,26 @@ export function sArticleResponse() {
     .prop('category', S.string().enum(['decreti', 'estero']))
     .description('Article category.')
     .required()
-    .prop('status', S.string().enum([STATUS.DRAFTED, STATUS.PUBLISHED]))
+    .prop('status', S.string().enum(getStates()))
     .description('Article status.')
+    .required()
+}
+
+export function sArticleList() {
+  return S.object()
+    .additionalProperties(false)
+    .prop('id', S.string().format('uuid'))
+    .description('Article id.')
+    .prop('title', S.string().minLength(3).maxLength(200))
+    .description('Article title.')
+    .required()
+    .prop('category', S.string().enum(['decreti', 'estero']))
+    .description('Article category.')
+    .required()
+    .prop('status', S.string().enum(getStates()))
+    .description('Article status.')
+    .required()
+    .prop('publishedAt', S.string().format('date-time'))
+    .description('Article publish date.')
     .required()
 }

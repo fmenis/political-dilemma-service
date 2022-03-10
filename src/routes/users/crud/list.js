@@ -57,7 +57,9 @@ export default async function listUsers(fastify) {
             'province',
           ])
         )
+        .description('Field used to sort results (sorting).')
         .prop('order', S.string().enum(['ASC', 'DESC']))
+        .description('Sort order (sorting).')
         .prop('limit', S.number())
         .description('Number of results (pagination).')
         .prop('offset', S.number())
