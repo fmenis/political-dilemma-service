@@ -61,6 +61,12 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
     VALUES ('user', 'unblock', 'Unblock user permission');
 
     INSERT INTO permissions (resource, action, description)
+    VALUES ('article-category', 'create', 'Create article category permission');
+
+    INSERT INTO permissions (resource, action, description)
+    VALUES ('article-category', 'list', 'List article category permission');
+
+    INSERT INTO permissions (resource, action, description)
     VALUES ('article', 'create', 'Article create permission');
 
     INSERT INTO permissions (resource, action, description)

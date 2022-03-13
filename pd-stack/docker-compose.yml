@@ -17,6 +17,7 @@ services:
       - ./conf/postgres/4-insert-mock-data-users.sh:/docker-entrypoint-initdb.d/4-insert-mock-data-users.sh
       - ./conf/postgres/5-insert-mock-data-permissions.sh:/docker-entrypoint-initdb.d/5-insert-mock-data-permissions.sh
       - ./conf/postgres/6-insert-mock-data-roles.sh:/docker-entrypoint-initdb.d/6-insert-mock-data-roles.sh
+      - ./conf/postgres/7-insert-mock-data-misc.sh:/docker-entrypoint-initdb.d/7-insert-mock-data-misc.sh
     environment:
       POSTGRES_PASSWORD: postgres
       PGDATA: /var/lib/postgresql/data/pgdata
