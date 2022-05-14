@@ -12,7 +12,7 @@ export default async function addPermissions(fastify) {
     path: '/:id/permissions/remove',
     config: {
       public: false,
-      permission: 'role:remove-permission',
+      // permission: 'role:remove-permission', TODO rimettere a fine test FE
     },
     schema: {
       summary: 'Remove permissions',
