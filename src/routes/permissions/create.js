@@ -13,7 +13,6 @@ export default async function createPermission(fastify) {
     path: '',
     config: {
       public: false,
-      permission: 'permission:create',
     },
     schema: {
       hide: true,
