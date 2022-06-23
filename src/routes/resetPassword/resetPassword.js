@@ -49,18 +49,24 @@ export default async function resetPassword(fastify) {
     )
 
     if (!resetLink) {
-      log.debug('[reset password] failed: rest link not found')
-      throw httpErrors.conflict(`Reset link not found`)
+      log.debug('[reset password] failed: reset link not found')
+      throw createError(403, 'Forbidden', {
+        internalCode: '0012',
+      })
     }
 
     if (resetLink.alreadyUsed) {
-      log.debug('[reset password] failed: rest link already used')
-      throw httpErrors.conflict(`Reset link already used`)
+      log.debug('[reset password] failed: reset link already used')
+      throw createError(403, 'Forbidden', {
+        internalCode: '0013',
+      })
     }
 
     if (new Date().toISOString() > resetLink.expiredAt.toISOString()) {
-      log.debug('[reset password] failed: rest link expired')
-      throw httpErrors.conflict(`Reset link expired`)
+      log.debug('[reset password] failed: reset link expired')
+      throw createError(403, 'Forbidden', {
+        internalCode: '0014',
+      })
     }
 
     const user = await pg.execQuery(

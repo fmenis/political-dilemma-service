@@ -93,7 +93,10 @@ export function sForbidden() {
         '0007: invalid access, session not valid.\n' +
         '0008: invalid access, user not found.\n' +
         '0009: invalid access, user deleted. \n' +
-        '0010: invalid access, missing permission.'
+        '0010: invalid access, missing permission. \n' +
+        '0012: forbidden, reset link not found. \n' +
+        '0013: forbidden, reset link already used. \n' +
+        '0014: forbidden, reset link expired. \n'
     )
     .required()
     .prop('details', S.object().additionalProperties(true))
