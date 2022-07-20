@@ -124,7 +124,7 @@ export default async function login(fastify) {
       path: '/api',
       httpOnly: true,
       signed: true,
-      secure: true,
+      // secure: true,
       sameSite: 'none',
       expires: moment().add(fastify.config.COOKIE_TTL, 'seconds').toDate(),
     }

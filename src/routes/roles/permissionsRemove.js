@@ -1,9 +1,9 @@
 import S from 'fluent-json-schema'
 import _ from 'lodash'
 
-import { getRole, getPermissions } from './lib/utils.js'
+import { getRole, getPermissions, getRolePermissions } from './lib/utils.js'
 
-export default async function addPermissions(fastify) {
+export default async function removePermissions(fastify) {
   const { pg, httpErrors } = fastify
   const { createError } = httpErrors
 
@@ -12,7 +12,7 @@ export default async function addPermissions(fastify) {
     path: '/:id/permissions/remove',
     config: {
       public: false,
-      // permission: 'role:remove-permission', TODO rimettere a fine test FE
+      permission: 'role:remove-permission',
     },
     schema: {
       summary: 'Remove permissions',
@@ -29,20 +29,21 @@ export default async function addPermissions(fastify) {
         .required(),
       response: {
         204: fastify.getSchema('sNoContent'),
+        409: fastify.getSchema('sConflict'),
       },
     },
     preHandler: onPreHandler,
-    handler: onAddPermissions,
+    handler: onRemovePermissions,
   })
 
   async function onPreHandler(req) {
-    const { id } = req.params
+    const { id: roleId } = req.params
     const { permissionsIds } = req.body
 
     // check role existance
-    const role = await getRole(id, pg)
+    const role = await getRole(roleId, pg)
     if (!role) {
-      throw httpErrors.notFound(`Role with id '${id}' not found`)
+      throw httpErrors.notFound(`Role with id '${roleId}' not found`)
     }
 
     // check missing permissions
@@ -61,10 +62,16 @@ export default async function addPermissions(fastify) {
       })
     }
 
-    //TODO check permessi NON associati
+    // prevent all permission deletion (or the last one)
+    const rolePermissions = await getRolePermissions(roleId, pg)
+    if (permissionsIds.length >= rolePermissions.length) {
+      throw httpErrors.conflict(
+        `Cannot delete all permissions inside role '${roleId}'`
+      )
+    }
   }
 
-  async function onAddPermissions(req, reply) {
+  async function onRemovePermissions(req, reply) {
     const { id } = req.params
     const { permissionsIds } = req.body
 
