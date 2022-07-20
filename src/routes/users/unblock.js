@@ -1,7 +1,7 @@
 import S from 'fluent-json-schema'
 
 export default async function unblockUser(fastify) {
-  const { db, httpErrors } = fastify
+  const { pg, httpErrors } = fastify
 
   fastify.route({
     method: 'POST',
@@ -36,7 +36,7 @@ export default async function unblockUser(fastify) {
       throw httpErrors.conflict(`Cannot unblock your own user`)
     }
 
-    const user = await db.execQuery(
+    const user = await pg.execQuery(
       'SELECT is_blocked FROM users WHERE id=$1',
       [userId],
       {
@@ -56,7 +56,7 @@ export default async function unblockUser(fastify) {
   async function onUnblockUser(req, reply) {
     const { id } = req.params
 
-    const { rowCount } = await db.execQuery(
+    const { rowCount } = await pg.execQuery(
       'UPDATE users SET is_blocked=$2 WHERE id=$1',
       [id, false]
     )
