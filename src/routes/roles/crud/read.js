@@ -11,7 +11,7 @@ export default async function readRole(fastify) {
     path: '/:id',
     config: {
       public: false,
-      // permission: 'role:read', //##TODO aggiungere permesso
+      permission: 'role:read',
     },
     schema: {
       summary: 'Get role',

@@ -34,6 +34,9 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
     VALUES ('role', 'update', 'Update role permission');
 
     INSERT INTO permissions (resource, action, description)
+    VALUES ('role', 'read', 'Read role');
+
+    INSERT INTO permissions (resource, action, description)
     VALUES ('session', 'delete', 'Delete session permission');
 
     INSERT INTO permissions (resource, action, description)
