@@ -27,7 +27,7 @@ fastify.listen(port, address, err => {
     fastify.log.fatal(err)
     throw err
   }
-  fastify.log.debug(`Server launched in ${process.env.NODE_ENV} mode`)
+  fastify.log.debug(`Server launched in '${process.env.NODE_ENV}' mode`)
 })
 
 /**

@@ -24,6 +24,9 @@ export default async function listArticleCategories(fastify) {
             .prop('name', S.string())
             .description('Category name.')
             .required()
+            .prop('description', S.string())
+            .description('Category description.')
+            .required()
         ),
       },
     },
@@ -31,6 +34,6 @@ export default async function listArticleCategories(fastify) {
   })
 
   async function onListArticleCategories() {
-    return massive.articleCategories.find()
+    return massive.categories.find()
   }
 }
