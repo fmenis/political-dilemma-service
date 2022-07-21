@@ -3,14 +3,18 @@ import S from 'fluent-json-schema'
 export default async function deletePermission(fastify) {
   const { pg, httpErrors } = fastify
 
+  //------------------------------------------------------------------
+  //############ API NOT USED (AND EXPOSED) AT THE MOMENT ############
+  //------------------------------------------------------------------
+
   fastify.route({
     method: 'DELETE',
     path: '/:id',
     config: {
       public: false,
-      permission: 'permission:delete',
     },
     schema: {
+      hide: true,
       summary: 'Delete permission',
       description: 'Delete permission by id.',
       params: S.object()

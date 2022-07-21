@@ -5,14 +5,18 @@ import { sPermissionResponse } from './lib/schema.js'
 export default async function updatePermission(fastify) {
   const { pg, httpErrors } = fastify
 
+  //------------------------------------------------------------------
+  //############ API NOT USED (AND EXPOSED) AT THE MOMENT ############
+  //------------------------------------------------------------------
+
   fastify.route({
     method: 'PUT',
     path: '/:id',
     config: {
       public: false,
-      permission: 'permission:update',
     },
     schema: {
+      hide: true,
       summary: 'Update permission',
       description: 'Update permission.',
       parmas: S.object()

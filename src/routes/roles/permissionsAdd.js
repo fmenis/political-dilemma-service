@@ -1,7 +1,12 @@
 import S from 'fluent-json-schema'
 import _ from 'lodash'
 
-import { getRole, getPermissions, associatePermissions } from './lib/utils.js'
+import {
+  getRole,
+  getPermissions,
+  associatePermissions,
+  getRolePermissions,
+} from './lib/utils.js'
 
 export default async function addPermissions(fastify) {
   const { pg, httpErrors } = fastify
@@ -61,7 +66,24 @@ export default async function addPermissions(fastify) {
       })
     }
 
-    //TODO check permessi gia associati
+    // prevent duplicate permissions association
+    const rolePermissions = await getRolePermissions(role.id, pg)
+    const permissionsAlreadyAssociated = rolePermissions
+      .map(item => item.id)
+      .reduce((acc, id) => {
+        if (permissionsIds.includes(id)) {
+          acc.push(id)
+        }
+        return acc
+      }, [])
+
+    if (permissionsAlreadyAssociated.length) {
+      throw httpErrors.conflict(
+        `Permission/s ${permissionsAlreadyAssociated.join(
+          ', '
+        )} already associated with role '${role.id}'`
+      )
+    }
   }
 
   async function onAddPermissions(req, reply) {

@@ -4,14 +4,18 @@ export default async function createPermission(fastify) {
   const { pg, httpErrors } = fastify
   const { createError } = httpErrors
 
+  //------------------------------------------------------------------
+  //############ API NOT USED (AND EXPOSED) AT THE MOMENT ############
+  //------------------------------------------------------------------
+
   fastify.route({
     method: 'POST',
     path: '',
     config: {
       public: false,
-      permission: 'permission:create',
     },
     schema: {
+      hide: true,
       summary: 'Create permission',
       description: 'Create permission.',
       body: sCreatePermission(),

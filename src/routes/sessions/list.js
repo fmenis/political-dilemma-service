@@ -10,7 +10,6 @@ export default async function listSessions(fastify) {
     path: '',
     config: {
       public: false,
-      permission: 'session:list',
     },
     schema: {
       summary: 'List sessions',

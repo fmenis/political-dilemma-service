@@ -15,7 +15,6 @@ export default async function removeRoles(fastify) {
       permission: 'role:user-remove',
     },
     schema: {
-      hide: true,
       summary: 'Remove roles',
       description: 'Remove roles from a user.',
       body: S.object()

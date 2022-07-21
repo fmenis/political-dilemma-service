@@ -40,6 +40,7 @@ jobs:
           echo SECRET=${{ secrets.SECRET }} >> .env
           echo SESSION_TTL=86400 >> .env
           echo COOKIE_TTL=15552000 >> .env
+          echo RESET_LINK_TTL=300 >> .env
           echo SALT_ROUNDS=10 >> .env
           echo LOG_REQ_BODY=true >> .env
           echo AWS_REGION=${{ secrets.AWS_REGION }} >> .env

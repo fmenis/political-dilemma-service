@@ -30,7 +30,8 @@ export default async function listPermissions(fastify) {
       'roles.is_active, pr.id AS permission_id, pr.resource, pr.action, ' +
       'pr.ownership, pr.description AS permdesc FROM permissions_roles ' +
       'LEFT JOIN roles ON permissions_roles.role_id = roles.id ' +
-      'LEFT JOIN permissions AS pr ON permissions_roles.permission_id = pr.id'
+      'LEFT JOIN permissions AS pr ON permissions_roles.permission_id = pr.id ' +
+      'ORDER BY roles.created_at ASC'
 
     const { rows } = await pg.execQuery(query)
 
