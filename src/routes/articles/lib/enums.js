@@ -1,6 +1,6 @@
 const STATUS = {
-  DRAFTED: 'drafted',
-  PUBLISHED: 'published',
+  DRAFTED: 'DRAFTED',
+  PUBLISHED: 'PUBLISHED',
 }
 
 export { STATUS }

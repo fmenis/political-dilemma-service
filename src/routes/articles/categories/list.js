@@ -8,7 +8,6 @@ export default async function listArticleCategories(fastify) {
     path: '/',
     config: {
       public: false,
-      permission: 'article-category:list',
     },
     schema: {
       summary: 'List article categories.',
