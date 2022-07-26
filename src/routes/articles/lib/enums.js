@@ -1,5 +1,5 @@
 const STATUS = {
-  DRAFTED: 'DRAFTED',
+  DRAFT: 'DRAFT',
   PUBLISHED: 'PUBLISHED',
 }
 

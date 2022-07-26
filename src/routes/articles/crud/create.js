@@ -51,7 +51,7 @@ export default async function createArticle(fastify) {
       text,
       categoryId,
       description,
-      status: STATUS.DRAFTED,
+      status: STATUS.DRAFT,
       ownerId: user.id,
     }
 
