@@ -1,6 +1,9 @@
+import categoriesRoutes from './categories/index.js'
+import tagsRoutes from './tags/index.js'
+
 import createRoute from './crud/create.js'
 import listRoute from './crud/list.js'
-import categoriesRoutes from './categories/index.js'
+import deleteRoute from './crud/delete.js'
 
 export default async function index(fastify) {
   fastify.addHook('onRoute', options => {
@@ -10,9 +13,11 @@ export default async function index(fastify) {
     }
   })
 
-  const prefix = '/v1/articles'
+  fastify.register(categoriesRoutes)
+  fastify.register(tagsRoutes)
 
+  const prefix = '/v1/articles'
   fastify.register(createRoute, { prefix })
   fastify.register(listRoute, { prefix })
-  fastify.register(categoriesRoutes)
+  fastify.register(deleteRoute, { prefix })
 }
