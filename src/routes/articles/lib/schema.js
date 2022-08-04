@@ -14,6 +14,11 @@ export function sCreateArticle() {
     .prop('categoryId', S.string().format('uuid'))
     .description('Article category id.')
     .required()
+    .prop(
+      'tagsIds',
+      S.array().items(S.string().format('uuid')).minItems(1).maxItems(50)
+    )
+    .description('Article tags ids.')
 }
 
 export function sArticleResponse() {
@@ -41,6 +46,9 @@ export function sArticleResponse() {
     .required()
     .prop('publishedAt', S.string())
     .description('Article publication date.')
+    .required()
+    .prop('tags', S.array().items(S.string()))
+    .description('Article tags.')
     .required()
 }
 

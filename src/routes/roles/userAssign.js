@@ -2,6 +2,7 @@ import S from 'fluent-json-schema'
 import _ from 'lodash'
 
 import { getRoles, associateRoles } from './lib/utils.js'
+import { findArrayDuplicates } from '../../utils/main.js'
 
 export default async function assignRoles(fastify) {
   const { pg, httpErrors } = fastify
@@ -47,13 +48,7 @@ export default async function assignRoles(fastify) {
     }
 
     // check duplicated roles
-    const duplicates = rolesIds.reduce((acc, id, index, array) => {
-      if (array.indexOf(id) !== index && !acc.includes(id)) {
-        acc.push(id)
-      }
-      return acc
-    }, [])
-
+    const duplicates = findArrayDuplicates(rolesIds)
     if (duplicates.length) {
       throw createError(400, 'Invalid input', {
         validation: [

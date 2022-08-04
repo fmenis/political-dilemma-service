@@ -1,5 +1,8 @@
+import _ from 'lodash'
+
 import { sCreateArticle, sArticleResponse } from '../lib/schema.js'
 import { STATUS } from '../lib/enums.js'
+import { findArrayDuplicates } from '../../../utils/main.js'
 
 export default async function createArticle(fastify) {
   const { massive, httpErrors } = fastify
@@ -27,7 +30,7 @@ export default async function createArticle(fastify) {
   })
 
   async function onPreHandler(req) {
-    const { categoryId, title } = req.body
+    const { categoryId, title, tagsIds } = req.body
 
     const category = await massive.categories.findOne(categoryId)
     if (!category) {
@@ -40,10 +43,36 @@ export default async function createArticle(fastify) {
     if (duplicateTitle) {
       throw httpErrors.conflict(`Article with title '${title}' already exists`)
     }
+
+    const duplicatedTagsIds = findArrayDuplicates(tagsIds)
+    if (duplicatedTagsIds.length) {
+      throw createError(400, 'Invalid input', {
+        validation: [
+          {
+            message: `Duplicate tags ids: ${duplicatedTagsIds.join(', ')}`,
+          },
+        ],
+      })
+    }
+
+    const tags = await massive.tags.find({ id: tagsIds })
+    if (tags.length < tagsIds.length) {
+      const missing = _.difference(
+        tagsIds,
+        tags.map(item => item.id)
+      )
+      throw createError(400, 'Invalid input', {
+        validation: [
+          {
+            message: `Tags ids ${missing.join(', ')} not found`,
+          },
+        ],
+      })
+    }
   }
 
   async function onCreateArticle(req, reply) {
-    const { title, text, description, categoryId } = req.body
+    const { title, text, description, categoryId, tagsIds } = req.body
     const { user } = req
 
     const params = {
@@ -55,15 +84,19 @@ export default async function createArticle(fastify) {
       ownerId: user.id,
     }
 
-    const [newArticle, owner, category] = await Promise.all([
-      massive.articles.save(params),
+    //##TODO mettere sotto transazione i salvataggi
+    const newArticle = await massive.articles.save(params)
+    await associateTags(newArticle.id, tagsIds)
+
+    const [owner, category, tags] = await Promise.all([
       massive.users.findOne(user.id),
-      await massive.categories.findOne(categoryId.id),
+      massive.categories.findOne(categoryId.id),
+      massive.tags.find({
+        id: tagsIds,
+      }),
     ])
 
-    reply.code(201)
-
-    return {
+    reply.code(201).send({
       id: newArticle.id,
       title: newArticle.title,
       text: newArticle.text,
@@ -72,6 +105,15 @@ export default async function createArticle(fastify) {
       author: `${owner.first_name} ${owner.last_name}`,
       createdAt: newArticle.createdAt,
       publishedAt: newArticle.publishedAt,
-    }
+      tags: tags.map(tag => tag.name),
+    })
+  }
+
+  async function associateTags(articleId, tagsIds) {
+    await Promise.all(
+      tagsIds.map(tagId => {
+        massive.articlesTags.save({ articleId, tagId })
+      })
+    )
   }
 }

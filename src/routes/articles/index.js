@@ -1,5 +1,5 @@
-import categoriesRoutes from './categories/index.js'
-import tagsRoutes from './tags/index.js'
+import categoriesRoutes from './crud/categories/index.js'
+import tagsRoutes from './crud/tags/index.js'
 
 import createRoute from './crud/create.js'
 import listRoute from './crud/list.js'
