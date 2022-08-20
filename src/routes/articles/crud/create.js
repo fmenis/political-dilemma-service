@@ -7,17 +7,18 @@ import { findArrayDuplicates } from '../../../utils/main.js'
 export default async function createArticle(fastify) {
   const { massive, httpErrors } = fastify
   const { createError } = httpErrors
+  const permission = 'article:create'
 
   fastify.route({
     method: 'POST',
     path: '/',
     config: {
       public: false,
-      permission: 'article:create',
+      permission,
     },
     schema: {
       summary: 'Create article',
-      description: 'Create article.',
+      description: `Permission required: ${permission}`,
       body: sCreateArticle(),
       response: {
         201: sArticleResponse(),
@@ -88,9 +89,8 @@ export default async function createArticle(fastify) {
     const newArticle = await massive.articles.save(params)
     await associateTags(newArticle.id, tagsIds)
 
-    const [owner, category, tags] = await Promise.all([
+    const [owner, tags] = await Promise.all([
       massive.users.findOne(user.id),
-      massive.categories.findOne(categoryId.id),
       massive.tags.find({
         id: tagsIds,
       }),
@@ -100,7 +100,7 @@ export default async function createArticle(fastify) {
       id: newArticle.id,
       title: newArticle.title,
       text: newArticle.text,
-      category: category.name,
+      categoryId,
       status: newArticle.status,
       author: `${owner.first_name} ${owner.last_name}`,
       createdAt: newArticle.createdAt,

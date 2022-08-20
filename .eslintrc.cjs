@@ -20,6 +20,6 @@ module.exports = {
       },
     ],
     'object-curly-spacing': ['error', 'always'],
-    'max-len': ['error', { code: 100 }],
+    'max-len': ['error', { code: 150 }],
   },
 }
