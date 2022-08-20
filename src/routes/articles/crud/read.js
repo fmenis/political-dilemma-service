@@ -1,6 +1,6 @@
 import S from 'fluent-json-schema'
 
-import { sArticleResponse } from '../lib/schema.js'
+import { sArticle } from '../lib/schema.js'
 
 export default async function readArticle(fastify) {
   const { massive, httpErrors } = fastify
@@ -23,7 +23,8 @@ export default async function readArticle(fastify) {
         .description('Article id.')
         .required(),
       response: {
-        200: sArticleResponse(),
+        200: sArticle(),
+        404: fastify.getSchema('sNotFound'),
       },
     },
     preHandler: onPreHandler,
@@ -53,6 +54,7 @@ export default async function readArticle(fastify) {
     const { id } = req.params
     const article = await massive.articles.findOne(id)
 
+    //TODO migliorare con un join
     const [author, tags] = await Promise.all([
       massive.users.findOne(article.ownerId, {
         fields: ['id', 'first_name', 'last_name'],

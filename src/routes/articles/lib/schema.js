@@ -1,6 +1,8 @@
 import S from 'fluent-json-schema'
 import { getStates } from '../lib/common.js'
 
+// Validation schemas
+
 export function sCreateArticle() {
   return S.object()
     .additionalProperties(false)
@@ -21,12 +23,33 @@ export function sCreateArticle() {
     .description('Article tags ids.')
 }
 
-export function sArticleResponse() {
+export function sUpdateArticle() {
+  return S.object()
+    .additionalProperties(false)
+    .prop('title', S.string().minLength(3).maxLength(200))
+    .description('Article title.')
+    .prop('text', S.string().minLength(3))
+    .description('Article text.')
+    .prop('description', S.string().minLength(3).maxLength(500))
+    .description('Article description.')
+    .prop('categoryId', S.string().format('uuid'))
+    .description('Article category id.')
+    .prop(
+      'tagsIds',
+      S.array().items(S.string().format('uuid')).minItems(1).maxItems(50)
+    )
+    .description('Article tags ids.')
+}
+
+// Serialization schemas
+
+export function sArticle() {
   return S.object()
     .description('Article.')
     .additionalProperties(false)
     .prop('id', S.string().format('uuid'))
     .description('Article id.')
+    .required()
     .prop('title', S.string().minLength(3).maxLength(200))
     .description('Article title.')
     .required()

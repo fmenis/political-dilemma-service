@@ -1,6 +1,6 @@
 import _ from 'lodash'
 
-import { sCreateArticle, sArticleResponse } from '../lib/schema.js'
+import { sCreateArticle, sArticle } from '../lib/schema.js'
 import { STATUS } from '../lib/enums.js'
 import { findArrayDuplicates } from '../../../utils/main.js'
 
@@ -21,7 +21,7 @@ export default async function createArticle(fastify) {
       description: `Permission required: ${permission}`,
       body: sCreateArticle(),
       response: {
-        201: sArticleResponse(),
+        201: sArticle(),
         404: fastify.getSchema('sNotFound'),
         409: fastify.getSchema('sConflict'),
       },

@@ -23,6 +23,8 @@ export default async function deleteArticle(fastify) {
         .required(),
       response: {
         204: fastify.getSchema('sNoContent'),
+        404: fastify.getSchema('sNotFound'),
+        409: fastify.getSchema('sConflict'),
       },
     },
     preHandler: onPreHandler,
