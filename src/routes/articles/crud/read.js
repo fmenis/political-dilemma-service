@@ -23,7 +23,7 @@ export default async function readArticle(fastify) {
         .description('Article id.')
         .required(),
       response: {
-        201: sArticleResponse(),
+        200: sArticleResponse(),
       },
     },
     preHandler: onPreHandler,
@@ -53,6 +53,20 @@ export default async function readArticle(fastify) {
     const { id } = req.params
     const article = await massive.articles.findOne(id)
 
-    return article
+    const [author, tags] = await Promise.all([
+      massive.users.findOne(article.ownerId, {
+        fields: ['id', 'first_name', 'last_name'],
+      }),
+      massive.articlesTags.find(
+        { articleId: article.id },
+        { fields: ['tagId'] }
+      ),
+    ])
+
+    return {
+      ...article,
+      author: `${author.first_name} ${author.last_name}`,
+      tags: tags.map(item => item.tagId),
+    }
   }
 }

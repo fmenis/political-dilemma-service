@@ -85,9 +85,17 @@ export default async function createArticle(fastify) {
       ownerId: user.id,
     }
 
-    //##TODO mettere sotto transazione i salvataggi
-    const newArticle = await massive.articles.save(params)
-    await associateTags(newArticle.id, tagsIds)
+    const newArticle = await massive.withTransaction(async tx => {
+      const newArticle = await tx.articles.save(params)
+
+      // associate tags
+      await Promise.all(
+        tagsIds.map(tagId => {
+          tx.articlesTags.save({ articleId: newArticle.id, tagId })
+        })
+      )
+      return newArticle
+    })
 
     const [owner, tags] = await Promise.all([
       massive.users.findOne(user.id),
@@ -107,13 +115,5 @@ export default async function createArticle(fastify) {
       publishedAt: newArticle.publishedAt,
       tags: tags.map(tag => tag.name),
     })
-  }
-
-  async function associateTags(articleId, tagsIds) {
-    await Promise.all(
-      tagsIds.map(tagId => {
-        massive.articlesTags.save({ articleId, tagId })
-      })
-    )
   }
 }
