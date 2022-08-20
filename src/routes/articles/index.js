@@ -3,6 +3,7 @@ import tagsRoutes from './crud/tags/index.js'
 
 import createRoute from './crud/create.js'
 import listRoute from './crud/list.js'
+import readRoute from './crud/read.js'
 import deleteRoute from './crud/delete.js'
 
 export default async function index(fastify) {
@@ -19,5 +20,6 @@ export default async function index(fastify) {
   const prefix = '/v1/articles'
   fastify.register(createRoute, { prefix })
   fastify.register(listRoute, { prefix })
+  fastify.register(readRoute, { prefix })
   fastify.register(deleteRoute, { prefix })
 }
