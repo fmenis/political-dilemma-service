@@ -33,6 +33,16 @@ export default async function listArticleCategories(fastify) {
   })
 
   async function onListArticleCategories() {
-    return massive.categories.find()
+    return massive.categories.find(
+      {},
+      {
+        order: [
+          {
+            field: 'name',
+            direction: 'asc',
+          },
+        ],
+      }
+    )
   }
 }
