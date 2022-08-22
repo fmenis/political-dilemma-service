@@ -48,6 +48,7 @@
 | **AWS_ACCESS_KEY_ID**     |                     | AWS access key id                           |
 | **AWS_SECRET_ACCESS_KEY** |                     | AWS access key key                          |
 | **SENDER_EMAIL**          |                     | Email address used to send email from       |
+| **STATIC_FILES_DEST**     |                     | Static files destination full path          |
 
 PS: If you have difficulties to compiling the env file, ask the backend guy!
 

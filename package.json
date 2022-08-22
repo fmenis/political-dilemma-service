@@ -17,6 +17,7 @@
     "prepare": "husky install",
     "init-tools": "cd ./pd-stack && docker-compose -f docker-compose-tools.yml up -d",
     "init-stack": "cd ./pd-stack && docker-compose up -d",
+    "shutdown-stack": "cd ./pd-stack && docker-compose down -d",
     "rebuild-db": "./pd-stack/rebuild-db.sh",
     "genPw": "node -r dotenv/config src/scripts/generatePassword.js"
   },
@@ -41,6 +42,7 @@
     "fastify-env": "2.1.1",
     "fastify-helmet": "5.3.2",
     "fastify-massive": "0.4.0",
+    "fastify-multer": "2.0.3",
     "fastify-plugin": "3.0.0",
     "fastify-sensible": "3.1.1",
     "fluent-json-schema": "3.0.1",

@@ -1,7 +1,7 @@
 import createRoute from './crud/create.js'
 import listRoute from './crud/list.js'
 import readRoute from './crud/read.js'
-import update from './crud/update.js'
+import updateRoute from './crud/update.js'
 import deleteRoute from './crud/delete.js'
 
 import assingRoute from './userAssign.js'
@@ -22,7 +22,7 @@ export default async function index(fastify) {
   fastify.register(createRoute, { prefix })
   fastify.register(listRoute, { prefix })
   fastify.register(readRoute, { prefix })
-  fastify.register(update, { prefix })
+  fastify.register(updateRoute, { prefix })
   fastify.register(deleteRoute, { prefix })
   fastify.register(assingRoute, { prefix })
   fastify.register(removeRoute, { prefix })

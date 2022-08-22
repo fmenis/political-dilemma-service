@@ -43,6 +43,7 @@ export default async function app(fastify, opts) {
       .prop('AWS_ACCESS_KEY_ID', S.string().required())
       .prop('AWS_SECRET_ACCESS_KEY', S.string().required())
       .prop('SENDER_EMAIL', S.string().required())
+      .prop('STATIC_FILES_DEST', S.string().required())
       .valueOf(),
   })
   fastify.register(sensible)
