@@ -164,12 +164,15 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
 
     CREATE TABLE IF NOT EXISTS "files" (
         "id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-        "fullPath" VARCHAR(200) UNIQUE NOT NULL,
+        "relatedDocument" UUID,
+        "fullPath" VARCHAR(200) NOT NULL,
+        "url" VARCHAR(200) UNIQUE NOT NULL,
         "fileName" VARCHAR(50) UNIQUE NOT NULL,
         "extension" VARCHAR(10) NOT NULL,
         "mimetype" VARCHAR(50) NOT NULL,
+        "size" DOUBLE PRECISION NOT NULL,
         "ownerId" INT NOT NULL,
-        "category" VARCHAR(100) NOT NULL CHECK (category in ('ARTICLE-IMAGE')),
+        "category" VARCHAR(100) NOT NULL CHECK (category in ('ARTICLE_IMAGE')),
         "createdAt" timestamp DEFAULT NOW(),
         CONSTRAINT fk_owner_id FOREIGN KEY("ownerId") REFERENCES users("id") ON DELETE NO ACTION
     );

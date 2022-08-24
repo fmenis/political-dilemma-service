@@ -9,3 +9,16 @@ export function findArrayDuplicates(array) {
     return acc
   }, [])
 }
+
+export function calculateBaseUrl() {
+  switch (process.env.NODE_ENV) {
+    case 'production':
+      return `https://${process.env.DOMAIN_PROD}`
+
+    case 'staging': //TODO da fare
+      return `https://${process.env.DOMAIN_STAGING}`
+
+    case 'development':
+      return `http://${process.env.SERVER_ADDRESS}:${process.env.SERVER_PORT}`
+  }
+}
