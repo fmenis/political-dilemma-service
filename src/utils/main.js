@@ -10,7 +10,10 @@ export function findArrayDuplicates(array) {
   }, [])
 }
 
-export function calculateBaseUrl() {
+/**
+ * Calculate base url related to the current envinronment
+ */
+export function calculateBaseUrl(opts = {}) {
   switch (process.env.NODE_ENV) {
     case 'production':
       return `https://${process.env.DOMAIN_PROD}`
@@ -19,6 +22,9 @@ export function calculateBaseUrl() {
       return `https://${process.env.DOMAIN_STAGING}`
 
     case 'development':
+      if (opts.excludePort) {
+        return `http://${process.env.SERVER_ADDRESS}`
+      }
       return `http://${process.env.SERVER_ADDRESS}:${process.env.SERVER_PORT}`
   }
 }

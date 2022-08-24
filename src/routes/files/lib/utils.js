@@ -1,4 +1,6 @@
 import { unlink } from 'fs/promises'
+import { createReadStream, createWriteStream } from 'fs'
+import { pipeline } from 'node:stream/promises'
 
 /**
  * Calculate real file size in MB
@@ -20,4 +22,14 @@ export function calcFileSize(blksize, blocks) {
  */
 export function deleteFiles(filePaths) {
   return Promise.all(filePaths.map(filePath => unlink(filePath)))
+}
+
+/**
+ * Move a file from a location to another (streammed)
+ * @param {string} sourcePath source file abs path
+ * @param {string} destPath dest file abs path
+ * @returns {Promise<void>}
+ */
+export function moveFile(sourcePath, destPath) {
+  return pipeline(createReadStream(sourcePath), createWriteStream(destPath))
 }

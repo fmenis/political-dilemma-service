@@ -2,14 +2,12 @@ import S from 'fluent-json-schema'
 import multer from 'fastify-multer'
 import { tmpdir } from 'os'
 import { join, extname } from 'path'
-import { stat } from 'fs/promises'
+import { stat, mkdir } from 'fs/promises'
 
 import { CATEGORIES } from './lib/enums.js'
-import { calcFileSize, deleteFiles } from './lib/utils.js'
+import { calcFileSize, deleteFiles, moveFile } from './lib/utils.js'
 import { appConfig } from '../../config/main.js'
 import { calculateBaseUrl } from '../../utils/main.js'
-
-//##TODO fare utility di check STATIC_FILES_DEST e creazione directoty recusive
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -22,6 +20,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage })
 
+//TODO testare con più file transazioni e cancellazione file
 export default async function uploadFile(fastify) {
   fastify.register(multer.contentParser)
 
@@ -36,18 +35,8 @@ export default async function uploadFile(fastify) {
     schema: {
       summary: 'Upload files',
       description: 'Upload files.',
-      //TODO capire come fare validazione
-      // body: S.object()
-      //   .additionalProperties(false)
-      //   .prop('relativePath', S.string().minLength(3).maxLength(200))
-      //   .description('TODO')
-      //   .required(),
+      //TODO capire come fare validazione body
       response: {
-        // 200: S.object() //TODO
-        //   .additionalProperties(false)
-        //   .prop('urls', S.array().items(S.string().minLength(3)).minItems(1))
-        //   .description('TODO')
-        //   .required(),
         200: S.array()
           .items(
             S.object()
@@ -64,47 +53,48 @@ export default async function uploadFile(fastify) {
           .minItems(1),
       },
     },
-    preHandler: upload.array('files', 12),
+    preHandler: upload.array('files', 10),
     handler: onUploadFile,
   })
 
   async function onUploadFile(req) {
-    const { body, files, user } = req
-    const { relativePath } = body
+    const { files, user } = req
+    const basePath = join(config.STATIC_FILES_DEST, 'articles/images')
 
-    const populatedFiles = await populateFiles(files, relativePath)
+    try {
+      const populatedFiles = await populateFiles(files, basePath)
 
-    await checkFiles(populatedFiles)
+      await checkFiles(populatedFiles)
 
-    // await moveFiles(populatedFiles)
+      await moveFiles(populatedFiles, basePath)
 
-    const urls = await indexFiles(populatedFiles, user)
+      const urls = await indexFiles(populatedFiles, user)
 
-    return urls
+      return urls
+    } finally {
+      // delete tmp files in any case
+      await deleteFiles(files.map(file => file.path))
+    }
   }
 
-  function populateFiles(files, relativePath) {
+  function populateFiles(files, basePath) {
     async function populateFile(file) {
       const fileStats = await stat(file.path)
       return {
         ...file,
-        realPath: join(
-          config.STATIC_FILES_DEST,
-          relativePath,
-          file.originalname
-        ),
+        destPath: join(basePath, file.originalname),
         extension: extname(file.originalname).slice(1),
         size: calcFileSize(fileStats.blksize, fileStats.blocks),
-        url: `${calculateBaseUrl()}/static/images/articles/${
-          file.originalname
-        }`,
+        url: `${calculateBaseUrl({
+          excludePort: true,
+        })}/politicaldilemma/static/articles/images/${file.originalname}`,
       }
     }
 
     return Promise.all(files.map(async file => populateFile(file)))
   }
 
-  async function checkFiles(files) {
+  function checkFiles(files) {
     const { allowedFileExts, maxSize } = appConfig.upload
 
     async function checkFile(file) {
@@ -123,23 +113,18 @@ export default async function uploadFile(fastify) {
       }
     }
 
-    try {
-      await Promise.all(files.map(file => checkFile(file)))
-    } catch (error) {
-      // delete all uploaded files
-      // TODO capire dov'è meglio metterlo
-      await deleteFiles(files.map(file => file.path))
-    }
+    return Promise.all(files.map(file => checkFile(file)))
   }
 
-  // async function moveFiles(files) {
-  //   return true //TODO
-  // }
+  async function moveFiles(files, basePath) {
+    await mkdir(basePath, { recursive: true })
+    return Promise.all(files.map(file => moveFile(file.path, file.destPath)))
+  }
 
   async function indexFiles(files, user) {
     async function indexFile(file, user, tx) {
       const newFile = await tx.files.save({
-        fullPath: file.realPath,
+        fullPath: file.destPath,
         url: file.url,
         fileName: file.originalname,
         extension: file.extension,
