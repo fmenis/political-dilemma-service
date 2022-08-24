@@ -18,6 +18,13 @@ export default async function index(fastify) {
   fastify.register(authorization)
 
   /**
+   * Empty object that can be utilized to pass object between hook
+   */
+  fastify.addHook('onRequest', async req => {
+    req.resource = {}
+  })
+
+  /**
    * Log request body and redact sesible info
    * TODO: https://getpino.io/#/docs/redaction?id=redaction
    */

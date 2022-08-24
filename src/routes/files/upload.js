@@ -31,6 +31,7 @@ export default async function uploadFile(fastify) {
     path: '/upload',
     config: {
       public: false,
+      // permission: 'file:delete', //TODO
     },
     schema: {
       summary: 'Upload files',

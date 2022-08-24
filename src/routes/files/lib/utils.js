@@ -17,10 +17,11 @@ export function calcFileSize(blksize, blocks) {
 
 /**
  * Delete target files
- * @param {string[]} filePaths abs file paths
+ * @param {string | string[]} filePaths abs file paths
  * @returns {Promise<void>}
  */
 export function deleteFiles(filePaths) {
+  filePaths = Array.isArray(filePaths) ? filePaths : [filePaths]
   return Promise.all(filePaths.map(filePath => unlink(filePath)))
 }
 
