@@ -3,8 +3,8 @@ module.exports = {
     {
       name: 'dilemma',
       cwd: '/opt/dilemma/dilemma/political-dilemma-service/political-dilemma-service',
-      script: 'npm',
-      args: 'start',
+      script: 'index.js',
+      node_args: '-r dotenv/config',
       env: {
         NODE_ENV: 'production',
       },
