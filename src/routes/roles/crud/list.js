@@ -18,7 +18,7 @@ export default async function listPermissions(fastify) {
       response: {
         200: S.object()
           .additionalProperties(false)
-          .prop('results', S.array().items(sRoleResponse())),
+          .prop('results', S.array().maxItems(200).items(sRoleResponse())),
       },
     },
     handler: onListPermissions,

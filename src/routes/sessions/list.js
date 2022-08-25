@@ -21,7 +21,7 @@ export default async function listSessions(fastify) {
         .prop('active', S.boolean())
         .description('Retrieve only active sessions.'),
       response: {
-        200: S.array().items(sSession()),
+        200: S.array().maxItems(200).items(sSession()),
       },
     },
     handler: onListSessions,

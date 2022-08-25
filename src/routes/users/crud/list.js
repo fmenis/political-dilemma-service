@@ -67,7 +67,7 @@ export default async function listUsers(fastify) {
       response: {
         200: S.object()
           .additionalProperties(false)
-          .prop('results', S.array().items(sUserList()))
+          .prop('results', S.array().maxItems(200).items(sUserList()))
           .required()
           .prop('paginatedInfo', fastify.getSchema('sPaginatedInfo'))
           .required(),

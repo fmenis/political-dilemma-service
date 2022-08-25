@@ -20,7 +20,7 @@ export default async function listArticles(fastify) {
         200: S.object()
           .additionalProperties(false)
           .description('Articles.')
-          .prop('results', S.array().items(sArticleList()))
+          .prop('results', S.array().maxItems(200).items(sArticleList()))
           .required(),
       },
     },
