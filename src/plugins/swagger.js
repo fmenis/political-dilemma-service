@@ -37,6 +37,10 @@ async function swaggerGenerator(fastify) {
         },
         { name: 'misc', description: 'Miscellaneous related end-points' },
         { name: 'articles', description: 'Articles related end-points' },
+        {
+          name: 'internalNotes',
+          description: 'Internal notes related end-points',
+        },
       ],
     },
     // TODO passare a openApi v3
