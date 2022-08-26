@@ -95,4 +95,7 @@ export function sArticleList() {
     .prop('publishedAt', S.string().format('date-time'))
     .description('Article publish date.')
     .required()
+    .prop('canBeDeleted', S.boolean())
+    .description('Defines if the article can be deleted.')
+    .required()
 }

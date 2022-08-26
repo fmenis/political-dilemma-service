@@ -104,7 +104,8 @@ export default async function createArticle(fastify) {
       }),
     ])
 
-    reply.code(201).send({
+    reply.code(201)
+    return {
       id: newArticle.id,
       title: newArticle.title,
       text: newArticle.text,
@@ -114,6 +115,6 @@ export default async function createArticle(fastify) {
       createdAt: newArticle.createdAt,
       publishedAt: newArticle.publishedAt,
       tags: tags.map(tag => tag.name),
-    })
+    }
   }
 }

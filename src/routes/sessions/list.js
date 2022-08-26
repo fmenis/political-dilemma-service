@@ -14,7 +14,7 @@ export default async function listSessions(fastify) {
     schema: {
       summary: 'List sessions',
       description: 'Retrieve sessions.',
-      querystring: S.object()
+      query: S.object()
         .additionalProperties(false)
         .prop('userId', S.number().minimum(1))
         .description('Retrieve user sessions.')

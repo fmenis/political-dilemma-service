@@ -15,7 +15,7 @@ export default async function listArticleTags(fastify) {
     schema: {
       summary: 'List article tags.',
       description: 'Retrieve article tags.',
-      querystring: S.object()
+      query: S.object()
         .additionalProperties(false)
         .prop('search', S.string().minLength(3).pattern(inputRexExp))
         .description('Full text search field.'),

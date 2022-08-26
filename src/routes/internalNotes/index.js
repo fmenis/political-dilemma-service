@@ -1,5 +1,5 @@
 import createRoute from './create.js'
-// import listRoute from './list.js'
+import listRoute from './list.js'
 
 export default async function index(fastify) {
   fastify.addHook('onRoute', options => {
@@ -11,5 +11,5 @@ export default async function index(fastify) {
 
   const prefix = '/v1/notes'
   fastify.register(createRoute, { prefix })
-  // fastify.register(listRoute, { prefix })
+  fastify.register(listRoute, { prefix })
 }

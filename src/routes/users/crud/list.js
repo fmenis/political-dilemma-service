@@ -25,7 +25,7 @@ export default async function listUsers(fastify) {
     schema: {
       summary: 'List users',
       description: 'Get all users.',
-      querystring: S.object()
+      query: S.object()
         .additionalProperties(false)
         .prop('type', S.string().enum(['backoffice', 'site']))
         .description('Filter by user type.')

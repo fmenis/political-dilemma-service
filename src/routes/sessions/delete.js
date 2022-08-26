@@ -15,7 +15,7 @@ export default async function deleteSession(fastify) {
     schema: {
       summary: 'Delete sessions',
       description: 'Delete sessions by ids (bulk deletion).',
-      querystring: S.object()
+      query: S.object()
         .additionalProperties(false)
         .prop('ids', S.array().minItems(1).items(S.string().format('uuid')))
         .description('Session ids.')
