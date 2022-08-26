@@ -90,23 +90,28 @@ export default async function createArticle(fastify) {
     const newArticle = await massive.withTransaction(async tx => {
       const newArticle = await tx.articles.save(params)
 
-      // associate tags
-      await Promise.all(
-        tagsIds.map(tagId => {
-          tx.articlesTags.save({ articleId: newArticle.id, tagId })
-        })
-      )
+      if (tagsIds) {
+        await Promise.all(
+          tagsIds.map(tagId => {
+            tx.articlesTags.save({ articleId: newArticle.id, tagId })
+          })
+        )
+      }
+
       return newArticle
     })
 
-    const [owner, tags] = await Promise.all([
-      massive.users.findOne(user.id),
-      massive.tags.find({
+    const owner = await massive.users.findOne(user.id)
+    let tags
+
+    if (tagsIds) {
+      tags = await massive.tags.find({
         id: tagsIds,
-      }),
-    ])
+      })
+    }
 
     reply.code(201)
+
     return {
       id: newArticle.id,
       title: newArticle.title,
@@ -116,7 +121,7 @@ export default async function createArticle(fastify) {
       author: `${owner.first_name} ${owner.last_name}`,
       createdAt: newArticle.createdAt,
       publishedAt: newArticle.publishedAt,
-      tags: tags.map(tag => tag.name),
+      tags: tags ? tags.map(tag => tag.name) : [],
     }
   }
 }
