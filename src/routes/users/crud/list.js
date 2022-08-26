@@ -255,8 +255,6 @@ export default async function listUsers(fastify) {
         ...user,
         publishedLaws: 0,
         draftLaws: 0,
-        publishedArticles: 0,
-        draftArticles: 0,
       }
     })
   }

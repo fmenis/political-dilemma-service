@@ -70,8 +70,11 @@ export function sArticle() {
     .prop('categoryId', S.string().format('uuid'))
     .description('Article category id.')
     .required()
-    .prop('tags', S.array().items(S.string()))
-    .description('Article tags.')
+    .prop(
+      'tagsIds',
+      S.array().items(S.string().format('uuid')).minItems(1).maxItems(50)
+    )
+    .description('Article tags ids.')
     .required()
 }
 
@@ -97,5 +100,8 @@ export function sArticleList() {
     .required()
     .prop('canBeDeleted', S.boolean())
     .description('Defines if the article can be deleted.')
+    .required()
+    .prop('hasNotifications', S.boolean())
+    .description('Defines if the article have notifications.')
     .required()
 }

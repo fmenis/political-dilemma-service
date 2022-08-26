@@ -31,7 +31,7 @@ export default async function createArticle(fastify) {
   })
 
   async function onPreHandler(req) {
-    const { categoryId, title, tagsIds } = req.body
+    const { categoryId, title, tagsIds = [] } = req.body
 
     const category = await massive.categories.findOne(categoryId)
     if (!category) {
@@ -40,42 +40,42 @@ export default async function createArticle(fastify) {
       })
     }
 
+    //TODO rifare controllo: togliere spazi e metter tutto lower
     const duplicateTitle = await massive.articles.findOne({ title })
     if (duplicateTitle) {
+      //TODO capire perchè il messaggio non appare sui log pm2
       throw httpErrors.conflict(`Article with title '${title}' already exists`)
     }
 
-    if (tagsIds) {
-      const duplicatedTagsIds = findArrayDuplicates(tagsIds)
-      if (duplicatedTagsIds.length) {
-        throw createError(400, 'Invalid input', {
-          validation: [
-            {
-              message: `Duplicate tags ids: ${duplicatedTagsIds.join(', ')}`,
-            },
-          ],
-        })
-      }
+    const duplicatedTagsIds = findArrayDuplicates(tagsIds)
+    if (duplicatedTagsIds.length) {
+      throw createError(400, 'Invalid input', {
+        validation: [
+          {
+            message: `Duplicate tags ids: ${duplicatedTagsIds.join(', ')}`,
+          },
+        ],
+      })
+    }
 
-      const tags = await massive.tags.find({ id: tagsIds })
-      if (tags.length < tagsIds.length) {
-        const missing = _.difference(
-          tagsIds,
-          tags.map(item => item.id)
-        )
-        throw createError(400, 'Invalid input', {
-          validation: [
-            {
-              message: `Tags ids ${missing.join(', ')} not found`,
-            },
-          ],
-        })
-      }
+    const tags = await massive.tags.find({ id: tagsIds })
+    if (tags.length < tagsIds.length) {
+      const missing = _.difference(
+        tagsIds,
+        tags.map(item => item.id)
+      )
+      throw createError(400, 'Invalid input', {
+        validation: [
+          {
+            message: `Tags ids ${missing.join(', ')} not found`,
+          },
+        ],
+      })
     }
   }
 
   async function onCreateArticle(req, reply) {
-    const { title, text, description, categoryId, tagsIds } = req.body
+    const { title, text, description, categoryId, tagsIds = [] } = req.body
     const { user } = req
 
     const params = {
@@ -90,25 +90,16 @@ export default async function createArticle(fastify) {
     const newArticle = await massive.withTransaction(async tx => {
       const newArticle = await tx.articles.save(params)
 
-      if (tagsIds) {
-        await Promise.all(
-          tagsIds.map(tagId => {
-            tx.articlesTags.save({ articleId: newArticle.id, tagId })
-          })
-        )
-      }
+      await Promise.all(
+        tagsIds.map(tagId => {
+          tx.articlesTags.save({ articleId: newArticle.id, tagId })
+        })
+      )
 
       return newArticle
     })
 
     const owner = await massive.users.findOne(user.id)
-    let tags
-
-    if (tagsIds) {
-      tags = await massive.tags.find({
-        id: tagsIds,
-      })
-    }
 
     reply.code(201)
 
@@ -121,7 +112,7 @@ export default async function createArticle(fastify) {
       author: `${owner.first_name} ${owner.last_name}`,
       createdAt: newArticle.createdAt,
       publishedAt: newArticle.publishedAt,
-      tags: tags ? tags.map(tag => tag.name) : [],
+      tagsIds,
     }
   }
 }
