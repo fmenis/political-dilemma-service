@@ -45,30 +45,32 @@ export default async function createArticle(fastify) {
       throw httpErrors.conflict(`Article with title '${title}' already exists`)
     }
 
-    const duplicatedTagsIds = findArrayDuplicates(tagsIds)
-    if (duplicatedTagsIds.length) {
-      throw createError(400, 'Invalid input', {
-        validation: [
-          {
-            message: `Duplicate tags ids: ${duplicatedTagsIds.join(', ')}`,
-          },
-        ],
-      })
-    }
+    if (tagsIds) {
+      const duplicatedTagsIds = findArrayDuplicates(tagsIds)
+      if (duplicatedTagsIds.length) {
+        throw createError(400, 'Invalid input', {
+          validation: [
+            {
+              message: `Duplicate tags ids: ${duplicatedTagsIds.join(', ')}`,
+            },
+          ],
+        })
+      }
 
-    const tags = await massive.tags.find({ id: tagsIds })
-    if (tags.length < tagsIds.length) {
-      const missing = _.difference(
-        tagsIds,
-        tags.map(item => item.id)
-      )
-      throw createError(400, 'Invalid input', {
-        validation: [
-          {
-            message: `Tags ids ${missing.join(', ')} not found`,
-          },
-        ],
-      })
+      const tags = await massive.tags.find({ id: tagsIds })
+      if (tags.length < tagsIds.length) {
+        const missing = _.difference(
+          tagsIds,
+          tags.map(item => item.id)
+        )
+        throw createError(400, 'Invalid input', {
+          validation: [
+            {
+              message: `Tags ids ${missing.join(', ')} not found`,
+            },
+          ],
+        })
+      }
     }
   }
 
