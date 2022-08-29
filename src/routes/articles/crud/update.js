@@ -52,7 +52,7 @@ export default async function updateArticle(fastify) {
     }
   }
 
-  async function onUpdateArticle(req, reply) {
+  async function onUpdateArticle(req) {
     const { id } = req.params
 
     //TODO migliorare con un join
@@ -61,7 +61,7 @@ export default async function updateArticle(fastify) {
       fields: ['first_name', 'last_name'],
     })
 
-    reply.code(200).send({
+    return {
       id: updatedArticle.id,
       title: updatedArticle.title,
       text: updatedArticle.text,
@@ -72,6 +72,6 @@ export default async function updateArticle(fastify) {
       publishedAt: updatedArticle.publishedAt,
       //##TODO
       tags: ['86870ab8-0aa7-40c9-920f-4e730e494e1b'],
-    })
+    }
   }
 }

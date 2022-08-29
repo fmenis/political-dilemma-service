@@ -2,7 +2,9 @@ SELECT
 {columns}
   users.id, users.first_name, users.last_name, users.user_name, users.email,
   users.joined_date, users.is_blocked, users.is_deleted, last_access,
-  regions.name AS region, provinces.name AS province, roles.name AS role  
+  regions.name AS region, provinces.name AS province, roles.name AS role,
+  (SELECT count(id) FROM articles WHERE status = 'DRAFT' AND "ownerId" = users.id) as "draftArticles",
+  (SELECT count(id) FROM articles WHERE status = 'PUBLISHED' AND "ownerId" = users.id) as "publishedArticles"
 {columns}
 FROM users
 JOIN provinces

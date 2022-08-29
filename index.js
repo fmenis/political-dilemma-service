@@ -8,6 +8,17 @@ const fastify = Fastify({
     level: process.env.LOG_LEVEL,
     prettyPrint: process.env.NODE_ENV !== 'production',
     timestamp: () => stdTimeFunctions.isoTime(),
+    redact: {
+      paths: [
+        'password',
+        'confirmPassword',
+        'oldPassword',
+        'newPassword',
+        'newPasswordConfirmation',
+        'token',
+      ],
+      censor: '**GDPR COMPLIANT**',
+    },
   },
   trustProxy: true,
   ajv: {

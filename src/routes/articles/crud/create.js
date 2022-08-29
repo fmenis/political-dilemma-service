@@ -31,7 +31,7 @@ export default async function createArticle(fastify) {
   })
 
   async function onPreHandler(req) {
-    const { categoryId, title, tagsIds } = req.body
+    const { categoryId, title, tagsIds = [] } = req.body
 
     const category = await massive.categories.findOne(categoryId)
     if (!category) {
@@ -40,8 +40,10 @@ export default async function createArticle(fastify) {
       })
     }
 
+    //TODO rifare controllo: togliere spazi e metter tutto lower
     const duplicateTitle = await massive.articles.findOne({ title })
     if (duplicateTitle) {
+      //TODO capire perchè il messaggio non appare sui log pm2
       throw httpErrors.conflict(`Article with title '${title}' already exists`)
     }
 
@@ -73,7 +75,7 @@ export default async function createArticle(fastify) {
   }
 
   async function onCreateArticle(req, reply) {
-    const { title, text, description, categoryId, tagsIds } = req.body
+    const { title, text, description, categoryId, tagsIds = [] } = req.body
     const { user } = req
 
     const params = {
@@ -88,23 +90,20 @@ export default async function createArticle(fastify) {
     const newArticle = await massive.withTransaction(async tx => {
       const newArticle = await tx.articles.save(params)
 
-      // associate tags
       await Promise.all(
         tagsIds.map(tagId => {
           tx.articlesTags.save({ articleId: newArticle.id, tagId })
         })
       )
+
       return newArticle
     })
 
-    const [owner, tags] = await Promise.all([
-      massive.users.findOne(user.id),
-      massive.tags.find({
-        id: tagsIds,
-      }),
-    ])
+    const owner = await massive.users.findOne(user.id)
 
-    reply.code(201).send({
+    reply.code(201)
+
+    return {
       id: newArticle.id,
       title: newArticle.title,
       text: newArticle.text,
@@ -113,7 +112,7 @@ export default async function createArticle(fastify) {
       author: `${owner.first_name} ${owner.last_name}`,
       createdAt: newArticle.createdAt,
       publishedAt: newArticle.publishedAt,
-      tags: tags.map(tag => tag.name),
-    })
+      tagsIds,
+    }
   }
 }

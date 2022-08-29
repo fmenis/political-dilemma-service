@@ -37,6 +37,10 @@ async function swaggerGenerator(fastify) {
         },
         { name: 'misc', description: 'Miscellaneous related end-points' },
         { name: 'articles', description: 'Articles related end-points' },
+        {
+          name: 'internalNotes',
+          description: 'Internal notes related end-points',
+        },
         { name: 'files', description: 'Files related end-points' },
       ].sort((a, b) => a.name.localeCompare(b.name)),
     },

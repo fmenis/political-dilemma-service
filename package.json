@@ -10,8 +10,8 @@
   },
   "private": true,
   "scripts": {
-    "start": "cross-env NODE_ENV=production node -r dotenv/config index.js",
-    "dev": "cross-env NODE_ENV=development nodemon --config nodemon.json --inspect -r dotenv/config index.js",
+    "start": "npm run applyMigrations && cross-env NODE_ENV=production node -r dotenv/config index.js",
+    "dev": "npm run applyMigrations && cross-env NODE_ENV=development nodemon --config nodemon.json --inspect -r dotenv/config index.js",
     "test": "tap",
     "lint": "eslint . --ext .js",
     "prepare": "husky install",
@@ -19,7 +19,7 @@
     "init-stack": "cd ./pd-stack && docker-compose up -d",
     "shutdown-stack": "cd ./pd-stack && docker-compose down -d",
     "rebuild-db": "./pd-stack/rebuild-db.sh",
-    "genPw": "node -r dotenv/config src/scripts/generatePassword.js"
+    "applyMigrations": "node -r dotenv/config ./src/scripts/applyMigrations.js"
   },
   "keywords": [
     "political-dilemma"
@@ -51,6 +51,7 @@
     "nodemailer": "6.7.2",
     "pg": "8.7.1",
     "pino": "7.6.0",
+    "postgrator": "7.1.0",
     "redis": "3.1.2"
   },
   "devDependencies": {

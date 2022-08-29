@@ -14,14 +14,14 @@ export default async function listSessions(fastify) {
     schema: {
       summary: 'List sessions',
       description: 'Retrieve sessions.',
-      querystring: S.object()
+      query: S.object()
         .additionalProperties(false)
         .prop('userId', S.number().minimum(1))
         .description('Retrieve user sessions.')
         .prop('active', S.boolean())
         .description('Retrieve only active sessions.'),
       response: {
-        200: S.array().items(sSession()),
+        200: S.array().maxItems(200).items(sSession()),
       },
     },
     handler: onListSessions,

@@ -11,6 +11,7 @@ import permissionsRoutes from './permissions/index.js'
 import rolesRoutes from './roles/index.js'
 import resetPasswordRoutes from './resetPassword/index.js'
 import articleRoutes from './articles/index.js'
+import internalNotesRoutes from './internalNotes/index.js'
 import fielsRoutes from './files/index.js'
 
 export default async function index(fastify) {
@@ -25,8 +26,7 @@ export default async function index(fastify) {
   })
 
   /**
-   * Log request body and redact sesible info
-   * TODO: https://getpino.io/#/docs/redaction?id=redaction
+   * Additional request logs
    */
   fastify.addHook('preValidation', async req => {
     const { body, log, user } = req
@@ -42,28 +42,7 @@ export default async function index(fastify) {
     }
 
     if (fastify.config.LOG_REQ_BODY && body) {
-      const obscuredKeys = [
-        'password',
-        'confirmPassword',
-        'oldPassword',
-        'newPassword',
-        'newPasswordConfirmation',
-        'token',
-      ]
-
-      if (Object.keys(body).some(key => obscuredKeys.includes(key))) {
-        const copy = { ...req.body }
-
-        Object.keys(copy).forEach(key => {
-          if (obscuredKeys.includes(key)) {
-            copy[key] = '*'.repeat(8)
-          }
-        })
-
-        log.debug(copy, 'parsed body')
-      } else {
-        log.debug(body, 'parsed body')
-      }
+      log.debug(body, 'parsed body')
     }
   })
 
@@ -118,5 +97,6 @@ export default async function index(fastify) {
   fastify.register(rolesRoutes)
   fastify.register(resetPasswordRoutes)
   fastify.register(articleRoutes)
+  fastify.register(internalNotesRoutes)
   fastify.register(fielsRoutes)
 }

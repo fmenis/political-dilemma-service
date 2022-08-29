@@ -25,7 +25,7 @@ export default async function listUsers(fastify) {
     schema: {
       summary: 'List users',
       description: 'Get all users.',
-      querystring: S.object()
+      query: S.object()
         .additionalProperties(false)
         .prop('type', S.string().enum(['backoffice', 'site']))
         .description('Filter by user type.')
@@ -67,7 +67,7 @@ export default async function listUsers(fastify) {
       response: {
         200: S.object()
           .additionalProperties(false)
-          .prop('results', S.array().items(sUserList()))
+          .prop('results', S.array().maxItems(200).items(sUserList()))
           .required()
           .prop('paginatedInfo', fastify.getSchema('sPaginatedInfo'))
           .required(),
@@ -255,8 +255,6 @@ export default async function listUsers(fastify) {
         ...user,
         publishedLaws: 0,
         draftLaws: 0,
-        publishedArticles: 0,
-        draftArticles: 0,
       }
     })
   }

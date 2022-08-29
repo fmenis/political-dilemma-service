@@ -13,27 +13,34 @@ export default async function listArticleCategories(fastify) {
       summary: 'List article categories.',
       description: 'Retrieve article categories.',
       response: {
-        200: S.array().items(
-          S.object()
-            .additionalProperties(false)
-            .description('Article categories.')
-            .prop('id', S.string().format('uuid'))
-            .description('Category id.')
-            .required()
-            .prop('name', S.string())
-            .description('Category name.')
-            .required()
-            .prop('description', S.string())
-            .description('Category description.')
-            .required()
-        ),
+        200: S.object()
+          .additionalProperties(false)
+          .prop(
+            'results',
+            S.array()
+              .maxItems(200)
+              .items(
+                S.object()
+                  .additionalProperties(false)
+                  .description('Article categories.')
+                  .prop('id', S.string().format('uuid'))
+                  .description('Category id.')
+                  .required()
+                  .prop('name', S.string())
+                  .description('Category name.')
+                  .required()
+                  .prop('description', S.string())
+                  .description('Category description.')
+                  .required()
+              )
+          ),
       },
     },
     handler: onListArticleCategories,
   })
 
   async function onListArticleCategories() {
-    return massive.categories.find(
+    const categories = await massive.categories.find(
       {},
       {
         order: [
@@ -44,5 +51,7 @@ export default async function listArticleCategories(fastify) {
         ],
       }
     )
+
+    return { results: categories }
   }
 }

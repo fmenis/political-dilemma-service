@@ -49,5 +49,6 @@ jobs:
           echo SENDER_EMAIL=${{ secrets.SENDER_EMAIL }} >> .env
           cat .env
       - run: npm ci
+      - run: npm run applyMigrations
       - run: pm2 startOrRestart ecosystem.config.cjs
       - run: pm2 save

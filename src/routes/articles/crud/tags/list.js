@@ -15,22 +15,29 @@ export default async function listArticleTags(fastify) {
     schema: {
       summary: 'List article tags.',
       description: 'Retrieve article tags.',
-      querystring: S.object()
+      query: S.object()
         .additionalProperties(false)
         .prop('search', S.string().minLength(3).pattern(inputRexExp))
         .description('Full text search field.'),
       response: {
-        200: S.array().items(
-          S.object()
-            .additionalProperties(false)
-            .description('Article tags.')
-            .prop('id', S.string().format('uuid'))
-            .description('Tag id.')
-            .required()
-            .prop('name', S.string())
-            .description('Tag name.')
-            .required()
-        ),
+        200: S.object()
+          .additionalProperties(false)
+          .prop(
+            'results',
+            S.array()
+              .maxItems(200)
+              .items(
+                S.object()
+                  .additionalProperties(false)
+                  .description('Article tags.')
+                  .prop('id', S.string().format('uuid'))
+                  .description('Tag id.')
+                  .required()
+                  .prop('name', S.string())
+                  .description('Tag name.')
+                  .required()
+              )
+          ),
       },
     },
     handler: onListArticleTags,
@@ -47,10 +54,10 @@ export default async function listArticleTags(fastify) {
       ],
     }
 
-    if (search) {
-      return massive.tags.where('name ILIKE $1', [`%${search}%`], options)
-    }
+    const tags = search
+      ? await massive.tags.where('name ILIKE $1', [`%${search}%`], options)
+      : await massive.tags.find({}, options)
 
-    return massive.tags.find({}, options)
+    return { results: tags }
   }
 }
