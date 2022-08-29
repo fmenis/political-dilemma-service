@@ -46,26 +46,27 @@ export default async function uploadFile(fastify) {
   })
 
   async function onUploadFile(req) {
-    const { user } = req
+    const { user, log } = req
     const basePath = join(config.STATIC_FILES_DEST, 'articles/images')
-    let files
+    let urls
+
+    const files = await req.saveRequestFiles()
 
     try {
-      files = await req.saveRequestFiles()
-
       const populatedFiles = await populateFiles(files, basePath)
 
       await checkFiles(populatedFiles)
 
       await moveFiles(populatedFiles, basePath)
 
-      const urls = await indexFiles(populatedFiles, user)
-
-      return urls
-    } finally {
+      urls = await indexFiles(populatedFiles, user)
+    } catch (error) {
+      log.error('Error trying to upload file', error)
       // delete tmp files in any case
       await deleteFiles(files.map(file => file.filepath))
     }
+
+    return urls
   }
 
   function populateFiles(files, basePath) {
@@ -78,7 +79,7 @@ export default async function uploadFile(fastify) {
         size: calcFileSize(fileStats.blksize, fileStats.blocks),
         url: `${calculateBaseUrl({
           excludePort: true,
-        })}/politicaldilemma/static/articles/images/${file.filename}`,
+        })}/static/articles/images/${file.filename}`,
       }
     }
 
