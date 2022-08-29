@@ -5,7 +5,8 @@ const appConfig = {
     /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})(?=.*[;:_,.\-ç°§òàù@#é*è+[\]{}|!"£$%&/()=?^\\'ì<>])/g,
   upload: {
     allowedFileExts: ['png', 'pdf'],
-    maxSize: 5, // MB
+    maxSize: 5, // MB,
+    maxUploadsForRequeset: 10,
   },
 }
 

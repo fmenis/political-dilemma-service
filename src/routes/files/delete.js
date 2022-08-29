@@ -11,7 +11,6 @@ export default async function deleteFile(fastify) {
     path: '/:id',
     config: {
       public: false,
-      // permission, //TODO
     },
     schema: {
       summary: 'Delete file',

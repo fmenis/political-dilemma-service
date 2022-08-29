@@ -96,6 +96,9 @@ export default async function createArticle(fastify) {
         })
       )
 
+      //TODO capire se ha senso farsi passare gli id dei files associati
+      //e associare l'id articolo alla colonna file.articleId
+
       return newArticle
     })
 

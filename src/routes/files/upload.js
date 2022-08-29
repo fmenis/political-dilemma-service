@@ -8,6 +8,7 @@ import { CATEGORIES } from './lib/enums.js'
 import { calcFileSize, deleteFiles, moveFile } from './lib/utils.js'
 import { appConfig } from '../../config/main.js'
 import { calculateBaseUrl } from '../../utils/main.js'
+import { sUploadFileResponse } from './lib/schema.js'
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -31,30 +32,19 @@ export default async function uploadFile(fastify) {
     path: '/upload',
     config: {
       public: false,
-      // permission: 'file:delete', //TODO
     },
     schema: {
       summary: 'Upload files',
       description: 'Upload files.',
-      //TODO capire come fare validazione body
+      // body: S.object().additionalProperties(false).prop('files'),
       response: {
         200: S.array()
-          .items(
-            S.object()
-              .additionalProperties(false)
-              .prop(
-                'id',
-                S.string().format('uuid').description('File id').required()
-              )
-              .prop(
-                'url',
-                S.string().format('uri').description('File url').required()
-              )
-          )
-          .minItems(1),
+          .items(sUploadFileResponse())
+          .minItems(1)
+          .maxItems(appConfig.upload.maxUploadsForRequeset),
       },
     },
-    preHandler: upload.array('files', 10),
+    preHandler: upload.array('files', appConfig.upload.maxUploadsForRequeset),
     handler: onUploadFile,
   })
 
@@ -124,18 +114,19 @@ export default async function uploadFile(fastify) {
 
   async function indexFiles(files, user) {
     async function indexFile(file, user, tx) {
+      const { destPath, url, originalname, extension, mimetype, size } = file
       const newFile = await tx.files.save({
-        fullPath: file.destPath,
-        url: file.url,
-        fileName: file.originalname,
-        extension: file.extension,
-        mimetype: file.mimetype,
-        size: file.size,
+        fullPath: destPath,
+        url,
+        fileName: originalname,
+        extension,
+        mimetype,
+        size,
         ownerId: user.id,
         category: CATEGORIES.ARTICLE_IMAGE,
       })
 
-      return { id: newFile.id, url: file.url }
+      return { id: newFile.id, url, extension, mimetype, size }
     }
 
     const filesData = await massive.withTransaction(async tx => {
