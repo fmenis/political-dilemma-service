@@ -1,6 +1,5 @@
 import S from 'fluent-json-schema'
-import multer from 'fastify-multer'
-import { tmpdir } from 'os'
+import multipart from '@fastify/multipart'
 import { join, extname } from 'path'
 import { stat, mkdir } from 'fs/promises'
 
@@ -10,20 +9,19 @@ import { appConfig } from '../../config/main.js'
 import { calculateBaseUrl } from '../../utils/main.js'
 import { sUploadFileResponse } from './lib/schema.js'
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, tmpdir())
-  },
-  filename: function (req, file, cb) {
-    cb(null, file.originalname)
-  },
-})
-
-const upload = multer({ storage })
-
-//TODO testare con più file transazioni e cancellazione file
 export default async function uploadFile(fastify) {
-  fastify.register(multer.contentParser)
+  // fastify.register(multipart, {
+  //   // limits: {
+  //   //   fieldNameSize: 100,
+  //   //   fieldSize: 100,
+  //   //   fields: 10,
+  //   //   fileSize: 1000000,
+  //   //   files: 1,
+  //   //   headerPairs: 2000,
+  //   // },
+  // })
+
+  fastify.register(multipart)
 
   const { massive, config, httpErrors } = fastify
 
@@ -44,15 +42,17 @@ export default async function uploadFile(fastify) {
           .maxItems(appConfig.upload.maxUploadsForRequeset),
       },
     },
-    preHandler: upload.array('files', appConfig.upload.maxUploadsForRequeset),
     handler: onUploadFile,
   })
 
   async function onUploadFile(req) {
-    const { files, user } = req
+    const { user } = req
     const basePath = join(config.STATIC_FILES_DEST, 'articles/images')
+    let files
 
     try {
+      files = await req.saveRequestFiles()
+
       const populatedFiles = await populateFiles(files, basePath)
 
       await checkFiles(populatedFiles)
@@ -64,21 +64,21 @@ export default async function uploadFile(fastify) {
       return urls
     } finally {
       // delete tmp files in any case
-      await deleteFiles(files.map(file => file.path))
+      await deleteFiles(files.map(file => file.filepath))
     }
   }
 
   function populateFiles(files, basePath) {
     async function populateFile(file) {
-      const fileStats = await stat(file.path)
+      const fileStats = await stat(file.filepath)
       return {
         ...file,
-        destPath: join(basePath, file.originalname),
-        extension: extname(file.originalname).slice(1),
+        destPath: join(basePath, file.filename),
+        extension: extname(file.filename).slice(1),
         size: calcFileSize(fileStats.blksize, fileStats.blocks),
         url: `${calculateBaseUrl({
           excludePort: true,
-        })}/politicaldilemma/static/articles/images/${file.originalname}`,
+        })}/politicaldilemma/static/articles/images/${file.filename}`,
       }
     }
 
@@ -95,11 +95,11 @@ export default async function uploadFile(fastify) {
         )
       }
 
-      const fileStats = await stat(file.path)
+      const fileStats = await stat(file.filepath)
       const size = calcFileSize(fileStats.blksize, fileStats.blocks)
       if (size > maxSize) {
         throw httpErrors.conflict(
-          `File '${file.originalname}' can't be uploaded: size '${size}' exceed limits`
+          `File '${file.filename}' can't be uploaded: size '${size}' exceed limits`
         )
       }
     }
@@ -109,16 +109,18 @@ export default async function uploadFile(fastify) {
 
   async function moveFiles(files, basePath) {
     await mkdir(basePath, { recursive: true })
-    return Promise.all(files.map(file => moveFile(file.path, file.destPath)))
+    return Promise.all(
+      files.map(file => moveFile(file.filepath, file.destPath))
+    )
   }
 
   async function indexFiles(files, user) {
     async function indexFile(file, user, tx) {
-      const { destPath, url, originalname, extension, mimetype, size } = file
+      const { destPath, url, filename, extension, mimetype, size } = file
       const newFile = await tx.files.save({
         fullPath: destPath,
         url,
-        fileName: originalname,
+        fileName: filename,
         extension,
         mimetype,
         size,
