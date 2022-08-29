@@ -10,7 +10,6 @@ export default async function listInternalNotes(fastify) {
     path: '/',
     config: {
       public: false,
-      // permission, //TODO valutare se serve un permesso o possono utilizzarla tutti
     },
     schema: {
       summary: 'List internal note',
@@ -23,8 +22,9 @@ export default async function listInternalNotes(fastify) {
           'category',
           S.string().minLength(3).maxLength(50).enum(['articles', 'activities'])
         ),
-      // .dependencies({
-      //   //TODO https://github.com/fastify/fluent-json-schema/blob/master/docs/API.md#dependencies
+      //TODO
+      // .dependentRequired({
+      //   relatedDocumentId: ['category'],
       // }),
       response: {
         200: S.object()

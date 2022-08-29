@@ -18,8 +18,7 @@ export default async function index(fastify) {
   fastify.register(authorization)
 
   /**
-   * Log request body and redact sesible info
-   * TODO: https://getpino.io/#/docs/redaction?id=redaction
+   * Additional request logs
    */
   fastify.addHook('preValidation', async req => {
     const { body, log, user } = req
@@ -35,28 +34,7 @@ export default async function index(fastify) {
     }
 
     if (fastify.config.LOG_REQ_BODY && body) {
-      const obscuredKeys = [
-        'password',
-        'confirmPassword',
-        'oldPassword',
-        'newPassword',
-        'newPasswordConfirmation',
-        'token',
-      ]
-
-      if (Object.keys(body).some(key => obscuredKeys.includes(key))) {
-        const copy = { ...req.body }
-
-        Object.keys(copy).forEach(key => {
-          if (obscuredKeys.includes(key)) {
-            copy[key] = '*'.repeat(8)
-          }
-        })
-
-        log.debug(copy, 'parsed body')
-      } else {
-        log.debug(body, 'parsed body')
-      }
+      log.debug(body, 'parsed body')
     }
   })
 

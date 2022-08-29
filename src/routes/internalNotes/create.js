@@ -10,7 +10,6 @@ export default async function createInternalNote(fastify) {
     path: '/',
     config: {
       public: false,
-      // permission, //TODO valutare se serve un permesso o possono utilizzarla tutti
     },
     schema: {
       summary: 'Create internal note',

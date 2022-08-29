@@ -35,7 +35,7 @@ export default async function listArticles(fastify) {
       {
         order: [
           {
-            field: 'createdAt',
+            field: 'updatedAt',
             direction: 'desc',
           },
         ],
