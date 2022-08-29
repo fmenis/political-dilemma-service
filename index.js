@@ -6,7 +6,6 @@ import App from './src/app.js'
 const fastify = Fastify({
   logger: {
     level: process.env.LOG_LEVEL,
-    prettyPrint: process.env.NODE_ENV !== 'production',
     timestamp: () => stdTimeFunctions.isoTime(),
     redact: {
       paths: [
@@ -31,9 +30,9 @@ const fastify = Fastify({
 fastify.register(App)
 
 const port = process.env.SERVER_PORT || 3000
-const address = process.env.SERVER_ADDRESS || '127.0.0.1'
+const host = process.env.SERVER_ADDRESS || '127.0.0.1'
 
-fastify.listen(port, address, err => {
+fastify.listen({ port, host }, err => {
   if (err) {
     fastify.log.fatal(err)
     throw err

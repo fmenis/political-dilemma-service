@@ -1,7 +1,7 @@
 import { readFileSync } from 'fs'
 import { join, resolve } from 'path'
 import fp from 'fastify-plugin'
-import Swagger from 'fastify-swagger'
+import Swagger from '@fastify/swagger'
 
 const { version } = JSON.parse(readFileSync(join(resolve(), 'package.json')))
 

@@ -7,11 +7,9 @@ const readFileAsync = promisify(readFile)
 
 import { sUserList } from '../lib/schema.js'
 import { buildPaginatedInfo } from '../../lib/common.js'
-import { appConfig } from '../../../config/main.js'
 
 export default async function listUsers(fastify) {
   const { pg } = fastify
-  const { inputRexExp } = appConfig
 
   let userListQuery
 
@@ -29,21 +27,21 @@ export default async function listUsers(fastify) {
         .additionalProperties(false)
         .prop('type', S.string().enum(['backoffice', 'site']))
         .description('Filter by user type.')
-        .prop('firstName', S.string().minLength(1).pattern(inputRexExp))
+        .prop('firstName', S.string().minLength(1))
         .description('Filter by user first name.')
-        .prop('lastName', S.string().minLength(1).pattern(inputRexExp))
+        .prop('lastName', S.string().minLength(1))
         .description('Filter by user last name.')
-        .prop('userName', S.string().minLength(1).pattern(inputRexExp))
+        .prop('userName', S.string().minLength(1))
         .description('Filter by user name.')
-        .prop('email', S.string().minLength(1).pattern(inputRexExp))
+        .prop('email', S.string().minLength(1))
         .description('Filter by user email.')
         .prop('isBlocked', S.boolean())
         .description('Returns blocked or not blocked users.')
         .prop('isDeleted', S.boolean())
         .description('Returns deleted or not deleted users.')
-        .prop('role', S.string().minLength(1).pattern(inputRexExp))
+        .prop('role', S.string().minLength(1))
         .description('Filter by user role.')
-        .prop('search', S.string().minLength(3).pattern(inputRexExp))
+        .prop('search', S.string().minLength(3))
         .description('Full text search field.')
         .prop(
           'sortBy',

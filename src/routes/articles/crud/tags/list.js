@@ -1,10 +1,7 @@
 import S from 'fluent-json-schema'
 
-import { appConfig } from '../../../../config/main.js'
-
 export default async function listArticleTags(fastify) {
   const { massive } = fastify
-  const { inputRexExp } = appConfig
 
   fastify.route({
     method: 'GET',
@@ -17,7 +14,7 @@ export default async function listArticleTags(fastify) {
       description: 'Retrieve article tags.',
       query: S.object()
         .additionalProperties(false)
-        .prop('search', S.string().minLength(3).pattern(inputRexExp))
+        .prop('search', S.string().minLength(3))
         .description('Full text search field.'),
       response: {
         200: S.object()

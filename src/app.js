@@ -1,8 +1,8 @@
-import sensible from 'fastify-sensible'
-import helmet from 'fastify-helmet'
-import cors from 'fastify-cors'
+import sensible from '@fastify/sensible'
+import helmet from '@fastify/helmet'
+import cors from '@fastify/cors'
 import S from 'fluent-json-schema'
-import env from 'fastify-env'
+import env from '@fastify/env'
 import massive from 'fastify-massive'
 
 import swaggerPlugin from './plugins/swagger.js'
