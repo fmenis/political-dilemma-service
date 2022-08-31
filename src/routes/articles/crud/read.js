@@ -68,7 +68,7 @@ export default async function readArticle(fastify) {
     return {
       ...article,
       author: `${author.first_name} ${author.last_name}`,
-      tags: tags.map(item => item.tagId),
+      tagsIds: tags.map(item => item.tagId),
     }
   }
 }
