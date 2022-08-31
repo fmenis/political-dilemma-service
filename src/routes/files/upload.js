@@ -120,7 +120,7 @@ export default async function uploadFile(fastify) {
       const { destPath, url, filename, extension, mimetype, size } = file
       const newFile = await tx.files.save({
         fullPath: destPath,
-        url,
+        url: encodeURI(url),
         fileName: filename,
         extension,
         mimetype,
@@ -129,7 +129,7 @@ export default async function uploadFile(fastify) {
         category: CATEGORIES.ARTICLE_IMAGE,
       })
 
-      return { id: newFile.id, url, extension, mimetype, size }
+      return { id: newFile.id, url: newFile.url, extension, mimetype, size }
     }
 
     const filesData = await massive.withTransaction(async tx => {
