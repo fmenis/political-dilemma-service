@@ -116,6 +116,7 @@ export default async function createArticle(fastify) {
       createdAt: newArticle.createdAt,
       publishedAt: newArticle.publishedAt,
       tagsIds,
+      canBeDeleted: newArticle.status === STATUS.DRAFT,
     }
   }
 }

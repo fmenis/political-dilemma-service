@@ -1,6 +1,7 @@
 import S from 'fluent-json-schema'
 
 import { sArticle } from '../lib/schema.js'
+import { STATUS } from '../lib/enums.js'
 
 export default async function readArticle(fastify) {
   const { massive, httpErrors } = fastify
@@ -69,6 +70,7 @@ export default async function readArticle(fastify) {
       ...article,
       author: `${author.first_name} ${author.last_name}`,
       tagsIds: tags.map(item => item.tagId),
+      canBeDeleted: article.status === STATUS.DRAFT,
     }
   }
 }

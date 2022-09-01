@@ -76,6 +76,9 @@ export function sArticle() {
     )
     .description('Article tags ids.')
     .required()
+    .prop('canBeDeleted', S.boolean())
+    .description('Defines if the article can be deleted.')
+    .required()
 }
 
 export function sArticleList() {
@@ -97,9 +100,6 @@ export function sArticleList() {
     .required()
     .prop('publishedAt', S.string().format('date-time'))
     .description('Article publish date.')
-    .required()
-    .prop('canBeDeleted', S.boolean())
-    .description('Defines if the article can be deleted.')
     .required()
     .prop('hasNotifications', S.boolean())
     .description('Defines if the article have notifications.')

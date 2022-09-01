@@ -1,6 +1,7 @@
 import S from 'fluent-json-schema'
 
 import { sUpdateArticle, sArticle } from '../lib/schema.js'
+import { STATUS } from '../lib/enums.js'
 
 export default async function updateArticle(fastify) {
   const { massive, httpErrors } = fastify
@@ -8,7 +9,7 @@ export default async function updateArticle(fastify) {
   const permission = 'article:update'
 
   fastify.route({
-    method: 'POST',
+    method: 'PATCH',
     path: '/:id',
     config: {
       public: false,
@@ -71,7 +72,8 @@ export default async function updateArticle(fastify) {
       createdAt: updatedArticle.createdAt,
       publishedAt: updatedArticle.publishedAt,
       //##TODO
-      tags: ['86870ab8-0aa7-40c9-920f-4e730e494e1b'],
+      tagsIds: ['86870ab8-0aa7-40c9-920f-4e730e494e1b'],
+      canBeDeleted: updatedArticle.status === STATUS.DRAFT,
     }
   }
 }

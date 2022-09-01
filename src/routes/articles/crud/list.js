@@ -1,7 +1,6 @@
 import S from 'fluent-json-schema'
 
 import { sArticleList } from '../lib/schema.js'
-import { STATUS } from '../lib/enums.js'
 
 export default async function listArticles(fastify) {
   const { massive } = fastify
@@ -60,7 +59,6 @@ export default async function listArticles(fastify) {
         return {
           ...article,
           author: `${author.first_name} ${author.last_name}`,
-          canBeDeleted: article.status === STATUS.DRAFT,
           hasNotifications: internalNotes.some(
             item => item.relatedDocumentId === article.id
           ),
