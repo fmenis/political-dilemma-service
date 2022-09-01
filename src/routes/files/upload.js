@@ -7,7 +7,6 @@ import { CATEGORIES } from './lib/enums.js'
 import { calcFileSize, deleteFiles, moveFile } from './lib/utils.js'
 import { appConfig } from '../../config/main.js'
 import { calculateBaseUrl } from '../../utils/main.js'
-import { sUploadFileResponse } from './lib/schema.js'
 
 export default async function uploadFile(fastify) {
   // fastify.register(multipart, {
@@ -37,7 +36,17 @@ export default async function uploadFile(fastify) {
       // body: S.object().additionalProperties(false).prop('files'),
       response: {
         200: S.array()
-          .items(sUploadFileResponse())
+          .items(
+            S.object()
+              .additionalProperties(false)
+              .description('Uploaded file/s.')
+              .prop('id', S.string().format('uuid'))
+              .description('File id.')
+              .required()
+              .prop('url', S.string().format('uri'))
+              .description('File url.')
+              .required()
+          )
           .minItems(1)
           .maxItems(appConfig.upload.maxUploadsForRequeset),
       },
@@ -129,7 +138,7 @@ export default async function uploadFile(fastify) {
         category: CATEGORIES.ARTICLE_IMAGE,
       })
 
-      return { id: newFile.id, url: newFile.url, extension, mimetype, size }
+      return { id: newFile.id, url: newFile.url }
     }
 
     const filesData = await massive.withTransaction(async tx => {
