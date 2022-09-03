@@ -1,7 +1,7 @@
 server {
-    root /tmp/politicaldilemma;
 
     location /static/ {
+      root /tmp;
       try_files $uri $uri/ $uri.html =404;
     }
 }

@@ -1,3 +1,5 @@
+import { ENV } from '../common/enums.js'
+
 /**
  * Find duplicated inside the target array
  */
@@ -15,15 +17,15 @@ export function findArrayDuplicates(array) {
  */
 export function calculateBaseUrl(opts = {}) {
   switch (process.env.NODE_ENV) {
-    case 'production':
+    case ENV.PRODUCTION:
       return `https://${process.env.DOMAIN_PROD}`
 
-    case 'staging': //TODO da fare
+    case ENV.STAGING: //TODO da fare
       return `https://${process.env.DOMAIN_STAGING}`
 
-    case 'development':
-      if (opts.excludePort) {
-        return `http://${process.env.SERVER_ADDRESS}`
+    case ENV.DEVELOPMENT:
+      if (opts.port) {
+        return `http://${process.env.SERVER_ADDRESS}:${opts.port}`
       }
       return `http://${process.env.SERVER_ADDRESS}:${process.env.SERVER_PORT}`
   }

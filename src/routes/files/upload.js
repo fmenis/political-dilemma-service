@@ -1,7 +1,8 @@
 import S from 'fluent-json-schema'
 import multipart from '@fastify/multipart'
-import { join, extname } from 'path'
+import { join, extname, basename } from 'path'
 import { stat, mkdir } from 'fs/promises'
+import { nanoid } from 'nanoid'
 
 import { CATEGORIES } from './lib/enums.js'
 import { calcFileSize, deleteFiles, moveFile } from './lib/utils.js'
@@ -9,18 +10,13 @@ import { appConfig } from '../../config/main.js'
 import { calculateBaseUrl } from '../../utils/main.js'
 
 export default async function uploadFile(fastify) {
-  // fastify.register(multipart, {
-  //   // limits: {
-  //   //   fieldNameSize: 100,
-  //   //   fieldSize: 100,
-  //   //   fields: 10,
-  //   //   fileSize: 1000000,
-  //   //   files: 1,
-  //   //   headerPairs: 2000,
-  //   // },
-  // })
-
-  fastify.register(multipart)
+  fastify.register(multipart, {
+    limits: {
+      fields: 0,
+      files: appConfig.upload.maxUploadsForRequeset,
+    },
+    // attachFieldsToBody: 'keyValues', //TODO
+  })
 
   const { massive, config, httpErrors } = fastify
 
@@ -33,7 +29,11 @@ export default async function uploadFile(fastify) {
     schema: {
       summary: 'Upload files',
       description: 'Upload files.',
-      // body: S.object().additionalProperties(false).prop('files'),
+      // body: S.object()
+      //   .additionalProperties(false)
+      //   .prop('files')
+      //   .description('')
+      //   .required(),
       response: {
         200: S.array()
           .items(
@@ -57,7 +57,6 @@ export default async function uploadFile(fastify) {
   async function onUploadFile(req) {
     const { user, log } = req
     const basePath = join(config.STATIC_FILES_DEST, 'articles/images')
-    let urls
 
     const files = await req.saveRequestFiles()
 
@@ -68,27 +67,32 @@ export default async function uploadFile(fastify) {
 
       await moveFiles(populatedFiles, basePath)
 
-      urls = await indexFiles(populatedFiles, user)
+      const urls = await indexFiles(populatedFiles, user)
+
+      return urls
     } catch (error) {
       log.error('Error trying to upload file', error)
       // delete tmp files in any case
       await deleteFiles(files.map(file => file.filepath))
+      throw error
     }
-
-    return urls
   }
 
   function populateFiles(files, basePath) {
     async function populateFile(file) {
       const fileStats = await stat(file.filepath)
+      const extension = extname(file.filename)
+      const fileName = basename(file.filename, extension)
+      const filesystemFileName = `${fileName}_${nanoid()}${extension}`
+
       return {
         ...file,
-        destPath: join(basePath, file.filename),
-        extension: extname(file.filename).slice(1),
-        size: calcFileSize(fileStats.blksize, fileStats.blocks),
+        destPath: join(basePath, filesystemFileName),
+        extension: extension.slice(1),
+        size: calcFileSize(fileStats.size),
         url: `${calculateBaseUrl({
-          excludePort: true,
-        })}/static/articles/images/${file.filename}`,
+          port: 8080,
+        })}/static/articles/images/${filesystemFileName}`,
       }
     }
 
@@ -101,15 +105,13 @@ export default async function uploadFile(fastify) {
     async function checkFile(file) {
       if (!allowedFileExts.includes(file.extension)) {
         throw httpErrors.conflict(
-          `File '${file.originalname}' can't be uploaded: extension '${file.extension}' not allowed`
+          `File '${file.filename}' can't be uploaded: extension '${file.extension}' not allowed`
         )
       }
 
-      const fileStats = await stat(file.filepath)
-      const size = calcFileSize(fileStats.blksize, fileStats.blocks)
-      if (size > maxSize) {
+      if (file.size > maxSize) {
         throw httpErrors.conflict(
-          `File '${file.filename}' can't be uploaded: size '${size}' exceed limits`
+          `File '${file.filename}' can't be uploaded: size '${file.size}' exceed limits`
         )
       }
     }

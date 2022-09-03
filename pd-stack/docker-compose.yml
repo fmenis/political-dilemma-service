@@ -41,6 +41,7 @@ services:
     volumes:
       - /tmp:/usr/share/nginx/html:ro
       - ./conf/nginx:/etc/nginx/templates
+      - /tmp:/tmp
     ports:
       - '8080:80'
     environment:

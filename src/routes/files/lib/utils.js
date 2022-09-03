@@ -8,9 +8,8 @@ import { pipeline } from 'node:stream/promises'
  * @param {number} blocks number of blocks
  * @returns {number} rouded file size
  */
-export function calcFileSize(blksize, blocks) {
-  const realSize = blksize * blocks //TODO controllare calcolo
-  const mb = realSize / (1024 * 1024)
+export function calcFileSize(size) {
+  const mb = size / (1024 * 1024)
   const rounded = parseFloat(mb.toFixed(2))
   return rounded
 }
