@@ -7,9 +7,11 @@ const readFileAsync = promisify(readFile)
 
 import { sUserList } from '../lib/schema.js'
 import { buildPaginatedInfo } from '../../lib/common.js'
+import { appConfig } from '../../../config/main.js'
 
 export default async function listUsers(fastify) {
   const { pg } = fastify
+  const { defaultLimit, defaultOffset } = appConfig.pagination
 
   let userListQuery
 
@@ -41,8 +43,8 @@ export default async function listUsers(fastify) {
         .description('Returns deleted or not deleted users.')
         .prop('role', S.string().minLength(1))
         .description('Filter by user role.')
-        .prop('search', S.string().minLength(3))
-        .description('Full text search field.')
+        .prop('search', S.string().minLength(1))
+        .description('Full text search.')
         .prop(
           'sortBy',
           S.string().enum([
@@ -59,8 +61,10 @@ export default async function listUsers(fastify) {
         .prop('order', S.string().enum(['ASC', 'DESC']))
         .description('Sort order (sorting).')
         .prop('limit', S.number())
+        .default(defaultLimit)
         .description('Number of results (pagination).')
         .prop('offset', S.number())
+        .default(defaultOffset)
         .description('Items to skip (pagination).'),
       response: {
         200: S.object()
@@ -102,8 +106,8 @@ export default async function listUsers(fastify) {
         order: query.order || 'ASC',
       },
       pagination: {
-        limit: query.limit ?? 10,
-        offset: query.offset ?? 0,
+        limit: query.limit,
+        offset: query.offset,
       },
     }
 

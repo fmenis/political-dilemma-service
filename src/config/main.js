@@ -8,6 +8,10 @@ const appConfig = {
     maxSize: 5, // MB,
     maxUploadsForRequeset: 10,
   },
+  pagination: {
+    defaultLimit: 10,
+    defaultOffset: 0,
+  },
 }
 
 export { appConfig }
