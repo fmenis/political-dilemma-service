@@ -2,6 +2,7 @@ import S from 'fluent-json-schema'
 
 import authentication from '../plugins/authentication.js'
 import authorization from '../plugins/authorization.js'
+import apiCount from '../plugins/apitCount.js'
 
 import authRoutes from './auth/index.js'
 import userRoutes from './users/index.js'
@@ -17,6 +18,7 @@ import fielsRoutes from './files/index.js'
 export default async function index(fastify) {
   fastify.register(authentication)
   fastify.register(authorization)
+  fastify.register(apiCount)
 
   /**
    * Empty object that can be utilized to pass object between hook

@@ -10,7 +10,7 @@ export default async function listRegions(fastify) {
       public: false,
     },
     schema: {
-      summary: 'Italian provinces',
+      summary: 'Get italian provinces',
       description: 'Get italian provinces list.',
       query: S.object()
         .additionalProperties(false)

@@ -14,7 +14,7 @@ export default async function changePassword(fastify) {
       public: false,
     },
     schema: {
-      summary: 'Change user password',
+      summary: 'Change password',
       description:
         'Change user password. API to be used when the user is logged in.',
       params: S.object()

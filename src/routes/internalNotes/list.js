@@ -12,8 +12,8 @@ export default async function listInternalNotes(fastify) {
       public: false,
     },
     schema: {
-      summary: 'List internal note',
-      description: `List internal note`,
+      summary: 'List internal notes',
+      description: `List internal notes`,
       query: S.object()
         .additionalProperties(false)
         .prop('relatedDocumentId', S.string().format('uuid'))

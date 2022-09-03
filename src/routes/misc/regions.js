@@ -10,7 +10,7 @@ export default async function listRegions(fastify) {
       public: false,
     },
     schema: {
-      summary: 'Italian regions',
+      summary: 'Get italian regions',
       description: 'Get italian regions list.',
       response: {
         200: S.object().prop(

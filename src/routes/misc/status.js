@@ -12,7 +12,7 @@ export default async function status(fastify) {
       public: false,
     },
     schema: {
-      summary: 'Get application status and version',
+      summary: 'Get server status',
       description: 'Returns status and version of the server.',
       response: {
         200: S.object()
