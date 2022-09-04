@@ -50,6 +50,8 @@ export function sEnv() {
     .default(7200)
     .prop('LOG_REQ_BODY', S.boolean())
     .default(false)
+    .prop('WRITE_API_COUNTS', S.boolean())
+    .default(false)
     .prop('AWS_REGION', S.string())
     .required()
     .prop('AWS_ACCESS_KEY_ID', S.string())

@@ -44,6 +44,7 @@
 | RESET_LINK_TTL            |   7200 (2 hours)    | Reset link TTL (in seconds)                 |
 | SALT_ROUNDS               |         10          | Bcrypt salt rounds value                    |
 | LOG_REQ_BODY              |        false        | Enable request body logging                 |
+| WRITE_API_COUNTS          |        false        | Enable api counts persistence               |
 | **AWS_REGION**            |                     | AWS REGION                                  |
 | **AWS_ACCESS_KEY_ID**     |                     | AWS access key id                           |
 | **AWS_SECRET_ACCESS_KEY** |                     | AWS access key key                          |

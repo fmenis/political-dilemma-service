@@ -2,7 +2,11 @@ import Fp from 'fastify-plugin'
 
 async function apiCount(fastify) {
   async function countApiUsage(req, reply) {
-    const { massive } = this
+    const { massive, config } = this
+
+    if (!config.WRITE_API_COUNTS) {
+      return
+    }
 
     const api = reply.context.schema.summary
       .split(' ')
@@ -12,8 +16,10 @@ async function apiCount(fastify) {
       }, [])
       .join('-')
 
-    const responseTime = parseFloat(reply.getResponseTime().toFixed(3))
-    await massive.apiCounts.save({ api, responseTime: responseTime })
+    await massive.apiCounts.save({
+      api,
+      responseTime: parseFloat(reply.getResponseTime().toFixed(3)),
+    })
   }
 
   fastify.addHook('onResponse', countApiUsage)
