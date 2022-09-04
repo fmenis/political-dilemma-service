@@ -1,31 +1,9 @@
 import Fastify from 'fastify'
-import { stdTimeFunctions } from 'pino'
 
 import App from './src/app.js'
+import { buildServerOptions } from './src/utils/buildServeOptions.js'
 
-const fastify = Fastify({
-  logger: {
-    level: process.env.LOG_LEVEL,
-    timestamp: () => stdTimeFunctions.isoTime(),
-    redact: {
-      paths: [
-        'password',
-        'confirmPassword',
-        'oldPassword',
-        'newPassword',
-        'newPasswordConfirmation',
-        'token',
-      ],
-      censor: '**GDPR COMPLIANT**',
-    },
-  },
-  trustProxy: true,
-  ajv: {
-    customOptions: {
-      allErrors: true,
-    },
-  },
-})
+const fastify = Fastify(buildServerOptions())
 
 fastify.register(App)
 

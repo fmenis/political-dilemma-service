@@ -10,7 +10,7 @@ export default async function listArticleCategories(fastify) {
       public: false,
     },
     schema: {
-      summary: 'List article categories.',
+      summary: 'List article categories',
       description: 'Retrieve article categories.',
       response: {
         200: S.object()
