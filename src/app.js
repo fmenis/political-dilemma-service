@@ -32,7 +32,7 @@ export default async function app(fastify, opts) {
   })
 
   fastify.register(cors, {
-    methods: ['POST', 'PUT', 'DELETE'],
+    methods: ['POST', 'PUT', 'PATCH', 'DELETE'],
     origin: true,
     credentials: true,
   })
