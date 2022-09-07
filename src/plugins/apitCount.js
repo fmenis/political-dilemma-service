@@ -8,6 +8,8 @@ async function apiCount(fastify) {
       return
     }
 
+    //TODO aggiungere statusCode, interessante per capire quante risposte sono andate in errore
+
     const api = reply.context.schema.summary
       .split(' ')
       .reduce((acc, item) => {

@@ -18,7 +18,7 @@
     "init-tools": "cd ./pd-stack && docker-compose -f docker-compose-tools.yml up -d",
     "init-stack": "cd ./pd-stack && docker-compose up -d",
     "shutdown-stack": "cd ./pd-stack && docker-compose down -d",
-    "rebuild-db": "./pd-stack/rebuild-db.sh",
+    "rebuildDb": "./pd-stack/rebuild-db.sh",
     "applyMigrations": "node -r dotenv/config ./src/scripts/applyMigrations.js"
   },
   "keywords": [
