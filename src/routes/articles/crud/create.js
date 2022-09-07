@@ -31,7 +31,7 @@ export default async function createArticle(fastify) {
   })
 
   async function onPreHandler(req) {
-    const { categoryId, title, tagsIds = [] } = req.body
+    const { categoryId, title, tagsIds = [], attachmentIds = [] } = req.body
 
     const category = await massive.categories.findOne(categoryId)
     if (!category) {
@@ -58,6 +58,7 @@ export default async function createArticle(fastify) {
       })
     }
 
+    //##TODO dismettere
     const tags = await massive.tags.find({ id: tagsIds })
     if (tags.length < tagsIds.length) {
       const missing = _.difference(
@@ -72,10 +73,45 @@ export default async function createArticle(fastify) {
         ],
       })
     }
+
+    const duplicatedAttachmentIds = findArrayDuplicates(attachmentIds)
+    if (duplicatedAttachmentIds.length) {
+      throw createError(400, 'Invalid input', {
+        validation: [
+          {
+            message: `Duplicate attachments ids: ${duplicatedAttachmentIds.join(
+              ', '
+            )}`,
+          },
+        ],
+      })
+    }
+
+    const files = await massive.files.find({ id: attachmentIds })
+    if (files.length < attachmentIds.length) {
+      const missing = _.difference(
+        attachmentIds,
+        files.map(item => item.id)
+      )
+      throw createError(400, 'Invalid input', {
+        validation: [
+          {
+            message: `Attachment ids '${missing.join(', ')}' not found`,
+          },
+        ],
+      })
+    }
   }
 
   async function onCreateArticle(req, reply) {
-    const { title, text, description, categoryId, tagsIds = [] } = req.body
+    const {
+      title,
+      text,
+      description,
+      categoryId,
+      tagsIds = [],
+      attachmentIds = [],
+    } = req.body
     const { user } = req
 
     const params = {
@@ -90,14 +126,18 @@ export default async function createArticle(fastify) {
     const newArticle = await massive.withTransaction(async tx => {
       const newArticle = await tx.articles.save(params)
 
+      //##TODO dismettere
       await Promise.all(
         tagsIds.map(tagId => {
           tx.articlesTags.save({ articleId: newArticle.id, tagId })
         })
       )
 
-      //TODO capire se ha senso farsi passare gli id dei files associati
-      //e associare l'id articolo alla colonna file.articleId
+      await Promise.all(
+        attachmentIds.map(attachmentId => {
+          tx.files.save({ id: attachmentId, articleId: newArticle.id })
+        })
+      )
 
       return newArticle
     })
@@ -115,7 +155,6 @@ export default async function createArticle(fastify) {
       author: `${owner.first_name} ${owner.last_name}`,
       createdAt: newArticle.createdAt,
       publishedAt: newArticle.publishedAt,
-      tagsIds,
       canBeDeleted: newArticle.status === STATUS.DRAFT,
     }
   }

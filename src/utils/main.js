@@ -13,6 +13,19 @@ export function findArrayDuplicates(array) {
 }
 
 /**
+ * Create an object copy without target props
+ */
+export function removeObjectProps(obj, propsToRemove) {
+  return Object.keys(obj).reduce((acc, key) => {
+    if (!propsToRemove.includes(key)) {
+      acc[key] = obj[key]
+    }
+
+    return acc
+  }, {})
+}
+
+/**
  * Calculate base url related to the current envinronment
  */
 export function calculateBaseUrl(opts = {}) {

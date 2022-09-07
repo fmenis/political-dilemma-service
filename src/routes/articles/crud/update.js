@@ -1,7 +1,9 @@
 import S from 'fluent-json-schema'
+import _ from 'lodash'
 
 import { sUpdateArticle, sArticle } from '../lib/schema.js'
 import { STATUS } from '../lib/enums.js'
+import { findArrayDuplicates, removeObjectProps } from '../../../utils/main.js'
 
 export default async function updateArticle(fastify) {
   const { massive, httpErrors } = fastify
@@ -36,6 +38,7 @@ export default async function updateArticle(fastify) {
 
   async function onPreHandler(req) {
     const { id } = req.params
+    const { attachmentIds = [] } = req.body
     const currentUserId = req.user.id
 
     const article = await massive.articles.findOne(id)
@@ -51,16 +54,78 @@ export default async function updateArticle(fastify) {
         `Cannot update article '${article.id}', the current user '${currentUserId}' is not the article owner '${article.ownerId}'`
       )
     }
+
+    const duplicatedAttachmentIds = findArrayDuplicates(attachmentIds)
+    if (duplicatedAttachmentIds.length) {
+      throw createError(400, 'Invalid input', {
+        validation: [
+          {
+            message: `Duplicate attachments ids: ${duplicatedAttachmentIds.join(
+              ', '
+            )}`,
+          },
+        ],
+      })
+    }
+
+    const attachments = await massive.files.find({ id: attachmentIds })
+    if (attachments.length < attachmentIds.length) {
+      const missing = _.difference(
+        attachmentIds,
+        attachments.map(item => item.id)
+      )
+      throw createError(400, 'Invalid input', {
+        validation: [
+          {
+            message: `Attachment ids '${missing.join(', ')}' not found`,
+          },
+        ],
+      })
+    }
   }
 
   async function onUpdateArticle(req) {
     const { id } = req.params
+    const { attachmentIds = [] } = req.body
 
-    //TODO migliorare con un join
-    const updatedArticle = await massive.articles.update(id, req.body)
-    const owner = await massive.users.findOne(updatedArticle.ownerId, {
-      fields: ['first_name', 'last_name'],
+    const updatedArticle = await massive.withTransaction(async tx => {
+      const updatedArticle = await tx.articles.update(
+        id,
+        removeObjectProps(req.body, ['attachmentIds'])
+      )
+
+      if (attachmentIds.length) {
+        // remove and re-assign all article reference of the files
+        await tx.files.update(
+          {
+            articleId: updatedArticle.id,
+          },
+          {
+            articleId: null,
+          }
+        )
+
+        await Promise.all(
+          attachmentIds.map(attachmentId => {
+            tx.files.save({ id: attachmentId, articleId: updatedArticle.id })
+          })
+        )
+      }
+
+      return updatedArticle
     })
+
+    const [owner, attachments] = await Promise.all([
+      massive.users.findOne(updatedArticle.ownerId, {
+        fields: ['first_name', 'last_name'],
+      }),
+      massive.files.find(
+        {
+          articleId: updatedArticle.id,
+        },
+        { fields: ['id', 'url'] }
+      ),
+    ])
 
     return {
       id: updatedArticle.id,
@@ -74,6 +139,7 @@ export default async function updateArticle(fastify) {
       //##TODO
       tagsIds: ['86870ab8-0aa7-40c9-920f-4e730e494e1b'],
       canBeDeleted: updatedArticle.status === STATUS.DRAFT,
+      attachments,
     }
   }
 }

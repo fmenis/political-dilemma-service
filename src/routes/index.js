@@ -83,7 +83,7 @@ export default async function index(fastify) {
     error.internalCode = error.internalCode || '0000'
     error.details = {}
 
-    if (reply.statusCode === 400) {
+    if (reply.statusCode === 400 || error.validation) {
       log.warn({ validation: error.validation }, 'invalid input')
 
       error.details.validation = error.validation

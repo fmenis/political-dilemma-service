@@ -56,7 +56,7 @@ export default async function readArticle(fastify) {
     const article = await massive.articles.findOne(id)
 
     //TODO migliorare con un join
-    const [author, tags] = await Promise.all([
+    const [author, tags, attachments] = await Promise.all([
       massive.users.findOne(article.ownerId, {
         fields: ['id', 'first_name', 'last_name'],
       }),
@@ -64,6 +64,7 @@ export default async function readArticle(fastify) {
         { articleId: article.id },
         { fields: ['tagId'] }
       ),
+      massive.files.find({ articleId: article.id }, { fields: ['id', 'url'] }),
     ])
 
     return {
@@ -71,6 +72,7 @@ export default async function readArticle(fastify) {
       author: `${author.first_name} ${author.last_name}`,
       tagsIds: tags.map(item => item.tagId),
       canBeDeleted: article.status === STATUS.DRAFT,
+      attachments,
     }
   }
 }
