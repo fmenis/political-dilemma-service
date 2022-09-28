@@ -80,3 +80,13 @@ export function associateRoles(userId, reqUserId, rolesIds, pg, client) {
     client,
   })
 }
+
+/**
+ * Remove roles from a user
+ */
+export function removeUserRole(userId, pg, client) {
+  const query = 'DELETE FROM users_roles WHERE user_id=$1'
+  return pg.execQuery(query, [userId], {
+    client,
+  })
+}
