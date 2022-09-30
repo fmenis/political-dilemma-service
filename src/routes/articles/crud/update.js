@@ -38,7 +38,7 @@ export default async function updateArticle(fastify) {
 
   async function onPreHandler(req) {
     const { id } = req.params
-    const { attachmentIds = [] } = req.body
+    const { tags = [], attachmentIds = [] } = req.body
     const currentUserId = req.user.id
 
     const article = await massive.articles.findOne(id)
@@ -78,6 +78,17 @@ export default async function updateArticle(fastify) {
         validation: [
           {
             message: `Attachment ids '${missing.join(', ')}' not found`,
+          },
+        ],
+      })
+    }
+
+    const duplicatedTags = findArrayDuplicates(tags)
+    if (duplicatedTags.length) {
+      throw createError(400, 'Invalid input', {
+        validation: [
+          {
+            message: `Duplicate tags ids: ${duplicatedTags.join(', ')}`,
           },
         ],
       })
@@ -136,8 +147,7 @@ export default async function updateArticle(fastify) {
       author: `${owner.first_name} ${owner.last_name}`,
       createdAt: updatedArticle.createdAt,
       publishedAt: updatedArticle.publishedAt,
-      //##TODO
-      tagsIds: ['86870ab8-0aa7-40c9-920f-4e730e494e1b'],
+      tags: updatedArticle.tags || [],
       canBeDeleted: updatedArticle.status === STATUS.DRAFT,
       attachments,
     }

@@ -31,7 +31,7 @@ export default async function createArticle(fastify) {
   })
 
   async function onPreHandler(req) {
-    const { categoryId, title, tagsIds = [], attachmentIds = [] } = req.body
+    const { categoryId, title, tags = [], attachmentIds = [] } = req.body
 
     const category = await massive.categories.findOne(categoryId)
     if (!category) {
@@ -47,28 +47,12 @@ export default async function createArticle(fastify) {
       throw httpErrors.conflict(`Article with title '${title}' already exists`)
     }
 
-    const duplicatedTagsIds = findArrayDuplicates(tagsIds)
-    if (duplicatedTagsIds.length) {
+    const duplicatedTags = findArrayDuplicates(tags)
+    if (duplicatedTags.length) {
       throw createError(400, 'Invalid input', {
         validation: [
           {
-            message: `Duplicate tags ids: ${duplicatedTagsIds.join(', ')}`,
-          },
-        ],
-      })
-    }
-
-    //##TODO dismettere
-    const tags = await massive.tags.find({ id: tagsIds })
-    if (tags.length < tagsIds.length) {
-      const missing = _.difference(
-        tagsIds,
-        tags.map(item => item.id)
-      )
-      throw createError(400, 'Invalid input', {
-        validation: [
-          {
-            message: `Tags ids ${missing.join(', ')} not found`,
+            message: `Duplicate tags ids: ${duplicatedTags.join(', ')}`,
           },
         ],
       })
@@ -109,7 +93,7 @@ export default async function createArticle(fastify) {
       text,
       description,
       categoryId,
-      tagsIds = [],
+      tags,
       attachmentIds = [],
     } = req.body
     const { user } = req
@@ -121,17 +105,11 @@ export default async function createArticle(fastify) {
       description,
       status: STATUS.DRAFT,
       ownerId: user.id,
+      tags,
     }
 
     const newArticle = await massive.withTransaction(async tx => {
       const newArticle = await tx.articles.save(params)
-
-      //##TODO dismettere
-      await Promise.all(
-        tagsIds.map(tagId => {
-          tx.articlesTags.save({ articleId: newArticle.id, tagId })
-        })
-      )
 
       await Promise.all(
         attachmentIds.map(attachmentId => {
@@ -156,6 +134,7 @@ export default async function createArticle(fastify) {
       createdAt: newArticle.createdAt,
       publishedAt: newArticle.publishedAt,
       canBeDeleted: newArticle.status === STATUS.DRAFT,
+      tags: newArticle.tags || undefined,
     }
   }
 }

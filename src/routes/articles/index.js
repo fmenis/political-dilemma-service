@@ -1,5 +1,4 @@
 import categoriesRoutes from './crud/categories/index.js'
-import tagsRoutes from './crud/tags/index.js'
 
 import createRoute from './crud/create.js'
 import listRoute from './crud/list.js'
@@ -16,7 +15,6 @@ export default async function index(fastify) {
   })
 
   fastify.register(categoriesRoutes)
-  fastify.register(tagsRoutes)
 
   const prefix = '/v1/articles'
   fastify.register(createRoute, { prefix })
