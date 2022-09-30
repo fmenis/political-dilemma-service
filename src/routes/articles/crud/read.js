@@ -34,20 +34,12 @@ export default async function readArticle(fastify) {
 
   async function onPreHandler(req) {
     const { id } = req.params
-    const currentUserId = req.user.id
 
     const article = await massive.articles.findOne(id)
-
     if (!article) {
       throw createError(404, 'Invalid input', {
         validation: [{ message: `Article '${id}' not found` }],
       })
-    }
-
-    if (article.ownerId !== currentUserId) {
-      throw httpErrors.forbidden(
-        `Cannot read article '${article.id}', the current user '${currentUserId}' is not the article owner '${article.ownerId}'`
-      )
     }
   }
 
