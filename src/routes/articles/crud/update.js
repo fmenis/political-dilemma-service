@@ -150,6 +150,7 @@ export default async function updateArticle(fastify) {
       tags: updatedArticle.tags || [],
       canBeDeleted: updatedArticle.status === STATUS.DRAFT,
       attachments,
+      description: updatedArticle.description || undefined,
     }
   }
 }

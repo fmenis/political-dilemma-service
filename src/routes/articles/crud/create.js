@@ -135,6 +135,7 @@ export default async function createArticle(fastify) {
       publishedAt: newArticle.publishedAt,
       canBeDeleted: newArticle.status === STATUS.DRAFT,
       tags: newArticle.tags || undefined,
+      description: newArticle.description || undefined,
     }
   }
 }

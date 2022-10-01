@@ -61,6 +61,7 @@ export default async function readArticle(fastify) {
       canBeDeleted: article.status === STATUS.DRAFT,
       tags: article.tags || [],
       attachments,
+      description: article.description || undefined,
     }
   }
 }

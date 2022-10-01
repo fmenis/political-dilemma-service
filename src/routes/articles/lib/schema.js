@@ -108,6 +108,8 @@ export function sArticle() {
     .description('Article attachments ids.')
     .prop('tags', sTags())
     .description('Article tags.')
+    .prop('description', S.string().minLength(3).maxLength(500))
+    .description('Article description.')
 }
 
 export function sArticleList() {
