@@ -11,12 +11,12 @@ CREATE TABLE IF NOT EXISTS "articles" (
     "text" TEXT,
     "status" VARCHAR(50) NOT NULL CHECK (status in ('DRAFT', 'PUBLISHED')),
     "categoryId" UUID NOT NULL,
-    "ownerId" INT NOT NULL,
+    "ownerId" UUID NOT NULL,
     "createdAt" timestamp DEFAULT NOW(),
     "updatedAt" timestamp DEFAULT NOW(),
     "publishedAt" timestamp,
-    "updatedBy" INT,
-    "deletedBy" INT,
+    "updatedBy" UUID,
+    "deletedBy" UUID,
     CONSTRAINT fk_owner_id FOREIGN KEY("ownerId") REFERENCES users("id") ON DELETE NO ACTION,
     CONSTRAINT fk_category_id FOREIGN KEY("categoryId") REFERENCES categories("id") ON DELETE NO ACTION,
     CONSTRAINT fk_updatedBy FOREIGN KEY("updatedBy") REFERENCES users("id") ON DELETE NO ACTION,
@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS files (
     "extension" VARCHAR(10) NOT NULL,
     "mimetype" VARCHAR(50) NOT NULL,
     "size" DOUBLE PRECISION NOT NULL,
-    "ownerId" INT NOT NULL,
+    "ownerId" UUID NOT NULL,
     "category" VARCHAR(100) NOT NULL CHECK (category in ('ARTICLE_IMAGE')),
     "createdAt" timestamp DEFAULT NOW(),
     CONSTRAINT fk_owner_id FOREIGN KEY("ownerId") REFERENCES users("id") ON DELETE NO ACTION,
@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS files (
 
 CREATE TABLE IF NOT EXISTS "internalNotes" (
     "id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    "ownerId" INT NOT NULL,
+    "ownerId" UUID NOT NULL,
     "text" text NOT NULL,
     "relatedDocumentId" UUID NOT NULL,
     "category" VARCHAR(50) NOT NULL CHECK ("category" in ('articles', 'activities')),
@@ -68,5 +68,6 @@ CREATE TABLE IF NOT EXISTS "apiCounts" (
     "id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     "api" VARCHAR(50) NOT NULL,
     "responseTime" DOUBLE PRECISION NOT NULL,
+    "statusCode" VARCHAR(20) NOT NULL CHECK ("statusCode" in ('GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS')),
     "createdAt" timestamp DEFAULT NOW()
 );

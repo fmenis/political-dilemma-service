@@ -12,13 +12,7 @@ services:
       - database
     volumes:
       - postgres-pd:/var/lib/postgresql/data
-      - ./conf/postgres/1-create-user-and-db.sh:/docker-entrypoint-initdb.d/1-create-user-and-db.sh
-      # - ./conf/postgres/2-insert-mock-data-regions.sh:/docker-entrypoint-initdb.d/2-insert-mock-data-regions.sh
-      # - ./conf/postgres/3-insert-mock-data-provices.sh:/docker-entrypoint-initdb.d/3-insert-mock-data-provices.sh
-      # - ./conf/postgres/4-insert-mock-data-users.sh:/docker-entrypoint-initdb.d/4-insert-mock-data-users.sh
-      # - ./conf/postgres/5-insert-mock-data-permissions.sh:/docker-entrypoint-initdb.d/5-insert-mock-data-permissions.sh
-      # - ./conf/postgres/6-insert-mock-data-roles.sh:/docker-entrypoint-initdb.d/6-insert-mock-data-roles.sh
-      # - ./conf/postgres/7-insert-mock-data-misc.sh:/docker-entrypoint-initdb.d/7-insert-mock-data-misc.sh
+      - ./conf/postgres/create-user-and-db.sh:/docker-entrypoint-initdb.d/create-user-and-db.sh
     environment:
       POSTGRES_PASSWORD: postgres
       PGDATA: /var/lib/postgresql/data/pgdata
