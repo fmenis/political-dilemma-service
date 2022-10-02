@@ -1,8 +1,6 @@
 import S from 'fluent-json-schema'
-import _ from 'lodash'
 
-import { getRoles, associateRoles } from './lib/utils.js'
-import { findArrayDuplicates } from '../../utils/main.js'
+import { getRole, associateRoles, removeUserRole } from './lib/utils.js'
 
 export default async function assignRoles(fastify) {
   const { pg, httpErrors } = fastify
@@ -23,11 +21,12 @@ export default async function assignRoles(fastify) {
         .prop('userId', S.number())
         .description('User id.')
         .required()
-        .prop('rolesIds', S.array().items(S.number()).minItems(1))
-        .description('Role ids to be assigned to the user.')
+        .prop('roleId', S.number().minimum(1))
+        .description('Role id to be assigned to the user.')
         .required(),
       response: {
         204: fastify.getSchema('sNoContent'),
+        409: fastify.getSchema('sConflict'),
       },
     },
     preHandler: onPreHandler,
@@ -35,7 +34,7 @@ export default async function assignRoles(fastify) {
   })
 
   async function onPreHandler(req) {
-    const { userId, rolesIds } = req.body
+    const { userId, roleId } = req.body
 
     // check user existance
     const user = await pg.execQuery(
@@ -47,56 +46,44 @@ export default async function assignRoles(fastify) {
       throw httpErrors.notFound(`User with id '${userId}' not found`)
     }
 
-    // check duplicated roles
-    const duplicates = findArrayDuplicates(rolesIds)
-    if (duplicates.length) {
-      throw createError(400, 'Invalid input', {
-        validation: [
-          {
-            message: `Duplicate roles ids: ${duplicates.join(', ')}`,
-          },
-        ],
-      })
-    }
-
     // check missing roles
-    const roles = await getRoles(rolesIds, pg)
-    if (!roles.length) {
+    const role = await getRole(roleId, pg)
+    if (!role) {
       throw createError(400, 'Invalid input', {
         validation: [
           {
-            message: `Roles ids ${rolesIds.join(', ')} not found`,
+            message: `Role id '${roleId}' not found`,
           },
         ],
       })
     }
 
-    if (roles.length < rolesIds.length) {
-      const missing = _.difference(
-        rolesIds,
-        roles.map(item => item.id)
-      )
-      throw createError(400, 'Invalid input', {
+    const roleAlreadyAssigned = await pg.execQuery(
+      'SELECT id FROM users_roles WHERE user_id=$1 AND role_id=$2',
+      [userId, roleId],
+      { findOne: true }
+    )
+    if (roleAlreadyAssigned) {
+      throw createError(409, 'Conflict', {
         validation: [
           {
-            message: `Roles ids ${missing.join(', ')} not found`,
+            message: `Role id '${roleId}' already assign to user '${userId}'`,
           },
         ],
       })
     }
-
-    //TODO controllare che uno dei ruoli non sia stato già assegnato
   }
 
   async function onAssignRoles(req, reply) {
-    const { userId, rolesIds } = req.body
+    const { userId, roleId } = req.body
     const { id: reqUserId } = req.user
 
     let client
 
     try {
       client = await pg.beginTransaction()
-      await associateRoles(userId, reqUserId, rolesIds, pg, client)
+      await removeUserRole(userId, pg, client)
+      await associateRoles(userId, reqUserId, [roleId], pg, client)
       await pg.commitTransaction(client)
       reply.code(204)
     } catch (error) {

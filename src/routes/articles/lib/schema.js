@@ -1,6 +1,13 @@
 import S from 'fluent-json-schema'
 import { getStates } from '../lib/common.js'
 
+export function sTags() {
+  return S.array()
+    .items(S.string().minLength(2).maxLength(30))
+    .minItems(1)
+    .maxItems(50)
+}
+
 export function sCreateArticle() {
   return (
     S.object()
@@ -15,11 +22,8 @@ export function sCreateArticle() {
       .prop('categoryId', S.string().format('uuid'))
       .description('Article category id.')
       .required()
-      .prop(
-        'tagsIds',
-        S.array().items(S.string().format('uuid')).minItems(1).maxItems(50)
-      )
-      .description('Article tags ids.')
+      .prop('tags', sTags())
+      .description('Article tags.')
       .prop(
         'attachmentIds',
         S.array().items(S.string().format('uuid')).minItems(1).maxItems(50)
@@ -42,10 +46,13 @@ export function sUpdateArticle() {
     .prop('categoryId', S.string().format('uuid'))
     .description('Article category id.')
     .prop(
-      'tagsIds',
-      S.array().items(S.string().format('uuid')).minItems(1).maxItems(50)
+      'tags',
+      S.array()
+        .items(S.string().minLength(2).maxLength(30))
+        .minItems(0) // allows all tags deletion
+        .maxItems(50)
     )
-    .description('Article tags ids.')
+    .description('Article tags.')
     .prop(
       'attachmentIds',
       S.array().items(S.string().format('uuid')).minItems(1).maxItems(50)
@@ -99,6 +106,10 @@ export function sArticle() {
         .maxItems(10)
     )
     .description('Article attachments ids.')
+    .prop('tags', sTags())
+    .description('Article tags.')
+    .prop('description', S.string().minLength(3).maxLength(500))
+    .description('Article description.')
 }
 
 export function sArticleList() {

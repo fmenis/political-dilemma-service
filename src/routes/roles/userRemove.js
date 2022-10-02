@@ -7,6 +7,10 @@ export default async function removeRoles(fastify) {
   const { pg, httpErrors } = fastify
   const { createError } = httpErrors
 
+  //------------------------------------------------------------------
+  //############ API NOT USED (AND EXPOSED) AT THE MOMENT ############
+  //------------------------------------------------------------------
+
   fastify.route({
     method: 'POST',
     path: '/remove',
@@ -15,6 +19,7 @@ export default async function removeRoles(fastify) {
       permission: 'role:user-remove',
     },
     schema: {
+      hide: true,
       summary: 'Remove roles',
       description: 'Remove roles from a user.',
       body: S.object()

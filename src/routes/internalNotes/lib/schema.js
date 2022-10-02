@@ -16,7 +16,7 @@ export function sInternalNote() {
     )
     .description('Internal note category.')
     .required()
-    .prop('ownerId', S.string().format('uuid'))
+    .prop('ownerId', S.number())
     .description('Article owner id.')
     .required()
     .prop('relatedDocumentId', S.string().format('uuid'))

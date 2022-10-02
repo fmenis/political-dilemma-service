@@ -33,7 +33,7 @@ export function sUserDetail() {
     .description('Defines when a user accepts the system invitation.')
     .prop('sex', S.string().enum(['male', 'female', 'other']))
     .description('User sex.')
-    .prop('roleId', S.number().minimum(0))
+    .prop('roleId', S.number().minimum(1))
     .description('User role id.')
     .required()
 }

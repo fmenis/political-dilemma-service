@@ -126,6 +126,12 @@ export default async function updateUser(fastify) {
       'birth_date, joined_date, sex, is_blocked, is_deleted, ' +
       'id_region, id_province'
 
+    const getUserRoleQuery =
+      'SELECT ur.role_id FROM users AS u ' +
+      'JOIN users_roles AS ur ' +
+      'ON u.id = ur.user_id ' +
+      'WHERE u.id = $1'
+
     const inputs = [
       id,
       firstName,
@@ -141,17 +147,24 @@ export default async function updateUser(fastify) {
       provinceId,
     ]
 
-    const { rowCount, rows } = await pg.execQuery(query, inputs)
-    if (!rowCount) {
+    const [updateRes, getRoleRes] = await Promise.all([
+      pg.execQuery(query, inputs),
+      pg.execQuery(getUserRoleQuery, [id], {
+        findOne: true,
+      }),
+    ])
+
+    if (!updateRes.rowCount) {
       throw httpErrors.conflict('The action had no effect')
     }
 
-    const user = rows[0]
+    const user = updateRes.rows[0]
 
     return {
       ...user,
       regionId: user.idRegion,
       provinceId: user.idProvince,
+      roleId: getRoleRes.roleId,
     }
   }
 }
