@@ -1,7 +1,7 @@
 import S from 'fluent-json-schema'
 
 import { sArticle } from '../lib/schema.js'
-import { ARTICLE_STATES } from '../lib/enums.js'
+import { populateArticle } from '../lib/common.js'
 
 export default async function readArticle(fastify) {
   const { massive, httpErrors } = fastify
@@ -48,21 +48,7 @@ export default async function readArticle(fastify) {
   async function onReadArticle(req) {
     const { article } = req
 
-    //TODO migliorare con un join
-    const [author, attachments] = await Promise.all([
-      massive.users.findOne(article.ownerId, {
-        fields: ['id', 'first_name', 'last_name'],
-      }),
-      massive.files.find({ articleId: article.id }, { fields: ['id', 'url'] }),
-    ])
-
-    return {
-      ...article,
-      author: `${author.first_name} ${author.last_name}`,
-      canBeDeleted: article.status === ARTICLE_STATES.DRAFT,
-      tags: article.tags || [],
-      attachments,
-      description: article.description || undefined,
-    }
+    const populatedArticle = await populateArticle(article, massive)
+    return populatedArticle
   }
 }

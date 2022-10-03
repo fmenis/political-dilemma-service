@@ -2,8 +2,8 @@ import S from 'fluent-json-schema'
 import _ from 'lodash'
 
 import { sUpdateArticle, sArticle } from '../lib/schema.js'
-import { ARTICLE_STATES } from '../lib/enums.js'
 import { findArrayDuplicates, removeObjectProps } from '../../../utils/main.js'
+import { populateArticle } from '../lib/common.js'
 
 export default async function updateArticle(fastify) {
   const { massive, httpErrors } = fastify
@@ -127,31 +127,7 @@ export default async function updateArticle(fastify) {
       return updatedArticle
     })
 
-    const [owner, attachments] = await Promise.all([
-      massive.users.findOne(updatedArticle.ownerId, {
-        fields: ['first_name', 'last_name'],
-      }),
-      massive.files.find(
-        {
-          articleId: updatedArticle.id,
-        },
-        { fields: ['id', 'url'] }
-      ),
-    ])
-
-    return {
-      id: updatedArticle.id,
-      title: updatedArticle.title,
-      text: updatedArticle.text,
-      categoryId: updatedArticle.categoryId,
-      status: updatedArticle.status,
-      author: `${owner.first_name} ${owner.last_name}`,
-      createdAt: updatedArticle.createdAt,
-      publishedAt: updatedArticle.publishedAt,
-      tags: updatedArticle.tags || [],
-      canBeDeleted: updatedArticle.status === ARTICLE_STATES.DRAFT,
-      attachments,
-      description: updatedArticle.description || undefined,
-    }
+    const populatedArticle = await populateArticle(updatedArticle, massive)
+    return populatedArticle
   }
 }

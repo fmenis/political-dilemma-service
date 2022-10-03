@@ -881,7 +881,7 @@
 					"name": "categories",
 					"item": [
 						{
-							"name": "list",
+							"name": "list article categories",
 							"request": {
 								"method": "GET",
 								"header": [],
@@ -920,33 +920,65 @@
 					]
 				},
 				{
-					"name": "tags",
+					"name": "CRUD",
 					"item": [
 						{
-							"name": "list",
+							"name": "create article",
 							"request": {
-								"method": "GET",
+								"method": "POST",
 								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"test\",\n    \"categoryId\": \"4a3979b8-9e0f-42b4-b350-bb155476b026\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
 								"url": {
-									"raw": "{{url}}/api/v1/articles/tags",
+									"raw": "{{url}}/api/v1/articles",
 									"host": [
 										"{{url}}"
 									],
 									"path": [
 										"api",
 										"v1",
-										"articles",
-										"tags"
+										"articles"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "list articles",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/api/v1/articles",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"articles"
 									],
 									"query": [
 										{
 											"key": "status",
-											"value": "published",
+											"value": "PUBLISHED",
+											"disabled": true
+										},
+										{
+											"key": "search",
+											"value": "agg",
 											"disabled": true
 										},
 										{
 											"key": "limit",
-											"value": "10",
+											"value": "2",
 											"disabled": true
 										},
 										{
@@ -955,8 +987,18 @@
 											"disabled": true
 										},
 										{
-											"key": "search",
-											"value": "artEF",
+											"key": "category",
+											"value": "decreti",
+											"disabled": true
+										},
+										{
+											"key": "sortBy",
+											"value": "title",
+											"disabled": true
+										},
+										{
+											"key": "order",
+											"value": "ASC",
 											"disabled": true
 										}
 									]
@@ -965,13 +1007,13 @@
 							"response": []
 						},
 						{
-							"name": "create",
+							"name": "update article",
 							"request": {
-								"method": "POST",
+								"method": "PATCH",
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"name\": \"Malefatte\"\n}",
+									"raw": "{\n    \"text\": \"test\", \n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -979,7 +1021,7 @@
 									}
 								},
 								"url": {
-									"raw": "{{url}}/api/v1/articles/tags",
+									"raw": "{{url}}/api/v1/articles/174c954d-ebd6-44b9-9e52-298ca8cc1364",
 									"host": [
 										"{{url}}"
 									],
@@ -987,7 +1029,27 @@
 										"api",
 										"v1",
 										"articles",
-										"tags"
+										"174c954d-ebd6-44b9-9e52-298ca8cc1364"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete article",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/api/v1/articles/eefbadd1-e06f-4f89-94b5-54d5736d7617",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"articles",
+										"eefbadd1-e06f-4f89-94b5-54d5736d7617"
 									],
 									"query": [
 										{
@@ -1003,6 +1065,53 @@
 										{
 											"key": "offset",
 											"value": "0",
+											"disabled": true
+										},
+										{
+											"key": "category",
+											"value": "decreti",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "read article",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/api/v1/articles/252a6cda-a383-4aa7-acb5-7f132ed5a36b",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"articles",
+										"252a6cda-a383-4aa7-acb5-7f132ed5a36b"
+									],
+									"query": [
+										{
+											"key": "status",
+											"value": "published",
+											"disabled": true
+										},
+										{
+											"key": "limit",
+											"value": "10",
+											"disabled": true
+										},
+										{
+											"key": "offset",
+											"value": "0",
+											"disabled": true
+										},
+										{
+											"key": "category",
+											"value": "decreti",
 											"disabled": true
 										}
 									]
@@ -1013,13 +1122,13 @@
 					]
 				},
 				{
-					"name": "create article",
+					"name": "review article",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"title\": \"Meloni merghyjasdfftfsdgsdgyda\",\n    \"text\": \"Meloni proprio merdaafsdfdasf\",\n    \"description\": \"Articoli contente inguirie ed improperi sulla meloni\",\n    \"categoryId\": \"cd0cfa10-6964-4bc2-be45-5af42228018f\",\n    \"tagsIds\": [\"be2c1f23-b289-4023-9a25-9a2487495d84\", \"af6d00d7-2043-49e9-bf1c-718db2ad2c4c\", \"3cbf3729-76e5-477f-8cae-f41b2bce4d74\"]\n}",
+							"raw": "{\n    \"title\": \"tesdfdf3t\",\n    \"text\": \"Mah\",\n    \"description\": \"Bho\",\n    \"categoryId\": \"019acff7-23b8-43eb-add5-4d02e2bffe82\",\n    \"tags\": [\"arte\", \"arte\", \"ambiente\"]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1027,67 +1136,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}/api/v1/articles",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"api",
-								"v1",
-								"articles"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "list articles",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{url}}/api/v1/articles",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"api",
-								"v1",
-								"articles"
-							],
-							"query": [
-								{
-									"key": "status",
-									"value": "published",
-									"disabled": true
-								},
-								{
-									"key": "limit",
-									"value": "10",
-									"disabled": true
-								},
-								{
-									"key": "offset",
-									"value": "0",
-									"disabled": true
-								},
-								{
-									"key": "category",
-									"value": "decreti",
-									"disabled": true
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "delete article",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{url}}/api/v1/articles/eefbadd1-e06f-4f89-94b5-54d5736d7617",
+							"raw": "{{url}}/api/v1/articles/5ed5df8a-c91e-4a14-a07d-cd0a540a0cc3/review",
 							"host": [
 								"{{url}}"
 							],
@@ -1095,100 +1144,8 @@
 								"api",
 								"v1",
 								"articles",
-								"eefbadd1-e06f-4f89-94b5-54d5736d7617"
-							],
-							"query": [
-								{
-									"key": "status",
-									"value": "published",
-									"disabled": true
-								},
-								{
-									"key": "limit",
-									"value": "10",
-									"disabled": true
-								},
-								{
-									"key": "offset",
-									"value": "0",
-									"disabled": true
-								},
-								{
-									"key": "category",
-									"value": "decreti",
-									"disabled": true
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "read article",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{url}}/api/v1/articles/86870ab8-0aa7-40c9-920f-4e730e494e1b",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"api",
-								"v1",
-								"articles",
-								"86870ab8-0aa7-40c9-920f-4e730e494e1b"
-							],
-							"query": [
-								{
-									"key": "status",
-									"value": "published",
-									"disabled": true
-								},
-								{
-									"key": "limit",
-									"value": "10",
-									"disabled": true
-								},
-								{
-									"key": "offset",
-									"value": "0",
-									"disabled": true
-								},
-								{
-									"key": "category",
-									"value": "decreti",
-									"disabled": true
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "update article",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"title\": \"Vedremo\",\n    \"text\": \"Vedremo cosa riuscirà a distruggere\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url}}/api/v1/articles/60938cac-73ba-4114-b99c-e842aeea1747",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"api",
-								"v1",
-								"articles",
-								"60938cac-73ba-4114-b99c-e842aeea1747"
+								"5ed5df8a-c91e-4a14-a07d-cd0a540a0cc3",
+								"review"
 							]
 						}
 					},
@@ -1210,12 +1167,17 @@
 								{
 									"key": "files",
 									"type": "file",
-									"src": "/home/dev/Downloads/Telegram Desktop/nuovo CV.pdf"
+									"src": "/home/dev/Pictures/screen.png"
 								},
 								{
-									"key": "relativePath",
-									"value": "article/images",
-									"type": "default"
+									"key": "files",
+									"type": "file",
+									"src": "/home/dev/Pictures/screen.png"
+								},
+								{
+									"key": "files",
+									"type": "file",
+									"src": "/home/dev/Pictures/screen.png"
 								}
 							]
 						},
@@ -1229,6 +1191,102 @@
 								"v1",
 								"files",
 								"upload"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete file",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/v1/files/7763cda5-5291-4c17-bd60-c06b4adc1ded",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"files",
+								"7763cda5-5291-4c17-bd60-c06b4adc1ded"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "internalNotes",
+			"item": [
+				{
+					"name": "create internalNote",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"text\": \"Nota elezioni anticipate\",\n    \"relatedDocumentId\": \"ceda394e-9cd1-4251-a5ad-ee9e6318727d\",\n    \"category\": \"articles\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/v1/notes",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"notes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "list internalNote",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"text\": \"Nota elezioni anticipate\",\n    \"relatedDocumentId\": \"d0a9d9a4-191d-4203-8e12-abddc042ba66\",\n    \"category\": \"articles\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/v1/notes",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"notes"
+							],
+							"query": [
+								{
+									"key": "relatedDocumentId",
+									"value": "89f80f01-b908-48cd-9c07-637a255a2c8c",
+									"disabled": true
+								},
+								{
+									"key": "category",
+									"value": "articles",
+									"disabled": true
+								}
 							]
 						}
 					},

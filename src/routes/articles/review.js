@@ -1,6 +1,8 @@
 import S from 'fluent-json-schema'
+
 import { ARTICLE_STATES } from './lib/enums.js'
 import { sArticle } from './lib/schema.js'
+import { populateArticle } from './lib/common.js'
 
 export default async function reviewArticle(fastify) {
   const { massive, httpErrors } = fastify
@@ -83,20 +85,11 @@ export default async function reviewArticle(fastify) {
 
     article.status = ARTICLE_STATES.IN_REVIEW
 
-    const [author, attachments] = await Promise.all([
-      massive.users.findOne(article.ownerId, {
-        fields: ['id', 'first_name', 'last_name'],
-      }),
-      massive.files.find({ articleId: article.id }, { fields: ['id', 'url'] }),
+    const [populatedArticle] = await Promise.all([
+      populateArticle(article, massive),
+      massive.articles.update(article.id, article),
     ])
 
-    return {
-      ...article,
-      author: `${author.first_name} ${author.last_name}`,
-      canBeDeleted: article.status === ARTICLE_STATES.DRAFT,
-      tags: article.tags || [],
-      attachments,
-      description: article.description || undefined,
-    }
+    return populatedArticle
   }
 }
