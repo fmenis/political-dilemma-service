@@ -50,17 +50,27 @@ export default async function createInternalNote(fastify) {
     }
   }
 
-  async function onCreateInternalNote(req) {
+  async function onCreateInternalNote(req, reply) {
     const { relatedDocumentId, category, text } = req.body
     const { id: ownerId } = req.user
 
-    const internalNote = await massive.internalNotes.save({
-      ownerId,
-      text,
-      relatedDocumentId,
-      category,
-    })
+    const [internalNote, owner] = await Promise.all([
+      massive.internalNotes.save({
+        ownerId,
+        text,
+        relatedDocumentId,
+        category,
+      }),
+      massive.users.findOne(ownerId, {
+        fields: ['first_name', 'last_name'],
+      }),
+    ])
 
-    return internalNote
+    reply.code(201)
+
+    return {
+      ...internalNote,
+      author: `${owner.first_name} ${owner.last_name}`,
+    }
   }
 }
