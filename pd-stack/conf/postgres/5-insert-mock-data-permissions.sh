@@ -80,4 +80,7 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
 
     INSERT INTO permissions (resource, action, description)
     VALUES ('article', 'review', 'Article review permission');
+    
+    INSERT INTO permissions (resource, action, description)
+    VALUES ('article', 'approve', 'Article approve permission');
 EOSQL
