@@ -1,7 +1,7 @@
 import _ from 'lodash'
 
 import { sCreateArticle, sArticle } from '../lib/schema.js'
-import { STATUS } from '../lib/enums.js'
+import { ARTICLE_STATES } from '../lib/enums.js'
 import { findArrayDuplicates } from '../../../utils/main.js'
 
 export default async function createArticle(fastify) {
@@ -103,7 +103,7 @@ export default async function createArticle(fastify) {
       text,
       categoryId,
       description,
-      status: STATUS.DRAFT,
+      status: ARTICLE_STATES.DRAFT,
       ownerId: user.id,
       tags,
     }
@@ -133,7 +133,7 @@ export default async function createArticle(fastify) {
       author: `${owner.first_name} ${owner.last_name}`,
       createdAt: newArticle.createdAt,
       publishedAt: newArticle.publishedAt,
-      canBeDeleted: newArticle.status === STATUS.DRAFT,
+      canBeDeleted: newArticle.status === ARTICLE_STATES.DRAFT,
       tags: newArticle.tags || undefined,
       description: newArticle.description || undefined,
     }

@@ -2,7 +2,7 @@ import S from 'fluent-json-schema'
 import _ from 'lodash'
 
 import { sUpdateArticle, sArticle } from '../lib/schema.js'
-import { STATUS } from '../lib/enums.js'
+import { ARTICLE_STATES } from '../lib/enums.js'
 import { findArrayDuplicates, removeObjectProps } from '../../../utils/main.js'
 
 export default async function updateArticle(fastify) {
@@ -98,12 +98,13 @@ export default async function updateArticle(fastify) {
   async function onUpdateArticle(req) {
     const { id } = req.params
     const { attachmentIds = [] } = req.body
+    const { user: currentUser } = req
 
     const updatedArticle = await massive.withTransaction(async tx => {
-      const updatedArticle = await tx.articles.update(
-        id,
-        removeObjectProps(req.body, ['attachmentIds'])
-      )
+      const updatedArticle = await tx.articles.update(id, {
+        ...removeObjectProps(req.body, ['attachmentIds']),
+        updatedBy: currentUser.id,
+      })
 
       if (attachmentIds.length) {
         // remove and re-assign all article reference of the files
@@ -148,7 +149,7 @@ export default async function updateArticle(fastify) {
       createdAt: updatedArticle.createdAt,
       publishedAt: updatedArticle.publishedAt,
       tags: updatedArticle.tags || [],
-      canBeDeleted: updatedArticle.status === STATUS.DRAFT,
+      canBeDeleted: updatedArticle.status === ARTICLE_STATES.DRAFT,
       attachments,
       description: updatedArticle.description || undefined,
     }

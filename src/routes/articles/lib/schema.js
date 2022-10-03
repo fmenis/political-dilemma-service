@@ -1,5 +1,5 @@
 import S from 'fluent-json-schema'
-import { getStates } from '../lib/common.js'
+import { getArticleStates } from '../lib/common.js'
 
 export function sTags() {
   return S.array()
@@ -72,7 +72,7 @@ export function sArticle() {
     .required()
     .prop('text', S.string().minLength(3))
     .description('Article text.')
-    .prop('status', S.string().enum(getStates()))
+    .prop('status', S.string().enum(getArticleStates()))
     .description('Article status.')
     .required()
     .prop('author', S.string())
@@ -123,7 +123,7 @@ export function sArticleList() {
     .prop('author', S.string())
     .description('Article author.')
     .required()
-    .prop('status', S.string().enum(getStates()))
+    .prop('status', S.string().enum(getArticleStates()))
     .description('Article status.')
     .required()
     .prop('createdAt', S.string().format('date-time'))

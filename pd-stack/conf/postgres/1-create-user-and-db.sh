@@ -133,7 +133,7 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
         "id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         "title" VARCHAR(200) UNIQUE NOT NULL,
         "text" TEXT,
-        "status" VARCHAR(50) NOT NULL CHECK (status in ('DRAFT', 'PUBLISHED')),
+        "status" VARCHAR(50) NOT NULL CHECK (status in ('DRAFT', 'IN_REVIEW', 'REVIEWED', 'PUBLISHED', 'REWORK', 'ARCHIVED')),
         "categoryId" UUID NOT NULL,
         "ownerId" INT NOT NULL,
         "createdAt" timestamp DEFAULT NOW(),

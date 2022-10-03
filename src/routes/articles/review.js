@@ -1,22 +1,21 @@
 import S from 'fluent-json-schema'
+import { ARTICLE_STATES } from './lib/enums.js'
+import { sArticle } from './lib/schema.js'
 
-import { sArticle } from '../lib/schema.js'
-import { ARTICLE_STATES } from '../lib/enums.js'
-
-export default async function readArticle(fastify) {
+export default async function reviewArticle(fastify) {
   const { massive, httpErrors } = fastify
   const { createError } = httpErrors
-  const permission = 'article:read'
+  const permission = 'article:review'
 
   fastify.route({
-    method: 'GET',
-    path: '/:id',
+    method: 'POST',
+    path: '/:id/review',
     config: {
       public: false,
       permission,
     },
     schema: {
-      summary: 'Get article',
+      summary: 'Review article',
       description: `Permission required: ${permission}`,
       params: S.object()
         .additionalProperties(false)
@@ -26,10 +25,11 @@ export default async function readArticle(fastify) {
       response: {
         200: sArticle(),
         404: fastify.getSchema('sNotFound'),
+        409: fastify.getSchema('sConflict'),
       },
     },
     preHandler: onPreHandler,
-    handler: onReadArticle,
+    handler: onReviewArticle,
   })
 
   async function onPreHandler(req) {
@@ -42,13 +42,47 @@ export default async function readArticle(fastify) {
       })
     }
 
+    if (
+      article.status !== ARTICLE_STATES.DRAFT &&
+      article.status !== ARTICLE_STATES.REWORK
+    ) {
+      throw createError(409, 'Conflict', {
+        validation: [
+          {
+            message: `Invalid action on article '${id}'. Required status '${ARTICLE_STATES.DRAFT} or '${ARTICLE_STATES.REWORK}'`,
+          },
+        ],
+      })
+    }
+
+    if (!article.description || !article.text) {
+      const errors = []
+
+      if (!article.description) {
+        errors.push({
+          message: `Invalid action on article '${id}'. The description must be provided`,
+        })
+      }
+
+      if (!article.text) {
+        errors.push({
+          message: `Invalid action on article '${id}'. The text must be provided`,
+        })
+      }
+
+      throw createError(409, 'Conflict', {
+        validation: errors,
+      })
+    }
+
     req.article = article
   }
 
-  async function onReadArticle(req) {
+  async function onReviewArticle(req) {
     const { article } = req
 
-    //TODO migliorare con un join
+    article.status = ARTICLE_STATES.IN_REVIEW
+
     const [author, attachments] = await Promise.all([
       massive.users.findOne(article.ownerId, {
         fields: ['id', 'first_name', 'last_name'],

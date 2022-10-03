@@ -2,7 +2,7 @@ import S from 'fluent-json-schema'
 
 import { sArticleList } from '../lib/schema.js'
 import { appConfig } from '../../../config/main.js'
-import { getStates } from '../lib/common.js'
+import { getArticleStates } from '../lib/common.js'
 import { buildPaginatedInfo } from '../../lib/common.js'
 
 export default async function listArticles(fastify) {
@@ -22,7 +22,7 @@ export default async function listArticles(fastify) {
       description: `Permission required: ${permission}`,
       query: S.object()
         .additionalProperties(false)
-        .prop('status', S.string().enum(getStates()))
+        .prop('status', S.string().enum(getArticleStates()))
         .description('Filter by article states')
         .prop('search', S.string().minLength(1))
         .description('Full text search.')

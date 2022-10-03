@@ -1,5 +1,5 @@
 import S from 'fluent-json-schema'
-import { STATUS } from '../lib/enums.js'
+import { ARTICLE_STATES } from '../lib/enums.js'
 
 export default async function deleteArticle(fastify) {
   const { massive, httpErrors } = fastify
@@ -43,9 +43,9 @@ export default async function deleteArticle(fastify) {
       })
     }
 
-    if (article.status !== STATUS.DRAFT) {
+    if (article.status !== ARTICLE_STATES.DRAFT) {
       throw httpErrors.conflict(
-        `Cannot delete article '${article.id}', is not in status '${STATUS.DRAFT}'`
+        `Cannot delete article '${article.id}', is not in status '${ARTICLE_STATES.DRAFT}'`
       )
     }
 
