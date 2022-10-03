@@ -2,8 +2,8 @@ import S from 'fluent-json-schema'
 import _ from 'lodash'
 
 import { sUpdateArticle, sArticle } from '../lib/schema.js'
-import { STATUS } from '../lib/enums.js'
 import { findArrayDuplicates, removeObjectProps } from '../../../utils/main.js'
+import { populateArticle } from '../lib/common.js'
 
 export default async function updateArticle(fastify) {
   const { massive, httpErrors } = fastify
@@ -98,12 +98,13 @@ export default async function updateArticle(fastify) {
   async function onUpdateArticle(req) {
     const { id } = req.params
     const { attachmentIds = [] } = req.body
+    const { user: currentUser } = req
 
     const updatedArticle = await massive.withTransaction(async tx => {
-      const updatedArticle = await tx.articles.update(
-        id,
-        removeObjectProps(req.body, ['attachmentIds'])
-      )
+      const updatedArticle = await tx.articles.update(id, {
+        ...removeObjectProps(req.body, ['attachmentIds']),
+        updatedBy: currentUser.id,
+      })
 
       if (attachmentIds.length) {
         // remove and re-assign all article reference of the files
@@ -126,31 +127,7 @@ export default async function updateArticle(fastify) {
       return updatedArticle
     })
 
-    const [owner, attachments] = await Promise.all([
-      massive.users.findOne(updatedArticle.ownerId, {
-        fields: ['first_name', 'last_name'],
-      }),
-      massive.files.find(
-        {
-          articleId: updatedArticle.id,
-        },
-        { fields: ['id', 'url'] }
-      ),
-    ])
-
-    return {
-      id: updatedArticle.id,
-      title: updatedArticle.title,
-      text: updatedArticle.text,
-      categoryId: updatedArticle.categoryId,
-      status: updatedArticle.status,
-      author: `${owner.first_name} ${owner.last_name}`,
-      createdAt: updatedArticle.createdAt,
-      publishedAt: updatedArticle.publishedAt,
-      tags: updatedArticle.tags || [],
-      canBeDeleted: updatedArticle.status === STATUS.DRAFT,
-      attachments,
-      description: updatedArticle.description || undefined,
-    }
+    const populatedArticle = await populateArticle(updatedArticle, massive)
+    return populatedArticle
   }
 }

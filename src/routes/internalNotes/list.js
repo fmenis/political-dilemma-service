@@ -60,8 +60,22 @@ export default async function listInternalNotes(fastify) {
     const { relatedDocumentId } = req.query
 
     const criteria = relatedDocumentId ? { relatedDocumentId } : {}
-    const internalNotes = await massive.internalNotes.find(criteria)
 
-    return { results: internalNotes }
+    const internalNotes = await massive.internalNotes
+      .join({
+        users: {
+          type: 'INNER',
+          on: { id: 'ownerId' },
+        },
+      })
+      .find(criteria)
+
+    return {
+      results: internalNotes.map(item => {
+        const author = item.users[0]
+        item.author = `${author.first_name} ${author.last_name}`
+        return item
+      }),
+    }
   }
 }

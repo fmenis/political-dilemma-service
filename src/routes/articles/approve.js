@@ -1,22 +1,23 @@
 import S from 'fluent-json-schema'
 
-import { sArticle } from '../lib/schema.js'
-import { populateArticle } from '../lib/common.js'
+import { ARTICLE_STATES } from './lib/enums.js'
+import { sArticle } from './lib/schema.js'
+import { populateArticle } from './lib/common.js'
 
-export default async function readArticle(fastify) {
+export default async function approveArticle(fastify) {
   const { massive, httpErrors } = fastify
   const { createError } = httpErrors
-  const permission = 'article:read'
+  const permission = 'article:approve'
 
   fastify.route({
-    method: 'GET',
-    path: '/:id',
+    method: 'POST',
+    path: '/:id/approve',
     config: {
       public: false,
       permission,
     },
     schema: {
-      summary: 'Get article',
+      summary: 'Approve article',
       description: `Permission required: ${permission}`,
       params: S.object()
         .additionalProperties(false)
@@ -26,10 +27,11 @@ export default async function readArticle(fastify) {
       response: {
         200: sArticle(),
         404: fastify.getSchema('sNotFound'),
+        409: fastify.getSchema('sConflict'),
       },
     },
     preHandler: onPreHandler,
-    handler: onReadArticle,
+    handler: onApproveArticle,
   })
 
   async function onPreHandler(req) {
@@ -42,13 +44,29 @@ export default async function readArticle(fastify) {
       })
     }
 
+    if (article.status !== ARTICLE_STATES.IN_REVIEW) {
+      throw createError(409, 'Conflict', {
+        validation: [
+          {
+            message: `Invalid action on article '${id}'. Required status '${ARTICLE_STATES.IN_REVIEW}'`,
+          },
+        ],
+      })
+    }
+
     req.article = article
   }
 
-  async function onReadArticle(req) {
+  async function onApproveArticle(req) {
     const { article } = req
 
-    const populatedArticle = await populateArticle(article, massive)
+    article.status = ARTICLE_STATES.REVIEWED
+
+    const [populatedArticle] = await Promise.all([
+      populateArticle(article, massive),
+      massive.articles.update(article.id, article),
+    ])
+
     return populatedArticle
   }
 }

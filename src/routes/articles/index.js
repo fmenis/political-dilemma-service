@@ -6,6 +6,9 @@ import readRoute from './crud/read.js'
 import updateRoute from './crud/update.js'
 import deleteRoute from './crud/delete.js'
 
+import reviewRoute from './review.js'
+import approveRoute from './approve.js'
+
 export default async function index(fastify) {
   fastify.addHook('onRoute', options => {
     options.schema = {
@@ -17,9 +20,13 @@ export default async function index(fastify) {
   fastify.register(categoriesRoutes)
 
   const prefix = '/v1/articles'
+
   fastify.register(createRoute, { prefix })
   fastify.register(listRoute, { prefix })
   fastify.register(readRoute, { prefix })
   fastify.register(updateRoute, { prefix })
   fastify.register(deleteRoute, { prefix })
+
+  fastify.register(reviewRoute, { prefix })
+  fastify.register(approveRoute, { prefix })
 }
