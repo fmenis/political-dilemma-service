@@ -7,7 +7,7 @@ on:
     branches: [develop]
 
 jobs:
-  deploy-staging:
+  deploy-develop:
     runs-on: self-hosted
 
     strategy:
@@ -25,10 +25,10 @@ jobs:
       - name: Create env file
         run: |
           touch .env
-          echo NODE_ENV=production >> .env
+          echo NODE_ENV=development >> .env
           echo SERVER_ADDRESS=0.0.0.0 >> .env
           echo SERVER_PORT=3000 >> .env
-          echo API_DOMAIN=api.dilemmapolitico.info >> .env
+          echo API_DOMAIN=api-dev.dilemmapolitico.info >> .env
           echo LOG_LEVEL=debug >> .env
           echo SESSIONS_LIMIT=5 >> .env
           echo PG_HOST=${{ secrets.PG_HOST }} >> .env
@@ -52,5 +52,5 @@ jobs:
           cat .env
       - run: npm ci
       - run: npm run applyMigrations
-      - run: pm2 startOrRestart ecosystem.config.cjs
+      - run: pm2 startOrRestart ecosystem-dev.config.cjs
       - run: pm2 save
