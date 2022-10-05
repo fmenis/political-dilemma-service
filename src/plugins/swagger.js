@@ -67,7 +67,7 @@ async function swaggerGenerator(fastify) {
         { name: 'files', description: 'Files related end-points' },
       ].sort((a, b) => a.name.localeCompare(b.name)),
     },
-    exposeRoute: true,
+    exposeRoute: process.env.NODE_ENV !== ENV.PRODUCTION,
   })
 }
 
