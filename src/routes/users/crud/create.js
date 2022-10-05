@@ -4,10 +4,12 @@ import _ from 'lodash'
 import { hashString } from '../../../lib/hash.js'
 import { sUserDetail, sCreateUser } from '../lib/schema.js'
 import { getRoles, associateRoles } from '../../roles/lib/utils.js'
+import { appConfig } from '../../../config/main.js'
 
 export default async function createUser(fastify) {
-  const { pg, config, httpErrors } = fastify
+  const { pg, httpErrors } = fastify
   const { createError } = httpErrors
+  const { saltRounds } = appConfig
 
   fastify.route({
     method: 'POST',
@@ -132,7 +134,7 @@ export default async function createUser(fastify) {
     const userObj = {
       ...body,
       ownerId: owner.id,
-      password: await hashString(body.password, parseInt(config.SALT_ROUNDS)),
+      password: await hashString(body.password, parseInt(saltRounds)),
     }
 
     let client

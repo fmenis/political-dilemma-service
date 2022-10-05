@@ -4,12 +4,13 @@ import { config } from 'dotenv'
 config()
 
 import App from '../src/app.js'
+import { ENV } from '../src/common/enums.js'
 
 t.test('Create User API OK', async t => {
   t.plan(3)
 
   const fastify = Fastify()
-  fastify.register(App, { envData: { NODE_ENV: 'development' } })
+  fastify.register(App, { envData: { NODE_ENV: ENV.DEVELOPMENT } })
 
   t.teardown(() => {
     console.log('Non ci entra')

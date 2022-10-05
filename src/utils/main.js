@@ -31,10 +31,10 @@ export function removeObjectProps(obj, propsToRemove) {
 export function calculateBaseUrl(opts = {}) {
   switch (process.env.NODE_ENV) {
     case ENV.PRODUCTION:
-      return `https://${process.env.DOMAIN_PROD}`
+      return `https://${process.env.API_DOMAIN}`
 
-    case ENV.STAGING: //TODO da fare
-      return `https://${process.env.DOMAIN_STAGING}`
+    case ENV.STAGING:
+      return `https://${process.env.API_DOMAIN}`
 
     case ENV.DEVELOPMENT:
       if (opts.port) {

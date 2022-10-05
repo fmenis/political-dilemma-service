@@ -10,8 +10,8 @@
   },
   "private": true,
   "scripts": {
-    "start": "npm run applyMigrations && cross-env NODE_ENV=production node -r dotenv/config index.js",
-    "dev": "npm run applyMigrations && cross-env NODE_ENV=development nodemon --config nodemon.json --inspect -r dotenv/config index.js",
+    "start": "npm run applyMigrations && node -r dotenv/config index.js",
+    "dev": "npm run applyMigrations && nodemon --config nodemon.json --inspect -r dotenv/config index.js",
     "test": "tap",
     "lint": "eslint . --ext .js",
     "prepare": "husky install",

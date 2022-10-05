@@ -12,6 +12,7 @@ const appConfig = {
     defaultLimit: 10,
     defaultOffset: 0,
   },
+  saltRounds: 10,
 }
 
 export { appConfig }

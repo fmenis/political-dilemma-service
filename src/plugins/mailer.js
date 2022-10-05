@@ -1,6 +1,7 @@
 import Fp from 'fastify-plugin'
 import { createTransport } from 'nodemailer'
 import aws from 'aws-sdk'
+import { ENV } from '../common/enums.js'
 
 function mailer(fastify, options, done) {
   const { config, log } = fastify
@@ -14,7 +15,7 @@ function mailer(fastify, options, done) {
     SES: { ses, aws },
   })
 
-  if (fastify.config.NODE_ENV !== 'development') {
+  if (fastify.config.NODE_ENV !== ENV.DEVELOPMENT) {
     transporter.verify(err => {
       if (err) {
         done(err)

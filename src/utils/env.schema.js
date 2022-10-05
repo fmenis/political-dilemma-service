@@ -20,7 +20,7 @@ export function sEnv() {
     .default('127.0.0.1')
     .prop('SERVER_PORT', S.string())
     .default('3000')
-    .prop('DOMAIN_PROD', S.string())
+    .prop('API_DOMAIN', S.string())
     .required()
     .prop('LOG_LEVEL', S.string())
     .default('info')
