@@ -48,7 +48,6 @@ export default async function readArticle(fastify) {
   async function onReadArticle(req) {
     const { article } = req
 
-    const populatedArticle = await populateArticle(article, massive)
-    return populatedArticle
+    return populateArticle(article, massive)
   }
 }

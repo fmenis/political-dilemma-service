@@ -127,7 +127,6 @@ export default async function updateArticle(fastify) {
       return updatedArticle
     })
 
-    const populatedArticle = await populateArticle(updatedArticle, massive)
-    return populatedArticle
+    return populateArticle(updatedArticle, massive)
   }
 }
