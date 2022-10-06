@@ -13,6 +13,7 @@ export default async function deleteFile(fastify) {
       public: false,
     },
     schema: {
+      //##TODO forse non ha senso permesso
       summary: 'Delete file',
       description: `Permission required: ${permission}`,
       params: S.object()

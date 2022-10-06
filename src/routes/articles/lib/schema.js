@@ -135,4 +135,7 @@ export function sArticleList() {
     .prop('hasNotifications', S.boolean())
     .description('Defines if the article have notifications.')
     .required()
+    .prop('category', S.string())
+    .description('Article category.')
+    .required()
 }

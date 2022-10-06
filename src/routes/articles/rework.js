@@ -27,8 +27,7 @@ export default async function reworkArticle(fastify) {
       body: S.object()
         .additionalProperties(false)
         .prop('note', S.string().minLength(3).maxLength(250))
-        .description('Article note.')
-        .required(),
+        .description('Article note.'),
       response: {
         200: sArticle(),
         404: fastify.getSchema('sNotFound'),
@@ -71,12 +70,15 @@ export default async function reworkArticle(fastify) {
 
     await massive.withTransaction(async tx => {
       await tx.articles.update(article.id, article)
-      await tx.internalNotes.save({
-        ownerId,
-        text: note,
-        relatedDocumentId: article.id,
-        category: 'articles',
-      })
+
+      if (note) {
+        await tx.internalNotes.save({
+          ownerId,
+          text: note,
+          relatedDocumentId: article.id,
+          category: 'articles',
+        })
+      }
     })
 
     return populateArticle(article, massive)

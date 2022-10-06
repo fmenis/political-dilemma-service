@@ -24,6 +24,10 @@ export default async function reviewArticle(fastify) {
         .prop('id', S.string().format('uuid'))
         .description('Article id.')
         .required(),
+      body: S.object()
+        .additionalProperties(false)
+        .prop('note', S.string().minLength(3).maxLength(250))
+        .description('Article note.'),
       response: {
         200: sArticle(),
         404: fastify.getSchema('sNotFound'),
@@ -82,14 +86,24 @@ export default async function reviewArticle(fastify) {
 
   async function onReviewArticle(req) {
     const { article } = req
+    const { id: ownerId } = req.user
+    const { note } = req.body
 
     article.status = ARTICLE_STATES.IN_REVIEW
 
-    const [populatedArticle] = await Promise.all([
-      populateArticle(article, massive),
-      massive.articles.update(article.id, article),
-    ])
+    await massive.withTransaction(async tx => {
+      await tx.articles.update(article.id, article)
 
-    return populatedArticle
+      if (note) {
+        await tx.internalNotes.save({
+          ownerId,
+          text: note,
+          relatedDocumentId: article.id,
+          category: 'articles',
+        })
+      }
+    })
+
+    return populateArticle(article, massive)
   }
 }

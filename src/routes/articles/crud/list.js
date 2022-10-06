@@ -54,10 +54,15 @@ export default async function listArticles(fastify) {
     const criteria = buildCriteria(query)
     const options = buildOptions(query)
 
-    //TODO migliorare con un join
-
     const [articles, count] = await Promise.all([
-      massive.articles.find(criteria, options),
+      massive.articles
+        .join({
+          categories: {
+            type: 'INNER',
+            on: { id: 'categoryId' },
+          },
+        })
+        .find(criteria, options),
       massive.articles.count(criteria),
     ])
 
@@ -119,6 +124,7 @@ export default async function listArticles(fastify) {
   }
 
   async function populateArticles(articles) {
+    //TODO mettere nella join sopra
     const [owners, internalNotes] = await Promise.all([
       massive.users.find(
         {
@@ -133,12 +139,14 @@ export default async function listArticles(fastify) {
 
     return articles.map(article => {
       const author = owners.find(item => item.id === article.ownerId)
+      const categoryName = article.categories[0].name
       return {
         ...article,
         author: `${author.first_name} ${author.last_name}`,
         hasNotifications: internalNotes.some(
           item => item.relatedDocumentId === article.id
         ),
+        category: categoryName,
       }
     })
   }
