@@ -42,6 +42,7 @@ export default async function approveArticle(fastify) {
 
   async function onPreHandler(req) {
     const { id } = req.params
+    const { publicationDate } = req.body
 
     const article = await massive.articles.findOne(id)
     if (!article) {
@@ -57,6 +58,12 @@ export default async function approveArticle(fastify) {
             message: `Invalid action on article '${id}'. Required status '${ARTICLE_STATES.IN_REVIEW}'`,
           },
         ],
+      })
+    }
+
+    if (publicationDate && publicationDate <= new Date().toISOString()) {
+      throw createError(404, 'Invalid input', {
+        validation: [{ message: `Publication date must be in the future` }],
       })
     }
 
