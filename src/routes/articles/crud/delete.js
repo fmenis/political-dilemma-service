@@ -33,7 +33,6 @@ export default async function deleteArticle(fastify) {
 
   async function onPreHandler(req) {
     const { id } = req.params
-    const currentUserId = req.user.id
 
     const article = await massive.articles.findOne(id)
 
@@ -49,11 +48,12 @@ export default async function deleteArticle(fastify) {
       )
     }
 
-    if (article.ownerId !== currentUserId) {
-      throw httpErrors.forbidden(
-        `Cannot delete article '${article.id}', the current user '${currentUserId}' is not the article owner '${article.ownerId}'`
-      )
-    }
+    //TODO rivedere durante analisi permessi
+    // if (article.ownerId !== currentUserId) {
+    //   throw httpErrors.forbidden(
+    //     `Cannot delete article '${article.id}', the current user '${currentUserId}' is not the article owner '${article.ownerId}'`
+    //   )
+    // }
   }
 
   async function onDeleteArticle(req, reply) {
