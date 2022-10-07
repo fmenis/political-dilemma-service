@@ -38,6 +38,7 @@
     "@fastify/multipart": "7.1.1",
     "@fastify/sensible": "5.1.1",
     "@fastify/swagger": "7.4.1",
+    "@immobiliarelabs/fastify-sentry": "4.1.1",
     "aws-sdk": "2.1063.0",
     "bcrypt": "5.0.1",
     "close-with-grace": "1.1.0",

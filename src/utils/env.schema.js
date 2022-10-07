@@ -62,5 +62,7 @@ export function sEnv() {
     .required()
     .prop('STATIC_FILES_DEST', S.string())
     .required()
+    .prop('SENTRY_DSN', S.string())
+    .required()
     .valueOf()
 }
