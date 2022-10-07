@@ -110,6 +110,35 @@ export function sArticle() {
     .description('Article tags.')
     .prop('description', S.string().minLength(3).maxLength(500))
     .description('Article description.')
+    .prop(
+      'allowedActions',
+      S.object()
+        .additionalProperties(false)
+        .prop('canAskReview', S.boolean())
+        .description(
+          `Defines if the article can be moved to status 'IN_REVIEW'.`
+        )
+        .required()
+        .prop('canAskApprove', S.boolean())
+        .description(
+          `Defines if the article can be moved to status 'APPROVED'.`
+        )
+        .required()
+        .prop('canAskRework', S.boolean())
+        .description(`Defines if the article can be moved to status 'REWORK'.`)
+        .required()
+        .prop('canAskPublish', S.boolean())
+        .description(
+          `Defines if the article can be moved to status 'PUBLISHED'.`
+        )
+        .required()
+        .prop('canAskArchive', S.boolean())
+        .description(
+          `Defines if the article can be moved to status 'ARCHIVED'.`
+        )
+        .required()
+    )
+    .description('Article description.')
 }
 
 export function sArticleList() {
