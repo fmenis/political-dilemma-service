@@ -50,7 +50,7 @@ function buildAllowedActions(status) {
     allowedActions.canAskPublish = true
   }
 
-  if (status !== ARTICLE_STATES.DRAFT) {
+  if (status !== ARTICLE_STATES.DRAFT && status !== ARTICLE_STATES.ARCHIVED) {
     allowedActions.canAskArchive = true
   }
 
