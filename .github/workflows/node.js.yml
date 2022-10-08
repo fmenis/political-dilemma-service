@@ -49,6 +49,7 @@ jobs:
           echo AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} >> .env
           echo SENDER_EMAIL=${{ secrets.SENDER_EMAIL }} >> .env
           echo STATIC_FILES_DEST=/opt/dilemma-static/static >> .env
+          echo SENTRY_DSN=${{ secrets.SENTRY_DSN }} >> .env
           cat .env
       - run: npm ci
       - run: npm run applyMigrations
