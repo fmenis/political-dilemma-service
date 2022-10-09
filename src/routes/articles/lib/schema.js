@@ -141,7 +141,7 @@ export function sArticle() {
         .description(`Defines if the article can be moved to status 'DELETED'.`)
         .required()
     )
-    .description('Article description.')
+    .description('Article allowed actions.')
 }
 
 export function sArticleList() {

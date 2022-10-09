@@ -7,7 +7,7 @@ import { populateArticle } from './lib/common.js'
 export default async function deleteArticle(fastify) {
   const { massive, httpErrors } = fastify
   const { createError } = httpErrors
-  const permission = 'article:delete'
+  const permission = 'article:delete-action'
 
   fastify.route({
     method: 'POST',
