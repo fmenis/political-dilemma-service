@@ -1,3 +1,4 @@
+import articleErrors from './lib/articleErrors.js'
 import categoriesRoutes from './crud/categories/index.js'
 
 import createRoute from './crud/create.js'
@@ -20,6 +21,7 @@ export default async function index(fastify) {
     }
   })
 
+  fastify.register(articleErrors)
   fastify.register(categoriesRoutes)
 
   const prefix = '/v1/articles'

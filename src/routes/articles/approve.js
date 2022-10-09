@@ -5,8 +5,11 @@ import { sArticle } from './lib/schema.js'
 import { populateArticle } from './lib/common.js'
 
 export default async function approveArticle(fastify) {
-  const { massive, httpErrors } = fastify
-  const { createError } = httpErrors
+  const { massive } = fastify
+
+  const { throwNotFound, throwInvalidAction, throwInvalidPublicationDate } =
+    fastify.articleErrors
+
   const permission = 'article:approve'
 
   fastify.route({
@@ -18,7 +21,7 @@ export default async function approveArticle(fastify) {
     },
     schema: {
       summary: 'Approve article',
-      description: `Permission required: ${permission}`,
+      description: `Permission required: ${permission} \n. Possibile errors: NOT_FOUND, INVALID_PUBLICATION_DATE, INVALID_ACTION`,
       params: S.object()
         .additionalProperties(false)
         .prop('id', S.string().format('uuid'))
@@ -46,25 +49,15 @@ export default async function approveArticle(fastify) {
 
     const article = await massive.articles.findOne(id)
     if (!article) {
-      throw createError(404, 'Invalid input', {
-        validation: [{ message: `Article '${id}' not found` }],
-      })
+      throwNotFound({ id })
     }
 
     if (article.status !== ARTICLE_STATES.IN_REVIEW) {
-      throw createError(409, 'Conflict', {
-        validation: [
-          {
-            message: `Invalid action on article '${id}'. Required status '${ARTICLE_STATES.IN_REVIEW}'`,
-          },
-        ],
-      })
+      throwInvalidAction({ id, requiredStatus: ARTICLE_STATES.IN_REVIEW })
     }
 
     if (publicationDate && publicationDate <= new Date().toISOString()) {
-      throw createError(404, 'Invalid input', {
-        validation: [{ message: `Publication date must be in the future` }],
-      })
+      throwInvalidPublicationDate({ publicationDate })
     }
 
     req.article = article
