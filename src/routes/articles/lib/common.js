@@ -31,6 +31,7 @@ function buildAllowedActions(status) {
     canAskRework: false,
     canAskPublish: false,
     canAskArchive: false,
+    canAskDelete: false,
   }
 
   if (status === ARTICLE_STATES.DRAFT) {
@@ -50,8 +51,12 @@ function buildAllowedActions(status) {
     allowedActions.canAskPublish = true
   }
 
-  if (status !== ARTICLE_STATES.DRAFT && status !== ARTICLE_STATES.ARCHIVED) {
+  if (status === ARTICLE_STATES.PUBLISHED) {
     allowedActions.canAskArchive = true
+  }
+
+  if (status !== ARTICLE_STATES.DRAFT) {
+    allowedActions.canAskDelete = true
   }
 
   return allowedActions

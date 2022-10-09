@@ -4,20 +4,20 @@ import { ARTICLE_STATES } from './lib/enums.js'
 import { sArticle } from './lib/schema.js'
 import { populateArticle } from './lib/common.js'
 
-export default async function archiveArticle(fastify) {
+export default async function deleteArticle(fastify) {
   const { massive, httpErrors } = fastify
   const { createError } = httpErrors
-  const permission = 'article:archive'
+  const permission = 'article:delete'
 
   fastify.route({
     method: 'POST',
-    path: '/:id/archive',
+    path: '/:id/delete',
     config: {
       public: false,
       permission,
     },
     schema: {
-      summary: 'Archive article',
+      summary: 'Delete article',
       description: `Permission required: ${permission}`,
       params: S.object()
         .additionalProperties(false)
@@ -35,7 +35,7 @@ export default async function archiveArticle(fastify) {
       },
     },
     preHandler: onPreHandler,
-    handler: onArchiveArticle,
+    handler: onDeleteArticle,
   })
 
   async function onPreHandler(req) {
@@ -48,21 +48,11 @@ export default async function archiveArticle(fastify) {
       })
     }
 
-    if (article.status !== ARTICLE_STATES.PUBLISHED) {
+    if (article.status === ARTICLE_STATES.DRAFT) {
       throw createError(409, 'Conflict', {
         validation: [
           {
-            message: `Invalid action on article '${id}'. Required status '${ARTICLE_STATES.PUBLISHED}'`,
-          },
-        ],
-      })
-    }
-
-    if (article.status === ARTICLE_STATES.ARCHIVED) {
-      throw createError(409, 'Conflict', {
-        validation: [
-          {
-            message: `Invalid action on article '${id}'. Article already archived`,
+            message: `Invalid action on article '${id}'. Required status: not '${ARTICLE_STATES.DRAFT}'`,
           },
         ],
       })
@@ -71,12 +61,12 @@ export default async function archiveArticle(fastify) {
     req.article = article
   }
 
-  async function onArchiveArticle(req) {
+  async function onDeleteArticle(req) {
     const { article } = req
     const { id: ownerId } = req.user
     const { note } = req.body
 
-    article.status = ARTICLE_STATES.ARCHIVED
+    article.status = ARTICLE_STATES.DELETED
 
     await massive.withTransaction(async tx => {
       await tx.articles.update(article.id, article)
