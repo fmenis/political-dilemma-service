@@ -137,6 +137,9 @@ export function sArticle() {
           `Defines if the article can be moved to status 'ARCHIVED'.`
         )
         .required()
+        .prop('canAskDelete', S.boolean())
+        .description(`Defines if the article can be moved to status 'DELETED'.`)
+        .required()
     )
     .description('Article description.')
 }
