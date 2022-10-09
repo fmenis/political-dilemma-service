@@ -2,6 +2,7 @@ import S from 'fluent-json-schema'
 
 import { sArticle } from '../lib/schema.js'
 import { populateArticle } from '../lib/common.js'
+import { restrictDataToOwner } from '../../lib/common.js'
 
 export default async function readArticle(fastify) {
   const { massive, httpErrors } = fastify
@@ -34,12 +35,17 @@ export default async function readArticle(fastify) {
 
   async function onPreHandler(req) {
     const { id } = req.params
+    const { id: userId, apiPermission } = req.user
 
     const article = await massive.articles.findOne(id)
     if (!article) {
       throw createError(404, 'Invalid input', {
         validation: [{ message: `Article '${id}' not found` }],
       })
+    }
+
+    if (restrictDataToOwner(apiPermission) && article.ownerId !== userId) {
+      throw httpErrors.forbidden('Only the owner can access to this article')
     }
 
     req.article = article

@@ -39,9 +39,11 @@ async function authorization(fastify) {
       getRawUserPermissions(user.id, pg),
     ])
 
-    const matchPermission = userPermissions.includes(permission)
+    const userApiPermission = userPermissions.find(item =>
+      item.includes(permission)
+    )
 
-    if (!matchPermission) {
+    if (!userApiPermission) {
       const route = `${req.raw.method} ${req.raw.url}`
       log.warn(
         `Invalid access: permission '${permission}' not found. Route '${route}'`
@@ -52,29 +54,7 @@ async function authorization(fastify) {
     }
 
     user.roleId = userRole.roleId
-    user.permissions = userPermissions
-
-    return
-
-    //TODO
-    // if (permission.includes('own')) {
-    //   const resourceId = req.params.id
-    //   const table = matchPermission.split(':')[0]
-    //   const resource = await pg.execQuery(
-    //     `SELECT owner_id FROM ${table} WHERE id=$1`,
-    //     [resourceId],
-    //     { findOne: true }
-    //   )
-
-    //   if (resource.ownerId !== user.id) {
-    //     log.warn(
-    //       `Invalid access '${permission}' not found.Route '${route}'`
-    //     )
-    //     throw createError(403, 'Invalid access', {
-    //       internalCode: '0010',
-    //     })
-    //   }
-    // }
+    user.apiPermission = userApiPermission
   }
 
   fastify.addHook('onRequest', authorize)

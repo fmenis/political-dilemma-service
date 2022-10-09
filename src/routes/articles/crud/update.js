@@ -4,6 +4,7 @@ import _ from 'lodash'
 import { sUpdateArticle, sArticle } from '../lib/schema.js'
 import { findArrayDuplicates, removeObjectProps } from '../../../utils/main.js'
 import { populateArticle } from '../lib/common.js'
+import { restrictDataToOwner } from '../../lib/common.js'
 
 export default async function updateArticle(fastify) {
   const { massive, httpErrors } = fastify
@@ -39,7 +40,7 @@ export default async function updateArticle(fastify) {
   async function onPreHandler(req) {
     const { id } = req.params
     const { tags = [], attachmentIds = [] } = req.body
-    const currentUserId = req.user.id
+    const { id: userId, apiPermission } = req.user
 
     const article = await massive.articles.findOne(id)
 
@@ -49,10 +50,8 @@ export default async function updateArticle(fastify) {
       })
     }
 
-    if (article.ownerId !== currentUserId) {
-      throw httpErrors.forbidden(
-        `Cannot update article '${article.id}', the current user '${currentUserId}' is not the article owner '${article.ownerId}'`
-      )
+    if (restrictDataToOwner(apiPermission) && article.ownerId !== userId) {
+      throw httpErrors.forbidden('Only the owner can access to this article')
     }
 
     const duplicatedAttachmentIds = findArrayDuplicates(attachmentIds)

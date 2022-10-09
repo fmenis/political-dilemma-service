@@ -3,7 +3,7 @@ import S from 'fluent-json-schema'
 import { sArticleList } from '../lib/schema.js'
 import { appConfig } from '../../../config/main.js'
 import { getArticleStates } from '../lib/common.js'
-import { buildPaginatedInfo } from '../../lib/common.js'
+import { buildPaginatedInfo, restrictDataToOwner } from '../../lib/common.js'
 
 export default async function listArticles(fastify) {
   const { massive } = fastify
@@ -24,8 +24,12 @@ export default async function listArticles(fastify) {
         .additionalProperties(false)
         .prop('status', S.string().enum(getArticleStates()))
         .description('Filter by article states')
-        .prop('search', S.string().minLength(1))
+        .prop('search', S.string().minLength(1).maxLength(30))
         .description('Full text search.')
+        .prop('author', S.string().minLength(1).maxLength(30))
+        .description('Filter by author (full name).')
+        .prop('category', S.string().minLength(1).maxLength(30))
+        .description('Filter by category.')
         .prop('sortBy', S.string().enum(['title']))
         .description('Field used to sort results (sorting).')
         .prop('order', S.string().enum(['ASC', 'DESC']))
@@ -49,21 +53,23 @@ export default async function listArticles(fastify) {
   })
 
   async function onListArticles(req) {
-    const { query } = req
+    const { query, user } = req
 
-    const criteria = buildCriteria(query)
+    const filters = buildFilters(query, user)
     const options = buildOptions(query)
 
     const [articles, count] = await Promise.all([
       massive.articles
         .join({
           categories: {
-            type: 'INNER',
             on: { id: 'categoryId' },
           },
+          users: {
+            on: { id: 'ownerId' },
+          },
         })
-        .find(criteria, options),
-      massive.articles.count(criteria),
+        .find(filters, options),
+      massive.articles.count(filters),
     ])
 
     return {
@@ -75,11 +81,16 @@ export default async function listArticles(fastify) {
     }
   }
 
-  function buildCriteria(query) {
-    const criteria = {}
+  function buildFilters(query, user) {
+    const { id: userId, apiPermission } = user
+    const filters = {}
+
+    if (restrictDataToOwner(apiPermission)) {
+      filters.ownerId = userId
+    }
 
     if (query.search) {
-      criteria.and = [
+      filters.and = [
         {
           'title ILIKE': `%${query.search}%`,
         },
@@ -87,16 +98,26 @@ export default async function listArticles(fastify) {
     }
 
     if (query.status) {
-      criteria.status = query.status
+      filters.status = query.status
     }
 
     if (query.status) {
-      criteria.status = query.status
+      filters.status = query.status
     }
 
-    //##TODO capire come si fanno le query sulle join (eg: categoria, autore)
+    if (query.author) {
+      // return {
+      //   'users.first_name ILIKE': `%${query.author}%`,
+      // }
+      // filters['users.first_name ILIKE'] = `%${query.search}%`
+      // filters.and = [{ 'users.first_name ILIKE': `%${query.search}%` }]
+    }
 
-    return criteria
+    if (query.category) {
+      // filters.and = [{ 'categories.name ILIKE': `%${query.category}%` }]
+    }
+
+    return filters
   }
 
   function buildOptions(query) {
@@ -124,21 +145,13 @@ export default async function listArticles(fastify) {
   }
 
   async function populateArticles(articles) {
-    //TODO mettere nella join sopra
-    const [owners, internalNotes] = await Promise.all([
-      massive.users.find(
-        {
-          id: articles.map(item => item.ownerId),
-        },
-        { fields: ['id', 'first_name', 'last_name'] }
-      ),
-      massive.internalNotes.find({
-        relatedDocumentId: articles.map(item => item.id),
-      }),
-    ])
+    //TODO cancellare relatedDocumentId da internalNote e metterci articleId
+    const internalNotes = await massive.internalNotes.find({
+      relatedDocumentId: articles.map(item => item.id),
+    })
 
     return articles.map(article => {
-      const author = owners.find(item => item.id === article.ownerId)
+      const author = article.users[0]
       const categoryName = article.categories[0].name
       return {
         ...article,
