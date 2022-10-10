@@ -7,8 +7,8 @@ on:
     branches: [develop]
 
 jobs:
-  deploy-develop:
-    runs-on: self-hosted
+  deploy-dev:
+    runs-on: [self-hosted, linux, x64, dilemma-dev]
 
     strategy:
       matrix:
