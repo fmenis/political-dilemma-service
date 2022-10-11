@@ -15,7 +15,7 @@ function mailer(fastify, options, done) {
     SES: { ses, aws },
   })
 
-  if (fastify.config.NODE_ENV !== ENV.DEVELOPMENT) {
+  if (fastify.config.NODE_ENV !== ENV.LOCAL) {
     transporter.verify(err => {
       if (err) {
         done(err)

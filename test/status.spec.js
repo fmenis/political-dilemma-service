@@ -14,7 +14,7 @@ t.test('Status API', async t => {
   t.plan(4)
 
   const fastify = Fastify()
-  fastify.register(App, { envData: { NODE_ENV: ENV.DEVELOPMENT } })
+  fastify.register(App, { envData: { NODE_ENV: ENV.LOCAL } })
 
   t.teardown(() => {
     console.log('Non ci entra')

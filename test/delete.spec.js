@@ -10,7 +10,7 @@ t.test('Create User API OK', async t => {
   t.plan(3)
 
   const fastify = Fastify()
-  fastify.register(App, { envData: { NODE_ENV: ENV.DEVELOPMENT } })
+  fastify.register(App, { envData: { NODE_ENV: ENV.LOCAL } })
 
   t.teardown(() => {
     console.log('Non ci entra')

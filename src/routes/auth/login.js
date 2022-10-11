@@ -130,7 +130,7 @@ export default async function login(fastify) {
       expires: moment().add(fastify.config.COOKIE_TTL, 'seconds').toDate(),
     }
 
-    if (fastify.config.NODE_ENV === ENV.PRODUCTION) {
+    if (fastify.config.NODE_ENV !== ENV.LOCAL) {
       // 'secure' works in the browser, for localhost, but not for postman
       cookieOptions.secure = true
       cookieOptions.sameSite = 'none'

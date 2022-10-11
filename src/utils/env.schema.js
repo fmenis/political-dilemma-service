@@ -14,7 +14,9 @@ export function sEnv() {
   return S.object()
     .prop(
       'NODE_ENV',
-      S.string().enum([ENV.PRODUCTION, ENV.STAGING, ENV.DEVELOPMENT]).required()
+      S.string()
+        .enum([ENV.PRODUCTION, ENV.STAGING, ENV.DEVELOPMENT, ENV.LOCAL])
+        .required()
     )
     .prop('SERVER_ADDRESS', S.string())
     .default('127.0.0.1')
