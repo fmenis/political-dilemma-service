@@ -26,8 +26,8 @@ export default async function deleteArticle(fastify) {
         .required(),
       body: S.object()
         .additionalProperties(false)
-        .prop('note', S.string().minLength(3).maxLength(250))
-        .description('Article note.'),
+        .prop('motivaton', S.string().minLength(3).maxLength(250))
+        .description('Article delete motivation.'),
       response: {
         200: sArticle(),
         404: fastify.getSchema('sNotFound'),
