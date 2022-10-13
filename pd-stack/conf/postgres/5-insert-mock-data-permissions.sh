@@ -94,5 +94,5 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
     VALUES ('article', 'archive', 'Article archive permission');
 
     INSERT INTO permissions (resource, action, description)
-    VALUES ('article', 'delete', 'Article delete permission');
+    VALUES ('article', 'delete-action', 'Article delete permission');
 EOSQL

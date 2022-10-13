@@ -110,6 +110,8 @@ export function sArticle() {
     .description('Article tags.')
     .prop('description', S.string().minLength(3).maxLength(500))
     .description('Article description.')
+    .prop('cancellationReason', S.string().minLength(3).maxLength(500))
+    .description('Article cancellation reason.')
     .prop(
       'allowedActions',
       S.object()

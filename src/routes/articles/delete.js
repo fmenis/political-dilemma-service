@@ -26,8 +26,9 @@ export default async function deleteArticle(fastify) {
         .required(),
       body: S.object()
         .additionalProperties(false)
-        .prop('motivaton', S.string().minLength(3).maxLength(250))
-        .description('Article delete motivation.'),
+        .prop('cancellationReason', S.string().minLength(3).maxLength(250))
+        .description('Article deletion reason.')
+        .required(),
       response: {
         200: sArticle(),
         404: fastify.getSchema('sNotFound'),
@@ -63,23 +64,12 @@ export default async function deleteArticle(fastify) {
 
   async function onDeleteArticle(req) {
     const { article } = req
-    const { id: ownerId } = req.user
-    const { note } = req.body
+    const { cancellationReason } = req.body
 
     article.status = ARTICLE_STATES.DELETED
+    article.cancellationReason = cancellationReason
 
-    await massive.withTransaction(async tx => {
-      await tx.articles.update(article.id, article)
-
-      if (note) {
-        await tx.internalNotes.save({
-          ownerId,
-          text: note,
-          relatedDocumentId: article.id,
-          category: 'articles',
-        })
-      }
-    })
+    await massive.articles.update(article.id, article)
 
     return populateArticle(article, massive)
   }
