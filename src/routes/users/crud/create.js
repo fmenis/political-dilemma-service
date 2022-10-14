@@ -4,10 +4,12 @@ import _ from 'lodash'
 import { hashString } from '../../../lib/hash.js'
 import { sUserDetail, sCreateUser } from '../lib/schema.js'
 import { getRoles, associateRoles } from '../../roles/lib/utils.js'
+import { appConfig } from '../../../config/main.js'
 
 export default async function createUser(fastify) {
-  const { pg, config, httpErrors } = fastify
+  const { pg, httpErrors } = fastify
   const { createError } = httpErrors
+  const { saltRounds } = appConfig
 
   fastify.route({
     method: 'POST',
@@ -131,8 +133,7 @@ export default async function createUser(fastify) {
 
     const userObj = {
       ...body,
-      ownerId: owner.id,
-      password: await hashString(body.password, parseInt(config.SALT_ROUNDS)),
+      password: await hashString(body.password, parseInt(saltRounds)),
     }
 
     let client
@@ -161,8 +162,8 @@ export default async function createUser(fastify) {
     const query =
       'INSERT INTO users ' +
       '(first_name, last_name, user_name, email, type, password, bio, ' +
-      'birth_date, sex, owner_id, id_region, id_province) ' +
-      'VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) ' +
+      'birth_date, sex, id_region, id_province) ' +
+      'VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) ' +
       'RETURNING id, first_name, last_name, user_name, email, bio, ' +
       'birth_date, joined_date, sex, is_blocked, is_deleted, ' +
       'id_region, id_province'
@@ -177,7 +178,6 @@ export default async function createUser(fastify) {
       obj.bio,
       obj.birthDate,
       obj.sex,
-      obj.ownerId,
       obj.regionId,
       obj.provinceId,
     ]

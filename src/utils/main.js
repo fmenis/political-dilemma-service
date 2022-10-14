@@ -29,17 +29,12 @@ export function removeObjectProps(obj, propsToRemove) {
  * Calculate base url related to the current envinronment
  */
 export function calculateBaseUrl(opts = {}) {
-  switch (process.env.NODE_ENV) {
-    case ENV.PRODUCTION:
-      return `https://${process.env.DOMAIN_PROD}`
-
-    case ENV.STAGING: //TODO da fare
-      return `https://${process.env.DOMAIN_STAGING}`
-
-    case ENV.DEVELOPMENT:
-      if (opts.port) {
-        return `http://${process.env.SERVER_ADDRESS}:${opts.port}`
-      }
-      return `http://${process.env.SERVER_ADDRESS}:${process.env.SERVER_PORT}`
+  if (process.env.NODE_ENV === ENV.LOCAL) {
+    if (opts.port) {
+      return `http://${process.env.SERVER_ADDRESS}:${opts.port}`
+    }
+    return `http://${process.env.SERVER_ADDRESS}:${process.env.SERVER_PORT}`
   }
+
+  return `https://${process.env.API_DOMAIN}`
 }

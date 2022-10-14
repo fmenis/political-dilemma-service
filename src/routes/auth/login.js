@@ -4,6 +4,7 @@ import moment from 'moment'
 import { compareStrings } from '../../lib/hash.js'
 import { deleteSessions } from '../sessions/lib/utils.js'
 import { appConfig } from '../../config/main.js'
+import { ENV } from '../../common/enums.js'
 
 export default async function login(fastify) {
   const { pg, httpErrors, config } = fastify
@@ -129,11 +130,11 @@ export default async function login(fastify) {
       expires: moment().add(fastify.config.COOKIE_TTL, 'seconds').toDate(),
     }
 
-    if (fastify.config.NODE_ENV === 'production') {
+    if (fastify.config.NODE_ENV !== ENV.LOCAL) {
       // 'secure' works in the browser, for localhost, but not for postman
       cookieOptions.secure = true
       cookieOptions.sameSite = 'none'
-      // cookieOptions.domain = fastify.config.DOMAIN_PROD
+      // cookieOptions.domain = fastify.config.API_DOMAIN
     }
 
     reply.setCookie('session', sessionId, cookieOptions)

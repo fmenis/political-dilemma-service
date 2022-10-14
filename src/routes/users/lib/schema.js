@@ -1,6 +1,6 @@
 import S from 'fluent-json-schema'
 
-export function sUserDetail() {
+function sUser() {
   return S.object()
     .additionalProperties(false)
     .description('User.')
@@ -33,9 +33,22 @@ export function sUserDetail() {
     .description('Defines when a user accepts the system invitation.')
     .prop('sex', S.string().enum(['male', 'female', 'other']))
     .description('User sex.')
+}
+
+export function sUserAccount() {
+  return S.object()
+    .prop('role', S.string())
+    .description('User role.')
+    .required()
+    .extend(sUser())
+}
+
+export function sUserDetail() {
+  return S.object()
     .prop('roleId', S.number().minimum(1))
     .description('User role id.')
     .required()
+    .extend(sUser())
 }
 
 export function sUserList() {

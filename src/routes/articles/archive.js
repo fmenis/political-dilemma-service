@@ -4,20 +4,20 @@ import { ARTICLE_STATES } from './lib/enums.js'
 import { sArticle } from './lib/schema.js'
 import { populateArticle } from './lib/common.js'
 
-export default async function reviewArticle(fastify) {
+export default async function archiveArticle(fastify) {
   const { massive, httpErrors } = fastify
   const { createError } = httpErrors
-  const permission = 'article:review'
+  const permission = 'article:archive'
 
   fastify.route({
     method: 'POST',
-    path: '/:id/review',
+    path: '/:id/archive',
     config: {
       public: false,
       permission,
     },
     schema: {
-      summary: 'Review article',
+      summary: 'Archive article',
       description: `Permission required: ${permission}`,
       params: S.object()
         .additionalProperties(false)
@@ -35,7 +35,7 @@ export default async function reviewArticle(fastify) {
       },
     },
     preHandler: onPreHandler,
-    handler: onReviewArticle,
+    handler: onArchiveArticle,
   })
 
   async function onPreHandler(req) {
@@ -48,48 +48,35 @@ export default async function reviewArticle(fastify) {
       })
     }
 
-    if (
-      article.status !== ARTICLE_STATES.DRAFT &&
-      article.status !== ARTICLE_STATES.REWORK
-    ) {
+    if (article.status !== ARTICLE_STATES.PUBLISHED) {
       throw createError(409, 'Conflict', {
         validation: [
           {
-            message: `Invalid action on article '${id}'. Required status '${ARTICLE_STATES.DRAFT}' or '${ARTICLE_STATES.REWORK}'`,
+            message: `Invalid action on article '${id}'. Required status '${ARTICLE_STATES.PUBLISHED}'`,
           },
         ],
       })
     }
 
-    if (!article.description || !article.text) {
-      const errors = []
-
-      if (!article.description) {
-        errors.push({
-          message: `Invalid action on article '${id}'. The description must be provided`,
-        })
-      }
-
-      if (!article.text) {
-        errors.push({
-          message: `Invalid action on article '${id}'. The text must be provided`,
-        })
-      }
-
+    if (article.status === ARTICLE_STATES.ARCHIVED) {
       throw createError(409, 'Conflict', {
-        validation: errors,
+        validation: [
+          {
+            message: `Invalid action on article '${id}'. Article already archived`,
+          },
+        ],
       })
     }
 
     req.article = article
   }
 
-  async function onReviewArticle(req) {
+  async function onArchiveArticle(req) {
     const { article } = req
     const { id: ownerId } = req.user
     const { note } = req.body
 
-    article.status = ARTICLE_STATES.IN_REVIEW
+    article.status = ARTICLE_STATES.ARCHIVED
 
     await massive.withTransaction(async tx => {
       await tx.articles.update(article.id, article)

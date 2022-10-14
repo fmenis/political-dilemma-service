@@ -7,25 +7,6 @@ import { ENV } from '../common/enums.js'
 const { version } = JSON.parse(readFileSync(join(resolve(), 'package.json')))
 
 async function swaggerGenerator(fastify) {
-  const servers = [
-    {
-      url: `http://localhost:${process.env.SERVER_PORT}`,
-      description: 'Development server',
-      env: ENV.DEVELOPMENT,
-    },
-    //TODO
-    // {
-    //   url: `https://${process.env.DOMAIN_STAGING}`,
-    //   description: 'Staging server',
-    //   env: ENV.STAGING,
-    // },
-    {
-      url: `https://${process.env.DOMAIN_PROD}`,
-      description: 'Production server',
-      env: ENV.PRODUCTION,
-    },
-  ]
-
   fastify.register(Swagger, {
     routePrefix: '/doc',
     openapi: {
@@ -42,7 +23,23 @@ async function swaggerGenerator(fastify) {
         url: 'https://github.com/fmenis/political-dilemma-service',
         description: 'Find more info here',
       },
-      servers: servers.reduce((acc, item) => {
+      servers: [
+        {
+          url: `http://localhost:${process.env.SERVER_PORT}`,
+          description: 'Local api',
+          env: ENV.LOCAL,
+        },
+        {
+          url: `https://${process.env.API_DOMAIN}`,
+          description: 'Develop api',
+          env: ENV.DEVELOPMENT,
+        },
+        {
+          url: `https://${process.env.API_DOMAIN}`,
+          description: 'Staging api',
+          env: ENV.STAGING,
+        },
+      ].reduce((acc, item) => {
         if (item.env === process.env.NODE_ENV) {
           acc.push({
             url: item.url,
@@ -70,7 +67,7 @@ async function swaggerGenerator(fastify) {
         { name: 'files', description: 'Files related end-points' },
       ].sort((a, b) => a.name.localeCompare(b.name)),
     },
-    exposeRoute: true,
+    exposeRoute: process.env.NODE_ENV !== ENV.PRODUCTION,
   })
 }
 

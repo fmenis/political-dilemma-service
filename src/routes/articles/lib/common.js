@@ -20,5 +20,54 @@ export async function populateArticle(article, massive) {
     tags: article.tags || [],
     attachments,
     description: article.description || undefined,
+    allowedActions: buildAllowedActions(article.status),
   }
+}
+
+function buildAllowedActions(status) {
+  const allowedActions = {
+    canBeDeleted: false,
+    canBeEdited: false,
+    canAskReview: false,
+    canAskApprove: false,
+    canAskRework: false,
+    canAskPublish: false,
+    canAskArchive: false,
+    canAskDelete: false,
+  }
+
+  if (status === ARTICLE_STATES.DRAFT) {
+    allowedActions.canBeDeleted = true
+  }
+
+  if (status !== ARTICLE_STATES.ARCHIVED && status !== ARTICLE_STATES.DELETED) {
+    allowedActions.canBeEdited = true
+  }
+
+  if (status === ARTICLE_STATES.DRAFT) {
+    allowedActions.canAskReview = true
+  }
+
+  if (status === ARTICLE_STATES.IN_REVIEW) {
+    allowedActions.canAskApprove = true
+    allowedActions.canAskRework = true
+  }
+
+  if (status === ARTICLE_STATES.REWORK) {
+    allowedActions.canAskReview = true
+  }
+
+  if (status === ARTICLE_STATES.READY) {
+    allowedActions.canAskPublish = true
+  }
+
+  if (status === ARTICLE_STATES.PUBLISHED) {
+    allowedActions.canAskArchive = true
+  }
+
+  if (status !== ARTICLE_STATES.DRAFT && status !== ARTICLE_STATES.DELETED) {
+    allowedActions.canAskDelete = true
+  }
+
+  return allowedActions
 }

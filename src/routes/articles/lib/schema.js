@@ -87,9 +87,6 @@ export function sArticle() {
     .prop('categoryId', S.string().format('uuid'))
     .description('Article category id.')
     .required()
-    .prop('canBeDeleted', S.boolean())
-    .description('Defines if the article can be deleted.')
-    .required()
     .prop(
       'attachments',
       S.array()
@@ -110,6 +107,46 @@ export function sArticle() {
     .description('Article tags.')
     .prop('description', S.string().minLength(3).maxLength(500))
     .description('Article description.')
+    .prop('cancellationReason', S.string().minLength(3).maxLength(500))
+    .description('Article cancellation reason.')
+    .prop(
+      'allowedActions',
+      S.object()
+        .additionalProperties(false)
+        .prop('canBeDeleted', S.boolean())
+        .description('Defines if the article can be deleted.')
+        .required()
+        .prop('canBeEdited', S.boolean())
+        .description('Defines if the article can be edited.')
+        .required()
+        .prop('canAskReview', S.boolean())
+        .description(
+          `Defines if the article can be moved to status 'IN_REVIEW'.`
+        )
+        .required()
+        .prop('canAskApprove', S.boolean())
+        .description(
+          `Defines if the article can be moved to status 'APPROVED'.`
+        )
+        .required()
+        .prop('canAskRework', S.boolean())
+        .description(`Defines if the article can be moved to status 'REWORK'.`)
+        .required()
+        .prop('canAskPublish', S.boolean())
+        .description(
+          `Defines if the article can be moved to status 'PUBLISHED'.`
+        )
+        .required()
+        .prop('canAskArchive', S.boolean())
+        .description(
+          `Defines if the article can be moved to status 'ARCHIVED'.`
+        )
+        .required()
+        .prop('canAskDelete', S.boolean())
+        .description(`Defines if the article can be moved to status 'DELETED'.`)
+        .required()
+    )
+    .description('Article allowed actions.')
 }
 
 export function sArticleList() {
@@ -134,5 +171,8 @@ export function sArticleList() {
     .required()
     .prop('hasNotifications', S.boolean())
     .description('Defines if the article have notifications.')
+    .required()
+    .prop('category', S.string())
+    .description('Article category.')
     .required()
 }

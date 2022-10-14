@@ -6,6 +6,7 @@ import { config } from 'dotenv'
 config()
 
 import App from '../src/app.js'
+import { ENV } from '../src/common/enums.js'
 
 const { version } = JSON.parse(readFileSync(join(resolve(), 'package.json')))
 
@@ -13,7 +14,7 @@ t.test('Status API', async t => {
   t.plan(4)
 
   const fastify = Fastify()
-  fastify.register(App, { envData: { NODE_ENV: 'development' } })
+  fastify.register(App, { envData: { NODE_ENV: ENV.LOCAL } })
 
   t.teardown(() => {
     console.log('Non ci entra')

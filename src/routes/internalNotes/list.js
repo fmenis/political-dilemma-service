@@ -68,7 +68,14 @@ export default async function listInternalNotes(fastify) {
           on: { id: 'ownerId' },
         },
       })
-      .find(criteria)
+      .find(criteria, {
+        order: [
+          {
+            field: 'createdAt',
+            direction: 'desc',
+          },
+        ],
+      })
 
     return {
       results: internalNotes.map(item => {

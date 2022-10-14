@@ -3,6 +3,7 @@ import helmet from '@fastify/helmet'
 import cors from '@fastify/cors'
 import env from '@fastify/env'
 import massive from 'fastify-massive'
+import sentry from '@immobiliarelabs/fastify-sentry'
 
 import swaggerPlugin from './plugins/swagger.js'
 import pgPlugin from './plugins/postgres.js'
@@ -44,6 +45,20 @@ export default async function app(fastify, opts) {
       database: process.env.PG_DB,
       user: process.env.PG_USER,
       password: process.env.PG_PW,
+    },
+  })
+
+  fastify.register(sentry, {
+    dsn: process.env.SENTRY_DSN,
+    environment: 'production',
+    release: '1.0.0',
+    onErrorFactory: () => {
+      return function (error, req, reply) {
+        reply.send(error)
+        if (reply.statusCode === 500) {
+          this.Sentry.captureException(error)
+        }
+      }
     },
   })
 

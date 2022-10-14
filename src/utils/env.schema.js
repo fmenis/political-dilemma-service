@@ -14,13 +14,15 @@ export function sEnv() {
   return S.object()
     .prop(
       'NODE_ENV',
-      S.string().enum([ENV.PRODUCTION, ENV.STAGING, ENV.DEVELOPMENT]).required()
+      S.string()
+        .enum([ENV.PRODUCTION, ENV.STAGING, ENV.DEVELOPMENT, ENV.LOCAL])
+        .required()
     )
     .prop('SERVER_ADDRESS', S.string())
     .default('127.0.0.1')
     .prop('SERVER_PORT', S.string())
     .default('3000')
-    .prop('DOMAIN_PROD', S.string())
+    .prop('API_DOMAIN', S.string())
     .required()
     .prop('LOG_LEVEL', S.string())
     .default('info')
@@ -61,6 +63,8 @@ export function sEnv() {
     .prop('SENDER_EMAIL', S.string())
     .required()
     .prop('STATIC_FILES_DEST', S.string())
+    .required()
+    .prop('SENTRY_DSN', S.string())
     .required()
     .valueOf()
 }

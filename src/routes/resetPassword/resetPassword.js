@@ -5,9 +5,9 @@ import { deleteUserResetLinks } from './lib/utils.js'
 import { appConfig } from '../../config/main.js'
 
 export default async function resetPassword(fastify) {
-  const { pg, httpErrors, config } = fastify
+  const { pg, httpErrors } = fastify
   const { createError } = httpErrors
-  const { passwordRexExp } = appConfig
+  const { passwordRexExp, saltRounds } = appConfig
 
   fastify.route({
     method: 'POST',
@@ -117,7 +117,7 @@ export default async function resetPassword(fastify) {
 
       await pg.execQuery(
         'UPDATE users SET password=$2 WHERE id=$1',
-        [user.id, await hashString(newPassword, parseInt(config.SALT_ROUNDS))],
+        [user.id, await hashString(newPassword, parseInt(saltRounds))],
         { client }
       )
 

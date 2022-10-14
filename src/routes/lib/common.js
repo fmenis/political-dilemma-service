@@ -24,3 +24,12 @@ export function buildPaginatedInfo(totalCount, options) {
     lastPage: page >= pageCount,
   }
 }
+
+/**
+ * Determinates if the entities must be restricted by owner
+ * @param {string} apiPermission permission
+ * @returns boolean
+ */
+export function restrictDataToOwner(apiPermission) {
+  return apiPermission.includes('own')
+}

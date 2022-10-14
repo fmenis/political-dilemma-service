@@ -3,9 +3,9 @@ import { compareStrings, hashString } from '../../lib/hash.js'
 import { appConfig } from '../../config/main.js'
 
 export default async function changePassword(fastify) {
-  const { pg, config, httpErrors } = fastify
+  const { pg, httpErrors } = fastify
   const { createError } = httpErrors
-  const { passwordRexExp } = appConfig
+  const { passwordRexExp, saltRounds } = appConfig
 
   fastify.route({
     method: 'POST',
@@ -70,7 +70,7 @@ export default async function changePassword(fastify) {
 
     const inputs = [
       user.id,
-      await hashString(newPassword, parseInt(config.SALT_ROUNDS)),
+      await hashString(newPassword, parseInt(saltRounds)),
     ]
 
     const { rowCount } = await pg.execQuery(

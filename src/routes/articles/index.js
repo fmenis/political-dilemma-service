@@ -1,3 +1,4 @@
+import articleErrors from './lib/articleErrors.js'
 import categoriesRoutes from './crud/categories/index.js'
 
 import createRoute from './crud/create.js'
@@ -6,8 +7,12 @@ import readRoute from './crud/read.js'
 import updateRoute from './crud/update.js'
 import deleteRoute from './crud/delete.js'
 
-import reviewRoute from './review.js'
-import approveRoute from './approve.js'
+import reviewActionRoute from './review.js'
+import approveActionRoute from './approve.js'
+import reworkActionRoute from './rework.js'
+import publishActionRoute from './publish.js'
+import archiveActionRoute from './archive.js'
+import deleteActionRoute from './delete.js'
 
 export default async function index(fastify) {
   fastify.addHook('onRoute', options => {
@@ -17,6 +22,7 @@ export default async function index(fastify) {
     }
   })
 
+  fastify.register(articleErrors)
   fastify.register(categoriesRoutes)
 
   const prefix = '/v1/articles'
@@ -27,6 +33,10 @@ export default async function index(fastify) {
   fastify.register(updateRoute, { prefix })
   fastify.register(deleteRoute, { prefix })
 
-  fastify.register(reviewRoute, { prefix })
-  fastify.register(approveRoute, { prefix })
+  fastify.register(reviewActionRoute, { prefix })
+  fastify.register(approveActionRoute, { prefix })
+  fastify.register(reworkActionRoute, { prefix })
+  fastify.register(publishActionRoute, { prefix })
+  fastify.register(archiveActionRoute, { prefix })
+  fastify.register(deleteActionRoute, { prefix })
 }

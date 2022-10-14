@@ -1,5 +1,5 @@
 import S from 'fluent-json-schema'
-import { getRawUserPermissions } from './lib/utils.js'
+import { getRawUserPermissions, getUserRoles } from './lib/utils.js'
 
 export default async function userWhoami(fastify) {
   const { pg } = fastify
@@ -28,6 +28,9 @@ export default async function userWhoami(fastify) {
           .prop('email', S.string().format('email').minLength(6).maxLength(50))
           .description('User email. It must be unique.')
           .required()
+          .prop('roleId', S.number().minimum(1))
+          .description('User role id.')
+          .required()
           .prop('permissions', S.array())
           .description('User permissions.')
           .required(),
@@ -42,13 +45,15 @@ export default async function userWhoami(fastify) {
     const query =
       'SELECT id, first_name, last_name, email FROM users WHERE id=$1'
 
-    const [user, permissions] = await Promise.all([
+    const [user, roles, permissions] = await Promise.all([
       pg.execQuery(query, [id], { findOne: true }),
+      getUserRoles([id], pg),
       getRawUserPermissions(id, pg),
     ])
 
     return {
       ...user,
+      roleId: roles[0].roleId,
       permissions,
     }
   }
