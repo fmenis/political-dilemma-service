@@ -5,6 +5,7 @@ import { sUpdateArticle, sArticle } from '../lib/schema.js'
 import { findArrayDuplicates, removeObjectProps } from '../../../utils/main.js'
 import { populateArticle } from '../lib/common.js'
 import { restrictDataToOwner } from '../../lib/common.js'
+// import { ARTICLE_STATES } from '../lib/enums.js'
 
 export default async function updateArticle(fastify) {
   const { massive, httpErrors } = fastify
@@ -49,6 +50,17 @@ export default async function updateArticle(fastify) {
         validation: [{ message: `Article '${id}' not found` }],
       })
     }
+
+    //TODO capire se ha senso
+    // if (article.status === ARTICLE_STATES.DRAFT && userId !== article.ownerId) {
+    //   const message = `Only the owner can update an article in status '${ARTICLE_STATES.DRAFT}'`
+    //   throw createError(409, message, {
+    //     internalCode: 'INVALID_UPDATE',
+    //     details: {
+    //       articleId: article.id,
+    //     },
+    //   })
+    // }
 
     if (restrictDataToOwner(apiPermission) && article.ownerId !== userId) {
       throw httpErrors.forbidden('Only the owner can access to this article')

@@ -26,12 +26,22 @@ export async function populateArticle(article, massive) {
 
 function buildAllowedActions(status) {
   const allowedActions = {
+    canBeDeleted: false,
+    canBeEdited: false,
     canAskReview: false,
     canAskApprove: false,
     canAskRework: false,
     canAskPublish: false,
     canAskArchive: false,
     canAskDelete: false,
+  }
+
+  if (status === ARTICLE_STATES.DRAFT) {
+    allowedActions.canBeDeleted = true
+  }
+
+  if (status !== ARTICLE_STATES.ARCHIVED && status !== ARTICLE_STATES.DELETED) {
+    allowedActions.canBeEdited = true
   }
 
   if (status === ARTICLE_STATES.DRAFT) {

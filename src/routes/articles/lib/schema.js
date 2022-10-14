@@ -87,9 +87,6 @@ export function sArticle() {
     .prop('categoryId', S.string().format('uuid'))
     .description('Article category id.')
     .required()
-    .prop('canBeDeleted', S.boolean())
-    .description('Defines if the article can be deleted.')
-    .required()
     .prop(
       'attachments',
       S.array()
@@ -116,6 +113,12 @@ export function sArticle() {
       'allowedActions',
       S.object()
         .additionalProperties(false)
+        .prop('canBeDeleted', S.boolean())
+        .description('Defines if the article can be deleted.')
+        .required()
+        .prop('canBeEdited', S.boolean())
+        .description('Defines if the article can be edited.')
+        .required()
         .prop('canAskReview', S.boolean())
         .description(
           `Defines if the article can be moved to status 'IN_REVIEW'.`
