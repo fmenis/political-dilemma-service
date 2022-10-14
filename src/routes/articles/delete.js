@@ -49,11 +49,14 @@ export default async function deleteArticle(fastify) {
       })
     }
 
-    if (article.status === ARTICLE_STATES.DRAFT) {
+    if (
+      article.status === ARTICLE_STATES.DRAFT ||
+      article.status === ARTICLE_STATES.DELETED
+    ) {
       throw createError(409, 'Conflict', {
         validation: [
           {
-            message: `Invalid action on article '${id}'. Required status: not '${ARTICLE_STATES.DRAFT}'`,
+            message: `Invalid action on article '${id}'. Required status: not '${ARTICLE_STATES.DRAFT}' or '${ARTICLE_STATES.DELETED}'`,
           },
         ],
       })

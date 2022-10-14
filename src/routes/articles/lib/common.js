@@ -55,7 +55,7 @@ function buildAllowedActions(status) {
     allowedActions.canAskArchive = true
   }
 
-  if (status !== ARTICLE_STATES.DRAFT) {
+  if (status !== ARTICLE_STATES.DRAFT && status !== ARTICLE_STATES.DELETED) {
     allowedActions.canAskDelete = true
   }
 
