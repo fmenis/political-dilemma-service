@@ -1,4 +1,4 @@
-import { sUserDetail } from './lib/schema.js'
+import { sUserAccount } from './lib/schema.js'
 
 export default async function accountUser(fastify) {
   const { pg, httpErrors } = fastify
@@ -13,7 +13,7 @@ export default async function accountUser(fastify) {
       summary: 'Get user account',
       description: 'Get user account.',
       response: {
-        200: sUserDetail(),
+        200: sUserAccount(),
         404: fastify.getSchema('sNotFound'),
       },
     },
@@ -27,10 +27,12 @@ export default async function accountUser(fastify) {
     const query = `SELECT 
                     users.id, users.first_name, users.last_name, users.user_name, users.email, 
                     users.type, users.id_region, users.id_province, users.bio, users.birth_date,  
-                    users.joined_date, users.sex, users.is_blocked, is_deleted, users_roles.role_id
+                    users.joined_date, users.sex, users.is_blocked, is_deleted, roles.name as "roleName"
                   FROM users  
                   JOIN users_roles 
                   ON users_roles.user_id = users.id
+                  JOIN roles
+                  ON users_roles.role_id = roles.id
                   WHERE users.id = $1`
 
     const user = await pg.execQuery(query, [id], { findOne: true })
@@ -46,6 +48,7 @@ export default async function accountUser(fastify) {
 
     return {
       ...user,
+      role: user.roleName,
       regionId: user.idRegion,
       provinceId: user.idProvince,
     }
