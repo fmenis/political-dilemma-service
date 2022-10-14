@@ -69,7 +69,16 @@ export default async function listArticles(fastify) {
           },
         })
         .find(filters, options),
-      massive.articles.count(filters),
+      massive.articles
+        .join({
+          categories: {
+            on: { id: 'categoryId' },
+          },
+          users: {
+            on: { id: 'ownerId' },
+          },
+        })
+        .count(filters),
     ])
 
     return {
@@ -90,11 +99,7 @@ export default async function listArticles(fastify) {
     }
 
     if (query.search) {
-      filters.and = [
-        {
-          'title ILIKE': `%${query.search}%`,
-        },
-      ]
+      filters['title ILIKE'] = `%${query.search}%`
     }
 
     if (query.status) {
@@ -106,15 +111,14 @@ export default async function listArticles(fastify) {
     }
 
     if (query.author) {
-      // return {
-      //   'users.first_name ILIKE': `%${query.author}%`,
-      // }
-      // filters['users.first_name ILIKE'] = `%${query.search}%`
-      // filters.and = [{ 'users.first_name ILIKE': `%${query.search}%` }]
+      filters.or = [
+        { 'users.first_name ILIKE': `%${query.author}%` },
+        { 'users.last_name ILIKE': `%${query.author}%` },
+      ]
     }
 
     if (query.category) {
-      // filters.and = [{ 'categories.name ILIKE': `%${query.category}%` }]
+      filters['categories.name ILIKE'] = `%${query.category}%`
     }
 
     return filters
