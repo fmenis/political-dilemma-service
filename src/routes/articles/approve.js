@@ -71,19 +71,27 @@ export default async function approveArticle(fastify) {
     article.status = ARTICLE_STATES.READY
     article.publishedAt = publicationDate || null
 
+    const updatedArticle = {
+      ...article,
+      status: ARTICLE_STATES.READY,
+      publishedAt: publicationDate || null,
+      updatedAt: new Date(),
+      updatedBy: ownerId,
+    }
+
     await massive.withTransaction(async tx => {
-      await tx.articles.update(article.id, article)
+      await tx.articles.update(updatedArticle.id, updatedArticle)
 
       if (note) {
         await tx.internalNotes.save({
           ownerId,
           text: note,
-          articleId: article.id,
+          articleId: updatedArticle.id,
           category: 'articles',
         })
       }
     })
 
-    return populateArticle(article, massive)
+    return populateArticle(updatedArticle, massive)
   }
 }

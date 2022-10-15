@@ -66,21 +66,26 @@ export default async function reworkArticle(fastify) {
     const { id: ownerId } = req.user
     const { note } = req.body
 
-    article.status = ARTICLE_STATES.REWORK
+    const updatedArticle = {
+      ...article,
+      status: ARTICLE_STATES.REWORK,
+      updatedAt: new Date(),
+      updatedBy: ownerId,
+    }
 
     await massive.withTransaction(async tx => {
-      await tx.articles.update(article.id, article)
+      await tx.articles.update(updatedArticle.id, updatedArticle)
 
       if (note) {
         await tx.internalNotes.save({
           ownerId,
           text: note,
-          articleId: article.id,
+          articleId: updatedArticle.id,
           category: 'articles',
         })
       }
     })
 
-    return populateArticle(article, massive)
+    return populateArticle(updatedArticle, massive)
   }
 }

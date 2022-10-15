@@ -67,13 +67,19 @@ export default async function deleteArticle(fastify) {
 
   async function onDeleteArticle(req) {
     const { article } = req
+    const { id: ownerId } = req.user
     const { cancellationReason } = req.body
 
-    article.status = ARTICLE_STATES.DELETED
-    article.cancellationReason = cancellationReason
+    const updatedArticle = {
+      ...article,
+      status: ARTICLE_STATES.DELETED,
+      cancellationReason,
+      updatedAt: new Date(),
+      deletedBy: ownerId,
+    }
 
-    await massive.articles.update(article.id, article)
+    await massive.articles.update(updatedArticle.id, updatedArticle)
 
-    return populateArticle(article, massive)
+    return populateArticle(updatedArticle, massive)
   }
 }

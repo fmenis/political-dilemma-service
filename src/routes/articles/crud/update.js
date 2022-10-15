@@ -114,6 +114,7 @@ export default async function updateArticle(fastify) {
     const updatedArticle = await massive.withTransaction(async tx => {
       const updatedArticle = await tx.articles.update(id, {
         ...removeObjectProps(req.body, ['attachmentIds']),
+        updatedAt: new Date(),
         updatedBy: currentUser.id,
       })
 
