@@ -24,9 +24,8 @@ const host = process.env.SERVER_ADDRESS || '127.0.0.1'
 fastify.listen({ port, host }, err => {
   if (err) {
     fastify.log.fatal(err)
-    throw err
+    // eslint-disable-next-line no-process-exit
+    process.exit(1)
   }
   fastify.log.debug(`Server launched in '${process.env.NODE_ENV}' environment`)
 })
-
-//TODO

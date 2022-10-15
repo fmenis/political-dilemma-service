@@ -19,7 +19,8 @@
     "init-stack": "cd ./pd-stack && docker-compose up -d",
     "shutdown-stack": "cd ./pd-stack && docker-compose down -d",
     "rebuildDb": "./pd-stack/rebuild-db.sh",
-    "applyMigrations": "node -r dotenv/config ./src/scripts/applyMigrations.js"
+    "applyMigrations": "node -r dotenv/config ./src/scripts/applyMigrations.js",
+    "seedDb": "node -r dotenv/config ./src/scripts/seedDb/index.js"
   },
   "keywords": [
     "political-dilemma"
@@ -66,6 +67,7 @@
     "eslint-plugin-prettier": "4.2.1",
     "eslint-plugin-promise": "6.0.1",
     "husky": "7.0.4",
+    "massive": "6.10.2",
     "nodemon": "2.0.12",
     "prettier": "2.4.1",
     "tap": "15.0.9"

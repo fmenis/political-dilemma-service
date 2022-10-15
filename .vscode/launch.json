@@ -22,6 +22,18 @@
       "request": "attach",
       "skipFiles": ["<node_internals>/**"],
       "type": "node"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Seeding",
+      "skipFiles": ["<node_internals>/**"],
+      "program": "${workspaceFolder}/src/scripts/seedDb/index.js",
+      "envFile": "${workspaceFolder}/.env",
+      "outputCapture": "std",
+      "env": {
+        "NODE_ENV": "local"
+      }
     }
   ]
 }

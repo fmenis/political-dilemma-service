@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS users_roles (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID NOT NULL,
     role_id UUID NOT NULL,
-    assign_by INT NOT NULL,
+    assign_by UUID NOT NULL,
     created_at timestamp DEFAULT NOW(),
     CONSTRAINT fk_user_id FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE NO ACTION,
     CONSTRAINT fk_role_id FOREIGN KEY(role_id) REFERENCES roles(id) ON DELETE NO ACTION,
