@@ -11,6 +11,10 @@ export default async function createUser(fastify) {
   const { createError } = httpErrors
   const { saltRounds } = appConfig
 
+  //------------------------------------------------------------------
+  //############ API NOT USED (AND EXPOSED) AT THE MOMENT ############
+  //------------------------------------------------------------------
+
   fastify.route({
     method: 'POST',
     path: '',
@@ -19,6 +23,7 @@ export default async function createUser(fastify) {
       permission: 'user:create',
     },
     schema: {
+      hide: true,
       summary: 'Create user',
       description: 'Create user.',
       body: sCreateUser(),
