@@ -18,7 +18,7 @@ export default async function readRole(fastify) {
       description: 'Get role by id.',
       params: S.object()
         .additionalProperties(false)
-        .prop('id', S.integer().minimum(1))
+        .prop('id', S.string().format('uuid'))
         .description('Role id.')
         .required(),
       response: {

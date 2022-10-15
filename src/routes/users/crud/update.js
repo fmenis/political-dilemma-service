@@ -19,7 +19,7 @@ export default async function updateUser(fastify) {
       description: 'Update user by id.',
       params: S.object()
         .additionalProperties(false)
-        .prop('id', S.integer().minimum(1))
+        .prop('id', S.string().format('uuid'))
         .description('User id.')
         .required(),
       body: sUpdateUser(),

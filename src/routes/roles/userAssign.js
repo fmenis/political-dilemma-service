@@ -18,10 +18,10 @@ export default async function assignRoles(fastify) {
       description: 'Assign role to a user.',
       body: S.object()
         .additionalProperties(false)
-        .prop('userId', S.number())
+        .prop('userId', S.string().format('uuid'))
         .description('User id.')
         .required()
-        .prop('roleId', S.number().minimum(1))
+        .prop('roleId', S.string().format('uuid'))
         .description('Role id to be assigned to the user.')
         .required(),
       response: {

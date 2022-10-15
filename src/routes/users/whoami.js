@@ -16,7 +16,7 @@ export default async function userWhoami(fastify) {
       response: {
         200: S.object()
           .additionalProperties(false)
-          .prop('id', S.number())
+          .prop('id', S.string().format('uuid'))
           .description('User id.')
           .required()
           .prop('firstName', S.string().minLength(1).maxLength(50))
@@ -28,7 +28,7 @@ export default async function userWhoami(fastify) {
           .prop('email', S.string().format('email').minLength(6).maxLength(50))
           .description('User email. It must be unique.')
           .required()
-          .prop('roleId', S.number().minimum(1))
+          .prop('roleId', S.string().format('uuid'))
           .description('User role id.')
           .required()
           .prop('permissions', S.array())

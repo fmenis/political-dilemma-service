@@ -18,7 +18,7 @@ export default async function updateRole(fastify) {
       description: 'Update role by id.',
       parmas: S.object()
         .additionalProperties(false)
-        .prop('id', S.number().minimum(1))
+        .prop('id', S.string().format('uuid'))
         .description('Role id.')
         .required(),
       body: S.object()
@@ -29,7 +29,10 @@ export default async function updateRole(fastify) {
         .prop('description', S.string().minLength(3).maxLength(200))
         .description('Role description.')
         .required()
-        .prop('permissionsIds', S.array().items(S.number()).minItems(1))
+        .prop(
+          'permissionsIds',
+          S.array().items(S.string().format('uuid')).minItems(1)
+        )
         .description('Role permissions ids.'),
       response: {
         200: sRoleResponse(),

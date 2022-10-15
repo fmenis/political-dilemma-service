@@ -19,7 +19,7 @@ export default async function changePassword(fastify) {
         'Change user password. API to be used when the user is logged in.',
       params: S.object()
         .additionalProperties(false)
-        .prop('id', S.integer().minimum(1))
+        .prop('id', S.string().format('uuid'))
         .description('User id.')
         .required(),
       body: S.object()

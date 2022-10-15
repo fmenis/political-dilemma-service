@@ -14,7 +14,7 @@ export default async function listRegions(fastify) {
       description: 'Get italian provinces list.',
       query: S.object()
         .additionalProperties(false)
-        .prop('regionId', S.integer().minimum(1))
+        .prop('regionId', S.string().format('uuid'))
         .description('Region id.'),
       response: {
         200: S.object().prop(
@@ -22,7 +22,7 @@ export default async function listRegions(fastify) {
           S.array().items(
             S.object()
               .additionalProperties(false)
-              .prop('id', S.integer().minimum(1))
+              .prop('id', S.string().format('uuid'))
               .description('Province id.')
               .required()
               .prop('name', S.string().minLength(3))

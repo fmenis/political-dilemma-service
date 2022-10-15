@@ -15,7 +15,7 @@ export default async function deleteUser(fastify) {
       description: 'Delete user by id.',
       params: S.object()
         .additionalProperties(false)
-        .prop('id', S.integer().minimum(1))
+        .prop('id', S.string().format('uuid'))
         .description('User id.')
         .required(),
       response: {

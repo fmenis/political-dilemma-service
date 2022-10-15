@@ -19,7 +19,7 @@ export default async function deletePermission(fastify) {
       description: 'Delete permission by id.',
       params: S.object()
         .additionalProperties(false)
-        .prop('id', S.integer().minimum(1))
+        .prop('id', S.string().format('uuid'))
         .description('Permission id.')
         .required(),
       response: {

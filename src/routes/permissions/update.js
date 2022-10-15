@@ -21,7 +21,7 @@ export default async function updatePermission(fastify) {
       description: 'Update permission.',
       parmas: S.object()
         .additionalProperties(false)
-        .prop('id', S.number().minimum(1))
+        .prop('id', S.string().format('uuid'))
         .description('Permission id.')
         .required(),
       body: S.object()

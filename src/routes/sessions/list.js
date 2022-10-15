@@ -16,7 +16,7 @@ export default async function listSessions(fastify) {
       description: 'Retrieve sessions.',
       query: S.object()
         .additionalProperties(false)
-        .prop('userId', S.number().minimum(1))
+        .prop('userId', S.string().format('uuid'))
         .description('Retrieve user sessions.')
         .prop('active', S.boolean())
         .description('Retrieve only active sessions.'),

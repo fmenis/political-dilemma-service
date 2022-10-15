@@ -15,7 +15,7 @@ export default async function deleteRole(fastify) {
       description: 'Delete role by id.',
       params: S.object()
         .additionalProperties(false)
-        .prop('id', S.integer().minimum(1))
+        .prop('id', S.string().format('uuid'))
         .description('Role id.')
         .required(),
       response: {

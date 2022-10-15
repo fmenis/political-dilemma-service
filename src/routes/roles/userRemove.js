@@ -24,10 +24,13 @@ export default async function removeRoles(fastify) {
       description: 'Remove roles from a user.',
       body: S.object()
         .additionalProperties(false)
-        .prop('userId', S.number())
+        .prop('userId', S.string().format('uuid'))
         .description('User id.')
         .required()
-        .prop('rolesIds', S.array().items(S.number()).minItems(1))
+        .prop(
+          'rolesIds',
+          S.array().items(S.string().format('uuid')).minItems(1)
+        )
         .description('Role ids to be removed from the user.')
         .required(),
       response: {
