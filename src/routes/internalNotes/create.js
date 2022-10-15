@@ -19,8 +19,8 @@ export default async function createInternalNote(fastify) {
         .prop('text', S.string().minLength(3).maxLength(250))
         .description('Internal note text.')
         .required()
-        .prop('relatedDocumentId', S.string().format('uuid'))
-        .description('Internal note related document id.')
+        .prop('articleId', S.string().format('uuid'))
+        .description('Internal note related article.')
         .required()
         .prop(
           'category',
@@ -38,27 +38,26 @@ export default async function createInternalNote(fastify) {
   })
 
   async function onPreHandler(req) {
-    const { relatedDocumentId, category } = req.body
+    const { articleId } = req.body
 
-    const relatedDocument = await massive[category].findOne(relatedDocumentId, {
+    const article = await massive.articles.findOne(articleId, {
       fields: ['id'],
     })
-    if (!relatedDocument) {
-      throw httpErrors.notFound(
-        `Related document '${relatedDocumentId}' not found`
-      )
+
+    if (!article) {
+      throw httpErrors.notFound(`Related article '${articleId}' not found`)
     }
   }
 
   async function onCreateInternalNote(req, reply) {
-    const { relatedDocumentId, category, text } = req.body
+    const { articleId, category, text } = req.body
     const { id: ownerId } = req.user
 
     const [internalNote, owner] = await Promise.all([
       massive.internalNotes.save({
         ownerId,
         text,
-        relatedDocumentId,
+        articleId,
         category,
       }),
       massive.users.findOne(ownerId, {

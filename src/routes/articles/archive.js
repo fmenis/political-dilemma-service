@@ -85,7 +85,7 @@ export default async function archiveArticle(fastify) {
         await tx.internalNotes.save({
           ownerId,
           text: note,
-          relatedDocumentId: article.id,
+          articleId: article.id,
           category: 'articles',
         })
       }

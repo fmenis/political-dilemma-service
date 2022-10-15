@@ -149,9 +149,8 @@ export default async function listArticles(fastify) {
   }
 
   async function populateArticles(articles) {
-    //TODO cancellare relatedDocumentId da internalNote e metterci articleId
     const internalNotes = await massive.internalNotes.find({
-      relatedDocumentId: articles.map(item => item.id),
+      articleId: articles.map(item => item.id),
     })
 
     return articles.map(article => {
@@ -161,7 +160,7 @@ export default async function listArticles(fastify) {
         ...article,
         author: `${author.first_name} ${author.last_name}`,
         hasNotifications: internalNotes.some(
-          item => item.relatedDocumentId === article.id
+          item => item.articleId === article.id
         ),
         category: categoryName,
       }

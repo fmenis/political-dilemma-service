@@ -78,7 +78,7 @@ export default async function approveArticle(fastify) {
         await tx.internalNotes.save({
           ownerId,
           text: note,
-          relatedDocumentId: article.id,
+          articleId: article.id,
           category: 'articles',
         })
       }

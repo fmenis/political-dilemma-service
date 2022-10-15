@@ -9,7 +9,9 @@ CREATE TABLE IF NOT EXISTS "articles" (
     "id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     "title" VARCHAR(200) UNIQUE NOT NULL,
     "text" TEXT,
-    "status" VARCHAR(50) NOT NULL CHECK (status in ('DRAFT', 'PUBLISHED')),
+    "description" TEXT,
+    "cancellationReason" TEXT,
+    "status" VARCHAR(50) NOT NULL CHECK (status in ('DRAFT', 'IN_REVIEW', 'READY', 'PUBLISHED', 'REWORK', 'ARCHIVED', 'DELETED')),
     "categoryId" UUID NOT NULL,
     "ownerId" UUID NOT NULL,
     "createdAt" timestamp DEFAULT NOW(),
@@ -43,10 +45,11 @@ CREATE TABLE IF NOT EXISTS "internalNotes" (
     "id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     "ownerId" UUID,
     "text" text NOT NULL,
-    "relatedDocumentId" UUID NOT NULL,
+    "articleId" UUID,
     "category" VARCHAR(50) NOT NULL CHECK ("category" in ('articles', 'activities')),
     "createdAt" timestamp DEFAULT NOW(),
-    CONSTRAINT fk_owner_id FOREIGN KEY("ownerId") REFERENCES users("id") ON DELETE SET NULL
+    CONSTRAINT fk_owner_id FOREIGN KEY("ownerId") REFERENCES users("id") ON DELETE SET NULL,
+    CONSTRAINT fk_article_id FOREIGN KEY("articleId") REFERENCES articles(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS "apiCounts" (

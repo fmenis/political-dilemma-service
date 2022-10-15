@@ -16,16 +16,8 @@ export default async function listInternalNotes(fastify) {
       description: `List internal notes`,
       query: S.object()
         .additionalProperties(false)
-        .prop('relatedDocumentId', S.string().format('uuid'))
-        .description('Filter related document id.')
-        .prop(
-          'category',
-          S.string().minLength(3).maxLength(50).enum(['articles', 'activities'])
-        ),
-      //TODO
-      // .dependentRequired({
-      //   relatedDocumentId: ['category'],
-      // }),
+        .prop('articleId', S.string().format('uuid'))
+        .description('Filter by article id.'),
       response: {
         200: S.object()
           .additionalProperties(false)
@@ -39,27 +31,21 @@ export default async function listInternalNotes(fastify) {
   })
 
   async function onPreHandler(req) {
-    const { relatedDocumentId, category } = req.query
+    const { articleId } = req.query
 
-    if (relatedDocumentId && category) {
-      const relatedDocument = await massive[category].findOne(
-        relatedDocumentId,
-        {
-          fields: ['id'],
-        }
-      )
-      if (!relatedDocument) {
-        throw httpErrors.notFound(
-          `Related document '${relatedDocumentId}' not found`
-        )
-      }
+    const article = await massive.articles.findOne(articleId, {
+      fields: ['id'],
+    })
+
+    if (!article) {
+      throw httpErrors.notFound(`Related article '${articleId}' not found`)
     }
   }
 
   async function onListInternalNotes(req) {
-    const { relatedDocumentId } = req.query
+    const { articleId } = req.query
 
-    const criteria = relatedDocumentId ? { relatedDocumentId } : {}
+    const criteria = articleId ? { articleId } : {}
 
     const internalNotes = await massive.internalNotes
       .join({
