@@ -50,7 +50,7 @@ async function applyMigrations() {
     if (error.appliedMigrations) {
       console.error(error.appliedMigrations)
     }
-    console.error(error)
+    throw new Error(error)
   }
 
   await client.end()
