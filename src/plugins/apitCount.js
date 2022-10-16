@@ -19,6 +19,7 @@ async function apiCount(fastify) {
     await massive.apiCounts.save({
       api,
       responseTime: parseFloat(reply.getResponseTime().toFixed(3)),
+      httpMethod: req.method,
       statusCode: reply.statusCode,
     })
   }
