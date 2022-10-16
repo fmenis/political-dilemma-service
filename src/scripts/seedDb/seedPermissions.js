@@ -3,9 +3,9 @@ export async function seedPermissions(client) {
     // role
     {
       resource: 'role',
-      action: 'Creazione ruolo',
+      action: 'create',
       ownership: null,
-      description: 'TODO',
+      description: 'Creazione ruolo',
     },
     {
       resource: 'role',

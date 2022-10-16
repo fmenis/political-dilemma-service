@@ -3,8 +3,7 @@ version: '3.5'
 services:
   postgres:
     container_name: postgres-pd
-    # TODO in staging c'è la versione 14.5
-    image: postgres:12.4
+    image: postgres:14.5
     restart: always
     ports:
       - 6432:5432

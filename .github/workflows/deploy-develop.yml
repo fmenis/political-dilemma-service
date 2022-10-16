@@ -8,7 +8,7 @@ on:
 
 jobs:
   deploy-dev:
-    runs-on: [self-hosted, linux, x64, dilemma-dev]
+    runs-on: [self-hosted, linux, x64, dev-dilemma]
 
     strategy:
       matrix:
