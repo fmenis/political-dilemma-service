@@ -8,7 +8,7 @@ on:
 
 jobs:
   deploy-staging:
-    runs-on: [self-hosted, linux, x64, dilemma-staging]
+    runs-on: [self-hosted, linux, x64, staging-dilemma]
 
     strategy:
       matrix:
