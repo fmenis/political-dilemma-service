@@ -15,7 +15,7 @@ export default async function uploadFile(fastify) {
       fields: 0,
       files: appConfig.upload.maxUploadsForRequeset,
     },
-    // attachFieldsToBody: 'keyValues', //TODO
+    // attachFieldsToBody: 'keyValues', //TODO test
   })
 
   const { massive, config, httpErrors } = fastify
