@@ -5,7 +5,7 @@ import { sUpdateArticle, sArticle } from '../lib/schema.js'
 import { findArrayDuplicates, removeObjectProps } from '../../../utils/main.js'
 import { populateArticle } from '../lib/common.js'
 import { restrictDataToOwner } from '../../lib/common.js'
-// import { ARTICLE_STATES } from '../lib/enums.js'
+import { ARTICLE_STATES } from '../lib/enums.js'
 
 export default async function updateArticle(fastify) {
   const { massive, httpErrors } = fastify
@@ -48,6 +48,19 @@ export default async function updateArticle(fastify) {
     if (!article) {
       throw createError(404, 'Invalid input', {
         validation: [{ message: `Article '${id}' not found` }],
+      })
+    }
+
+    if (
+      article.status === ARTICLE_STATES.ARCHIVED ||
+      article.status === ARTICLE_STATES.DELETED
+    ) {
+      throw createError(409, 'Conflict', {
+        validation: [
+          {
+            message: `Invalid action on article '${id}'. Required status: not ${ARTICLE_STATES.ARCHIVED} or '${ARTICLE_STATES.DELETED}'`,
+          },
+        ],
       })
     }
 

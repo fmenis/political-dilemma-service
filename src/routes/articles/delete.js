@@ -1,6 +1,6 @@
 import S from 'fluent-json-schema'
 
-import { ARTICLE_STATES } from './lib/enums.js'
+import { ARTICLE_STATES as status } from './lib/enums.js'
 import { sArticle } from './lib/schema.js'
 import { populateArticle } from './lib/common.js'
 
@@ -50,13 +50,14 @@ export default async function deleteArticle(fastify) {
     }
 
     if (
-      article.status === ARTICLE_STATES.DRAFT ||
-      article.status === ARTICLE_STATES.DELETED
+      article.status === status.DRAFT ||
+      article.status === status.ARCHIVED ||
+      article.status === status.DELETED
     ) {
       throw createError(409, 'Conflict', {
         validation: [
           {
-            message: `Invalid action on article '${id}'. Required status: not '${ARTICLE_STATES.DRAFT}' or '${ARTICLE_STATES.DELETED}'`,
+            message: `Invalid action on article '${id}'. Required status: not '${status.DRAFT}', ${status.ARCHIVED} or '${status.DELETED}'`,
           },
         ],
       })
@@ -72,7 +73,7 @@ export default async function deleteArticle(fastify) {
 
     const updatedArticle = {
       ...article,
-      status: ARTICLE_STATES.DELETED,
+      status: status.DELETED,
       cancellationReason,
       updatedAt: new Date(),
       deletedBy: ownerId,
