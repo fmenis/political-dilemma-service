@@ -11,6 +11,7 @@ import redisPlugin from './plugins/redis.js'
 import loadSchemasPlugin from './plugins/loadSchemas.js'
 import mailerPlugin from './plugins/mailer.js'
 import { sEnv } from './utils/env.schema.js'
+import { ENV } from './common/enums.js'
 
 import apiPlugin from './routes/index.js'
 
@@ -50,12 +51,12 @@ export default async function app(fastify, opts) {
 
   fastify.register(sentry, {
     dsn: process.env.SENTRY_DSN,
-    environment: 'production',
+    environment: process.env.NODE_ENV,
     release: '1.0.0',
     onErrorFactory: () => {
       return function (error, req, reply) {
         reply.send(error)
-        if (reply.statusCode === 500) {
+        if (process.env.NODE_ENV !== ENV.LOCAL && reply.statusCode === 500) {
           this.Sentry.captureException(error)
         }
       }
