@@ -64,19 +64,8 @@ export default async function updateArticle(fastify) {
       })
     }
 
-    //TODO capire se ha senso
-    // if (article.status === ARTICLE_STATES.DRAFT && userId !== article.ownerId) {
-    //   const message = `Only the owner can update an article in status '${ARTICLE_STATES.DRAFT}'`
-    //   throw createError(409, message, {
-    //     internalCode: 'INVALID_UPDATE',
-    //     details: {
-    //       articleId: article.id,
-    //     },
-    //   })
-    // }
-
     if (restrictDataToOwner(apiPermission) && article.ownerId !== userId) {
-      throw httpErrors.forbidden('Only the owner can access to this article')
+      throw httpErrors.forbidden('Only the owner (and admin) can access to this article')
     }
 
     const duplicatedAttachmentIds = findArrayDuplicates(attachmentIds)

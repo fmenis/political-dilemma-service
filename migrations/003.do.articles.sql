@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS "articles" (
     "description" TEXT,
     "cancellationReason" TEXT,
     "status" VARCHAR(50) NOT NULL CHECK (status in ('DRAFT', 'IN_REVIEW', 'READY', 'PUBLISHED', 'REWORK', 'ARCHIVED', 'DELETED')),
+    "tags" TEXT [],
     "categoryId" UUID NOT NULL,
     "createdAt" timestamp DEFAULT NOW(),
     "updatedAt" timestamp DEFAULT NOW(),

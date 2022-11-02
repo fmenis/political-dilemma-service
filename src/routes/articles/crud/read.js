@@ -45,7 +45,9 @@ export default async function readArticle(fastify) {
     }
 
     if (restrictDataToOwner(apiPermission) && article.ownerId !== userId) {
-      throw httpErrors.forbidden('Only the owner can access to this article')
+      throw httpErrors.forbidden(
+        'Only the owner (and admin) can access to this article'
+      )
     }
 
     req.article = article
