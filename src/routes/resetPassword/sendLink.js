@@ -4,7 +4,7 @@ import moment from 'moment'
 import { generateRandomToken, deleteUserResetLinks } from './lib/utils.js'
 
 export default async function sendResetPasswordLink(fastify) {
-  const { pg, config, mailer } = fastify
+  const { pg, config, resetLinkQueue: queue } = fastify
 
   fastify.route({
     method: 'POST',
@@ -83,7 +83,7 @@ export default async function sendResetPasswordLink(fastify) {
       const baseUrl = req.headers.origin || 'http://127.0.0.1:4200'
       const resetLink = `${baseUrl}/reset-password?token=${token}`
 
-      await sendEmailMock(email, resetLink)
+      await queue.addJob({ email, resetLink })
 
       await pg.commitTransaction(client)
     } catch (error) {
@@ -100,21 +100,5 @@ export default async function sendResetPasswordLink(fastify) {
       [email],
       { findOne: true }
     )
-  }
-
-  async function sendEmailMock(email, resetLink) {
-    const html = `<div>
-        Clicca il seguente <a href="${resetLink}">link</a>
-        per reimpostare la password.
-      </div>`
-
-    const params = {
-      from: config.SENDER_EMAIL,
-      to: email,
-      subject: 'Reset password',
-      html,
-    }
-
-    await mailer.sendMail(params)
   }
 }
