@@ -55,7 +55,7 @@ export function sUpdateArticle() {
     .description('Article tags.')
     .prop(
       'attachmentIds',
-      S.array().items(S.string().format('uuid')).minItems(1).maxItems(50)
+      S.array().items(S.string().format('uuid')).minItems(0).maxItems(50)
     )
     .description('Article attachments ids.')
 }
