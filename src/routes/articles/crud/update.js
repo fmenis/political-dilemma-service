@@ -65,7 +65,9 @@ export default async function updateArticle(fastify) {
     }
 
     if (restrictDataToOwner(apiPermission) && article.ownerId !== userId) {
-      throw httpErrors.forbidden('Only the owner (and admin) can access to this article')
+      throw httpErrors.forbidden(
+        'Only the owner (and admin) can access to this article'
+      )
     }
 
     const duplicatedAttachmentIds = findArrayDuplicates(attachmentIds)
@@ -136,6 +138,10 @@ export default async function updateArticle(fastify) {
             tx.files.save({ id: attachmentId, articleId: updatedArticle.id })
           })
         )
+      }
+
+      if (!attachmentIds.length) {
+        await tx.files.destroy({ articleId: updatedArticle.id })
       }
 
       return updatedArticle
