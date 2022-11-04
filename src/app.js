@@ -10,6 +10,7 @@ import pgPlugin from './plugins/postgres.js'
 import redisPlugin from './plugins/redis.js'
 import loadSchemasPlugin from './plugins/loadSchemas.js'
 import mailerPlugin from './plugins/mailer.js'
+
 import { sEnv } from './utils/env.schema.js'
 import { ENV } from './common/enums.js'
 

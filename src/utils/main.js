@@ -38,3 +38,23 @@ export function calculateBaseUrl(opts = {}) {
 
   return `https://${process.env.API_DOMAIN}`
 }
+
+/**
+ * Generate readable route action from reply context
+ */
+export function generateRouteAction(reply) {
+  return reply.context.schema.summary
+    .split(' ')
+    .reduce((acc, item) => {
+      acc.push(item.toLowerCase())
+      return acc
+    }, [])
+    .join('-')
+}
+
+/**
+ * Get a valid UUID (v4) from a string
+ */
+export function getUUIDFromUrl(str) {
+  return str.match(/\w{8}-\w{4}-\w{4}-\w{4}-\w{12}/i)[0]
+}

@@ -4,7 +4,7 @@ async function apiCount(fastify) {
   async function countApiUsage(req, reply) {
     const { massive, config } = this
 
-    if (!config.WRITE_API_COUNTS) {
+    if (!config.ENABLE_API_COUNTS) {
       return
     }
 
