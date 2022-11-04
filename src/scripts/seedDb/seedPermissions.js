@@ -185,7 +185,7 @@ export async function seedPermissions(client) {
     },
     {
       resource: 'article',
-      action: 'delete-action',
+      action: 'remove',
       ownership: 'any',
       description: 'Cancellazione logica articolo (tutti)',
     },

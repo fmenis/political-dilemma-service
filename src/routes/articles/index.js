@@ -12,7 +12,7 @@ import approveActionRoute from './approve.js'
 import reworkActionRoute from './rework.js'
 import publishActionRoute from './publish.js'
 import archiveActionRoute from './archive.js'
-import deleteActionRoute from './delete.js'
+import removeActionRoute from './remove.js'
 
 export default async function index(fastify) {
   fastify.addHook('onRoute', options => {
@@ -38,5 +38,5 @@ export default async function index(fastify) {
   fastify.register(reworkActionRoute, { prefix })
   fastify.register(publishActionRoute, { prefix })
   fastify.register(archiveActionRoute, { prefix })
-  fastify.register(deleteActionRoute, { prefix })
+  fastify.register(removeActionRoute, { prefix })
 }
