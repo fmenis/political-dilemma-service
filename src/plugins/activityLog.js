@@ -16,7 +16,8 @@ async function activityLog(fastify) {
       !config.ENABLE_LOG_ACTIVITY ||
       !user ||
       !writeCalls.includes(req.method) ||
-      notInterestingActions.includes(action)
+      notInterestingActions.includes(action) ||
+      reply.statusCode > 300
     ) {
       return
     }
