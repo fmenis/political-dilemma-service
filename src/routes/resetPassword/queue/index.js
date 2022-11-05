@@ -6,11 +6,15 @@ import { sendResetEmail } from './sendResetLinkEmail.js'
 async function resetLinkQueue(fastify) {
   const { log, mailer, config } = fastify
 
-  const queue = new Bull('resetLinks')
+  const queue = new Bull('resetLinks', { prefix: 'jobQueue' })
   log.debug(`Queue '${queue.name}' initialized`)
 
   async function addJob(data) {
-    const job = await queue.add('resetLink', data)
+    const job = await queue.add('resetLink', data, {
+      attempts: 5,
+      backoff: { type: 'exponential', delay: 500 },
+    })
+
     log.debug(
       `Job '${job.name}' (id: ${job.id}) added to queue '${queue.name}'`
     )
@@ -19,12 +23,6 @@ async function resetLinkQueue(fastify) {
   queue.process('resetLink', async job => {
     await sendResetEmail({ ...job.data, from: config.SENDER_EMAIL }, mailer)
   })
-
-  //TODO https://github.com/OptimalBits/bull#separate-processes
-  // queue.process(
-  //   'resetLink',
-  //   './src/routes/resetPassword/queue/sendResetLinkEmail.js'
-  // )
 
   queue.on('completed', job => {
     log.debug(`Job '${job.name}' (id: ${job.id}) has been completed`)
