@@ -65,6 +65,7 @@ export default async function createInternalNote(fastify) {
       }),
     ])
 
+    reply.resourceId = internalNote.id
     reply.code(201)
 
     return {

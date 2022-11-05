@@ -123,6 +123,7 @@ export default async function createArticle(fastify) {
 
     const owner = await massive.users.findOne(user.id)
 
+    reply.resourceId = newArticle.id
     reply.code(201)
 
     return {

@@ -7,23 +7,28 @@ async function activityLog(fastify) {
     const { massive, config } = this
     const { user } = req
 
+    const action = generateRouteAction(reply)
+
+    const writeCalls = ['POST', 'PUT', 'PATCH', 'DELETE']
+    const notInterestingActions = ['login', 'logout', 'upload-files']
+
     if (
       !config.ENABLE_LOG_ACTIVITY ||
       !user ||
-      !['POST', 'PUT', 'PATCH', 'DELETE'].includes(req.method)
+      !writeCalls.includes(req.method) ||
+      notInterestingActions.includes(action)
     ) {
       return
     }
 
     await massive.activityLog.save({
-      action: generateRouteAction(reply),
-      resourceId: getUUIDFromUrl(req.url),
+      action,
+      resourceId: getUUIDFromUrl(req.url) || reply.resourceId || null,
       httpMethod: req.method,
-      url: req.url,
       statusCode: reply.statusCode,
       userId: user.id,
       userEmail: user.email,
-      payload: req.body || {},
+      payload: req.body,
     })
   }
 

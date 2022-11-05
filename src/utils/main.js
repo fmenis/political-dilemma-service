@@ -56,5 +56,8 @@ export function generateRouteAction(reply) {
  * Get a valid UUID (v4) from a string
  */
 export function getUUIDFromUrl(str) {
-  return str.match(/\w{8}-\w{4}-\w{4}-\w{4}-\w{12}/i)[0]
+  const match = str.match(/\w{8}-\w{4}-\w{4}-\w{4}-\w{12}/i)
+  if (match) {
+    return match[0]
+  }
 }
