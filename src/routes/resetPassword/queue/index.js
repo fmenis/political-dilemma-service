@@ -20,8 +20,8 @@ async function resetLinkQueue(fastify) {
     )
   }
 
-  queue.process('resetLink', async job => {
-    await sendResetEmail({ ...job.data, from: config.SENDER_EMAIL }, mailer)
+  queue.process('resetLink', job => {
+    return sendResetEmail({ ...job.data, from: config.SENDER_EMAIL }, mailer)
   })
 
   queue.on('completed', job => {
