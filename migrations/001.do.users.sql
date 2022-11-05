@@ -28,13 +28,9 @@ CREATE TABLE IF NOT EXISTS users (
     is_deleted BOOLEAN NOT NULL DEFAULT false,
     created_at timestamp DEFAULT NOW(),
     updated_at timestamp DEFAULT NOW(),
-    updated_by UUID,
-    deleted_by UUID,
     last_access timestamp,
     id_region UUID NOT NULL,
     id_province UUID NOT NULL,
-    CONSTRAINT fk_updated_by FOREIGN KEY(updated_by) REFERENCES users(id) ON DELETE NO ACTION,
-    CONSTRAINT fk_deleted_by FOREIGN KEY(deleted_by) REFERENCES users(id) ON DELETE NO ACTION,
     CONSTRAINT fk_id_region FOREIGN KEY(id_region) REFERENCES regions(id) ON DELETE NO ACTION,
     CONSTRAINT fk_id_province FOREIGN KEY(id_province) REFERENCES provinces(id) ON DELETE NO ACTION
 );

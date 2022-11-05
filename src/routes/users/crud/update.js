@@ -102,7 +102,6 @@ export default async function updateUser(fastify) {
 
   async function onUpdateUser(req) {
     const { id } = req.params
-    const { id: ownerId } = req.user
 
     const {
       firstName,
@@ -119,8 +118,8 @@ export default async function updateUser(fastify) {
     const query =
       'UPDATE users SET ' +
       'first_name=$2, last_name=$3, user_name=$4, email=$5, bio=$6, ' +
-      'birth_date=$7, sex=$8, updated_at=$9, updated_by=$10, ' +
-      'id_region=$11, id_province=$12 ' +
+      'birth_date=$7, sex=$8, updated_at=$9 ' +
+      'id_region=$10, id_province=$11 ' +
       'WHERE id=$1 ' +
       'RETURNING id, first_name, last_name, user_name, email, bio, ' +
       'birth_date, joined_date, sex, is_blocked, is_deleted, ' +
@@ -142,7 +141,6 @@ export default async function updateUser(fastify) {
       birthDate,
       sex,
       new Date(),
-      ownerId,
       regionId,
       provinceId,
     ]

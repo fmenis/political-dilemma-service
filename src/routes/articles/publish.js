@@ -71,7 +71,6 @@ export default async function publishArticle(fastify) {
       status: ARTICLE_STATES.PUBLISHED,
       publishedAt: new Date(),
       updatedAt: new Date(),
-      updatedBy: ownerId,
     }
 
     await massive.withTransaction(async tx => {

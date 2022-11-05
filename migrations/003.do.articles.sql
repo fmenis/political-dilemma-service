@@ -17,14 +17,10 @@ CREATE TABLE IF NOT EXISTS "articles" (
     "createdAt" timestamp DEFAULT NOW(),
     "updatedAt" timestamp DEFAULT NOW(),
     "ownerId" UUID NOT NULL,
-    "updatedBy" UUID,
     "publishedAt" timestamp,
     "deletedAt" timestamp,
-    "deletedBy" UUID,
     CONSTRAINT fk_owner_id FOREIGN KEY("ownerId") REFERENCES users("id") ON DELETE NO ACTION,
-    CONSTRAINT fk_category_id FOREIGN KEY("categoryId") REFERENCES categories("id") ON DELETE NO ACTION,
-    CONSTRAINT fk_updatedBy FOREIGN KEY("updatedBy") REFERENCES users("id") ON DELETE NO ACTION,
-    CONSTRAINT fk_deletedBy FOREIGN KEY("deletedBy") REFERENCES users("id") ON DELETE NO ACTION
+    CONSTRAINT fk_category_id FOREIGN KEY("categoryId") REFERENCES categories("id") ON DELETE NO ACTION
 );
 
 CREATE TABLE IF NOT EXISTS files (

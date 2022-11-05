@@ -68,7 +68,6 @@ export default async function removeArticle(fastify) {
 
   async function onRemoveArticle(req) {
     const { article } = req
-    const { id: ownerId } = req.user
     const { cancellationReason } = req.body
 
     const updatedArticle = {
@@ -76,7 +75,6 @@ export default async function removeArticle(fastify) {
       status: status.DELETED,
       cancellationReason,
       updatedAt: new Date(),
-      deletedBy: ownerId,
     }
 
     await massive.articles.update(updatedArticle.id, updatedArticle)

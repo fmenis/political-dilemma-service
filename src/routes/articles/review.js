@@ -93,7 +93,6 @@ export default async function reviewArticle(fastify) {
       ...article,
       status: ARTICLE_STATES.IN_REVIEW,
       updatedAt: new Date(),
-      updatedBy: ownerId,
     }
 
     await massive.withTransaction(async tx => {
