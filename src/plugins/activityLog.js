@@ -15,7 +15,7 @@ async function activityLog(fastify) {
     if (
       !config.ENABLE_LOG_ACTIVITY ||
       !user ||
-      !user.type !== 'backoffice' ||
+      user.type !== 'backoffice' ||
       !writeCalls.includes(req.method) ||
       notInterestingActions.includes(action) ||
       reply.statusCode > 300
