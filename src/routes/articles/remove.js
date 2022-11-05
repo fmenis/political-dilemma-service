@@ -4,20 +4,20 @@ import { ARTICLE_STATES as status } from './lib/enums.js'
 import { sArticle } from './lib/schema.js'
 import { populateArticle } from './lib/common.js'
 
-export default async function deleteArticle(fastify) {
+export default async function removeArticle(fastify) {
   const { massive, httpErrors } = fastify
   const { createError } = httpErrors
-  const permission = 'article:delete-action'
+  const permission = 'article:remove'
 
   fastify.route({
     method: 'POST',
-    path: '/:id/delete',
+    path: '/:id/remove',
     config: {
       public: false,
       permission,
     },
     schema: {
-      summary: 'Delete article',
+      summary: 'Delete article (logically)',
       description: `Permission required: ${permission}`,
       params: S.object()
         .additionalProperties(false)
@@ -27,7 +27,7 @@ export default async function deleteArticle(fastify) {
       body: S.object()
         .additionalProperties(false)
         .prop('cancellationReason', S.string().minLength(3).maxLength(250))
-        .description('Article deletion reason.')
+        .description('Article cancellation reason.')
         .required(),
       response: {
         200: sArticle(),
@@ -36,7 +36,7 @@ export default async function deleteArticle(fastify) {
       },
     },
     preHandler: onPreHandler,
-    handler: onDeleteArticle,
+    handler: onRemoveArticle,
   })
 
   async function onPreHandler(req) {
@@ -66,9 +66,8 @@ export default async function deleteArticle(fastify) {
     req.article = article
   }
 
-  async function onDeleteArticle(req) {
+  async function onRemoveArticle(req) {
     const { article } = req
-    const { id: ownerId } = req.user
     const { cancellationReason } = req.body
 
     const updatedArticle = {
@@ -76,7 +75,6 @@ export default async function deleteArticle(fastify) {
       status: status.DELETED,
       cancellationReason,
       updatedAt: new Date(),
-      deletedBy: ownerId,
     }
 
     await massive.articles.update(updatedArticle.id, updatedArticle)

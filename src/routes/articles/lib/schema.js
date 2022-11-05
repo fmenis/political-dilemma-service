@@ -55,7 +55,7 @@ export function sUpdateArticle() {
     .description('Article tags.')
     .prop(
       'attachmentIds',
-      S.array().items(S.string().format('uuid')).minItems(1).maxItems(50)
+      S.array().items(S.string().format('uuid')).minItems(0).maxItems(50)
     )
     .description('Article attachments ids.')
 }
@@ -85,9 +85,6 @@ export function sArticle() {
     .description('Article publication date.')
     .required()
     .prop('updatedAt', S.string())
-    .description('Article last change date.')
-    .required()
-    .prop('updatedBy', S.string())
     .description('Article last change date.')
     .required()
     .prop('categoryId', S.string().format('uuid'))

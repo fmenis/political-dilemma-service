@@ -42,8 +42,9 @@ jobs:
           echo SESSION_TTL=86400 >> .env
           echo COOKIE_TTL=15552000 >> .env
           echo RESET_LINK_TTL=300 >> .env
-          echo LOG_REQ_BODY=true >> .env
-          echo WRITE_API_COUNTS=true >> .env
+          echo ENABLE_BODY_LOG=true >> .env
+          echo ENABLE_API_COUNTS=true >> .env
+          echo ENABLE_LOG_ACTIVITY=true >> .env
           echo AWS_REGION=eu-west-3 >> .env
           echo AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} >> .env
           echo AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} >> .env

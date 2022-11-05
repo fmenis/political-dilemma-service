@@ -43,8 +43,9 @@
 | SESSION_TTL               |  1800 (30 minutes)  | Session TTL (in seconds)                |
 | COOKIE_TTL                | 15552000 (6 months) | Cookie max age (in seconds)             |
 | RESET_LINK_TTL            |   7200 (2 hours)    | Reset link TTL (in seconds)             |
-| LOG_REQ_BODY              |        false        | Enable request body logging             |
-| WRITE_API_COUNTS          |        false        | Enable api counts persistence           |
+| ENABLE_BODY_LOG           |        false        | Enable request body logging             |
+| ENABLE_API_COUNTS         |        false        | Enable api counts persistence           |
+| ENABLE_LOG_ACTIVITY       |        false        | Enable log activity persistence         |
 | **AWS_REGION**            |                     | AWS REGION                              |
 | **AWS_ACCESS_KEY_ID**     |                     | AWS access key id                       |
 | **AWS_SECRET_ACCESS_KEY** |                     | AWS access key key                      |

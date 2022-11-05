@@ -3,6 +3,7 @@ import S from 'fluent-json-schema'
 import authentication from '../plugins/authentication.js'
 import authorization from '../plugins/authorization.js'
 import apiCount from '../plugins/apitCount.js'
+import activityLogPlugin from '../plugins/activityLog.js'
 
 import authRoutes from './auth/index.js'
 import userRoutes from './users/index.js'
@@ -19,6 +20,7 @@ export default async function index(fastify) {
   fastify.register(authentication)
   fastify.register(authorization)
   fastify.register(apiCount)
+  fastify.register(activityLogPlugin)
 
   /**
    * Empty object that can be utilized to pass object between hook
@@ -43,7 +45,7 @@ export default async function index(fastify) {
       )
     }
 
-    if (fastify.config.LOG_REQ_BODY && body) {
+    if (fastify.config.ENABLE_BODY_LOG && body) {
       log.debug(body, 'parsed body')
     }
   })

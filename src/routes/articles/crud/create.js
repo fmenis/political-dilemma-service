@@ -106,7 +106,6 @@ export default async function createArticle(fastify) {
       status: ARTICLE_STATES.DRAFT,
       ownerId: user.id,
       tags,
-      updatedBy: user.id,
     }
 
     const newArticle = await massive.withTransaction(async tx => {
@@ -123,6 +122,7 @@ export default async function createArticle(fastify) {
 
     const owner = await massive.users.findOne(user.id)
 
+    reply.resourceId = newArticle.id
     reply.code(201)
 
     return {
@@ -135,7 +135,6 @@ export default async function createArticle(fastify) {
       createdAt: newArticle.createdAt,
       publishedAt: newArticle.publishedAt,
       updatedAt: newArticle.updatedAt,
-      updatedBy: newArticle.updatedBy,
       canBeDeleted: newArticle.status === ARTICLE_STATES.DRAFT,
       tags: newArticle.tags || undefined,
       description: newArticle.description || undefined,

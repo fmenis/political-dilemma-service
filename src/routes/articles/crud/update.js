@@ -65,7 +65,9 @@ export default async function updateArticle(fastify) {
     }
 
     if (restrictDataToOwner(apiPermission) && article.ownerId !== userId) {
-      throw httpErrors.forbidden('Only the owner (and admin) can access to this article')
+      throw httpErrors.forbidden(
+        'Only the owner (and admin) can access to this article'
+      )
     }
 
     const duplicatedAttachmentIds = findArrayDuplicates(attachmentIds)
@@ -111,13 +113,11 @@ export default async function updateArticle(fastify) {
   async function onUpdateArticle(req) {
     const { id } = req.params
     const { attachmentIds = [] } = req.body
-    const { user: currentUser } = req
 
     const updatedArticle = await massive.withTransaction(async tx => {
       const updatedArticle = await tx.articles.update(id, {
         ...removeObjectProps(req.body, ['attachmentIds']),
         updatedAt: new Date(),
-        updatedBy: currentUser.id,
       })
 
       if (attachmentIds.length) {
@@ -136,6 +136,10 @@ export default async function updateArticle(fastify) {
             tx.files.save({ id: attachmentId, articleId: updatedArticle.id })
           })
         )
+      }
+
+      if (!attachmentIds.length) {
+        await tx.files.destroy({ articleId: updatedArticle.id })
       }
 
       return updatedArticle

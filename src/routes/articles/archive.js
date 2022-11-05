@@ -79,8 +79,7 @@ export default async function archiveArticle(fastify) {
     const updatedArticle = {
       ...article,
       status: ARTICLE_STATES.ARCHIVED,
-      updatedAt: new Date(),
-      updatedBy: ownerId,
+      updatedAt: new Date()
     }
 
     await massive.withTransaction(async tx => {

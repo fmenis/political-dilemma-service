@@ -17,14 +17,10 @@ CREATE TABLE IF NOT EXISTS "articles" (
     "createdAt" timestamp DEFAULT NOW(),
     "updatedAt" timestamp DEFAULT NOW(),
     "ownerId" UUID NOT NULL,
-    "updatedBy" UUID,
     "publishedAt" timestamp,
     "deletedAt" timestamp,
-    "deletedBy" UUID,
     CONSTRAINT fk_owner_id FOREIGN KEY("ownerId") REFERENCES users("id") ON DELETE NO ACTION,
-    CONSTRAINT fk_category_id FOREIGN KEY("categoryId") REFERENCES categories("id") ON DELETE NO ACTION,
-    CONSTRAINT fk_updatedBy FOREIGN KEY("updatedBy") REFERENCES users("id") ON DELETE NO ACTION,
-    CONSTRAINT fk_deletedBy FOREIGN KEY("deletedBy") REFERENCES users("id") ON DELETE NO ACTION
+    CONSTRAINT fk_category_id FOREIGN KEY("categoryId") REFERENCES categories("id") ON DELETE NO ACTION
 );
 
 CREATE TABLE IF NOT EXISTS files (
@@ -61,4 +57,17 @@ CREATE TABLE IF NOT EXISTS "apiCounts" (
     "httpMethod" VARCHAR(20) NOT NULL CHECK ("httpMethod" in ('GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS')),
     "statusCode" INT NOT NULL,
     "createdAt" timestamp DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS "activityLog" (
+    "id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    "action" VARCHAR(50) NOT NULL,
+    "resourceId" UUID,
+    "httpMethod" VARCHAR(20) NOT NULL CHECK ("httpMethod" in ('GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS')),
+    "statusCode" INT NOT NULL,
+    "userId" UUID,
+    "userEmail" VARCHAR(50) NOT NULL,
+    "createdAt" timestamp DEFAULT NOW(),
+    "payload" json,
+    CONSTRAINT fk_user_id FOREIGN KEY("userId") REFERENCES users("id") ON DELETE SET NULL
 );

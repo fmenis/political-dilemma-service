@@ -47,10 +47,9 @@ export default async function deleteUser(fastify) {
 
   async function onDeleteUser(req, reply) {
     const { id } = req.params
-    const { user } = req
 
-    const query = 'UPDATE users SET is_deleted=true, deleted_by=$2 WHERE id=$1'
-    const { rowCount } = await pg.execQuery(query, [id, user.id])
+    const query = 'UPDATE users SET is_deleted=true WHERE id=$1'
+    const { rowCount } = await pg.execQuery(query, [id])
 
     if (!rowCount) {
       throw httpErrors.conflict('The action had no effect')

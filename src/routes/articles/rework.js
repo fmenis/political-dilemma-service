@@ -70,7 +70,6 @@ export default async function reworkArticle(fastify) {
       ...article,
       status: ARTICLE_STATES.REWORK,
       updatedAt: new Date(),
-      updatedBy: ownerId,
     }
 
     await massive.withTransaction(async tx => {

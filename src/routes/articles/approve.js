@@ -76,7 +76,6 @@ export default async function approveArticle(fastify) {
       status: ARTICLE_STATES.READY,
       publishedAt: publicationDate || null,
       updatedAt: new Date(),
-      updatedBy: ownerId,
     }
 
     await massive.withTransaction(async tx => {
