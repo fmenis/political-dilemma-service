@@ -41,7 +41,7 @@ export function sUpdateArticle() {
     .description('Article title.')
     .prop('text', S.string().minLength(3))
     .description('Article text.')
-    .prop('description', S.string().minLength(3).maxLength(500))
+    .prop('description', S.string().minLength(0).maxLength(500))
     .description('Article description.')
     .prop('categoryId', S.string().format('uuid'))
     .description('Article category id.')

@@ -34,9 +34,16 @@ export default async function reworkArticle(fastify) {
         409: fastify.getSchema('sConflict'),
       },
     },
+    preValidation: onPreValidation,
     preHandler: onPreHandler,
     handler: onReworkArticle,
   })
+
+  async function onPreValidation(req) {
+    if (req.body.note) {
+      req.body.note = req.body.note.trim()
+    }
+  }
 
   async function onPreHandler(req) {
     const { id } = req.params

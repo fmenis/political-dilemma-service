@@ -34,9 +34,16 @@ export default async function archiveArticle(fastify) {
         409: fastify.getSchema('sConflict'),
       },
     },
+    preValidation: onPreValidation,
     preHandler: onPreHandler,
     handler: onArchiveArticle,
   })
+
+  async function onPreValidation(req) {
+    if (req.body.note) {
+      req.body.note = req.body.note.trim()
+    }
+  }
 
   async function onPreHandler(req) {
     const { id } = req.params
@@ -79,7 +86,7 @@ export default async function archiveArticle(fastify) {
     const updatedArticle = {
       ...article,
       status: ARTICLE_STATES.ARCHIVED,
-      updatedAt: new Date()
+      updatedAt: new Date(),
     }
 
     await massive.withTransaction(async tx => {

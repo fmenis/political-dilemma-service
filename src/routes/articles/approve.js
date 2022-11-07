@@ -39,9 +39,16 @@ export default async function approveArticle(fastify) {
         409: fastify.getSchema('sConflict'),
       },
     },
+    preValidation: onPreValidation,
     preHandler: onPreHandler,
     handler: onApproveArticle,
   })
+
+  async function onPreValidation(req) {
+    if (req.body.note) {
+      req.body.note = req.body.note.trim()
+    }
+  }
 
   async function onPreHandler(req) {
     const { id } = req.params
