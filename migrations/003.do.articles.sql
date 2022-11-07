@@ -63,8 +63,6 @@ CREATE TABLE IF NOT EXISTS "activityLog" (
     "id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     "action" VARCHAR(50) NOT NULL,
     "resourceId" UUID,
-    "httpMethod" VARCHAR(20) NOT NULL CHECK ("httpMethod" in ('GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS')),
-    "statusCode" INT NOT NULL,
     "userId" UUID,
     "userEmail" VARCHAR(50) NOT NULL,
     "createdAt" timestamp DEFAULT NOW(),

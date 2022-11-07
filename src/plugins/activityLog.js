@@ -26,8 +26,6 @@ async function activityLog(fastify) {
     await massive.activityLog.save({
       action,
       resourceId: getUUIDFromUrl(req.url) || reply.resourceId || null,
-      httpMethod: req.method,
-      statusCode: reply.statusCode,
       userId: user.id,
       userEmail: user.email,
       payload: req.body,
