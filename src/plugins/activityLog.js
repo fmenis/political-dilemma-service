@@ -10,7 +10,12 @@ async function activityLog(fastify) {
     const action = generateRouteAction(reply)
 
     const writeCalls = ['POST', 'PUT', 'PATCH', 'DELETE']
-    const notInterestingActions = ['login', 'logout', 'upload-files']
+    const notInterestingActions = [
+      'login',
+      'logout',
+      'upload-files',
+      'delete-sessions',
+    ]
 
     if (
       !config.ENABLE_LOG_ACTIVITY ||
