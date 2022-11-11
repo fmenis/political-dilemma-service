@@ -251,7 +251,6 @@ export default async function listUsers(fastify) {
   }
 
   async function populateUserList(users) {
-    // TODO mock data
     return users.map(user => {
       return {
         ...user,

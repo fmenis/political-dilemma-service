@@ -4,7 +4,6 @@ import { deleteFiles } from './lib/utils.js'
 export default async function deleteFile(fastify) {
   const { massive, httpErrors } = fastify
   const { createError } = httpErrors
-  const permission = 'file:delete'
 
   fastify.route({
     method: 'DELETE',
@@ -13,9 +12,8 @@ export default async function deleteFile(fastify) {
       public: false,
     },
     schema: {
-      //##TODO forse non ha senso permesso
       summary: 'Delete file',
-      description: `Permission required: ${permission}`,
+      description: `Delete file`,
       params: S.object()
         .additionalProperties(false)
         .prop('id', S.string().format('uuid'))
