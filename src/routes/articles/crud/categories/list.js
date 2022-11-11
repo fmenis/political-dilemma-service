@@ -41,7 +41,7 @@ export default async function listArticleCategories(fastify) {
 
   async function onListArticleCategories() {
     const categories = await massive.categories.find(
-      {},
+      { type: 'ARTICLE' },
       {
         order: [
           {
