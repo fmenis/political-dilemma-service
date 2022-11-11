@@ -16,10 +16,10 @@ CREATE TABLE IF NOT EXISTS "articles" (
     "categoryId" UUID NOT NULL,
     "createdAt" timestamp DEFAULT NOW(),
     "updatedAt" timestamp DEFAULT NOW(),
-    "ownerId" UUID NOT NULL,
+    "ownerId" UUID,
     "publishedAt" timestamp,
     "deletedAt" timestamp,
-    CONSTRAINT fk_owner_id FOREIGN KEY("ownerId") REFERENCES users("id") ON DELETE NO ACTION,
+    CONSTRAINT fk_owner_id FOREIGN KEY("ownerId") REFERENCES users("id") ON DELETE SET NULL,
     CONSTRAINT fk_category_id FOREIGN KEY("categoryId") REFERENCES categories("id") ON DELETE NO ACTION
 );
 

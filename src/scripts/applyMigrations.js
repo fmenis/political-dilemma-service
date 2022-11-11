@@ -47,13 +47,12 @@ async function applyMigrations() {
       console.info(`${results.length} migration/s applited.`)
     }
   } catch (error) {
-    if (error.appliedMigrations) {
-      console.error(error.appliedMigrations)
-    }
-    throw new Error(error)
-  }
+    console.error('Error during migrations application')
 
-  await client.end()
+    throw error
+  } finally {
+    await client.end()
+  }
 }
 
 applyMigrations()
