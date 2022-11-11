@@ -1,3 +1,5 @@
+import { readFileSync } from 'fs'
+import { join, resolve } from 'path'
 import sensible from '@fastify/sensible'
 import helmet from '@fastify/helmet'
 import cors from '@fastify/cors'
@@ -53,7 +55,7 @@ export default async function app(fastify, opts) {
   fastify.register(sentry, {
     dsn: process.env.SENTRY_DSN,
     environment: process.env.NODE_ENV,
-    release: '1.0.0',
+    release: JSON.parse(readFileSync(join(resolve(), 'package.json'))).version,
     onErrorFactory: () => {
       return function (error, req, reply) {
         reply.send(error)
