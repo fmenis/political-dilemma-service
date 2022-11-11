@@ -173,9 +173,21 @@ export async function seedPermissions(client) {
     },
     {
       resource: 'article',
+      action: 'approve',
+      ownership: 'own',
+      description: 'Approvazione articolo (solo propri)',
+    },
+    {
+      resource: 'article',
       action: 'publish',
       ownership: 'any',
       description: 'Pubblicazione articolo (tutti) ',
+    },
+    {
+      resource: 'article',
+      action: 'publish',
+      ownership: 'own',
+      description: 'Pubblicazione articolo (solo propri)',
     },
     {
       resource: 'article',
@@ -185,9 +197,21 @@ export async function seedPermissions(client) {
     },
     {
       resource: 'article',
+      action: 'archive',
+      ownership: 'own',
+      description: 'Archiviazione articolo (solo propri)',
+    },
+    {
+      resource: 'article',
       action: 'remove',
       ownership: 'any',
       description: 'Cancellazione logica articolo (tutti)',
+    },
+    {
+      resource: 'article',
+      action: 'remove',
+      ownership: 'own',
+      description: 'Cancellazione logica articolo (solo propri)',
     },
   ]
 
