@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS files (
     "articleId" UUID,
     "fullPath" VARCHAR(200) NOT NULL,
     "url" VARCHAR(200) UNIQUE NOT NULL,
-    "fileName" VARCHAR(50) UNIQUE NOT NULL,
+    "fileName" VARCHAR(50) NOT NULL,
     "extension" VARCHAR(10) NOT NULL,
     "mimetype" VARCHAR(50) NOT NULL,
     "size" DOUBLE PRECISION NOT NULL,

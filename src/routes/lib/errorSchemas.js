@@ -152,3 +152,27 @@ export function sConflict() {
     .description('Error details (unstructured data).')
     .required()
 }
+
+export function sInternalServerError() {
+  return S.object()
+    .id('sInternalServerError')
+    .additionalProperties(false)
+    .description('Intenal Server Error.')
+    .prop('statusCode', S.number())
+    .description('Http status code.')
+    .default('500')
+    .required()
+    .prop('error', S.string())
+    .description('Http error.')
+    .default('Something went wrong')
+    .required()
+    .prop('message', S.string())
+    .description('Message.')
+    .required()
+    .prop('internalCode', S.string())
+    .description('Internal code.\n' + '0000: no specific error code.')
+    .required()
+    .prop('details', S.object().additionalProperties(true))
+    .description('Error details (unstructured data).')
+    .required()
+}

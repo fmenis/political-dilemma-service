@@ -61,6 +61,7 @@ export default async function index(fastify) {
         400: fastify.getSchema('sBadRequest'),
         401: fastify.getSchema('sUnauthorized'),
         403: fastify.getSchema('sForbidden'),
+        500: fastify.getSchema('sInternalServerError'),
       },
     }
 

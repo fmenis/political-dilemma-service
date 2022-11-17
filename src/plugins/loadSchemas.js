@@ -7,6 +7,7 @@ import {
   sUnauthorized,
   sNotFound,
   sConflict,
+  sInternalServerError,
 } from '../routes/lib/errorSchemas.js'
 
 async function loadSchemas(fastify) {
@@ -17,6 +18,7 @@ async function loadSchemas(fastify) {
   fastify.addSchema(sUnauthorized())
   fastify.addSchema(sNotFound())
   fastify.addSchema(sConflict())
+  fastify.addSchema(sInternalServerError())
 }
 
 export default fp(loadSchemas)
