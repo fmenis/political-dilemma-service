@@ -57,6 +57,7 @@
     "nodemailer": "6.7.2",
     "pg": "8.7.1",
     "pino": "7.6.0",
+    "pino-sentry-transport": "0.0.6",
     "postgrator": "7.1.0",
     "redis": "3.1.2"
   },
@@ -70,6 +71,7 @@
     "husky": "7.0.4",
     "massive": "6.10.2",
     "nodemon": "2.0.12",
+    "pino-pretty": "9.1.1",
     "prettier": "2.4.1",
     "tap": "15.0.9"
   }

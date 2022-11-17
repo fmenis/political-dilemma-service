@@ -2,7 +2,7 @@ import Fastify from 'fastify'
 import closeWithGrace from 'close-with-grace'
 
 import App from './src/app.js'
-import { buildServerOptions } from './src/utils/buildServeOptions.js'
+import { buildServerOptions } from './src/utils/buildServerOptions.js'
 
 const fastify = Fastify(buildServerOptions())
 
