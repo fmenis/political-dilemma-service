@@ -8,9 +8,9 @@ module.exports = {
       exp_backoff_restart_delay: 100,
       max_memory_restart: '500M',
       max_restarts: 10,
-      error_file: '/var/log/dilemma/dev/err.log',
-      out_file: '/var/log/dilemma/dev/out.log',
-      log_file: '/var/log/dilemma/dev/combined.log',
+      error_file: '/var/log/dilemma/err.log',
+      out_file: '/var/log/dilemma/out.log',
+      log_file: '/var/log/dilemma/combined.log',
     },
   ],
 }

@@ -17,7 +17,7 @@ export default async function removeArticle(fastify) {
       permission,
     },
     schema: {
-      summary: 'Delete article (logically)',
+      summary: 'Remove article',
       description: `Permission required: ${permission}`,
       params: S.object()
         .additionalProperties(false)
