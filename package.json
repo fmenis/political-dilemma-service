@@ -20,7 +20,8 @@
     "shutdown-stack": "cd ./pd-stack && docker-compose down -d",
     "rebuildDb": "./pd-stack/rebuild-db.sh",
     "applyMigrations": "node -r dotenv/config ./src/scripts/applyMigrations.js",
-    "seedDb": "node -r dotenv/config ./src/scripts/seedDb/index.js"
+    "seedDb": "node -r dotenv/config ./src/scripts/seedDb/index.js",
+    "verifyEmail": "node -r dotenv/config ./src/scripts/verifyEmail.js"
   },
   "keywords": [
     "political-dilemma"

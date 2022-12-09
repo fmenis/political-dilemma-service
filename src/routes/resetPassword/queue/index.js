@@ -24,9 +24,20 @@ async function resetLinkQueue(fastify) {
     return sendResetEmail({ ...job.data, from: config.SENDER_EMAIL }, mailer)
   })
 
-  queue.on('completed', job => {
-    log.debug(`Job '${job.name}' (id: ${job.id}) has been completed`)
-  })
+  queue
+    .on('completed', job => {
+      log.debug(`Job '${job.name}' (id: ${job.id}) has been completed`)
+    })
+
+    .on('failed', err => {
+      const { failedReason, name, attemptsMade } = err
+      log.error(
+        {
+          failedReason,
+        },
+        `Error on job '${name}' (id: ${err.id}, attempts: ${attemptsMade}, queue: '${err.queue.name}')`
+      )
+    })
 
   fastify.decorate('resetLinkQueue', {
     addJob,
