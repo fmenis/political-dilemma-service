@@ -44,6 +44,7 @@
     "aws-sdk": "2.1271.0",
     "bcrypt": "5.1.0",
     "bull": "4.10.2",
+    "bullmq": "3.4.0",
     "close-with-grace": "1.1.0",
     "cross-env": "7.0.3",
     "dotenv": "16.0.3",

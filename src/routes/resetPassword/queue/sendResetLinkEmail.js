@@ -1,4 +1,4 @@
-export async function sendResetEmail(data, mailer) {
+export async function sendResetPasswordEmail(data, mailer) {
   const { email, resetLink, from } = data
 
   const html = `<div>

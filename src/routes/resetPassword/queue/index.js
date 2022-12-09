@@ -1,16 +1,24 @@
 import Fp from 'fastify-plugin'
-import Bull from 'bull'
+import { Queue, Worker } from 'bullmq'
 
-import { sendResetEmail } from './sendResetLinkEmail.js'
+import { sendResetPasswordEmail } from './sendResetLinkEmail.js'
 
 async function resetLinkQueue(fastify) {
   const { log, mailer, config } = fastify
 
-  const queue = new Bull('resetLinks', { prefix: 'jobQueue' })
+  const options = {
+    prefix: 'jobQueue',
+    connection: {
+      host: config.REDIS_HOST,
+      port: config.REDIS_PORT,
+    },
+  }
+
+  const queue = new Queue('resetLinksQueue', options)
   log.debug(`Queue '${queue.name}' initialized`)
 
   async function addJob(data) {
-    const job = await queue.add('resetLink', data, {
+    const job = await queue.add('sendResetPasswordEmail', data, {
       attempts: 5,
       backoff: { type: 'exponential', delay: 500 },
     })
@@ -20,24 +28,30 @@ async function resetLinkQueue(fastify) {
     )
   }
 
-  queue.process('resetLink', job => {
-    return sendResetEmail({ ...job.data, from: config.SENDER_EMAIL }, mailer)
+  const worker = new Worker(
+    queue.name,
+    async job => {
+      return sendResetPasswordEmail(
+        { ...job.data, from: config.SENDER_EMAIL },
+        mailer
+      )
+    },
+    options
+  )
+
+  worker.on('completed', job => {
+    log.debug(`Job '${job.name}' (id: ${job.id}) has been completed`)
   })
 
-  queue
-    .on('completed', job => {
-      log.debug(`Job '${job.name}' (id: ${job.id}) has been completed`)
-    })
+  worker.on('failed', job => {
+    log.error(
+      `Job '${job.name}' (id: ${job.id}) has failed (attempt ${job.attemptsMade})`
+    )
+  })
 
-    .on('failed', err => {
-      const { failedReason, name, attemptsMade } = err
-      log.error(
-        {
-          failedReason,
-        },
-        `Error on job '${name}' (id: ${err.id}, attempts: ${attemptsMade}, queue: '${err.queue.name}')`
-      )
-    })
+  worker.on('error', err => {
+    log.error(err)
+  })
 
   fastify.decorate('resetLinkQueue', {
     addJob,
