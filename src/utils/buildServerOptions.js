@@ -42,7 +42,7 @@ function buildLoggerOptions() {
         withLogRecord: true,
         tags: ['id'],
         context: ['hostname'],
-        minLevel: 40, // warn
+        minLevel: 30, // warn
       },
     },
   ]
