@@ -3,10 +3,18 @@ import S from 'fluent-json-schema'
 import { ARTICLE_STATES } from './lib/enums.js'
 import { sArticle } from './lib/schema.js'
 import { populateArticle } from './lib/common.js'
+import { buildRouteFullDescription } from '../lib/common.js'
 
 export default async function reviewArticle(fastify) {
-  const { massive, httpErrors } = fastify
-  const { createError } = httpErrors
+  const { massive } = fastify
+  const {
+    throwNotFoundError,
+    throwInvalidStatusError,
+    throwMissinDataError,
+    errors,
+  } = fastify.articleErrors
+
+  const routeDescription = 'Request to review an article.'
   const permission = 'article:review'
 
   fastify.route({
@@ -18,7 +26,12 @@ export default async function reviewArticle(fastify) {
     },
     schema: {
       summary: 'Review article',
-      description: `Permission required: ${permission}`,
+      description: buildRouteFullDescription(
+        routeDescription,
+        errors,
+        permission,
+        'review'
+      ),
       params: S.object()
         .additionalProperties(false)
         .prop('id', S.string().format('uuid'))
@@ -50,21 +63,16 @@ export default async function reviewArticle(fastify) {
 
     const article = await massive.articles.findOne(id)
     if (!article) {
-      throw createError(404, 'Invalid input', {
-        validation: [{ message: `Article '${id}' not found` }],
-      })
+      throwNotFoundError({ id })
     }
 
     if (
       article.status !== ARTICLE_STATES.DRAFT &&
       article.status !== ARTICLE_STATES.REWORK
     ) {
-      throw createError(409, 'Conflict', {
-        validation: [
-          {
-            message: `Invalid action on article '${id}'. Required status '${ARTICLE_STATES.DRAFT}' or '${ARTICLE_STATES.REWORK}'`,
-          },
-        ],
+      throwInvalidStatusError({
+        id,
+        requiredStatus: `${ARTICLE_STATES.DRAFT} or ${ARTICLE_STATES.REWORK}`,
       })
     }
 
@@ -73,19 +81,19 @@ export default async function reviewArticle(fastify) {
 
       if (!article.description) {
         errors.push({
+          internalCode: 'MISSING_DESCRIPTION',
           message: `Invalid action on article '${id}'. The description must be provided`,
         })
       }
 
       if (!article.text) {
         errors.push({
+          internalCode: 'MISSING_TEXT',
           message: `Invalid action on article '${id}'. The text must be provided`,
         })
       }
 
-      throw createError(409, 'Conflict', {
-        validation: errors,
-      })
+      throwMissinDataError({ id, errors })
     }
 
     req.article = article

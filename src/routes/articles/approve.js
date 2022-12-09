@@ -7,8 +7,11 @@ import { populateArticle } from './lib/common.js'
 export default async function approveArticle(fastify) {
   const { massive } = fastify
 
-  const { throwNotFound, throwInvalidAction, throwInvalidPublicationDate } =
-    fastify.articleErrors
+  const {
+    throwNotFound,
+    throwInvalidStatusError,
+    throwInvalidPublicationDate,
+  } = fastify.articleErrors
 
   const permission = 'article:approve'
 
@@ -60,7 +63,7 @@ export default async function approveArticle(fastify) {
     }
 
     if (article.status !== ARTICLE_STATES.IN_REVIEW) {
-      throwInvalidAction({ id, requiredStatus: ARTICLE_STATES.IN_REVIEW })
+      throwInvalidStatusError({ id, requiredStatus: ARTICLE_STATES.IN_REVIEW })
     }
 
     if (publicationDate && publicationDate <= new Date().toISOString()) {

@@ -33,3 +33,32 @@ export function buildPaginatedInfo(totalCount, options) {
 export function restrictDataToOwner(apiPermission) {
   return apiPermission.includes('own')
 }
+
+/**
+ * Build OpenAPI route description
+ * @param {string} description route description
+ * @param {Object[]} errors route possibile errors
+ * @param {string} permission route permission
+ * @param {string} api route error identifier
+ * @returns string
+ */
+export function buildRouteFullDescription(
+  description,
+  errors,
+  permission,
+  api
+) {
+  const formattedErrors = errors
+    .filter(item => item.apis.includes(api))
+    .map(item => `- ${item.code}: ${item.description} \n\n`)
+
+  let fullDescription = `${description} \n\n **Possible errors**: \n\n ${formattedErrors.join(
+    ' '
+  )}`
+
+  if (permission) {
+    fullDescription += `**Required permission**: *${permission}*.`
+  }
+
+  return fullDescription
+}
