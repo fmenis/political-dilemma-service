@@ -1,3 +1,10 @@
+/**
+ * https://github.com/taskforcesh/bullmq/issues/1414
+ */
+Object.defineProperty(Error.prototype, 'toJSON', {
+  value: this,
+})
+
 import Fp from 'fastify-plugin'
 import { Queue, Worker } from 'bullmq'
 
@@ -6,7 +13,7 @@ import { sendResetPasswordEmail } from './sendResetLinkEmail.js'
 async function resetLinkQueue(fastify) {
   const { log, mailer, config } = fastify
 
-  const options = {
+  const queueOpts = {
     prefix: 'jobQueue',
     connection: {
       host: config.REDIS_HOST,
@@ -14,7 +21,12 @@ async function resetLinkQueue(fastify) {
     },
   }
 
-  const queue = new Queue('resetLinksQueue', options)
+  const workerOpts = {
+    ...queueOpts,
+    concurrency: 2,
+  }
+
+  const queue = new Queue('resetLinksQueue', queueOpts)
   log.debug(`Queue '${queue.name}' initialized`)
 
   async function addJob(data) {
@@ -36,7 +48,7 @@ async function resetLinkQueue(fastify) {
         mailer
       )
     },
-    options
+    workerOpts
   )
 
   worker.on('completed', job => {
