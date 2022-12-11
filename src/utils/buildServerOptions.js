@@ -51,7 +51,12 @@ function buildLoggerOptions() {
     level: process.env.LOG_LEVEL,
     timestamp: () => stdTimeFunctions.isoTime(),
     redact: {
-      paths: ['password'],
+      paths: [
+        'password',
+        'oldPassword',
+        'newPassword',
+        'newPasswordConfirmation',
+      ],
       censor: '**GDPR COMPLIANT**',
     },
     transport: {

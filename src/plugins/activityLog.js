@@ -33,8 +33,17 @@ async function activityLog(fastify) {
       resourceId: getUUIDFromUrl(req.url) || reply.resourceId || null,
       userId: user.id,
       userEmail: user.email,
-      payload: req.body,
+      payload: redactPayload(req.body),
     })
+  }
+
+  function redactPayload(body) {
+    for (const key of Object.keys(body)) {
+      if (key.includes('asswor')) {
+        body[key] = '**GDPR COMPLIANT**'
+      }
+    }
+    return body
   }
 
   fastify.addHook('onResponse', insertLogActivity)
