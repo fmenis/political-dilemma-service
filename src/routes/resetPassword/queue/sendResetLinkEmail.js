@@ -1,19 +1,18 @@
+import { readFile } from 'fs/promises'
+import { resolve, join } from 'path'
+
 export async function sendResetPasswordEmail(data, mailer) {
-  const { email, resetLink, from } = data
+  const { email, from, templateParams } = data
 
-  const html = `<div>
-      Clicca il seguente <a href="${resetLink}">link</a>
-      per reimpostare la password.
-    </div>`
+  const template = await getTemplate()
+  const html = compileTemplate(template, templateParams)
 
-  const params = {
+  await mailer.sendMail({
     from,
     to: email,
     subject: 'Reset password',
     html,
-  }
-
-  await mailer.sendMail(params)
+  })
 
   /**
    * Hack to know when a job is finished correctly.
@@ -24,4 +23,29 @@ export async function sendResetPasswordEmail(data, mailer) {
    * to distinguish if all the job attempts have failed or not.
    */
   return 'COMPLETED'
+}
+
+function getTemplate() {
+  const templateFilePath = join(
+    resolve(),
+    'src/public/reset-password',
+    'index.html'
+  )
+  return readFile(templateFilePath, 'utf8')
+}
+
+function compileTemplate(template, templateParams) {
+  for (const item of [
+    'name',
+    'validFor',
+    'os',
+    'browser',
+    'resetLink',
+    'supportEmail',
+  ]) {
+    const regExp = new RegExp(`{{${item}}}`, 'g')
+    template = template.replace(regExp, templateParams[item])
+  }
+
+  return template
 }

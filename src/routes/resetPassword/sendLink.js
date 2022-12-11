@@ -83,7 +83,19 @@ export default async function sendResetPasswordLink(fastify) {
       const baseUrl = req.headers.origin || 'http://127.0.0.1:4200'
       const resetLink = `${baseUrl}/reset-password?token=${token}`
 
-      await queue.addJob({ email, resetLink })
+      //##TODO https://github.com/faisalman/ua-parser-js
+      // const operatingSystem = req.headers['user-agent']
+
+      const templateParams = {
+        name: user.firstName,
+        validFor: config.RESET_LINK_TTL / 60 / 60, // secondo to hours
+        os: 'Linux Ubuntu',
+        browser: 'Chrome',
+        resetLink,
+        supportEmail: config.SENDER_EMAIL,
+      }
+
+      await queue.addJob({ email, templateParams })
 
       await pg.commitTransaction(client)
     } catch (error) {
@@ -96,7 +108,7 @@ export default async function sendResetPasswordLink(fastify) {
 
   function getUserByEmail(email) {
     return pg.execQuery(
-      'SELECT id, is_blocked, is_deleted FROM users WHERE email=$1',
+      'SELECT id, first_name, is_blocked, is_deleted FROM users WHERE email=$1',
       [email],
       { findOne: true }
     )
