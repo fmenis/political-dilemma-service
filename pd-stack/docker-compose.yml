@@ -20,7 +20,7 @@ services:
 
   redis:
     container_name: redis-pd
-    image: redis
+    image: redis:7.0.5
     restart: always
     ports:
       - 7379:6379
@@ -32,6 +32,7 @@ services:
   nginx:
     container_name: nginx
     image: nginx
+    restart: always
     volumes:
       - /tmp:/usr/share/nginx/html:ro
       - ./conf/nginx:/etc/nginx/templates
