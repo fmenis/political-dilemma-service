@@ -38,6 +38,8 @@ async function resetLinkQueue(fastify) {
     log.debug(
       `Job '${job.name}' (id: ${job.id}) added to queue '${queue.name}'`
     )
+
+    log.debug({ data: job.data }, 'Job data')
   }
 
   const worker = new Worker(

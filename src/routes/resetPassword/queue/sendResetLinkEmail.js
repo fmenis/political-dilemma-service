@@ -10,7 +10,7 @@ export async function sendResetPasswordEmail(data, mailer) {
   await mailer.sendMail({
     from,
     to: email,
-    subject: 'Reset password',
+    subject: 'Ripristino password',
     html,
   })
 

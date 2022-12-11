@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS sessions (
 CREATE TABLE IF NOT EXISTS reset_links (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID NOT NULL,
-    token VARCHAR(60) NOT NULL,
+    link VARCHAR(250) NOT NULL
     already_used BOOLEAN NOT NULL DEFAULT false,
     expired_at timestamp NOT NULL,
     created_at timestamp DEFAULT NOW(),
