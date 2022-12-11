@@ -41,7 +41,7 @@ jobs:
           echo SECRET=${{ secrets.SECRET }} >> .env
           echo SESSION_TTL=86400 >> .env
           echo COOKIE_TTL=15552000 >> .env
-          echo RESET_LINK_TTL=300 >> .env
+          echo RESET_LINK_TTL=7200 >> .env
           echo ENABLE_BODY_LOG=true >> .env
           echo ENABLE_API_COUNTS=true >> .env
           echo ENABLE_LOG_ACTIVITY=true >> .env

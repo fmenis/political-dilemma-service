@@ -72,12 +72,14 @@ export default async function sendResetPasswordLink(fastify) {
      */
     await massive.reset_links.destroy({ user_id: user.id })
 
-    const resetLink = await generateResetLink(req)
+    const token = await generateRandomToken(30)
+    const resetLink = generateResetLink(req, token)
     const expiredAt = moment().add(config.RESET_LINK_TTL, 'seconds').toDate()
 
     await massive.withTransaction(async tx => {
       await tx.reset_links.save({
         user_id: user.id,
+        token,
         link: resetLink,
         expired_at: expiredAt,
       })
@@ -89,8 +91,7 @@ export default async function sendResetPasswordLink(fastify) {
     })
   }
 
-  async function generateResetLink(req) {
-    const token = await generateRandomToken(30)
+  function generateResetLink(req, token) {
     const baseUrl = req.headers.origin || 'http://127.0.0.1:4200'
     return `${baseUrl}/reset-password?token=${token}`
   }
