@@ -11,6 +11,8 @@ async function redisClient(fastify) {
 
   await client.connect()
 
+  log.debug('Redis client correctly connected')
+
   client.on('error', err => {
     log.error(err)
   })
