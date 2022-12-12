@@ -8,6 +8,14 @@ export function sNoContent() {
   }
 }
 
+export function sAccepted() {
+  return {
+    $id: 'sAccepted',
+    description: 'Accepted',
+    type: 'null',
+  }
+}
+
 export function sPaginatedInfo() {
   return S.object()
     .id('sPaginatedInfo')

@@ -22,7 +22,7 @@ export default async function sendResetPasswordLink(fastify) {
         .description('Email address to which the reset link will be sent.')
         .required(),
       response: {
-        204: fastify.getSchema('sNoContent'),
+        202: fastify.getSchema('sAccepted'),
       },
     },
     preHandler: onPreHandler,
@@ -33,7 +33,7 @@ export default async function sendResetPasswordLink(fastify) {
     const { body, log } = req
     const { email } = body
 
-    reply.code(204)
+    reply.code(202)
 
     let baseMessage = `Cannot send reset link. User with email '${email}'`
 
@@ -86,7 +86,11 @@ export default async function sendResetPasswordLink(fastify) {
 
       await queue.addJob({
         email,
-        templateParams: buildTempateParams({ resetLink, user }),
+        templateParams: buildTempateParams({
+          resetLink,
+          user,
+          userAgent: req.headers['user-agent'],
+        }),
       })
     })
   }
@@ -99,7 +103,7 @@ export default async function sendResetPasswordLink(fastify) {
   function buildTempateParams({ resetLink, user, userAgent }) {
     const ua = new parser(userAgent)
 
-    const templateParams = {
+    return {
       name: user.first_name,
       validFor: config.RESET_LINK_TTL / 60 / 60, // secondo to hours
       os: ua.getOS().name || 'unknown',
@@ -107,7 +111,5 @@ export default async function sendResetPasswordLink(fastify) {
       resetLink,
       supportEmail: config.SENDER_EMAIL,
     }
-
-    return templateParams
   }
 }
