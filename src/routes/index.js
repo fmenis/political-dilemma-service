@@ -14,6 +14,7 @@ import resetPasswordRoutes from './resetPassword/index.js'
 import articleRoutes from './articles/index.js'
 import internalNotesRoutes from './internalNotes/index.js'
 import fielsRoutes from './files/index.js'
+import activitiesRoutes from './activities/index.js'
 
 export default async function index(fastify) {
   fastify.register(authentication)
@@ -32,4 +33,5 @@ export default async function index(fastify) {
   fastify.register(articleRoutes)
   fastify.register(internalNotesRoutes)
   fastify.register(fielsRoutes)
+  fastify.register(activitiesRoutes)
 }

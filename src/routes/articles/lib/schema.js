@@ -28,7 +28,7 @@ export function sCreateArticle() {
         'attachmentIds',
         S.array().items(S.string().format('uuid')).minItems(1).maxItems(50)
       )
-      //##TODO non funziona, capire come mettere default su tipo dati non primitivi
+      //TODO non funziona, capire come mettere default su tipo dati non primitivi
       // .default(S.array())
       .description('Article attachments ids.')
   )

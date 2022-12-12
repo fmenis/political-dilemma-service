@@ -213,6 +213,13 @@ export async function seedPermissions(client) {
       ownership: 'own',
       description: 'Cancellazione logica articolo (solo propri)',
     },
+    // ACTIVITIES
+    {
+      resource: 'activity',
+      action: 'create',
+      ownership: null,
+      description: 'Creazione attività',
+    },
   ]
 
   for (const permission of permissions) {
