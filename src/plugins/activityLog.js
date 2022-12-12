@@ -33,7 +33,7 @@ async function activityLog(fastify) {
       resourceId: getUUIDFromUrl(req.url) || reply.resourceId || null,
       userId: user.id,
       userEmail: user.email,
-      payload: redactPayload(req.body),
+      payload: req.body ? redactPayload(req.body) : null,
     })
   }
 
