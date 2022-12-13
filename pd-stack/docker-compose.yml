@@ -1,0 +1,54 @@
+version: '3.5'
+
+services:
+  postgres:
+    container_name: postgres-pd
+    image: postgres:14.5
+    restart: always
+    ports:
+      - 6432:5432
+    networks:
+      - database
+    volumes:
+      - postgres-pd:/var/lib/postgresql/data
+      - ./conf/postgres/create-user-and-db.sh:/docker-entrypoint-initdb.d/create-user-and-db.sh
+    environment:
+      POSTGRES_PASSWORD: postgres
+      PGDATA: /var/lib/postgresql/data/pgdata
+      TZ: 'Europe/Rome'
+      PGTZ: 'Europe/Rome'
+
+  redis:
+    container_name: redis-pd
+    image: redis:7.0.5
+    restart: always
+    ports:
+      - 7379:6379
+    networks:
+      - database
+    volumes:
+      - redis-pd:/data
+
+  nginx:
+    container_name: nginx
+    image: nginx
+    restart: always
+    volumes:
+      - /tmp:/usr/share/nginx/html:ro
+      - ./conf/nginx:/etc/nginx/templates
+      - /tmp:/tmp
+    ports:
+      - '8080:80'
+    environment:
+      - NGINX_HOST=foobar.com
+      - NGINX_PORT=80
+
+networks:
+  database:
+    name: database
+
+volumes:
+  postgres-pd:
+    name: postgres-pd
+  redis-pd:
+    name: redis-pd

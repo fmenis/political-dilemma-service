@@ -1,0 +1,5 @@
+const CATEGORIES = {
+  ARTICLE_IMAGE: 'ARTICLE_IMAGE',
+}
+
+export { CATEGORIES }
