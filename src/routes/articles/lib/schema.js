@@ -39,7 +39,7 @@ export function sUpdateArticle() {
     .additionalProperties(false)
     .prop('title', S.string().minLength(3).maxLength(200))
     .description('Article title.')
-    .prop('text', S.string().minLength(3))
+    .prop('text', S.string().minLength(0))
     .description('Article text.')
     .prop('description', S.string().minLength(0).maxLength(500))
     .description('Article description.')
