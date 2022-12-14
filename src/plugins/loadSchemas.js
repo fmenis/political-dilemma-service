@@ -4,7 +4,7 @@ import {
   sNoContent,
   sAccepted,
   sPaginatedInfo,
-} from '../routes/lib/responseSchemas.js'
+} from '../routes/common/responseSchemas.js'
 import {
   sBadRequest,
   sForbidden,
@@ -12,7 +12,7 @@ import {
   sNotFound,
   sConflict,
   sInternalServerError,
-} from '../routes/lib/errorSchemas.js'
+} from '../routes/common/errorSchemas.js'
 
 async function loadSchemas(fastify) {
   fastify.addSchema(sNoContent())

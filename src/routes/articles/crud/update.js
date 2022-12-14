@@ -4,8 +4,8 @@ import _ from 'lodash'
 import { sUpdateArticle, sArticle } from '../lib/schema.js'
 import { findArrayDuplicates, removeObjectProps } from '../../../utils/main.js'
 import { populateArticle } from '../lib/common.js'
-import { restrictDataToOwner } from '../../lib/common.js'
-import { ARTICLE_STATES } from '../lib/enums.js'
+import { restrictDataToOwner } from '../../common/common.js'
+import { ARTICLE_STATES } from '../../common/enums.js'
 
 export default async function updateArticle(fastify) {
   const { massive, httpErrors } = fastify

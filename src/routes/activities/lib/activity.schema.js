@@ -1,15 +1,7 @@
 import S from 'fluent-json-schema'
 
-//TODO siccome comuni anche agli articoli, spostartli in posto unico
-import { getArticleStates } from '../../articles/lib/common.js'
-
-//TODO siccome comuni anche agli articoli, spostartli in posto unico
-export function sTags() {
-  return S.array()
-    .items(S.string().minLength(2).maxLength(30))
-    .minItems(1)
-    .maxItems(50)
-}
+import { sTags } from '../../common/common.schema.js'
+import { getActivityStates } from '../lib/common.js'
 
 export function sCreateActivity() {
   return (
@@ -57,7 +49,7 @@ export function sActivityDetail() {
       // .description('Activity description.')
       // .prop('text', S.string().minLength(3))
       // .description('Activity text.')
-      .prop('status', S.string().enum(getArticleStates()))
+      .prop('status', S.string().enum(getActivityStates()))
       .description('Activity status.')
       .required()
       .prop('categoryId', S.string().format('uuid'))

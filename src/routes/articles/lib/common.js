@@ -1,4 +1,4 @@
-import { ARTICLE_STATES } from '../lib/enums.js'
+import { ARTICLE_STATES } from '../../common/enums.js'
 
 export function getArticleStates() {
   return Object.values(ARTICLE_STATES)

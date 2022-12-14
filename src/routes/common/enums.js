@@ -1,4 +1,4 @@
-const ARTICLE_STATES = {
+const STATES = {
   DRAFT: 'DRAFT',
   IN_REVIEW: 'IN_REVIEW',
   READY: 'READY',
@@ -8,4 +8,7 @@ const ARTICLE_STATES = {
   DELETED: 'DELETED',
 }
 
-export { ARTICLE_STATES }
+const ARTICLE_STATES = { ...STATES }
+const ACTIVITY_STATES = { ...STATES }
+
+export { ARTICLE_STATES, ACTIVITY_STATES }

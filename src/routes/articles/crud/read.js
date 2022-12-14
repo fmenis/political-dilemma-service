@@ -2,7 +2,7 @@ import S from 'fluent-json-schema'
 
 import { sArticle } from '../lib/schema.js'
 import { populateArticle } from '../lib/common.js'
-import { restrictDataToOwner } from '../../lib/common.js'
+import { restrictDataToOwner } from '../../common/common.js'
 
 export default async function readArticle(fastify) {
   const { massive, httpErrors } = fastify

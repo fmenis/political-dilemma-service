@@ -1,7 +1,6 @@
 import { sCreateActivity, sActivityDetail } from '../lib/activity.schema.js'
-import { buildRouteFullDescription } from '../../lib/common.js'
-//TODO siccome comuni anche agli articoli, spostartli in posto unico
-import { ARTICLE_STATES } from '../../articles/lib/enums.js'
+import { buildRouteFullDescription } from '../../common/common.js'
+import { ARTICLE_STATES } from '../../common/enums.js'
 
 export default async function createActivity(fastify) {
   const { massive } = fastify

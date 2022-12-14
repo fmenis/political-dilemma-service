@@ -3,7 +3,7 @@ import S from 'fluent-json-schema'
 import { sArticleList } from '../lib/schema.js'
 import { appConfig } from '../../../config/main.js'
 import { getArticleStates } from '../lib/common.js'
-import { buildPaginatedInfo, restrictDataToOwner } from '../../lib/common.js'
+import { buildPaginatedInfo, restrictDataToOwner } from '../../common/common.js'
 
 export default async function listArticles(fastify) {
   const { massive } = fastify

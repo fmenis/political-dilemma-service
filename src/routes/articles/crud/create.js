@@ -1,7 +1,7 @@
 import _ from 'lodash'
 
 import { sCreateArticle, sArticle } from '../lib/schema.js'
-import { ARTICLE_STATES } from '../lib/enums.js'
+import { ARTICLE_STATES } from '../../common/enums.js'
 import { findArrayDuplicates } from '../../../utils/main.js'
 
 export default async function createArticle(fastify) {

@@ -2,7 +2,7 @@ import authentication from '../plugins/authentication.js'
 import authorization from '../plugins/authorization.js'
 import apiCount from '../plugins/apitCount.js'
 import activityLogPlugin from '../plugins/activityLog.js'
-import commonHooks from './lib/commonHooks.js'
+import commonHooks from './common/commonHooks.js'
 
 import authRoutes from './auth/index.js'
 import userRoutes from './users/index.js'

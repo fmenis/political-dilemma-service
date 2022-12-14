@@ -1,6 +1,6 @@
 import S from 'fluent-json-schema'
-import { ARTICLE_STATES } from '../lib/enums.js'
-import { restrictDataToOwner } from '../../lib/common.js'
+import { ARTICLE_STATES } from '../../common/enums.js'
+import { restrictDataToOwner } from '../../common/common.js'
 
 export default async function deleteArticle(fastify) {
   const { massive, httpErrors } = fastify
