@@ -5,8 +5,10 @@ async function redisClient(fastify) {
   const { log } = fastify
 
   const client = redis.createClient({
-    host: fastify.config.REDIS_HOST,
-    port: fastify.config.REDIS_PORT,
+    socket: {
+      host: fastify.config.REDIS_HOST,
+      port: fastify.config.REDIS_PORT
+    }
   })
 
   await client.connect()

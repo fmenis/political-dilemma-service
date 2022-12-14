@@ -7,7 +7,7 @@
 - [nodejs](https://nodejs.org/en/) (>=16.13.x)
 - [npm](https://www.npmjs.com/) (>=8.1.0)
 - [docker](https://www.docker.com/) (>=20)
-- [docker-compose](https://docs.docker.com/compose/) (>=1)
+- [docker compose](https://docs.docker.com/compose/) (>=1)
 
 ## Initialization
 

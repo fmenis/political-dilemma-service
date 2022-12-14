@@ -1,18 +1,18 @@
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 
-name: Node.js CD (staging)
+name: Node.js CD (production)
 
 on:
   push:
-    branches: [staging]
+    branches: [master]
 
 jobs:
-  deploy-staging:
-    runs-on: [self-hosted, linux, x64, staging-dilemma]
+  deploy-production:
+    runs-on: [self-hosted, linux, x64, prod-dilemma]
 
     strategy:
       matrix:
-        node-version: [16.x]
+        node-version: [18.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
@@ -25,34 +25,34 @@ jobs:
       - name: Create env file
         run: |
           touch .env
-          echo NODE_ENV=staging >> .env
+          echo NODE_ENV=production >> .env
           echo SERVER_ADDRESS=0.0.0.0 >> .env
-          echo SERVER_PORT=3001 >> .env
-          echo API_DOMAIN=api-staging.dilemmapolitico.info >> .env
-          echo LOG_LEVEL=debug >> .env
+          echo SERVER_PORT=3000 >> .env
+          echo API_DOMAIN=api.dilemmapolitico.info >> .env
+          echo LOG_LEVEL=info >> .env
           echo SESSIONS_LIMIT=5 >> .env
           echo PG_HOST=${{ secrets.PG_HOST }} >> .env
           echo PG_PORT=${{ secrets.PG_PORT }} >> .env
-          echo PG_DB=${{ secrets.PG_DB_STAGING }} >> .env
-          echo PG_USER=${{ secrets.PG_USER_STAGING }} >> .env
+          echo PG_DB=${{ secrets.PG_DB }} >> .env
+          echo PG_USER=${{ secrets.PG_USER }} >> .env
           echo PG_PW=${{ secrets.PG_PW }} >> .env
           echo REDIS_HOST=${{ secrets.REDIS_HOST }} >> .env
           echo REDIS_PORT=${{ secrets.REDIS_PORT }} >> .env
           echo SECRET=${{ secrets.SECRET }} >> .env
-          echo SESSION_TTL=86400 >> .env
+          echo SESSION_TTL=604800 >> .env
           echo COOKIE_TTL=15552000 >> .env
-          echo RESET_LINK_TTL=300 >> .env
+          echo RESET_LINK_TTL=7200 >> .env
           echo ENABLE_BODY_LOG=true >> .env
           echo ENABLE_API_COUNTS=true >> .env
           echo ENABLE_LOG_ACTIVITY=true >> .env
           echo AWS_REGION=eu-west-3 >> .env
-          echo AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} >> .env
-          echo AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} >> .env
-          echo SENDER_EMAIL=info@filippomenis.it >> .env
+          echo AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID_PROD }} >> .env
+          echo AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY_PROD }} >> .env
+          echo SENDER_EMAIL=dev@dilemmapolitico.info >> .env
           echo STATIC_FILES_DEST=/opt/dilemma-static/static >> .env
           echo SENTRY_DSN=${{ secrets.SENTRY_DSN }} >> .env
           cat .env
       - run: npm ci
       - run: npm run applyMigrations
-      - run: pm2 startOrRestart ecosystem-staging.config.cjs
+      - run: pm2 startOrRestart ecosystem-production.config.cjs
       - run: pm2 save
