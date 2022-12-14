@@ -13,4 +13,4 @@ docker container rm postgres-pd
 echo "Remove postgres data (volume)"
 docker volume rm postgres-pd
 echo "Relaunch stack"
-docker-compose up -d
+docker compose up -d
