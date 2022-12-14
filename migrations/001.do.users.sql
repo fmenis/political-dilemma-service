@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS sessions (
     expired_at timestamp NOT NULL,
     last_active timestamp NOT NULL DEFAULT NOW(),
     is_valid BOOLEAN NOT NULL DEFAULT true,
-    CONSTRAINT fk_user_id FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE NO ACTION
+    CONSTRAINT fk_user_id FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS reset_links (
@@ -55,5 +55,5 @@ CREATE TABLE IF NOT EXISTS reset_links (
     already_used BOOLEAN NOT NULL DEFAULT false,
     expired_at timestamp NOT NULL,
     created_at timestamp DEFAULT NOW(),
-    CONSTRAINT fk_user_id FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE NO ACTION
+    CONSTRAINT fk_user_id FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
 );
