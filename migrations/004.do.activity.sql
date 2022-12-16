@@ -5,10 +5,11 @@ CREATE TABLE IF NOT EXISTS "activity" (
     "description" TEXT,
     "text" TEXT,
     "status" VARCHAR(50) NOT NULL CHECK (status in ('DRAFT', 'IN_REVIEW', 'READY', 'PUBLISHED', 'REWORK', 'ARCHIVED', 'DELETED')),
-    "rating" INT, -- TODO capire se INT dopo analisi
+    "rating" DOUBLE PRECISION,
+    "gazzetteLink" VARCHAR(500),
+    "gazzettePublicationDate" timestamp,
     "categoryId" UUID NOT NULL,
     "ownerId" UUID,
-    -- TODO capire se serve anche il type abbreviato
     "tags" TEXT [],
     "cancellationReason" TEXT,
     "publishedAt" timestamp,

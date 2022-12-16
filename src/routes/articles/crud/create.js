@@ -58,6 +58,8 @@ export default async function createArticle(fastify) {
       })
     }
 
+    //TODO aggiungere validazione tipo categoria
+
     //TODO rifare controllo: togliere spazi e metter tutto lower
     const duplicateTitle = await massive.articles.findOne({ title })
     if (duplicateTitle) {
