@@ -52,7 +52,7 @@ export function sEnv() {
     .default(7200)
     .prop('ENABLE_BODY_LOG', S.boolean())
     .default(false)
-    .prop('ENABLE_API_COUNTS', S.boolean())
+    .prop('ENABLE_API_AUDIT', S.boolean())
     .default(false)
     .prop('ENABLE_LOG_ACTIVITY', S.boolean())
     .default(false)

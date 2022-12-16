@@ -1,7 +1,6 @@
 CREATE TABLE IF NOT EXISTS "categories" (
     "id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     "name" VARCHAR(50) UNIQUE NOT NULL,
-    "shortName" VARCHAR(12),
     "description" TEXT,
     "type" VARCHAR(20) NOT NULL CHECK (type in ('ARTICLE', 'ACTIVITY')),
     "createdAt" timestamp DEFAULT NOW()
@@ -52,9 +51,10 @@ CREATE TABLE IF NOT EXISTS "internalNotes" (
     CONSTRAINT fk_article_id FOREIGN KEY("articleId") REFERENCES articles(id) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS "apiCounts" (
+CREATE TABLE IF NOT EXISTS "apiAudit" (
     "id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     "api" VARCHAR(50) NOT NULL,
+    "userEmail" VARCHAR(50),
     "responseTime" DOUBLE PRECISION NOT NULL,
     "httpMethod" VARCHAR(20) NOT NULL CHECK ("httpMethod" in ('GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS')),
     "statusCode" INT NOT NULL,

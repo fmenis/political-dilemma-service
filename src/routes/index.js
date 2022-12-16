@@ -1,7 +1,7 @@
 import authentication from '../plugins/authentication.js'
 import authorization from '../plugins/authorization.js'
-import apiCount from '../plugins/apitCount.js'
-import activityLogPlugin from '../plugins/activityLog.js'
+import apiAudit from '../plugins/apitAudit.js'
+import activityLog from '../plugins/activityLog.js'
 import commonHooks from './common/commonHooks.js'
 
 import authRoutes from './auth/index.js'
@@ -19,8 +19,8 @@ import activitiesRoutes from './activities/index.js'
 export default async function index(fastify) {
   fastify.register(authentication)
   fastify.register(authorization)
-  fastify.register(apiCount)
-  fastify.register(activityLogPlugin)
+  fastify.register(apiAudit)
+  fastify.register(activityLog)
   fastify.register(commonHooks)
 
   fastify.register(authRoutes)
