@@ -1,7 +1,6 @@
 CREATE TABLE IF NOT EXISTS "categories" (
     "id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     "name" VARCHAR(50) UNIQUE NOT NULL,
-    "shortName" VARCHAR(12),
     "description" TEXT,
     "type" VARCHAR(20) NOT NULL CHECK (type in ('ARTICLE', 'ACTIVITY')),
     "createdAt" timestamp DEFAULT NOW()
