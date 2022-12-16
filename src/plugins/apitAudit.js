@@ -1,10 +1,10 @@
 import Fp from 'fastify-plugin'
 
-async function apiCount(fastify) {
-  async function countApiUsage(req, reply) {
+async function apiAuditPlugin(fastify) {
+  async function persistApiAudit(req, reply) {
     const { massive, config } = this
 
-    if (!config.ENABLE_API_COUNTS) {
+    if (!config.ENABLE_API_AUDIT) {
       return
     }
 
@@ -16,15 +16,16 @@ async function apiCount(fastify) {
       }, [])
       .join('-')
 
-    await massive.apiCounts.save({
+    await massive.apiAudit.save({
       api,
       responseTime: parseFloat(reply.getResponseTime().toFixed(3)),
       httpMethod: req.method,
       statusCode: reply.statusCode,
+      userEmail: req.user ? req.user.email : null,
     })
   }
 
-  fastify.addHook('onResponse', countApiUsage)
+  fastify.addHook('onResponse', persistApiAudit)
 }
 
-export default Fp(apiCount)
+export default Fp(apiAuditPlugin)
