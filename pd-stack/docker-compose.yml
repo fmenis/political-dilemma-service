@@ -43,6 +43,16 @@ services:
       - NGINX_HOST=foobar.com
       - NGINX_PORT=80
 
+  portainer:
+    container_name: portainer
+    image: portainer/portainer:latest
+    restart: always
+    ports:
+      - 9000:9000
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer:/data
+
 networks:
   database:
     name: database
@@ -52,3 +62,5 @@ volumes:
     name: postgres-pd
   redis-pd:
     name: redis-pd
+  portainer:
+    name: portainer
