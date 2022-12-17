@@ -15,6 +15,7 @@ export default async function createArticle(fastify) {
     config: {
       public: false,
       permission,
+      trimBodyFields: ['title', 'text', 'description', 'tags'],
     },
     schema: {
       summary: 'Create article',
@@ -26,27 +27,9 @@ export default async function createArticle(fastify) {
         409: fastify.getSchema('sConflict'),
       },
     },
-    preValidation: onPreValidation,
     preHandler: onPreHandler,
     handler: onCreateArticle,
   })
-
-  async function onPreValidation(req) {
-    const trimmableFields = ['title', 'text', 'description', 'tags']
-
-    for (const key of Object.keys(req.body)) {
-      if (req.body[key]) {
-        if (key === 'tags') {
-          req.body.tags = req.body.tags.map(tag => tag.trim())
-          continue
-        }
-
-        if (trimmableFields.includes(key)) {
-          req.body[key] = req.body[key].trim()
-        }
-      }
-    }
-  }
 
   async function onPreHandler(req) {
     const { categoryId, title, tags = [], attachmentIds = [] } = req.body
@@ -60,10 +43,11 @@ export default async function createArticle(fastify) {
 
     //TODO aggiungere validazione tipo categoria
 
-    //TODO rifare controllo: togliere spazi e metter tutto lower
-    const duplicateTitle = await massive.articles.findOne({ title })
-    if (duplicateTitle) {
-      //TODO capire perchè il messaggio non appare sui log pm2
+    if (
+      await massive.articles.findOne({
+        title: title.trim().toLowerCase(),
+      })
+    ) {
       throw httpErrors.conflict(`Article with title '${title}' already exists`)
     }
 

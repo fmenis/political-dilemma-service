@@ -5,27 +5,36 @@ import { getActivityStates } from '../lib/common.js'
 import { getActivityTypes } from './common.js'
 
 export function sCreateActivity() {
-  return S.object()
-    .additionalProperties(false)
-    .prop('title', S.string().minLength(3).maxLength(200))
-    .description('Activity title.')
-    .required()
-    .prop('text', S.string().minLength(3))
-    .description('Activity text.')
-    .prop('description', S.string().minLength(3).maxLength(500))
-    .description('Activity description.')
-    .prop('categoryId', S.string().format('uuid'))
-    .description('Activity category id.')
-    .required()
-    .prop('type', S.string().enum(getActivityTypes()))
-    .description('Activity type.')
-    .required()
-    .prop('tags', sTags())
-    .description('Activity tags.')
-    .prop('gazzetteLink', S.string().format('uri').minLength(10).maxLength(500))
-    .description('Activity offical gazzette link.')
-    .prop('gazzettePublicationDate', S.string().format('date-time'))
-    .description('Activity offical gazzette publication date.')
+  return (
+    S.object()
+      .additionalProperties(false)
+      .prop('title', S.string().minLength(3).maxLength(200))
+      .description('Activity title.')
+      .required()
+      .prop('text', S.string().minLength(3))
+      .description('Activity text.')
+      .prop('description', S.string().minLength(3).maxLength(500))
+      .description('Activity description.')
+      .prop('categoryId', S.string().format('uuid'))
+      .description('Activity category id.')
+      .required()
+      .prop('type', S.string().enum(getActivityTypes()))
+      .description('Activity type.')
+      .required()
+      //TODO
+      // .prop('shorType', S.string().enum(getActivityTypes()))
+      // .description('Activity type.')
+      // .required()
+      .prop('tags', sTags())
+      .description('Activity tags.')
+      .prop(
+        'gazzetteLink',
+        S.string().format('uri').minLength(10).maxLength(500)
+      )
+      .description('Activity offical gazzette link.')
+      .prop('gazzettePublicationDate', S.string().format('date-time'))
+      .description('Activity offical gazzette publication date.')
+  )
 }
 
 export function sActivityDetail() {

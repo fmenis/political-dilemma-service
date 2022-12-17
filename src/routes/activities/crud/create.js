@@ -22,6 +22,7 @@ export default async function createActivity(fastify) {
     config: {
       public: false,
       permission,
+      trimBodyFields: ['title', 'text', 'description', 'tags'],
     },
     schema: {
       summary: 'Create activity',
@@ -38,28 +39,9 @@ export default async function createActivity(fastify) {
         409: fastify.getSchema('sConflict'),
       },
     },
-    preValidation: onPreValidation,
     preHandler: onPreHandler,
     handler: onCreateActivity,
   })
-
-  async function onPreValidation(req) {
-    //TODO accorpare con create article
-    const trimmableFields = ['title', 'text', 'description', 'tags']
-
-    for (const key of Object.keys(req.body)) {
-      if (req.body[key]) {
-        if (key === 'tags') {
-          req.body.tags = req.body.tags.map(tag => tag.trim())
-          continue
-        }
-
-        if (trimmableFields.includes(key)) {
-          req.body[key] = req.body[key].trim()
-        }
-      }
-    }
-  }
 
   async function onPreHandler(req) {
     const { categoryId, title, tags = [] } = req.body
@@ -73,10 +55,9 @@ export default async function createActivity(fastify) {
       throwInvalidCategoryError({ id: categoryId, type: category.type })
     }
 
-    //TODO migliorare ed accorpare con article
     if (
       await massive.activity.findOne({
-        title,
+        title: title.trim().toLowerCase(),
       })
     ) {
       throwDuplicateTitleError({ title })

@@ -12,7 +12,6 @@ async function activityErrors(fastify) {
     })
   }
 
-  //TODO accorpare con articoli
   function throwInvalidCategoryError(data) {
     const { type, id } = data
     const message = `Invalid category type '${type}'. Required: 'ACTIVITY'`
@@ -22,7 +21,6 @@ async function activityErrors(fastify) {
     })
   }
 
-  //TODO accorpare con articoli
   function throwDuplicateTitleError(data) {
     const { title } = data
     const message = `Title '${title}' already exists`

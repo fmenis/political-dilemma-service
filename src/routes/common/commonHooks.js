@@ -1,6 +1,8 @@
 import fp from 'fastify-plugin'
 import S from 'fluent-json-schema'
 
+import { trimObjectFields } from '../common/common.js'
+
 async function commonHooks(fastify) {
   /**
    * Empty object that can be utilized to pass object between hook
@@ -10,9 +12,9 @@ async function commonHooks(fastify) {
   })
 
   /**
-   * Additional request logs
+   * Additional request logs and trim target body fields
    */
-  fastify.addHook('preValidation', async req => {
+  fastify.addHook('preValidation', async (req, reply) => {
     const { body, log, user } = req
 
     if (user) {
@@ -27,6 +29,10 @@ async function commonHooks(fastify) {
 
     if (fastify.config.ENABLE_BODY_LOG && body) {
       log.debug(body, 'parsed body')
+    }
+
+    if (reply.context.config.trimBodyFields) {
+      req.body = trimObjectFields(reply.context.config.trimBodyFields, req.body)
     }
   })
 
