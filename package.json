@@ -1,12 +1,12 @@
 {
   "name": "political-dilemma-service",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Political dilemma service",
   "main": "index.js",
   "type": "module",
   "engines": {
-    "node": ">=16.13.x",
-    "npm": ">=8.1.0"
+    "node": ">=18.12.x",
+    "npm": ">=8.9.0"
   },
   "private": true,
   "scripts": {
