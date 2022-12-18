@@ -2,7 +2,6 @@ import _ from 'lodash'
 
 import { sCreateArticle, sArticle } from '../lib/schema.js'
 import { ARTICLE_STATES } from '../../common/enums.js'
-import { findArrayDuplicates } from '../../../utils/main.js'
 
 export default async function createArticle(fastify) {
   const { massive, httpErrors } = fastify
@@ -32,7 +31,7 @@ export default async function createArticle(fastify) {
   })
 
   async function onPreHandler(req) {
-    const { categoryId, title, tags = [], attachmentIds = [] } = req.body
+    const { categoryId, title, attachmentIds = [] } = req.body
 
     const category = await massive.categories.findOne(categoryId)
     if (!category) {
@@ -43,36 +42,12 @@ export default async function createArticle(fastify) {
 
     //TODO aggiungere validazione tipo categoria
 
-    const duplicates = await massive.articles.where(
+    const titleDuplicates = await massive.articles.where(
       'LOWER(title) = TRIM(LOWER($1))',
       [`${title.trim()}`]
     )
-    if (duplicates.length > 0) {
+    if (titleDuplicates.length > 0) {
       throw httpErrors.conflict(`Article with title '${title}' already exists`)
-    }
-
-    const duplicatedTags = findArrayDuplicates(tags)
-    if (duplicatedTags.length) {
-      throw createError(400, 'Invalid input', {
-        validation: [
-          {
-            message: `Duplicate tags: ${duplicatedTags.join(', ')}`,
-          },
-        ],
-      })
-    }
-
-    const duplicatedAttachmentIds = findArrayDuplicates(attachmentIds)
-    if (duplicatedAttachmentIds.length) {
-      throw createError(400, 'Invalid input', {
-        validation: [
-          {
-            message: `Duplicate attachments ids: ${duplicatedAttachmentIds.join(
-              ', '
-            )}`,
-          },
-        ],
-      })
     }
 
     const files = await massive.files.find({ id: attachmentIds })

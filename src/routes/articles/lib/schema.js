@@ -21,7 +21,11 @@ export function sCreateArticle() {
       .description('Article tags.')
       .prop(
         'attachmentIds',
-        S.array().items(S.string().format('uuid')).minItems(1).maxItems(50)
+        S.array()
+          .items(S.string().format('uuid'))
+          .minItems(1)
+          .maxItems(50)
+          .uniqueItems(true)
       )
       //TODO non funziona, capire come mettere default su tipo dati non primitivi
       // .default(S.array())

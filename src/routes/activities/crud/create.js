@@ -1,7 +1,6 @@
 import { sCreateActivity, sActivityDetail } from '../lib/activity.schema.js'
 import { buildRouteFullDescription } from '../../common/common.js'
 import { ACTIVITY_STATES } from '../../common/enums.js'
-import { findArrayDuplicates } from '../../../utils/main.js'
 import { getShortType } from '../lib/common.js'
 
 export default async function createActivity(fastify) {
@@ -11,7 +10,6 @@ export default async function createActivity(fastify) {
     throwNotFoundError,
     throwInvalidCategoryError,
     throwDuplicateTitleError,
-    throwDuplicateTagsError,
   } = fastify.activityErrors
 
   const routeDescription = 'Create activity.'
@@ -45,7 +43,7 @@ export default async function createActivity(fastify) {
   })
 
   async function onPreHandler(req) {
-    const { categoryId, title, tags = [] } = req.body
+    const { categoryId, title } = req.body
 
     const category = await massive.categories.findOne(categoryId)
     if (!category) {
@@ -55,17 +53,12 @@ export default async function createActivity(fastify) {
       throwInvalidCategoryError({ id: categoryId, type: category.type })
     }
 
-    const duplicates = await massive.activity.where(
+    const titleDuplicates = await massive.activity.where(
       'LOWER(title) = TRIM(LOWER($1))',
       [`${title.trim()}`]
     )
-    if (duplicates.length > 0) {
+    if (titleDuplicates.length > 0) {
       throwDuplicateTitleError({ title })
-    }
-
-    const duplicatedTags = findArrayDuplicates(tags)
-    if (duplicatedTags.length) {
-      throwDuplicateTagsError({ duplicatedTags })
     }
   }
 

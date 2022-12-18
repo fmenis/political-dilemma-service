@@ -30,25 +30,10 @@ async function activityErrors(fastify) {
     })
   }
 
-  function throwDuplicateTagsError(data) {
-    const { duplicatedTags } = data
-    const message = 'Invalid input'
-    throw createError(400, message, {
-      internalCode: 'INVALID_INPUT',
-      validation: [
-        {
-          internalCode: 'DUPLICATE_TAGS',
-          message: `Duplicate tags not allowed: ${duplicatedTags.join(', ')}`,
-        },
-      ],
-    })
-  }
-
   fastify.decorate('activityErrors', {
     throwNotFoundError,
     throwInvalidCategoryError,
     throwDuplicateTitleError,
-    throwDuplicateTagsError,
     errors: [
       {
         code: '*NOT_FOUND*',
@@ -63,11 +48,6 @@ async function activityErrors(fastify) {
       {
         code: '*DUPLICATE_TITLE*',
         description: 'occurs when the title is already used.',
-        apis: ['create'],
-      },
-      {
-        code: '*DUPLICATE_TAGS*',
-        description: 'occurs when there are duplicated tags.',
         apis: ['create'],
       },
     ],

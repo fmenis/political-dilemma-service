@@ -5,4 +5,5 @@ export function sTags() {
     .items(S.string().minLength(2).maxLength(30))
     .minItems(1)
     .maxItems(50)
+    .uniqueItems(true)
 }
