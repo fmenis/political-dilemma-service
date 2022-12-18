@@ -33,10 +33,10 @@ export default async function listArticles(fastify) {
         .prop('sortBy', S.string().enum(['title']))
         .description('Field used to sort results (sorting).')
         .prop('order', S.string().enum(['ASC', 'DESC']))
-        .prop('limit', S.number())
+        .prop('limit', S.integer())
         .description('Number of results (pagination).')
         .default(defaultLimit)
-        .prop('offset', S.number())
+        .prop('offset', S.integer())
         .description('Items to skip (pagination).')
         .default(defaultOffset),
       response: {
