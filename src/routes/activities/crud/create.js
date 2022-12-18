@@ -56,6 +56,7 @@ export default async function createActivity(fastify) {
     }
 
     if (
+      //TODO occorre fare comparazione con lowerCase anche del valore a db
       await massive.activity.findOne({
         title: title.trim().toLowerCase(),
       })
@@ -72,17 +73,26 @@ export default async function createActivity(fastify) {
   async function onCreateActivity(req, reply) {
     const { user } = req
 
-    const params = {
-      ...req.body,
-      status: ACTIVITY_STATES.DRAFT,
-      ownerId: user.id,
+    //TODO mock error
+    // delete req.body.type
+
+    try {
+      const params = {
+        ...req.body,
+        status: ACTIVITY_STATES.DRAFT,
+        ownerId: user.id,
+      }
+
+      const newActivity = await massive.activity.save(params)
+
+      reply.resourceId = newActivity.id
+      reply.code(201)
+
+      return newActivity
+    } catch (error) {
+      //TODO capire perchè questo tipo di errori viene loggato 2 volte su sentry
+      reply.code(500)
+      throw error
     }
-
-    const newActivity = await massive.activity.save(params)
-
-    reply.resourceId = newActivity.id
-    reply.code(201)
-
-    return newActivity
   }
 }

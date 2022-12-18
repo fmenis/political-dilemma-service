@@ -69,6 +69,8 @@ async function commonHooks(fastify) {
   fastify.addHook('onError', async (req, reply, error) => {
     error.internalCode = error.internalCode || '0000'
     error.details = error.details || {}
+    error.message =
+      reply.statusCode === 500 ? 'Somethig went wrong...' : error.message
 
     if (error.validation) {
       error.details.validation = error.validation
