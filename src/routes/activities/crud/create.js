@@ -55,12 +55,11 @@ export default async function createActivity(fastify) {
       throwInvalidCategoryError({ id: categoryId, type: category.type })
     }
 
-    if (
-      //TODO occorre fare comparazione con lowerCase anche del valore a db
-      await massive.activity.findOne({
-        title: title.trim().toLowerCase(),
-      })
-    ) {
+    const duplicates = await massive.activity.where(
+      'LOWER(title) = TRIM(LOWER($1))',
+      [`${title.trim()}`]
+    )
+    if (duplicates.length > 0) {
       throwDuplicateTitleError({ title })
     }
 

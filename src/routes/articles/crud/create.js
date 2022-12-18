@@ -43,11 +43,11 @@ export default async function createArticle(fastify) {
 
     //TODO aggiungere validazione tipo categoria
 
-    if (
-      await massive.articles.findOne({
-        title: title.trim().toLowerCase(),
-      })
-    ) {
+    const duplicates = await massive.articles.where(
+      'LOWER(title) = TRIM(LOWER($1))',
+      [`${title.trim()}`]
+    )
+    if (duplicates.length > 0) {
       throw httpErrors.conflict(`Article with title '${title}' already exists`)
     }
 
