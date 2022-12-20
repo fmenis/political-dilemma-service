@@ -76,3 +76,26 @@ export function sActivityDetail() {
     .description('Activity last change date.')
     .required()
 }
+
+export function sActivityList() {
+  return S.object()
+    .additionalProperties(false)
+    .prop('id', S.string().format('uuid'))
+    .description('Activity id.')
+    .required()
+    .prop('title', S.string().minLength(3).maxLength(200))
+    .description('Activity title.')
+    .required()
+    .prop('author', S.string())
+    .description('Activity author.')
+    .required()
+    .prop('category', S.string())
+    .description('Activity category.')
+    .required()
+    .prop('type', S.string().enum(getActivityTypes()))
+    .description('Activity type.')
+    .required()
+    .prop('shortType', S.string().enum(getActivityShortTypes()))
+    .description('Activity abbreviated type.')
+    .required()
+}

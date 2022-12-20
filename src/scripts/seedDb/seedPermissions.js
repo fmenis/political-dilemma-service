@@ -220,6 +220,18 @@ export async function seedPermissions(client) {
       ownership: null,
       description: 'Creazione attività',
     },
+    {
+      resource: 'activity',
+      action: 'list',
+      ownership: 'any',
+      description: 'Lista attività (tutte)',
+    },
+    {
+      resource: 'activity',
+      action: 'list',
+      ownership: 'own',
+      description: 'Lista attività (solo proprie)',
+    },
   ]
 
   for (const permission of permissions) {
