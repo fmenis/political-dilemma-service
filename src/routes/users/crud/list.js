@@ -6,7 +6,7 @@ import { promisify } from 'util'
 const readFileAsync = promisify(readFile)
 
 import { sUserList } from '../lib/schema.js'
-import { buildPaginatedInfo } from '../../lib/common.js'
+import { buildPaginatedInfo } from '../../common/common.js'
 import { appConfig } from '../../../config/main.js'
 
 export default async function listUsers(fastify) {
@@ -60,10 +60,10 @@ export default async function listUsers(fastify) {
         .description('Field used to sort results (sorting).')
         .prop('order', S.string().enum(['ASC', 'DESC']))
         .description('Sort order (sorting).')
-        .prop('limit', S.number())
+        .prop('limit', S.integer())
         .default(defaultLimit)
         .description('Number of results (pagination).')
-        .prop('offset', S.number())
+        .prop('offset', S.integer())
         .default(defaultOffset)
         .description('Items to skip (pagination).'),
       response: {

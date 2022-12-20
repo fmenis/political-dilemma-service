@@ -1,6 +1,6 @@
 import S from 'fluent-json-schema'
 
-import { ARTICLE_STATES as status } from './lib/enums.js'
+import { ARTICLE_STATES as status } from '../common/enums.js'
 import { sArticle } from './lib/schema.js'
 import { populateArticle } from './lib/common.js'
 

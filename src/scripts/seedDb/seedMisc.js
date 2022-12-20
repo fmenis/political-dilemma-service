@@ -12,6 +12,11 @@ export async function seedMisc(client) {
       name: 'Ambiente',
       type: 'ARTICLE',
     },
+    //TODO
+    {
+      name: 'FOO',
+      type: 'ACTIVITY',
+    },
   ]
 
   for (const category of categories) {

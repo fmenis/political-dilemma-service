@@ -1,9 +1,9 @@
 import S from 'fluent-json-schema'
 
-import { ARTICLE_STATES } from './lib/enums.js'
+import { ARTICLE_STATES } from '../common/enums.js'
 import { sArticle } from './lib/schema.js'
 import { populateArticle } from './lib/common.js'
-import { buildRouteFullDescription } from '../lib/common.js'
+import { buildRouteFullDescription } from '../common/common.js'
 
 export default async function reviewArticle(fastify) {
   const { massive } = fastify

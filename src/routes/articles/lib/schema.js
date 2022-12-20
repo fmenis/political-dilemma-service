@@ -1,12 +1,7 @@
 import S from 'fluent-json-schema'
-import { getArticleStates } from '../lib/common.js'
 
-export function sTags() {
-  return S.array()
-    .items(S.string().minLength(2).maxLength(30))
-    .minItems(1)
-    .maxItems(50)
-}
+import { sTags } from '../../common/common.schema.js'
+import { getArticleStates } from '../lib/common.js'
 
 export function sCreateArticle() {
   return (
@@ -26,9 +21,13 @@ export function sCreateArticle() {
       .description('Article tags.')
       .prop(
         'attachmentIds',
-        S.array().items(S.string().format('uuid')).minItems(1).maxItems(50)
+        S.array()
+          .items(S.string().format('uuid'))
+          .minItems(1)
+          .maxItems(50)
+          .uniqueItems(true)
       )
-      //##TODO non funziona, capire come mettere default su tipo dati non primitivi
+      //TODO non funziona, capire come mettere default su tipo dati non primitivi
       // .default(S.array())
       .description('Article attachments ids.')
   )

@@ -1,8 +1,7 @@
 import _ from 'lodash'
 
 import { sCreateArticle, sArticle } from '../lib/schema.js'
-import { ARTICLE_STATES } from '../lib/enums.js'
-import { findArrayDuplicates } from '../../../utils/main.js'
+import { ARTICLE_STATES } from '../../common/enums.js'
 
 export default async function createArticle(fastify) {
   const { massive, httpErrors } = fastify
@@ -15,6 +14,7 @@ export default async function createArticle(fastify) {
     config: {
       public: false,
       permission,
+      trimBodyFields: ['title', 'text', 'description', 'tags'],
     },
     schema: {
       summary: 'Create article',
@@ -26,30 +26,12 @@ export default async function createArticle(fastify) {
         409: fastify.getSchema('sConflict'),
       },
     },
-    preValidation: onPreValidation,
     preHandler: onPreHandler,
     handler: onCreateArticle,
   })
 
-  async function onPreValidation(req) {
-    const trimmableFields = ['title', 'text', 'description', 'tags']
-
-    for (const key of Object.keys(req.body)) {
-      if (req.body[key]) {
-        if (key === 'tags') {
-          req.body.tags = req.body.tags.map(tag => tag.trim())
-          continue
-        }
-
-        if (trimmableFields.includes(key)) {
-          req.body[key] = req.body[key].trim()
-        }
-      }
-    }
-  }
-
   async function onPreHandler(req) {
-    const { categoryId, title, tags = [], attachmentIds = [] } = req.body
+    const { categoryId, title, attachmentIds = [] } = req.body
 
     const category = await massive.categories.findOne(categoryId)
     if (!category) {
@@ -58,35 +40,14 @@ export default async function createArticle(fastify) {
       })
     }
 
-    //TODO rifare controllo: togliere spazi e metter tutto lower
-    const duplicateTitle = await massive.articles.findOne({ title })
-    if (duplicateTitle) {
-      //TODO capire perchè il messaggio non appare sui log pm2
+    //TODO aggiungere validazione tipo categoria
+
+    const titleDuplicates = await massive.articles.where(
+      'LOWER(title) = TRIM(LOWER($1))',
+      [`${title.trim()}`]
+    )
+    if (titleDuplicates.length > 0) {
       throw httpErrors.conflict(`Article with title '${title}' already exists`)
-    }
-
-    const duplicatedTags = findArrayDuplicates(tags)
-    if (duplicatedTags.length) {
-      throw createError(400, 'Invalid input', {
-        validation: [
-          {
-            message: `Duplicate tags: ${duplicatedTags.join(', ')}`,
-          },
-        ],
-      })
-    }
-
-    const duplicatedAttachmentIds = findArrayDuplicates(attachmentIds)
-    if (duplicatedAttachmentIds.length) {
-      throw createError(400, 'Invalid input', {
-        validation: [
-          {
-            message: `Duplicate attachments ids: ${duplicatedAttachmentIds.join(
-              ', '
-            )}`,
-          },
-        ],
-      })
     }
 
     const files = await massive.files.find({ id: attachmentIds })
