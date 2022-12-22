@@ -5,7 +5,7 @@ const appConfig = {
     /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})(?=.*[;:_,.\-ç°§òàù@#é*è+[\]{}|!"£$%&/()=?^\\'ì<>])/g,
   upload: {
     allowedFileExts: ['png', 'jpg', 'jpeg'],
-    maxSize: 5, // MB,
+    maxSize: 20, // MB,
     maxUploadsForRequeset: 10,
   },
   pagination: {
