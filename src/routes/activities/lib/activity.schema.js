@@ -22,9 +22,12 @@ export function sCreateActivity() {
     .required()
     .prop('tags', sTags())
     .description('Activity tags.')
-    .prop('gazzetteLink', S.string().format('uri').minLength(10).maxLength(500))
+    .prop(
+      'linkGazzettaUfficiale',
+      S.string().format('uri').minLength(10).maxLength(500)
+    )
     .description('Activity offical gazzette link.')
-    .prop('gazzettePublicationDate', S.string().format('date-time'))
+    .prop('dataPubblicazioneInGazzetta', S.string().format('date-time'))
     .description('Activity offical gazzette publication date.')
 }
 
@@ -60,12 +63,12 @@ export function sActivityDetail() {
     .prop('tags', sTags().raw({ nullable: true }))
     .description('Activity tags.')
     .prop(
-      'gazzetteLink',
+      'linkGazzettaUfficiale',
       S.string().minLength(10).maxLength(500).raw({ nullable: true })
     )
     .description('Activity offical gazzette link.')
     .prop(
-      'gazzettePublicationDate',
+      'dataPubblicazioneInGazzetta',
       S.string().format('date-time').raw({ nullable: true })
     )
     .description('Activity offical gazzette publication date.')
