@@ -36,25 +36,30 @@ export function restrictDataToOwner(apiPermission) {
 
 /**
  * Build OpenAPI route description
+ * @param {string} version route version
  * @param {string} description route description
- * @param {Object[]} errors route possibile errors
- * @param {string} permission route permission
- * @param {string} api route error identifier
+ * @param {Object[]} [errors] route possibile errors
+ * @param {string} [permission] route permission
+ * @param {string} [api] route error identifier
  * @returns string
  */
-export function buildRouteFullDescription(
-  description,
-  errors,
-  permission,
-  api
-) {
-  const formattedErrors = errors
-    .filter(item => item.apis.includes(api))
-    .map(item => `- ${item.code}: ${item.description} \n\n`)
+export function buildRouteFullDescription(params) {
+  const { version, description, errors = [], api, permission } = params
 
-  let fullDescription = `${description} \n\n **Possible errors**: \n\n ${formattedErrors.join(
-    ' '
-  )}`
+  let fullDescription = `${description} \n\n `
+
+  //TODO togliere quando nuovo versionamento api è in atto
+  if (version) {
+    fullDescription += `**Api version**: ${version} \n\n `
+  }
+
+  if (errors.length > 0) {
+    const formattedErrors = errors
+      .filter(item => item.apis.includes(api))
+      .map(item => `- ${item.code}: ${item.description} \n\n`)
+
+    fullDescription += ` **Possible errors**: \n\n ${formattedErrors.join(' ')}`
+  }
 
   if (permission) {
     fullDescription += `**Required permission**: *${permission}*.`

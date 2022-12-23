@@ -26,12 +26,12 @@ export default async function reviewArticle(fastify) {
     },
     schema: {
       summary: 'Review article',
-      description: buildRouteFullDescription(
-        routeDescription,
+      description: buildRouteFullDescription({
+        description: routeDescription,
         errors,
         permission,
-        'review'
-      ),
+        api: 'review',
+      }),
       params: S.object()
         .additionalProperties(false)
         .prop('id', S.string().format('uuid'))
