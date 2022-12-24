@@ -1,7 +1,6 @@
 import S from 'fluent-json-schema'
 
 import { appConfig } from '../../../config/main.js'
-// import { getActivityStates } from '../lib/common.js'
 import { sActivityList } from '../lib/activity.schema.js'
 import { buildRouteFullDescription } from '../../common/common.js'
 import { buildPaginatedInfo, restrictDataToOwner } from '../../common/common.js'
@@ -88,8 +87,7 @@ export default async function listActivities(fastify) {
     }
   }
 
-  function buildFilters(query, user) {
-    //TODO definire filtri
+  function buildFilters(user) {
     const { id: userId, apiPermission } = user
     const filters = {}
 
@@ -101,9 +99,8 @@ export default async function listActivities(fastify) {
   }
 
   function buildOptions(query) {
-    //TODO definire ordinamenti
     const options = {
-      //TODO capire come fare
+      //TODO capire come selezionare fields sui join
       // fields: [
       //   'activity.id',
       //   'activity.title',
