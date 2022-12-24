@@ -118,7 +118,7 @@ export default async function updateUser(fastify) {
     const query =
       'UPDATE users SET ' +
       'first_name=$2, last_name=$3, user_name=$4, email=$5, bio=$6, ' +
-      'birth_date=$7, sex=$8, updated_at=$9 ' +
+      'birth_date=$7, sex=$8, updated_at=$9, ' +
       'id_region=$10, id_province=$11 ' +
       'WHERE id=$1 ' +
       'RETURNING id, first_name, last_name, user_name, email, bio, ' +
