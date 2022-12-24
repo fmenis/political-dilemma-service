@@ -25,12 +25,12 @@ export default async function createActivity(fastify) {
     },
     schema: {
       summary: 'Create activity',
-      description: buildRouteFullDescription(
-        routeDescription,
+      description: buildRouteFullDescription({
+        description: routeDescription,
         errors,
         permission,
-        'create'
-      ),
+        api: 'create',
+      }),
       body: sCreateActivity(),
       response: {
         201: sActivityDetail(),
