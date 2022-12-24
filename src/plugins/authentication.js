@@ -62,7 +62,7 @@ async function authentication(fastify) {
     }
 
     const user = await pg.execQuery(
-      'SELECT * FROM users WHERE id=$1',
+      'SELECT id, first_name, last_name, email, is_blocked, is_deleted FROM users WHERE id=$1',
       [session.userId],
       { findOne: true }
     )
