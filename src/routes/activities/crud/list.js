@@ -52,7 +52,7 @@ export default async function listActivities(fastify) {
   async function onListActivities(req) {
     const { query, user } = req
 
-    const filters = buildFilters(query, user)
+    const filters = buildFilters(user)
     const options = buildOptions(query)
 
     const [activities, count] = await Promise.all([
