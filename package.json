@@ -27,11 +27,6 @@
   ],
   "author": "filippomeniswork@gmail.com",
   "license": "ISC",
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run lint"
-    }
-  },
   "dependencies": {
     "@fastify/cors": "8.2.0",
     "@fastify/env": "4.2.0",
@@ -70,7 +65,6 @@
     "eslint-plugin-node": "11.1.0",
     "eslint-plugin-prettier": "4.2.1",
     "eslint-plugin-promise": "6.1.1",
-    "husky": "7.0.4",
     "massive": "6.10.2",
     "nodemon": "2.0.20",
     "pino-pretty": "9.1.1",
