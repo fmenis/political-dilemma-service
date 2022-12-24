@@ -27,7 +27,7 @@ export function sCreateActivity() {
       S.string().format('uri').minLength(10).maxLength(500)
     )
     .description('Activity offical gazzette link.')
-    .prop('dataPubblicazioneInGazzetta', S.string().format('date-time'))
+    .prop('dataPubblicazioneInGazzetta', S.string().format('date'))
     .description('Activity offical gazzette publication date.')
 }
 
@@ -69,7 +69,7 @@ export function sActivityDetail() {
     .description('Activity offical gazzette link.')
     .prop(
       'dataPubblicazioneInGazzetta',
-      S.string().format('date-time').raw({ nullable: true })
+      S.string().format('date').raw({ nullable: true })
     )
     .description('Activity offical gazzette publication date.')
     .prop('createdAt', S.string())
