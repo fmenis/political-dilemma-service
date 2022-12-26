@@ -14,7 +14,6 @@
     "dev": "npm run applyMigrations && nodemon --config nodemon.json --inspect -r dotenv/config index.js",
     "test": "tap",
     "lint": "eslint . --ext .js",
-    "prepare": "husky install",
     "initStack": "cd ./pd-stack && docker compose up -d",
     "shutdownStack": "cd ./pd-stack && docker compose down -d",
     "rebuildDb": "./pd-stack/rebuild-db.sh",
