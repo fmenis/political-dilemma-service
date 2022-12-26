@@ -23,6 +23,15 @@ export function sCreateActivity() {
     .prop('tags', sTags())
     .description('Activity tags.')
     .prop(
+      'attachmentIds',
+      S.array()
+        .items(S.string().format('uuid'))
+        .minItems(1)
+        .maxItems(50)
+        .uniqueItems(true)
+    )
+    .description('Activity attachments ids.')
+    .prop(
       'linkGazzettaUfficiale',
       S.string().format('uri').minLength(10).maxLength(500)
     )
@@ -62,6 +71,23 @@ export function sActivityDetail() {
     .required()
     .prop('tags', sTags().raw({ nullable: true }))
     .description('Activity tags.')
+    .prop(
+      'attachments',
+      S.array()
+        .items(
+          S.object()
+            .additionalProperties(false)
+            .prop('id', S.string().format('uuid'))
+            .description('File id.')
+            .required()
+            .prop('url', S.string().format('uri'))
+            .description('File url.')
+            .required()
+        )
+        .maxItems(10)
+        .raw({ nullable: true })
+    )
+    .description('Activity attachments ids.')
     .prop(
       'linkGazzettaUfficiale',
       S.string().minLength(10).maxLength(500).raw({ nullable: true })

@@ -8,7 +8,6 @@ import { CATEGORIES } from './lib/enums.js'
 import { calcFileSize, moveFile } from './lib/utils.js'
 import { appConfig } from '../../config/main.js'
 import { calculateBaseUrl } from '../../utils/main.js'
-import { CATEGORY_TYPES as TYPES } from '../common/enums.js'
 
 export default async function uploadFile(fastify) {
   fastify.register(multipart, {
@@ -57,23 +56,23 @@ export default async function uploadFile(fastify) {
 
   async function onUploadFile(req) {
     const { user } = req
-
     const files = await req.saveRequestFiles()
 
-    const entityRelativePath = getEntityRelativePath(files)
-
-    const populatedFiles = await populateFiles(files, entityRelativePath)
+    const { entityRelativePath, category } = getFileMeta(files)
+    const populatedFiles = await populateFiles(
+      files,
+      entityRelativePath,
+      category
+    )
 
     await checkFiles(populatedFiles)
-
     await moveFiles(populatedFiles, entityRelativePath)
-
     const urls = await indexFiles(populatedFiles, user)
 
     return urls
   }
 
-  function populateFiles(files, entityRelativePath) {
+  function populateFiles(files, entityRelativePath, category) {
     async function populateFile(file) {
       const fileStats = await stat(file.filepath)
       const extension = extname(file.filename)
@@ -91,6 +90,7 @@ export default async function uploadFile(fastify) {
         url: `${calculateBaseUrl({
           port: 8080,
         })}/static/${entityRelativePath}/${filesystemFileName}`,
+        category,
       }
     }
 
@@ -128,7 +128,8 @@ export default async function uploadFile(fastify) {
 
   async function indexFiles(files, user) {
     async function indexFile(file, user, tx) {
-      const { destPath, url, filename, extension, mimetype, size } = file
+      const { destPath, url, filename, extension, mimetype, size, category } =
+        file
       const newFile = await tx.files.save({
         fullPath: destPath,
         url: encodeURI(url),
@@ -137,7 +138,7 @@ export default async function uploadFile(fastify) {
         mimetype,
         size,
         ownerId: user.id,
-        category: CATEGORIES.ARTICLE_IMAGE,
+        category,
       })
 
       return { id: newFile.id, url: newFile.url }
@@ -153,20 +154,29 @@ export default async function uploadFile(fastify) {
     return filesData
   }
 
-  function getEntityRelativePath(files) {
+  function getFileMeta(files) {
     if (!files[0].fields.type) {
       throw new Error(`Specify the required field 'type'`)
     }
 
-    const type = files[0].fields.type.value
-    if (type === TYPES.ARTICLE) {
-      return 'articles/images'
+    const result = {
+      category: files[0].fields.type.value,
+      entityRelativePath: '',
     }
 
-    if (type === TYPES.ACTIVITY) {
-      return 'activities/images'
+    switch (result.category) {
+      case CATEGORIES.ARTICLE_IMAGE:
+        result.entityRelativePath = 'articles/images'
+        break
+
+      case CATEGORIES.ACTIVITY_IMAGE:
+        result.entityRelativePath = 'activities/images'
+        break
+
+      default:
+        throw new Error(`File type ${result.category} not allowed`)
     }
 
-    throw new Error(`File type ${type} not allowed`)
+    return result
   }
 }

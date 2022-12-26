@@ -20,3 +20,8 @@ CREATE TABLE IF NOT EXISTS "activity" (
     CONSTRAINT fk_owner_id FOREIGN KEY("ownerId") REFERENCES users("id") ON DELETE SET NULL,
     CONSTRAINT fk_category_id FOREIGN KEY("categoryId") REFERENCES categories("id") ON DELETE NO ACTION
 );
+
+ALTER TABLE files ADD COLUMN "activityId" UUID;
+ALTER TABLE files ADD CONSTRAINT fk_activity_id FOREIGN KEY("activityId") REFERENCES activity(id) ON DELETE CASCADE;
+ALTER TABLE files DROP CONSTRAINT files_category_check;
+ALTER TABLE files ADD CONSTRAINT files_category_check CHECK (category in ('ARTICLE_IMAGE', 'ACTIVITY_IMAGE'));

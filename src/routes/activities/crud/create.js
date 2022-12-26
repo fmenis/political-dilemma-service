@@ -60,38 +60,41 @@ export default async function createActivity(fastify) {
     if (titleDuplicates.length > 0) {
       throwDuplicateTitleError({ title })
     }
+
+    //TODO controllo attachmentIds
   }
 
   async function onCreateActivity(req, reply) {
     const { user } = req
+    const { attachmentIds = [] } = req.body
 
-    //TODO mock error
-    // delete req.body.type
+    const params = {
+      ...req.body,
+      status: ACTIVITY_STATES.DRAFT,
+      ownerId: user.id,
+      shortType: getShortType(req.body.type),
+    }
 
-    try {
-      const params = {
-        ...req.body,
-        status: ACTIVITY_STATES.DRAFT,
-        ownerId: user.id,
-        shortType: getShortType(req.body.type),
-      }
+    const newActivity = await massive.withTransaction(async tx => {
+      const newActivity = await tx.activity.save(params)
 
-      const [newActivity, owner] = await Promise.all([
-        massive.activity.save(params),
-        massive.users.findOne(user.id, { fields: ['first_name', 'last_name'] }),
-      ])
+      await Promise.all(
+        attachmentIds.map(attachmentId => {
+          tx.files.save({ id: attachmentId, activityId: newActivity.id })
+        })
+      )
 
-      reply.resourceId = newActivity.id
-      reply.code(201)
+      return newActivity
+    })
 
-      return {
-        ...newActivity,
-        author: `${owner.first_name} ${owner.last_name}`,
-      }
-    } catch (error) {
-      //TODO capire perchè questo tipo di errori viene loggato 2 volte su sentry
-      reply.code(500)
-      throw error
+    const owner = await massive.users.findOne(user.id)
+
+    reply.resourceId = newActivity.id
+    reply.code(201)
+
+    return {
+      ...newActivity,
+      author: `${owner.first_name} ${owner.last_name}`,
     }
   }
 }
