@@ -1,6 +1,0 @@
-const CATEGORY_TYPES = {
-  ARTICLE: 'ARTICLE',
-  ACTIVITY: 'ACTIVITY',
-}
-
-export { CATEGORY_TYPES }
