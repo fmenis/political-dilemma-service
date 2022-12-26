@@ -56,6 +56,7 @@ export default async function app(fastify, opts) {
     dsn: process.env.SENTRY_DSN,
     environment: process.env.NODE_ENV,
     release: JSON.parse(readFileSync(join(resolve(), 'package.json'))).version,
+    enabled: process.env.NODE_ENV !== ENV.LOCAL,
     onErrorFactory: () => {
       return function (error, req, reply) {
         reply.send(error)
