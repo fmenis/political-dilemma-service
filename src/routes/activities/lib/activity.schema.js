@@ -71,6 +71,8 @@ export function sActivityDetail() {
     .required()
     .prop('tags', sTags().raw({ nullable: true }))
     .description('Activity tags.')
+    .prop('rating', S.number().raw({ nullable: true }))
+    .description('Activity rating.')
     .prop(
       'attachments',
       S.array()
@@ -98,12 +100,60 @@ export function sActivityDetail() {
       S.string().format('date').raw({ nullable: true })
     )
     .description('Activity offical gazzette publication date.')
+    .prop(
+      'cancellationReason',
+      S.string().minLength(3).maxLength(500).raw({ nullable: true })
+    )
+    .description('Activity cancellation reason.')
     .prop('createdAt', S.string())
     .description('Activity creation date.')
+    .required()
+    .prop('publishedAt', S.string())
+    .description('Activity publication date.')
     .required()
     .prop('updatedAt', S.string())
     .description('Activity last change date.')
     .required()
+    .prop(
+      'allowedActions',
+      S.object()
+        .additionalProperties(false)
+        .prop('canBeDeleted', S.boolean())
+        .description('Defines if the activity can be deleted.')
+        .required()
+        .prop('canBeEdited', S.boolean())
+        .description('Defines if the activity can be edited.')
+        .required()
+        .prop('canAskReview', S.boolean())
+        .description(
+          `Defines if the activity can be moved to status 'IN_REVIEW'.`
+        )
+        .required()
+        .prop('canAskApprove', S.boolean())
+        .description(
+          `Defines if the activity can be moved to status 'APPROVED'.`
+        )
+        .required()
+        .prop('canAskRework', S.boolean())
+        .description(`Defines if the activity can be moved to status 'REWORK'.`)
+        .required()
+        .prop('canAskPublish', S.boolean())
+        .description(
+          `Defines if the activity can be moved to status 'PUBLISHED'.`
+        )
+        .required()
+        .prop('canAskArchive', S.boolean())
+        .description(
+          `Defines if the activity can be moved to status 'ARCHIVED'.`
+        )
+        .required()
+        .prop('canAskDelete', S.boolean())
+        .description(
+          `Defines if the activity can be moved to status 'DELETED'.`
+        )
+        .required()
+    )
+    .description('Activity allowed actions.')
 }
 
 export function sActivityList() {

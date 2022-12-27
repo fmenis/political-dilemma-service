@@ -59,17 +59,27 @@ async function activityErrors(fastify) {
     })
   }
 
+  function throwOwnershipError(data) {
+    const { id, email } = data
+    const message = `Current user isn't the owner of the resource and it hasn't the right permission to performe the action`
+    throw createError(403, message, {
+      internalCode: 'OWNERSHIP_RESTRICTION',
+      details: { entityId: id, userEmail: email },
+    })
+  }
+
   fastify.decorate('activityErrors', {
     throwNotFoundError,
     throwInvalidCategoryError,
     throwDuplicateTitleError,
     throwInvalidPubblicazioneInGazzettaDateError,
     throwAttachmentsNotFoundError,
+    throwOwnershipError,
     errors: [
       {
         code: '*NOT_FOUND*',
         description: 'occurs when the target entity is not present.',
-        apis: ['create'],
+        apis: ['create', 'read'],
       },
       {
         code: '*INVALID_CATEGORY_TYPE*',
@@ -91,6 +101,12 @@ async function activityErrors(fastify) {
         code: '*ATTACHMENTS_NOT_FOUND*',
         description: 'occurs when the attachment id/s are not present.',
         apis: ['create'],
+      },
+      {
+        code: '*OWNERSHIP_RESTRICTION*',
+        description:
+          'occurs when an operation is done on a resource that have a different owner.',
+        apis: ['read'],
       },
     ],
   })

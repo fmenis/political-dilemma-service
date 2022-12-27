@@ -1,3 +1,5 @@
+import { STATES } from './enums.js'
+
 /**
  * Build paginated info
  * @param {number} totalCount total items
@@ -65,6 +67,59 @@ export function buildRouteFullDescription(params) {
   }
 
   return fullDescription
+}
+
+/**
+ * Calculate entity allowed actions
+ * @param {string} status entity status
+ * @returns object allowed actions
+ */
+export function buildAllowedActions(status) {
+  const allowedActions = {
+    canBeDeleted: false,
+    canBeEdited: false,
+    canAskReview: false,
+    canAskApprove: false,
+    canAskRework: false,
+    canAskPublish: false,
+    canAskArchive: false,
+    canAskDelete: false,
+  }
+
+  if (status === STATES.DRAFT) {
+    allowedActions.canBeDeleted = true
+  }
+
+  if (status !== STATES.ARCHIVED && status !== STATES.DELETED) {
+    allowedActions.canBeEdited = true
+  }
+
+  if (status === STATES.DRAFT) {
+    allowedActions.canAskReview = true
+  }
+
+  if (status === STATES.IN_REVIEW) {
+    allowedActions.canAskApprove = true
+    allowedActions.canAskRework = true
+  }
+
+  if (status === STATES.REWORK) {
+    allowedActions.canAskReview = true
+  }
+
+  if (status === STATES.READY) {
+    allowedActions.canAskPublish = true
+  }
+
+  if (status === STATES.PUBLISHED) {
+    allowedActions.canAskArchive = true
+  }
+
+  if (status !== STATES.DRAFT && status !== STATES.DELETED) {
+    allowedActions.canAskDelete = true
+  }
+
+  return allowedActions
 }
 
 /**
