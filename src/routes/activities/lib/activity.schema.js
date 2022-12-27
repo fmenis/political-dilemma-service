@@ -1,6 +1,6 @@
 import S from 'fluent-json-schema'
 
-import { sTags } from '../../common/common.schema.js'
+import { sTags, sAllowedActions } from '../../common/common.schema.js'
 import { getActivityStates } from '../lib/common.js'
 import { getActivityTypes, getActivityShortTypes } from './common.js'
 
@@ -117,45 +117,8 @@ export function sActivityDetail() {
     .prop('isMine', S.boolean())
     .description('Defines if the current user is the owner of the article.')
     .required()
-    .prop(
-      'allowedActions',
-      S.object()
-        .additionalProperties(false)
-        .prop('canBeDeleted', S.boolean())
-        .description('Defines if the activity can be deleted.')
-        .required()
-        .prop('canBeEdited', S.boolean())
-        .description('Defines if the activity can be edited.')
-        .required()
-        .prop('canAskReview', S.boolean())
-        .description(
-          `Defines if the activity can be moved to status 'IN_REVIEW'.`
-        )
-        .required()
-        .prop('canAskApprove', S.boolean())
-        .description(
-          `Defines if the activity can be moved to status 'APPROVED'.`
-        )
-        .required()
-        .prop('canAskRework', S.boolean())
-        .description(`Defines if the activity can be moved to status 'REWORK'.`)
-        .required()
-        .prop('canAskPublish', S.boolean())
-        .description(
-          `Defines if the activity can be moved to status 'PUBLISHED'.`
-        )
-        .required()
-        .prop('canAskArchive', S.boolean())
-        .description(
-          `Defines if the activity can be moved to status 'ARCHIVED'.`
-        )
-        .required()
-        .prop('canAskDelete', S.boolean())
-        .description(
-          `Defines if the activity can be moved to status 'DELETED'.`
-        )
-        .required()
-    )
+    .prop('allowedActions', sAllowedActions())
+    .required()
     .description('Activity allowed actions.')
 }
 
@@ -180,4 +143,48 @@ export function sActivityList() {
     .prop('shortType', S.string().enum(getActivityShortTypes()))
     .description('Activity abbreviated type.')
     .required()
+}
+
+export function sUpdateActivity() {
+  return S.object()
+    .prop('title', S.string().minLength(3).maxLength(200))
+    .description('Activity title.')
+    .prop('description', S.string().raw({ nullable: true }))
+    .description('Activity description.')
+    .prop('text', S.string().minLength(3).raw({ nullable: true }))
+    .description('Activity text.')
+    .prop('status', S.string().enum(getActivityStates()))
+    .description('Activity status.')
+    .prop('categoryId', S.string().format('uuid'))
+    .description('Activity category id.')
+    .prop('type', S.string().enum(getActivityTypes()))
+    .description('Activity type.')
+    .prop('tags', sTags().raw({ nullable: true }))
+    .description('Activity tags.')
+    .prop('rating', S.number().raw({ nullable: true }))
+    .description('Activity rating.')
+    .prop(
+      'attachmentIds',
+      S.array()
+        .items(S.string().format('uuid'))
+        .minItems(1)
+        .maxItems(50)
+        .raw({ nullable: true })
+    )
+    .description('Activity attachments ids.')
+    .prop(
+      'linkGazzettaUfficiale',
+      S.string().minLength(10).maxLength(500).raw({ nullable: true })
+    )
+    .description('Activity offical gazzette link.')
+    .prop(
+      'dataPubblicazioneInGazzetta',
+      S.string().format('date').raw({ nullable: true })
+    )
+    .description('Activity offical gazzette publication date.')
+    .prop(
+      'cancellationReason',
+      S.string().minLength(3).maxLength(500).raw({ nullable: true })
+    )
+    .description('Activity cancellation reason.')
 }

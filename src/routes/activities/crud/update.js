@@ -4,44 +4,50 @@ import {
   buildRouteFullDescription,
   restrictDataToOwner,
 } from '../../common/common.js'
-import { sActivityDetail } from '../lib/activity.schema.js'
-import { populateActivity } from '../lib/common.js'
+import { sUpdateActivity, sActivityDetail } from '../lib/activity.schema.js'
 
-export default async function readActivity(fastify) {
+export default async function updateActivity(fastify) {
   const { massive } = fastify
-  const { errors, throwNotFoundError, throwOwnershipError } =
-    fastify.activityErrors
+  const {
+    errors,
+    throwNotFoundError,
+    // throwInvalidCategoryError,
+    // throwDuplicateTitleError,
+    throwOwnershipError,
+    // throwInvalidPubblicazioneInGazzettaDateError,
+  } = fastify.activityErrors
 
-  const routeDescription = 'List activities.'
-  const permission = 'activity:read'
+  const routeDescription = 'Update activity.'
+  const permission = 'activity:update'
 
   fastify.route({
-    method: 'GET',
+    method: 'PATCH',
     path: '/:id',
     config: {
       public: false,
       permission,
     },
     schema: {
-      summary: 'Get activity',
+      summary: 'Update activity',
       description: buildRouteFullDescription({
         description: routeDescription,
         errors,
         permission,
-        api: 'read',
+        api: 'update',
       }),
       params: S.object()
         .additionalProperties(false)
         .prop('id', S.string().format('uuid'))
         .description('Activity id.')
         .required(),
+      body: sUpdateActivity(),
       response: {
         200: sActivityDetail(),
         404: fastify.getSchema('sNotFound'),
       },
     },
     preHandler: onPreHandler,
-    handler: onReadActivity,
+    handler: onUpdateActivity,
   })
 
   async function onPreHandler(req) {
@@ -60,10 +66,7 @@ export default async function readActivity(fastify) {
     req.activity = activity
   }
 
-  async function onReadActivity(req) {
-    const { activity } = req
-    const { id: ownerId } = req.user
-
-    return populateActivity(activity, ownerId, massive)
+  async function onUpdateActivity() {
+    // se cambia il type, impostare anche il relativo shortType
   }
 }

@@ -55,7 +55,7 @@ export function buildRouteFullDescription(params) {
       item => `- ${item.code}: ${item.description} \n\n`
     )
 
-    fullDescription += ` **Possible errors**: \n\n ${formattedErrors.join(' ')}`
+    fullDescription += ` **Custom errors**: \n\n ${formattedErrors.join(' ')}`
   } else {
     fullDescription += ` **This api doesn't expose custom errors.** \n\n`
   }

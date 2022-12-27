@@ -79,34 +79,34 @@ async function activityErrors(fastify) {
       {
         code: '*NOT_FOUND*',
         description: 'occurs when the target entity is not present.',
-        apis: ['create', 'read'],
+        apis: ['create', 'read', 'update'],
       },
       {
         code: '*INVALID_CATEGORY_TYPE*',
         description: 'occurs when the category type is invalid.',
-        apis: ['create'],
+        apis: ['create', 'update'],
       },
       {
         code: '*DUPLICATE_TITLE*',
         description: 'occurs when the title is already used.',
-        apis: ['create'],
+        apis: ['create', 'update'],
       },
       {
         code: '*INVALID_PUBBLICAZIONE_GAZZETTA_DATE*',
         description:
           'occurs when the pubblicazioneInGazzetta date is in the future.',
-        apis: ['create'],
+        apis: ['create', 'update'],
       },
       {
         code: '*ATTACHMENTS_NOT_FOUND*',
         description: 'occurs when the attachment id/s are not present.',
-        apis: ['create'],
+        apis: ['create', 'update'],
       },
       {
         code: '*OWNERSHIP_RESTRICTION*',
         description:
           'occurs when an operation is done on a resource that have a different owner.',
-        apis: ['read'],
+        apis: ['read', 'update'],
       },
     ],
   })
