@@ -62,13 +62,14 @@ export default async function createActivity(fastify) {
       throwDuplicateTitleError({ title })
     }
 
-    if (isFutureDate(dataPubblicazioneInGazzetta)) {
+    if (
+      dataPubblicazioneInGazzetta &&
+      isFutureDate(dataPubblicazioneInGazzetta)
+    ) {
       throwInvalidPubblicazioneInGazzettaDateError({
         dataPubblicazioneInGazzetta,
       })
     }
-
-    //TODO controllo attachmentIds
   }
 
   async function onCreateActivity(req, reply) {
