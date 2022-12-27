@@ -1,7 +1,8 @@
 import _ from 'lodash'
 
-import { sCreateArticle, sArticle } from '../lib/schema.js'
+import { sCreateArticle, sArticleDetail } from '../lib/schema.js'
 import { ARTICLE_STATES } from '../../common/enums.js'
+import { populateArticle } from '../lib/common.js'
 
 export default async function createArticle(fastify) {
   const { massive, httpErrors } = fastify
@@ -21,7 +22,7 @@ export default async function createArticle(fastify) {
       description: `Permission required: ${permission}`,
       body: sCreateArticle(),
       response: {
-        201: sArticle(),
+        201: sArticleDetail(),
         404: fastify.getSchema('sNotFound'),
         409: fastify.getSchema('sConflict'),
       },
@@ -99,24 +100,9 @@ export default async function createArticle(fastify) {
       return newArticle
     })
 
-    const owner = await massive.users.findOne(user.id)
-
     reply.resourceId = newArticle.id
     reply.code(201)
 
-    return {
-      id: newArticle.id,
-      title: newArticle.title,
-      text: newArticle.text,
-      categoryId,
-      status: newArticle.status,
-      author: `${owner.first_name} ${owner.last_name}`,
-      createdAt: newArticle.createdAt,
-      publishedAt: newArticle.publishedAt,
-      updatedAt: newArticle.updatedAt,
-      canBeDeleted: newArticle.status === ARTICLE_STATES.DRAFT,
-      tags: newArticle.tags || undefined,
-      description: newArticle.description || undefined,
-    }
+    return populateArticle(newArticle, massive)
   }
 }

@@ -1,7 +1,7 @@
 import { sCreateActivity, sActivityDetail } from '../lib/activity.schema.js'
 import { buildRouteFullDescription, isFutureDate } from '../../common/common.js'
 import { ACTIVITY_STATES } from '../../common/enums.js'
-import { getShortType } from '../lib/common.js'
+import { getShortType, populateActivity } from '../lib/common.js'
 import { CATEGORIES } from '../../files/lib/enums.js'
 
 export default async function createActivity(fastify) {
@@ -110,16 +110,16 @@ export default async function createActivity(fastify) {
       return newActivity
     })
 
-    const owner = await massive.users.findOne(user.id)
-
     reply.resourceId = newActivity.id
     reply.code(201)
 
     // fare in modo che torni già populateArticle
 
-    return {
-      ...newActivity,
-      author: `${owner.first_name} ${owner.last_name}`,
-    }
+    return populateActivity(newActivity, massive)
+
+    // return {
+    //   ...newActivity,
+    //   author: `${owner.first_name} ${owner.last_name}`,
+    // }
   }
 }

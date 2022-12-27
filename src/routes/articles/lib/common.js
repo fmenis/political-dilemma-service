@@ -6,10 +6,9 @@ export function getArticleStates() {
 }
 
 export async function populateArticle(article, massive) {
-  //TODO migliorare con un join
   const [author, attachments] = await Promise.all([
     massive.users.findOne(article.ownerId, {
-      fields: ['first_name', 'last_name'],
+      fields: ['id', 'first_name', 'last_name'],
     }),
     massive.files.find({ articleId: article.id }, { fields: ['id', 'url'] }),
   ])
@@ -22,5 +21,6 @@ export async function populateArticle(article, massive) {
     attachments,
     description: article.description || undefined,
     allowedActions: buildAllowedActions(article.status),
+    isMine: article.ownerId === author.id,
   }
 }

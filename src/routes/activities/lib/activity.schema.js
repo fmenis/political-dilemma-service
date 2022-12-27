@@ -114,6 +114,9 @@ export function sActivityDetail() {
     .prop('updatedAt', S.string())
     .description('Activity last change date.')
     .required()
+    .prop('isMine', S.boolean())
+    .description('Defines if the current user is the owner of the article.')
+    .required()
     .prop(
       'allowedActions',
       S.object()

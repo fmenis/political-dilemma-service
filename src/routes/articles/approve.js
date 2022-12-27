@@ -1,7 +1,7 @@
 import S from 'fluent-json-schema'
 
 import { ARTICLE_STATES } from '../common/enums.js'
-import { sArticle } from './lib/schema.js'
+import { sArticleDetail } from './lib/schema.js'
 import { populateArticle } from './lib/common.js'
 
 export default async function approveArticle(fastify) {
@@ -37,7 +37,7 @@ export default async function approveArticle(fastify) {
         .prop('publicationDate', S.string().format('date-time'))
         .description('Article publication date.'),
       response: {
-        200: sArticle(),
+        200: sArticleDetail(),
         404: fastify.getSchema('sNotFound'),
         409: fastify.getSchema('sConflict'),
       },

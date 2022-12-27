@@ -1,7 +1,7 @@
 import S from 'fluent-json-schema'
 import _ from 'lodash'
 
-import { sUpdateArticle, sArticle } from '../lib/schema.js'
+import { sUpdateArticle, sArticleDetail } from '../lib/schema.js'
 import { findArrayDuplicates, removeObjectProps } from '../../../utils/main.js'
 import { populateArticle } from '../lib/common.js'
 import { restrictDataToOwner } from '../../common/common.js'
@@ -29,7 +29,7 @@ export default async function updateArticle(fastify) {
         .required(),
       body: sUpdateArticle(),
       response: {
-        200: sArticle(),
+        200: sArticleDetail(),
         404: fastify.getSchema('sNotFound'),
         409: fastify.getSchema('sConflict'),
       },

@@ -1,6 +1,6 @@
 import S from 'fluent-json-schema'
 
-import { sArticle } from '../lib/schema.js'
+import { sArticleDetail } from '../lib/schema.js'
 import { populateArticle } from '../lib/common.js'
 import { restrictDataToOwner } from '../../common/common.js'
 
@@ -25,7 +25,7 @@ export default async function readArticle(fastify) {
         .description('Article id.')
         .required(),
       response: {
-        200: sArticle(),
+        200: sArticleDetail(),
         404: fastify.getSchema('sNotFound'),
       },
     },

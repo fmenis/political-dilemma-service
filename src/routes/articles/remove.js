@@ -1,7 +1,7 @@
 import S from 'fluent-json-schema'
 
 import { ARTICLE_STATES as status } from '../common/enums.js'
-import { sArticle } from './lib/schema.js'
+import { sArticleDetail } from './lib/schema.js'
 import { populateArticle } from './lib/common.js'
 
 export default async function removeArticle(fastify) {
@@ -30,7 +30,7 @@ export default async function removeArticle(fastify) {
         .description('Article cancellation reason.')
         .required(),
       response: {
-        200: sArticle(),
+        200: sArticleDetail(),
         404: fastify.getSchema('sNotFound'),
         409: fastify.getSchema('sConflict'),
       },

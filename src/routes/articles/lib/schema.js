@@ -59,7 +59,7 @@ export function sUpdateArticle() {
     .description('Article attachments ids.')
 }
 
-export function sArticle() {
+export function sArticleDetail() {
   return S.object()
     .description('Article.')
     .additionalProperties(false)
@@ -111,6 +111,9 @@ export function sArticle() {
     .description('Article description.')
     .prop('cancellationReason', S.string().minLength(3).maxLength(500))
     .description('Article cancellation reason.')
+    .prop('isMine', S.boolean())
+    .description('Defines if the current user is the owner of the article.')
+    .required()
     .prop(
       'allowedActions',
       S.object()

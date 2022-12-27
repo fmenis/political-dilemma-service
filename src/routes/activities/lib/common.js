@@ -25,7 +25,7 @@ export function getShortType(type) {
 export async function populateActivity(activity, massive) {
   const [author, attachments] = await Promise.all([
     massive.users.findOne(activity.ownerId, {
-      fields: ['first_name', 'last_name'],
+      fields: ['id', 'first_name', 'last_name'],
     }),
     massive.files.find({ activityId: activity.id }, { fields: ['id', 'url'] }),
   ])
@@ -36,5 +36,6 @@ export async function populateActivity(activity, massive) {
     canBeDeleted: activity.status === ACTIVITY_STATES.DRAFT,
     attachments: attachments.length > 0 ? attachments : null,
     allowedActions: buildAllowedActions(activity.status),
+    isMine: activity.ownerId === author.id,
   }
 }
