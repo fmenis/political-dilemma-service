@@ -85,3 +85,22 @@ export function trimObjectFields(fields, obj) {
   }
   return obj
 }
+
+export function isFutureDate(date) {
+  return checkDate(date, { isFutureDate: true })
+}
+
+function checkDate(date, opts = {}) {
+  date = new Date(date).toISOString()
+  const now = new Date().toISOString()
+
+  if (opts.isFutureDate && date > now) {
+    return true
+  }
+
+  if (opts.isPastDate && date < now) {
+    return true
+  }
+
+  return false
+}

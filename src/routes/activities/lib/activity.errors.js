@@ -30,10 +30,24 @@ async function activityErrors(fastify) {
     })
   }
 
+  function throwInvalidPubblicazioneInGazzettaDateError(data) {
+    const { dataPubblicazioneInGazzetta } = data
+    const message = 'Invalid input'
+    throw createError(400, message, {
+      internalCode: 'INVALID_PUBBLICAZIONE_GAZZETTA_DATE',
+      validation: [
+        {
+          message: `PubblicazioneInGazzetta date '${dataPubblicazioneInGazzetta}' cannot be in the future`,
+        },
+      ],
+    })
+  }
+
   fastify.decorate('activityErrors', {
     throwNotFoundError,
     throwInvalidCategoryError,
     throwDuplicateTitleError,
+    throwInvalidPubblicazioneInGazzettaDateError,
     errors: [
       {
         code: '*NOT_FOUND*',
@@ -48,6 +62,12 @@ async function activityErrors(fastify) {
       {
         code: '*DUPLICATE_TITLE*',
         description: 'occurs when the title is already used.',
+        apis: ['create'],
+      },
+      {
+        code: '*INVALID_PUBBLICAZIONE_GAZZETTA_DATE*',
+        description:
+          'occurs when the pubblicazioneInGazzetta date is in the future.',
         apis: ['create'],
       },
     ],

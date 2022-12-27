@@ -1,5 +1,5 @@
 import { sCreateActivity, sActivityDetail } from '../lib/activity.schema.js'
-import { buildRouteFullDescription } from '../../common/common.js'
+import { buildRouteFullDescription, isFutureDate } from '../../common/common.js'
 import { ACTIVITY_STATES } from '../../common/enums.js'
 import { getShortType } from '../lib/common.js'
 
@@ -10,6 +10,7 @@ export default async function createActivity(fastify) {
     throwNotFoundError,
     throwInvalidCategoryError,
     throwDuplicateTitleError,
+    throwInvalidPubblicazioneInGazzettaDateError,
   } = fastify.activityErrors
 
   const routeDescription = 'Create activity.'
@@ -43,7 +44,7 @@ export default async function createActivity(fastify) {
   })
 
   async function onPreHandler(req) {
-    const { categoryId, title } = req.body
+    const { categoryId, title, dataPubblicazioneInGazzetta } = req.body
 
     const category = await massive.categories.findOne(categoryId)
     if (!category) {
@@ -59,6 +60,12 @@ export default async function createActivity(fastify) {
     )
     if (titleDuplicates.length > 0) {
       throwDuplicateTitleError({ title })
+    }
+
+    if (isFutureDate(dataPubblicazioneInGazzetta)) {
+      throwInvalidPubblicazioneInGazzettaDateError({
+        dataPubblicazioneInGazzetta,
+      })
     }
 
     //TODO controllo attachmentIds
