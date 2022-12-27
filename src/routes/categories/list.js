@@ -5,8 +5,6 @@ import { buildRouteFullDescription } from '../common/common.js'
 
 export default async function listCategories(fastify) {
   const { massive } = fastify
-
-  const version = '2.0.0'
   const description = 'Retrieve categories.'
 
   fastify.route({
@@ -15,11 +13,9 @@ export default async function listCategories(fastify) {
     config: {
       public: false,
     },
-    constraints: { version },
     schema: {
       summary: 'List categories',
       description: buildRouteFullDescription({
-        version,
         description,
       }),
       query: S.object()

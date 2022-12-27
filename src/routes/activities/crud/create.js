@@ -92,6 +92,8 @@ export default async function createActivity(fastify) {
     reply.resourceId = newActivity.id
     reply.code(201)
 
+    // fare in modo che torni già populateArticle
+
     return {
       ...newActivity,
       author: `${owner.first_name} ${owner.last_name}`,

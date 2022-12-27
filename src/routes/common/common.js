@@ -36,7 +36,6 @@ export function restrictDataToOwner(apiPermission) {
 
 /**
  * Build OpenAPI route description
- * @param {string} version route version
  * @param {string} description route description
  * @param {Object[]} [errors] route possibile errors
  * @param {string} [permission] route permission
@@ -44,14 +43,9 @@ export function restrictDataToOwner(apiPermission) {
  * @returns string
  */
 export function buildRouteFullDescription(params) {
-  const { version, description, errors = [], api, permission } = params
+  const { description, errors = [], api, permission } = params
 
   let fullDescription = `${description} \n\n `
-
-  //TODO togliere quando nuovo versionamento api è in atto
-  if (version) {
-    fullDescription += `**Api version**: ${version} \n\n `
-  }
 
   if (errors.length > 0) {
     const formattedErrors = errors
@@ -59,10 +53,14 @@ export function buildRouteFullDescription(params) {
       .map(item => `- ${item.code}: ${item.description} \n\n`)
 
     fullDescription += ` **Possible errors**: \n\n ${formattedErrors.join(' ')}`
+  } else {
+    fullDescription += ` **This api doesn't expose custom errors.** \n\n`
   }
 
   if (permission) {
     fullDescription += `**Required permission**: *${permission}*.`
+  } else {
+    fullDescription += `**No permission required to consume the api**.`
   }
 
   return fullDescription
