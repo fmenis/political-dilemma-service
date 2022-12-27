@@ -22,12 +22,12 @@ export default async function listActivities(fastify) {
     },
     schema: {
       summary: 'List activities',
-      description: buildRouteFullDescription(
-        routeDescription,
+      description: buildRouteFullDescription({
+        description: routeDescription,
         errors,
         permission,
-        'list'
-      ),
+        api: 'list',
+      }),
       query: S.object()
         .additionalProperties(false)
         .prop('limit', S.integer())

@@ -46,11 +46,12 @@ export function buildRouteFullDescription(params) {
   const { description, errors = [], api, permission } = params
 
   let fullDescription = `${description} \n\n `
+  const apiErrors = errors.filter(item => item.apis.includes(api))
 
-  if (errors.length > 0) {
-    const formattedErrors = errors
-      .filter(item => item.apis.includes(api))
-      .map(item => `- ${item.code}: ${item.description} \n\n`)
+  if (apiErrors.length > 0) {
+    const formattedErrors = apiErrors.map(
+      item => `- ${item.code}: ${item.description} \n\n`
+    )
 
     fullDescription += ` **Possible errors**: \n\n ${formattedErrors.join(' ')}`
   } else {

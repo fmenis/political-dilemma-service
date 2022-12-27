@@ -2,6 +2,7 @@ import { sCreateActivity, sActivityDetail } from '../lib/activity.schema.js'
 import { buildRouteFullDescription, isFutureDate } from '../../common/common.js'
 import { ACTIVITY_STATES } from '../../common/enums.js'
 import { getShortType } from '../lib/common.js'
+import { CATEGORIES } from '../../files/lib/enums.js'
 
 export default async function createActivity(fastify) {
   const { massive } = fastify
@@ -11,6 +12,7 @@ export default async function createActivity(fastify) {
     throwInvalidCategoryError,
     throwDuplicateTitleError,
     throwInvalidPubblicazioneInGazzettaDateError,
+    throwAttachmentsNotFoundError,
   } = fastify.activityErrors
 
   const routeDescription = 'Create activity.'
@@ -44,7 +46,12 @@ export default async function createActivity(fastify) {
   })
 
   async function onPreHandler(req) {
-    const { categoryId, title, dataPubblicazioneInGazzetta } = req.body
+    const {
+      categoryId,
+      title,
+      dataPubblicazioneInGazzetta,
+      attachmentIds = [],
+    } = req.body
 
     const category = await massive.categories.findOne(categoryId)
     if (!category) {
@@ -69,6 +76,14 @@ export default async function createActivity(fastify) {
       throwInvalidPubblicazioneInGazzettaDateError({
         dataPubblicazioneInGazzetta,
       })
+    }
+
+    const files = await massive.files.find({
+      id: attachmentIds,
+      category: CATEGORIES.ACTIVITY_IMAGE,
+    })
+    if (files.length < attachmentIds.length) {
+      throwAttachmentsNotFoundError({ attachmentIds, files })
     }
   }
 

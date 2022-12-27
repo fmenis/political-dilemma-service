@@ -1,4 +1,5 @@
 import Fp from 'fastify-plugin'
+import _ from 'lodash'
 
 async function activityErrors(fastify) {
   const { createError } = fastify.httpErrors
@@ -43,11 +44,27 @@ async function activityErrors(fastify) {
     })
   }
 
+  function throwAttachmentsNotFoundError(data) {
+    const { attachmentIds, files } = data
+    const missingAttachmentIds = _.difference(
+      attachmentIds,
+      files.map(item => item.id)
+    )
+    const message = `Attachment ids '${missingAttachmentIds.join(
+      ', '
+    )}' not found`
+    throw createError(404, message, {
+      internalCode: 'ATTACHMENTS_NOT_FOUND',
+      details: { missingAttachmentIds },
+    })
+  }
+
   fastify.decorate('activityErrors', {
     throwNotFoundError,
     throwInvalidCategoryError,
     throwDuplicateTitleError,
     throwInvalidPubblicazioneInGazzettaDateError,
+    throwAttachmentsNotFoundError,
     errors: [
       {
         code: '*NOT_FOUND*',
@@ -68,6 +85,11 @@ async function activityErrors(fastify) {
         code: '*INVALID_PUBBLICAZIONE_GAZZETTA_DATE*',
         description:
           'occurs when the pubblicazioneInGazzetta date is in the future.',
+        apis: ['create'],
+      },
+      {
+        code: '*ATTACHMENTS_NOT_FOUND*',
+        description: 'occurs when the attachment id/s are not present.',
         apis: ['create'],
       },
     ],
