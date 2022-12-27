@@ -93,6 +93,6 @@ export default async function publishArticle(fastify) {
       }
     })
 
-    return populateArticle(updatedArticle, massive)
+    return populateArticle(updatedArticle, ownerId, massive)
   }
 }

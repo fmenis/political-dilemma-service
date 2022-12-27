@@ -62,7 +62,8 @@ export default async function readActivity(fastify) {
 
   async function onReadActivity(req) {
     const { activity } = req
+    const { id: ownerId } = req.user
 
-    return populateActivity(activity, massive)
+    return populateActivity(activity, ownerId, massive)
   }
 }

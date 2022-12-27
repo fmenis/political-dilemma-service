@@ -131,6 +131,7 @@ export default async function updateArticle(fastify) {
   async function onUpdateArticle(req) {
     const { id } = req.params
     const { attachmentIds = [] } = req.body
+    const { id: currentUserId } = req.body
 
     const updatedArticle = await massive.withTransaction(async tx => {
       const updatedArticle = await tx.articles.update(id, {
@@ -163,6 +164,6 @@ export default async function updateArticle(fastify) {
       return updatedArticle
     })
 
-    return populateArticle(updatedArticle, massive)
+    return populateArticle(updatedArticle, currentUserId, massive)
   }
 }

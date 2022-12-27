@@ -74,6 +74,7 @@ export default async function removeArticle(fastify) {
   async function onRemoveArticle(req) {
     const { article } = req
     const { cancellationReason } = req.body
+    const { id: currentUserId } = req.user
 
     const updatedArticle = {
       ...article,
@@ -84,6 +85,6 @@ export default async function removeArticle(fastify) {
 
     await massive.articles.update(updatedArticle.id, updatedArticle)
 
-    return populateArticle(updatedArticle, massive)
+    return populateArticle(updatedArticle, currentUserId, massive)
   }
 }

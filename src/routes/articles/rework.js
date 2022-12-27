@@ -92,6 +92,6 @@ export default async function reworkArticle(fastify) {
       }
     })
 
-    return populateArticle(updatedArticle, massive)
+    return populateArticle(updatedArticle, ownerId, massive)
   }
 }

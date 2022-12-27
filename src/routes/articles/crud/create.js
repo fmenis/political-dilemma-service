@@ -76,7 +76,7 @@ export default async function createArticle(fastify) {
       tags,
       attachmentIds = [],
     } = req.body
-    const { user } = req
+    const { id: ownerId } = req.user
 
     const params = {
       title,
@@ -84,7 +84,7 @@ export default async function createArticle(fastify) {
       categoryId,
       description,
       status: ARTICLE_STATES.DRAFT,
-      ownerId: user.id,
+      ownerId,
       tags,
     }
 
@@ -103,6 +103,6 @@ export default async function createArticle(fastify) {
     reply.resourceId = newArticle.id
     reply.code(201)
 
-    return populateArticle(newArticle, massive)
+    return populateArticle(newArticle, ownerId, massive)
   }
 }

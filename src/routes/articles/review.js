@@ -123,6 +123,6 @@ export default async function reviewArticle(fastify) {
       }
     })
 
-    return populateArticle(updatedArticle, massive)
+    return populateArticle(updatedArticle, ownerId, massive)
   }
 }

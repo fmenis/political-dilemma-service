@@ -88,13 +88,13 @@ export default async function createActivity(fastify) {
   }
 
   async function onCreateActivity(req, reply) {
-    const { user } = req
+    const { user: ownerId } = req
     const { attachmentIds = [] } = req.body
 
     const params = {
       ...req.body,
       status: ACTIVITY_STATES.DRAFT,
-      ownerId: user.id,
+      ownerId,
       shortType: getShortType(req.body.type),
     }
 
@@ -113,13 +113,6 @@ export default async function createActivity(fastify) {
     reply.resourceId = newActivity.id
     reply.code(201)
 
-    // fare in modo che torni già populateArticle
-
-    return populateActivity(newActivity, massive)
-
-    // return {
-    //   ...newActivity,
-    //   author: `${owner.first_name} ${owner.last_name}`,
-    // }
+    return populateActivity(newActivity, ownerId, massive)
   }
 }
