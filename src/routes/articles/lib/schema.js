@@ -183,4 +183,7 @@ export function sArticleList() {
     .prop('category', S.string())
     .description('Article category.')
     .required()
+    .prop('isMine', S.boolean())
+    .description('Defines if the current user is the owner of the article.')
+    .required()
 }
