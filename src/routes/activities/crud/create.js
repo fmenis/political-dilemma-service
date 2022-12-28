@@ -88,7 +88,7 @@ export default async function createActivity(fastify) {
   }
 
   async function onCreateActivity(req, reply) {
-    const { user: ownerId } = req
+    const { id: ownerId } = req.user
     const { attachmentIds = [] } = req.body
 
     const params = {
