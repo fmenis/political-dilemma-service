@@ -82,7 +82,7 @@ export default async function listArticles(fastify) {
     ])
 
     return {
-      results: await populateArticles(articles),
+      results: await populateArticles(articles, user.id),
       paginatedInfo: buildPaginatedInfo(count, {
         limit: query.limit,
         offset: query.offset,
@@ -148,7 +148,7 @@ export default async function listArticles(fastify) {
     return options
   }
 
-  async function populateArticles(articles) {
+  async function populateArticles(articles, currentUserId) {
     const internalNotes = await massive.internalNotes.find({
       articleId: articles.map(item => item.id),
     })
@@ -163,6 +163,7 @@ export default async function listArticles(fastify) {
           item => item.articleId === article.id
         ),
         category: categoryName,
+        isMine: article.ownerId === currentUserId,
       }
     })
   }

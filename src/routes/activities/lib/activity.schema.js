@@ -143,6 +143,9 @@ export function sActivityList() {
     .prop('shortType', S.string().enum(getActivityShortTypes()))
     .description('Activity abbreviated type.')
     .required()
+    .prop('isMine', S.boolean())
+    .description('Defines if the current user is the owner of the activity.')
+    .required()
 }
 
 export function sUpdateActivity() {
