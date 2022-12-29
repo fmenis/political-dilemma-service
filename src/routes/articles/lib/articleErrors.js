@@ -55,22 +55,26 @@ async function articleErrors(fastify) {
         code: '*NOT_FOUND*',
         description: 'occurs when the target article is not present.',
         apis: ['approve', 'review', 'rework'],
+        statusCode: 404,
       },
       {
         code: '*INVALID_STATUS*',
         description:
           'occurs when the current status is not valid to perform the requested action.',
         apis: ['approve', 'review'],
+        statusCode: 409,
       },
       {
         code: '*INVALID_PUBLICATION_DATE*',
         description: 'occurs when the publicationDate is not in the future.',
         apis: ['approve'],
+        statusCode: 400,
       },
       {
         code: '*MISSING_DATA*',
         description: 'occurs when some article data is missing.',
         apis: ['review'],
+        statusCode: 400,
       },
     ],
   })

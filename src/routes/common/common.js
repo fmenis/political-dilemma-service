@@ -51,11 +51,13 @@ export function buildRouteFullDescription(params) {
   const apiErrors = errors.filter(item => item.apis.includes(api))
 
   if (apiErrors.length > 0) {
-    const formattedErrors = apiErrors.map(
-      item => `- ${item.code}: ${item.description} \n\n`
-    )
+    const formattedErrors = apiErrors
+      .map(
+        item => `- ${item.statusCode} - ${item.code}: ${item.description} \n\n`
+      )
+      .sort()
 
-    fullDescription += ` **Possible errors**: \n\n ${formattedErrors.join(' ')}`
+    fullDescription += ` **Custom errors**: \n\n ${formattedErrors.join(' ')}`
   } else {
     fullDescription += ` **This api doesn't expose custom errors.** \n\n`
   }

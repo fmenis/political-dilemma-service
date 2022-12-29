@@ -13,7 +13,7 @@ export default async function readActivity(fastify) {
     fastify.activityErrors
 
   const routeDescription = 'List activities.'
-  const permission = 'article:read'
+  const permission = 'activity:read'
 
   fastify.route({
     method: 'GET',

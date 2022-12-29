@@ -18,6 +18,7 @@ export default async function updateArticle(fastify) {
     config: {
       public: false,
       permission,
+      trimBodyFields: ['title', 'text', 'description', 'tags'],
     },
     schema: {
       summary: 'Update article',
@@ -34,27 +35,9 @@ export default async function updateArticle(fastify) {
         409: fastify.getSchema('sConflict'),
       },
     },
-    preValidation: onPreValidation,
     preHandler: onPreHandler,
     handler: onUpdateArticle,
   })
-
-  async function onPreValidation(req) {
-    const trimmableFields = ['title', 'text', 'description', 'tags']
-
-    for (const key of Object.keys(req.body)) {
-      if (req.body[key]) {
-        if (key === 'tags') {
-          req.body.tags = req.body.tags.map(tag => tag.trim())
-          continue
-        }
-
-        if (trimmableFields.includes(key)) {
-          req.body[key] = req.body[key].trim()
-        }
-      }
-    }
-  }
 
   async function onPreHandler(req) {
     const { id } = req.params

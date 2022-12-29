@@ -1,6 +1,6 @@
 import S from 'fluent-json-schema'
 
-import { sTags } from '../../common/common.schema.js'
+import { sTags, sAllowedActions } from '../../common/common.schema.js'
 import { getArticleStates } from '../lib/common.js'
 
 export function sCreateArticle() {
@@ -114,43 +114,7 @@ export function sArticleDetail() {
     .prop('isMine', S.boolean())
     .description('Defines if the current user is the owner of the article.')
     .required()
-    .prop(
-      'allowedActions',
-      S.object()
-        .additionalProperties(false)
-        .prop('canBeDeleted', S.boolean())
-        .description('Defines if the article can be deleted.')
-        .required()
-        .prop('canBeEdited', S.boolean())
-        .description('Defines if the article can be edited.')
-        .required()
-        .prop('canAskReview', S.boolean())
-        .description(
-          `Defines if the article can be moved to status 'IN_REVIEW'.`
-        )
-        .required()
-        .prop('canAskApprove', S.boolean())
-        .description(
-          `Defines if the article can be moved to status 'APPROVED'.`
-        )
-        .required()
-        .prop('canAskRework', S.boolean())
-        .description(`Defines if the article can be moved to status 'REWORK'.`)
-        .required()
-        .prop('canAskPublish', S.boolean())
-        .description(
-          `Defines if the article can be moved to status 'PUBLISHED'.`
-        )
-        .required()
-        .prop('canAskArchive', S.boolean())
-        .description(
-          `Defines if the article can be moved to status 'ARCHIVED'.`
-        )
-        .required()
-        .prop('canAskDelete', S.boolean())
-        .description(`Defines if the article can be moved to status 'DELETED'.`)
-        .required()
-    )
+    .prop('allowedActions', sAllowedActions())
     .description('Article allowed actions.')
 }
 
