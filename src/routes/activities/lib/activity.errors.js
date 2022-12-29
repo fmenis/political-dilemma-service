@@ -68,6 +68,18 @@ async function activityErrors(fastify) {
     })
   }
 
+  function throwInvalidStatusError(data) {
+    const { id, requiredStatus } = data
+    const message = `Action not allowed on activity '${id}'. Required status '${requiredStatus}'`
+    throw createError(409, message, {
+      internalCode: 'INVALID_STATUS',
+      details: {
+        articleId: id,
+        requiredStatus,
+      },
+    })
+  }
+
   fastify.decorate('activityErrors', {
     throwNotFoundError,
     throwInvalidCategoryError,
@@ -75,38 +87,52 @@ async function activityErrors(fastify) {
     throwInvalidPubblicazioneInGazzettaDateError,
     throwAttachmentsNotFoundError,
     throwOwnershipError,
+    throwInvalidStatusError,
     errors: [
       {
         code: '*NOT_FOUND*',
         description: 'occurs when the target entity is not present.',
         apis: ['create', 'read', 'update'],
+        statusCode: 404,
       },
       {
         code: '*INVALID_CATEGORY_TYPE*',
         description: 'occurs when the category type is invalid.',
         apis: ['create', 'update'],
+        statusCode: 409,
       },
       {
         code: '*DUPLICATE_TITLE*',
         description: 'occurs when the title is already used.',
         apis: ['create', 'update'],
+        statusCode: 409,
       },
       {
         code: '*INVALID_PUBBLICAZIONE_GAZZETTA_DATE*',
         description:
           'occurs when the pubblicazioneInGazzetta date is in the future.',
         apis: ['create', 'update'],
+        statusCode: 400,
       },
       {
         code: '*ATTACHMENTS_NOT_FOUND*',
         description: 'occurs when the attachment id/s are not present.',
         apis: ['create', 'update'],
+        statusCode: 404,
       },
       {
         code: '*OWNERSHIP_RESTRICTION*',
         description:
           'occurs when an operation is done on a resource that have a different owner.',
         apis: ['read', 'update'],
+        statusCode: 403,
+      },
+      {
+        code: '*INVALID_STATUS*',
+        description:
+          'occurs when the current status is not valid to perform the requested action.',
+        apis: ['update'],
+        statusCode: 409,
       },
     ],
   })

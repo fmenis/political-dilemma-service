@@ -156,8 +156,6 @@ export function sUpdateActivity() {
     .description('Activity description.')
     .prop('text', S.string().minLength(3).raw({ nullable: true }))
     .description('Activity text.')
-    .prop('status', S.string().enum(getActivityStates()))
-    .description('Activity status.')
     .prop('categoryId', S.string().format('uuid'))
     .description('Activity category id.')
     .prop('type', S.string().enum(getActivityTypes()))

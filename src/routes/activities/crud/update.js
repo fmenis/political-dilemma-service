@@ -3,18 +3,25 @@ import S from 'fluent-json-schema'
 import {
   buildRouteFullDescription,
   restrictDataToOwner,
+  isFutureDate,
 } from '../../common/common.js'
 import { sUpdateActivity, sActivityDetail } from '../lib/activity.schema.js'
+import { getShortType, populateActivity } from '../lib/common.js'
+import { removeObjectProps } from '../../../utils/main.js'
+import { ACTIVITY_STATES } from '../../common/enums.js'
+import { CATEGORIES } from '../../files/lib/enums.js'
 
 export default async function updateActivity(fastify) {
   const { massive } = fastify
   const {
     errors,
     throwNotFoundError,
-    // throwInvalidCategoryError,
+    throwInvalidCategoryError,
     // throwDuplicateTitleError,
     throwOwnershipError,
-    // throwInvalidPubblicazioneInGazzettaDateError,
+    throwInvalidPubblicazioneInGazzettaDateError,
+    throwInvalidStatusError,
+    throwAttachmentsNotFoundError,
   } = fastify.activityErrors
 
   const routeDescription = 'Update activity.'
@@ -26,6 +33,7 @@ export default async function updateActivity(fastify) {
     config: {
       public: false,
       permission,
+      trimBodyFields: ['title', 'text', 'description', 'tags'],
     },
     schema: {
       summary: 'Update activity',
@@ -44,6 +52,7 @@ export default async function updateActivity(fastify) {
       response: {
         200: sActivityDetail(),
         404: fastify.getSchema('sNotFound'),
+        409: fastify.getSchema('sConflict'),
       },
     },
     preHandler: onPreHandler,
@@ -52,9 +61,16 @@ export default async function updateActivity(fastify) {
 
   async function onPreHandler(req) {
     const { id } = req.params
+    const {
+      categoryId,
+      /*title,*/ dataPubblicazioneInGazzetta,
+      attachmentIds,
+    } = req.body
     const { id: userId, email, apiPermission } = req.user
 
-    const activity = await massive.activity.findOne(id)
+    const activity = await massive.activity.findOne(id, {
+      fields: ['id', 'status', 'ownerId'],
+    })
     if (!activity) {
       throwNotFoundError({ id, name: 'activity' })
     }
@@ -63,10 +79,115 @@ export default async function updateActivity(fastify) {
       throwOwnershipError({ id: userId, email })
     }
 
-    req.activity = activity
+    if (
+      activity.status === ACTIVITY_STATES.ARCHIVED ||
+      activity.status === ACTIVITY_STATES.DELETED
+    ) {
+      throwInvalidStatusError({
+        id,
+        requiredStatus: `not ${ACTIVITY_STATES.ARCHIVED} or ${ACTIVITY_STATES.DELETED}`,
+      })
+    }
+
+    if (categoryId) {
+      const category = await massive.categories.findOne(categoryId)
+      if (!category) {
+        throwNotFoundError({ id: categoryId, name: 'category' })
+      }
+      if (category.type !== 'ACTIVITY') {
+        throwInvalidCategoryError({ id: categoryId, type: category.type })
+      }
+    }
+
+    //TODO dev'essere diverso da se stesso
+    // if (title) {
+    //   const titleDuplicates = await massive.activity.where(
+    //     'LOWER(title) = TRIM(LOWER($1))',
+    //     [`${title.trim()}`]
+    //   )
+
+    //   const flag = titleDuplicates.some(item => {
+    //     const res = item.title.toLowerCase() === title.trim().toLowerCase()
+    //     return res
+    //   })
+
+    //   if (flag) {
+    //     throwDuplicateTitleError({ title })
+    //   }
+    // }
+
+    if (
+      dataPubblicazioneInGazzetta &&
+      isFutureDate(dataPubblicazioneInGazzetta)
+    ) {
+      throwInvalidPubblicazioneInGazzettaDateError({
+        dataPubblicazioneInGazzetta,
+      })
+    }
+
+    if (attachmentIds) {
+      const files = await massive.files.find({
+        id: attachmentIds,
+        category: CATEGORIES.ACTIVITY_IMAGE,
+      })
+      if (files.length < attachmentIds.length) {
+        throwAttachmentsNotFoundError({ attachmentIds, files })
+      }
+    }
   }
 
-  async function onUpdateActivity() {
-    // se cambia il type, impostare anche il relativo shortType
+  async function onUpdateActivity(req) {
+    const { id } = req.params
+    const { attachmentIds } = req.body
+    const { id: currentUserId } = req.user
+
+    const updatedActivity = await massive.withTransaction(async tx => {
+      const updatedActivity = await tx.activity.update(
+        id,
+        buildUpdateParams(req.body)
+      )
+
+      if (attachmentIds?.length) {
+        // remove and re-assign all activity reference of the files
+        await tx.files.update(
+          {
+            activityId: updatedActivity.id,
+          },
+          {
+            activityId: null,
+          }
+        )
+
+        await Promise.all(
+          attachmentIds.map(attachmentId => {
+            tx.files.save({ id: attachmentId, activityId: updatedActivity.id })
+          })
+        )
+      }
+
+      if (attachmentIds === null) {
+        await tx.files.destroy({ activityId: updatedActivity.id })
+      }
+
+      return updatedActivity
+    })
+
+    return populateActivity(updatedActivity, currentUserId, massive)
+  }
+
+  function buildUpdateParams(body) {
+    let params = {
+      ...removeObjectProps(body, ['attachmentIds']),
+      updatedAt: new Date(),
+    }
+
+    if (body.type) {
+      params = {
+        ...params,
+        shortType: getShortType(body.type),
+      }
+    }
+
+    return params
   }
 }
