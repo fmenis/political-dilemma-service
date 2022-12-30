@@ -1,6 +1,6 @@
 import S from 'fluent-json-schema'
 
-import { sTags, sAllowedActions } from '../../common/common.schema.js'
+import { sTags } from '../../common/common.schema.js'
 import { getArticleStates } from '../lib/common.js'
 
 export function sCreateArticle() {
@@ -114,8 +114,6 @@ export function sArticleDetail() {
     .prop('isMine', S.boolean())
     .description('Defines if the current user is the owner of the article.')
     .required()
-    .prop('allowedActions', sAllowedActions())
-    .description('Article allowed actions.')
 }
 
 export function sArticleList() {

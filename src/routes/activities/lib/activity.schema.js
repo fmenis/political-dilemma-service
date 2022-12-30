@@ -1,6 +1,6 @@
 import S from 'fluent-json-schema'
 
-import { sTags, sAllowedActions } from '../../common/common.schema.js'
+import { sTags } from '../../common/common.schema.js'
 import { getActivityStates } from '../lib/common.js'
 import { getActivityTypes, getActivityShortTypes } from './common.js'
 
@@ -117,9 +117,6 @@ export function sActivityDetail() {
     .prop('isMine', S.boolean())
     .description('Defines if the current user is the owner of the article.')
     .required()
-    .prop('allowedActions', sAllowedActions())
-    .required()
-    .description('Activity allowed actions.')
 }
 
 export function sActivityList() {
