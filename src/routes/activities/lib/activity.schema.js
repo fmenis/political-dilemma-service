@@ -12,7 +12,7 @@ export function sCreateActivity() {
     .required()
     .prop('text', S.string().minLength(3))
     .description('Activity text.')
-    .prop('description', S.string().minLength(3).maxLength(500))
+    .prop('description', S.string().minLength(3))
     .description('Activity description.')
     .prop('categoryId', S.string().format('uuid'))
     .description('Activity category id.')
