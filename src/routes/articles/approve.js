@@ -3,6 +3,7 @@ import S from 'fluent-json-schema'
 import { ARTICLE_STATES } from '../common/enums.js'
 import { sArticleDetail } from './lib/schema.js'
 import { populateArticle } from './lib/common.js'
+import { isPastDate } from '../common/common.js'
 
 export default async function approveArticle(fastify) {
   const { massive } = fastify
@@ -21,6 +22,7 @@ export default async function approveArticle(fastify) {
     config: {
       public: false,
       permission,
+      trimBodyFields: ['note'],
     },
     schema: {
       summary: 'Approve article',
@@ -35,23 +37,17 @@ export default async function approveArticle(fastify) {
         .prop('note', S.string().minLength(3).maxLength(250))
         .description('Article note.')
         .prop('publicationDate', S.string().format('date-time'))
-        .description('Article publication date.'),
+        .description('Article publication date.')
+        .required(),
       response: {
         200: sArticleDetail(),
         404: fastify.getSchema('sNotFound'),
         409: fastify.getSchema('sConflict'),
       },
     },
-    preValidation: onPreValidation,
     preHandler: onPreHandler,
     handler: onApproveArticle,
   })
-
-  async function onPreValidation(req) {
-    if (req.body.note) {
-      req.body.note = req.body.note.trim()
-    }
-  }
 
   async function onPreHandler(req) {
     const { id } = req.params
@@ -66,7 +62,7 @@ export default async function approveArticle(fastify) {
       throwInvalidStatusError({ id, requiredStatus: ARTICLE_STATES.IN_REVIEW })
     }
 
-    if (publicationDate && publicationDate <= new Date().toISOString()) {
+    if (isPastDate(publicationDate)) {
       throwInvalidPublicationDate({ publicationDate })
     }
 
@@ -78,13 +74,10 @@ export default async function approveArticle(fastify) {
     const { id: ownerId } = req.user
     const { note, publicationDate } = req.body
 
-    article.status = ARTICLE_STATES.READY
-    article.publishedAt = publicationDate || null
-
     const updatedArticle = {
       ...article,
       status: ARTICLE_STATES.READY,
-      publishedAt: publicationDate || null,
+      publishedAt: publicationDate,
       updatedAt: new Date(),
     }
 

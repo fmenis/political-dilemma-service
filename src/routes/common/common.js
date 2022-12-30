@@ -93,6 +93,10 @@ export function isFutureDate(date) {
   return checkDate(date, { isFutureDate: true })
 }
 
+export function isPastDate(date) {
+  return checkDate(date, { isPastDate: true })
+}
+
 function checkDate(date, opts = {}) {
   date = new Date(date).toISOString()
   const now = new Date().toISOString()

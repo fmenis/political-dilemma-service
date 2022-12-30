@@ -15,6 +15,7 @@ export default async function removeArticle(fastify) {
     config: {
       public: false,
       permission,
+      trimBodyFields: ['cancellationReason'],
     },
     schema: {
       summary: 'Remove article',
@@ -35,14 +36,9 @@ export default async function removeArticle(fastify) {
         409: fastify.getSchema('sConflict'),
       },
     },
-    preValidation: onPreValidation,
     preHandler: onPreHandler,
     handler: onRemoveArticle,
   })
-
-  async function onPreValidation(req) {
-    req.body.cancellationReason = req.body.cancellationReason.trim()
-  }
 
   async function onPreHandler(req) {
     const { id } = req.params

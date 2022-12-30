@@ -15,6 +15,7 @@ export default async function archiveArticle(fastify) {
     config: {
       public: false,
       permission,
+      trimBodyFields: ['note'],
     },
     schema: {
       summary: 'Archive article',
@@ -34,16 +35,9 @@ export default async function archiveArticle(fastify) {
         409: fastify.getSchema('sConflict'),
       },
     },
-    preValidation: onPreValidation,
     preHandler: onPreHandler,
     handler: onArchiveArticle,
   })
-
-  async function onPreValidation(req) {
-    if (req.body.note) {
-      req.body.note = req.body.note.trim()
-    }
-  }
 
   async function onPreHandler(req) {
     const { id } = req.params
