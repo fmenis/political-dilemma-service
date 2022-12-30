@@ -20,6 +20,11 @@ export function sCreateActivity() {
     .prop('type', S.string().enum(getActivityTypes()))
     .description('Activity type.')
     .required()
+    .prop(
+      'rating',
+      S.number().minimum(0).maximum(5).multipleOf(0.5).raw({ nullable: true })
+    )
+    .description('Activity rating.')
     .prop('tags', sTags())
     .description('Activity tags.')
     .prop(
@@ -71,8 +76,10 @@ export function sActivityDetail() {
     .required()
     .prop('tags', sTags().raw({ nullable: true }))
     .description('Activity tags.')
-    .prop('rating', S.number().raw({ nullable: true }))
-    .description('Activity rating.')
+    .prop(
+      'rating',
+      S.number().minimum(0).maximum(5).multipleOf(0.5).raw({ nullable: true })
+    )
     .prop(
       'attachments',
       S.array()
@@ -162,8 +169,10 @@ export function sUpdateActivity() {
     .description('Activity type.')
     .prop('tags', sTags().raw({ nullable: true }))
     .description('Activity tags.')
-    .prop('rating', S.number().raw({ nullable: true }))
-    .description('Activity rating.')
+    .prop(
+      'rating',
+      S.number().minimum(0).maximum(5).multipleOf(0.5).raw({ nullable: true })
+    )
     .prop(
       'attachmentIds',
       S.array()
