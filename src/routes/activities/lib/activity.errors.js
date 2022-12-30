@@ -92,7 +92,7 @@ async function activityErrors(fastify) {
       {
         code: '*NOT_FOUND*',
         description: 'occurs when the target entity is not present.',
-        apis: ['create', 'read', 'update'],
+        apis: ['create', 'read', 'update', 'delete'],
         statusCode: 404,
       },
       {
@@ -124,14 +124,14 @@ async function activityErrors(fastify) {
         code: '*OWNERSHIP_RESTRICTION*',
         description:
           'occurs when an operation is done on a resource that have a different owner.',
-        apis: ['read', 'update'],
+        apis: ['read', 'update', 'delete'],
         statusCode: 403,
       },
       {
         code: '*INVALID_STATUS*',
         description:
           'occurs when the current status is not valid to perform the requested action.',
-        apis: ['update'],
+        apis: ['update', 'delete'],
         statusCode: 409,
       },
     ],
