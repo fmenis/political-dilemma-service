@@ -53,13 +53,14 @@ export default async function updateArticle(fastify) {
     }
 
     if (
-      article.status === ARTICLE_STATES.ARCHIVED ||
-      article.status === ARTICLE_STATES.DELETED
+      article.status !== ARTICLE_STATES.DRAFT ||
+      article.status !== ARTICLE_STATES.IN_REVIEW ||
+      article.status !== ARTICLE_STATES.REWORK
     ) {
       throw createError(409, 'Conflict', {
         validation: [
           {
-            message: `Invalid action on article '${id}'. Required status: not ${ARTICLE_STATES.ARCHIVED} or '${ARTICLE_STATES.DELETED}'`,
+            message: `Required status: ${ARTICLE_STATES.DRAFT}, ${ARTICLE_STATES.IN_REVIEW} or '${ARTICLE_STATES.REWORK}'`,
           },
         ],
       })

@@ -80,12 +80,13 @@ export default async function updateActivity(fastify) {
     }
 
     if (
-      activity.status === ACTIVITY_STATES.ARCHIVED ||
-      activity.status === ACTIVITY_STATES.DELETED
+      activity.status !== ACTIVITY_STATES.DRAFT ||
+      activity.status !== ACTIVITY_STATES.IN_REVIEW ||
+      activity.status !== ACTIVITY_STATES.REWORK
     ) {
       throwInvalidStatusError({
         id,
-        requiredStatus: `not ${ACTIVITY_STATES.ARCHIVED} or ${ACTIVITY_STATES.DELETED}`,
+        requiredStatus: `${ACTIVITY_STATES.DRAFT}, ${ACTIVITY_STATES.IN_REVIEW} or ${ACTIVITY_STATES.REWORK}`,
       })
     }
 
