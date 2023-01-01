@@ -36,7 +36,7 @@ ALTER TABLE "internalNotes" DROP CONSTRAINT IF EXISTS  fk_activity_id;
 ALTER TABLE "internalNotes" ADD CONSTRAINT fk_activity_id FOREIGN KEY("activityId") REFERENCES activity(id) ON DELETE CASCADE;
 
 -- update check constraint and related data
-ALTER TABLE "internalNotes" DROP CONSTRAINT IF EXISTS internalNotes_category_check;
+ALTER TABLE "internalNotes" DROP CONSTRAINT IF EXISTS "internalNotes_category_check";
 UPDATE "internalNotes"
 SET category =
 CASE
@@ -46,4 +46,4 @@ CASE
     WHEN category = 'ARTICLE' THEN 'ARTICLE'
     WHEN category = 'ACTIVITY' THEN 'ACTIVITY'
 END;
-ALTER TABLE "internalNotes" ADD CONSTRAINT internalNotes_category_check CHECK (category in ('ARTICLE', 'ACTIVITY'));
+ALTER TABLE "internalNotes" ADD CONSTRAINT "internalNotes_category_check" CHECK (category in ('ARTICLE', 'ACTIVITY'));
