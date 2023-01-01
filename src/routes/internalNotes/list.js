@@ -1,9 +1,15 @@
 import S from 'fluent-json-schema'
 
 import { sInternalNote } from './lib/schema.js'
+import { getCategoryTypes } from '../categories/lib/common.js'
+import { CATEGORY_TYPES } from '../common/enums.js'
+import { buildRouteFullDescription } from '../common/common.js'
 
 export default async function listInternalNotes(fastify) {
-  const { massive, httpErrors } = fastify
+  const { massive } = fastify
+  const routeDescription = 'List internal notes'
+
+  const { errors, throwNotFoundError } = fastify.internalNotesErrors
 
   fastify.route({
     method: 'GET',
@@ -12,12 +18,23 @@ export default async function listInternalNotes(fastify) {
       public: false,
     },
     schema: {
-      summary: 'List internal notes',
-      description: `List internal notes`,
+      summary: routeDescription,
+      description: buildRouteFullDescription({
+        description: routeDescription,
+        errors,
+        api: 'list',
+      }),
       query: S.object()
         .additionalProperties(false)
-        .prop('articleId', S.string().format('uuid'))
-        .description('Filter by article id.'),
+        .prop('entityId', S.string().format('uuid'))
+        .description('Filter by entity id.')
+        .required()
+        .prop(
+          'category',
+          S.string().minLength(3).maxLength(50).enum(getCategoryTypes())
+        )
+        .description('Internal note category.')
+        .required(),
       response: {
         200: S.object()
           .additionalProperties(false)
@@ -31,22 +48,28 @@ export default async function listInternalNotes(fastify) {
   })
 
   async function onPreHandler(req) {
-    const { articleId } = req.query
+    const { entityId, category } = req.query
 
-    const article = await massive.articles.findOne(articleId, {
-      fields: ['id'],
-    })
+    let entity
 
-    if (!article) {
-      throw httpErrors.notFound(`Related article '${articleId}' not found`)
+    if (category === CATEGORY_TYPES.ARTICLE) {
+      entity = await massive.articles.findOne(entityId, {
+        fields: ['id'],
+      })
+    }
+
+    if (category === CATEGORY_TYPES.ACTIVITY) {
+      entity = await massive.activity.findOne(entityId, {
+        fields: ['id'],
+      })
+    }
+
+    if (!entity) {
+      throwNotFoundError({ name: category.toLowerCase(), id: entityId })
     }
   }
 
   async function onListInternalNotes(req) {
-    const { articleId } = req.query
-
-    const criteria = articleId ? { articleId } : {}
-
     const internalNotes = await massive.internalNotes
       .join({
         users: {
@@ -54,7 +77,7 @@ export default async function listInternalNotes(fastify) {
           on: { id: 'ownerId' },
         },
       })
-      .find(criteria, {
+      .find(buildFilters(req.query), {
         order: [
           {
             field: 'createdAt',
@@ -69,6 +92,18 @@ export default async function listInternalNotes(fastify) {
         item.author = `${author.first_name} ${author.last_name}`
         return item
       }),
+    }
+  }
+
+  function buildFilters(query) {
+    const { entityId, category } = query
+
+    if (category === CATEGORY_TYPES.ARTICLE) {
+      return { articleId: entityId }
+    }
+
+    if (category === CATEGORY_TYPES.ACTIVITY) {
+      return { activityId: entityId }
     }
   }
 }

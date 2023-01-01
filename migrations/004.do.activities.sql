@@ -21,7 +21,29 @@ CREATE TABLE IF NOT EXISTS "activity" (
     CONSTRAINT fk_category_id FOREIGN KEY("categoryId") REFERENCES categories("id") ON DELETE NO ACTION
 );
 
-ALTER TABLE files ADD COLUMN "activityId" UUID;
+-- add column with related fk constraint
+ALTER TABLE files ADD COLUMN IF NOT EXISTS "activityId" UUID;
+ALTER TABLE files DROP CONSTRAINT IF EXISTS  fk_activity_id;
 ALTER TABLE files ADD CONSTRAINT fk_activity_id FOREIGN KEY("activityId") REFERENCES activity(id) ON DELETE CASCADE;
-ALTER TABLE files DROP CONSTRAINT files_category_check;
+
+-- update check constraint
+ALTER TABLE files DROP CONSTRAINT IF EXISTS files_category_check;
 ALTER TABLE files ADD CONSTRAINT files_category_check CHECK (category in ('ARTICLE_IMAGE', 'ACTIVITY_IMAGE'));
+
+-- add column with related fk constraint
+ALTER TABLE "internalNotes" ADD COLUMN IF NOT EXISTS "activityId" UUID;
+ALTER TABLE "internalNotes" DROP CONSTRAINT IF EXISTS  fk_activity_id;
+ALTER TABLE "internalNotes" ADD CONSTRAINT fk_activity_id FOREIGN KEY("activityId") REFERENCES activity(id) ON DELETE CASCADE;
+
+-- update check constraint and related data
+ALTER TABLE "internalNotes" DROP CONSTRAINT IF EXISTS internalNotes_category_check;
+UPDATE "internalNotes"
+SET category =
+CASE
+	WHEN category = 'articles' THEN 'ARTICLE'
+	WHEN category = 'activities' THEN 'ACTIVITY'
+	-- enable to relauch query without problems
+    WHEN category = 'ARTICLE' THEN 'ARTICLE'
+    WHEN category = 'ACTIVITY' THEN 'ACTIVITY'
+END;
+ALTER TABLE "internalNotes" ADD CONSTRAINT internalNotes_category_check CHECK (category in ('ARTICLE', 'ACTIVITY'));
