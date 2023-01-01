@@ -4,31 +4,34 @@ import {
   buildRouteFullDescription,
   restrictDataToOwner,
 } from '../../common/common.js'
-import { sActivityDetail } from '../lib/activity.schema.js'
-import { populateActivity } from '../lib/common.js'
+import { ACTIVITY_STATES } from '../../common/enums.js'
 
-export default async function readActivity(fastify) {
+export default async function deleteActivity(fastify) {
   const { massive } = fastify
-  const { errors, throwNotFoundError, throwOwnershipError } =
-    fastify.activityErrors
+  const {
+    errors,
+    throwNotFoundError,
+    throwOwnershipError,
+    throwInvalidStatusError,
+  } = fastify.activityErrors
 
-  const routeDescription = 'List activities.'
-  const permission = 'activity:read'
+  const routeDescription = 'Delete activity.'
+  const permission = 'activity:delete'
 
   fastify.route({
-    method: 'GET',
+    method: 'DELETE',
     path: '/:id',
     config: {
       public: false,
       permission,
     },
     schema: {
-      summary: 'Get activity',
+      summary: 'Delete activity',
       description: buildRouteFullDescription({
         description: routeDescription,
         errors,
         permission,
-        api: 'read',
+        api: 'delete',
       }),
       params: S.object()
         .additionalProperties(false)
@@ -36,19 +39,23 @@ export default async function readActivity(fastify) {
         .description('Activity id.')
         .required(),
       response: {
-        200: sActivityDetail(),
+        204: fastify.getSchema('sNoContent'),
         404: fastify.getSchema('sNotFound'),
+        409: fastify.getSchema('sConflict'),
       },
     },
     preHandler: onPreHandler,
-    handler: onReadActivity,
+    handler: onDeleteActivity,
   })
 
   async function onPreHandler(req) {
     const { id } = req.params
+
     const { id: userId, email, apiPermission } = req.user
 
-    const activity = await massive.activity.findOne(id)
+    const activity = await massive.activity.findOne(id, {
+      fields: ['id', 'status', 'ownerId'],
+    })
     if (!activity) {
       throwNotFoundError({ id, name: 'activity' })
     }
@@ -57,13 +64,18 @@ export default async function readActivity(fastify) {
       throwOwnershipError({ id: userId, email })
     }
 
-    req.activity = activity
+    if (activity.status !== ACTIVITY_STATES.DRAFT) {
+      throwInvalidStatusError({
+        id,
+        requiredStatus: ACTIVITY_STATES.DRAFT,
+      })
+    }
   }
 
-  async function onReadActivity(req) {
-    const { activity } = req
-    const { id: ownerId } = req.user
+  async function onDeleteActivity(req, reply) {
+    const { id } = req.params
 
-    return populateActivity(activity, ownerId, massive)
+    await massive.activity.destroy(id)
+    reply.code(204)
   }
 }

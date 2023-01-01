@@ -4,7 +4,6 @@ import {
   ACTIVITY_SHORT_TYPES,
   COMBINED_TYPES,
 } from './common.enums.js'
-import { buildAllowedActions } from '../../common/common.js'
 
 export function getActivityStates() {
   return Object.values(ACTIVITY_STATES)
@@ -35,7 +34,6 @@ export async function populateActivity(activity, currentUserId, massive) {
     author: `${author.first_name} ${author.last_name}`,
     canBeDeleted: activity.status === ACTIVITY_STATES.DRAFT,
     attachments: attachments.length > 0 ? attachments : null,
-    allowedActions: buildAllowedActions(activity.status),
     isMine: activity.ownerId === currentUserId,
   }
 }

@@ -12,7 +12,7 @@ export function sCreateActivity() {
     .required()
     .prop('text', S.string().minLength(3))
     .description('Activity text.')
-    .prop('description', S.string().minLength(3).maxLength(500))
+    .prop('description', S.string().minLength(3))
     .description('Activity description.')
     .prop('categoryId', S.string().format('uuid'))
     .description('Activity category id.')
@@ -20,6 +20,11 @@ export function sCreateActivity() {
     .prop('type', S.string().enum(getActivityTypes()))
     .description('Activity type.')
     .required()
+    .prop(
+      'rating',
+      S.number().minimum(0).maximum(5).multipleOf(0.5).raw({ nullable: true })
+    )
+    .description('Activity rating.')
     .prop('tags', sTags())
     .description('Activity tags.')
     .prop(
@@ -71,8 +76,10 @@ export function sActivityDetail() {
     .required()
     .prop('tags', sTags().raw({ nullable: true }))
     .description('Activity tags.')
-    .prop('rating', S.number().raw({ nullable: true }))
-    .description('Activity rating.')
+    .prop(
+      'rating',
+      S.number().minimum(0).maximum(5).multipleOf(0.5).raw({ nullable: true })
+    )
     .prop(
       'attachments',
       S.array()
@@ -117,46 +124,6 @@ export function sActivityDetail() {
     .prop('isMine', S.boolean())
     .description('Defines if the current user is the owner of the article.')
     .required()
-    .prop(
-      'allowedActions',
-      S.object()
-        .additionalProperties(false)
-        .prop('canBeDeleted', S.boolean())
-        .description('Defines if the activity can be deleted.')
-        .required()
-        .prop('canBeEdited', S.boolean())
-        .description('Defines if the activity can be edited.')
-        .required()
-        .prop('canAskReview', S.boolean())
-        .description(
-          `Defines if the activity can be moved to status 'IN_REVIEW'.`
-        )
-        .required()
-        .prop('canAskApprove', S.boolean())
-        .description(
-          `Defines if the activity can be moved to status 'APPROVED'.`
-        )
-        .required()
-        .prop('canAskRework', S.boolean())
-        .description(`Defines if the activity can be moved to status 'REWORK'.`)
-        .required()
-        .prop('canAskPublish', S.boolean())
-        .description(
-          `Defines if the activity can be moved to status 'PUBLISHED'.`
-        )
-        .required()
-        .prop('canAskArchive', S.boolean())
-        .description(
-          `Defines if the activity can be moved to status 'ARCHIVED'.`
-        )
-        .required()
-        .prop('canAskDelete', S.boolean())
-        .description(
-          `Defines if the activity can be moved to status 'DELETED'.`
-        )
-        .required()
-    )
-    .description('Activity allowed actions.')
 }
 
 export function sActivityList() {
@@ -167,6 +134,9 @@ export function sActivityList() {
     .required()
     .prop('title', S.string().minLength(3).maxLength(200))
     .description('Activity title.')
+    .required()
+    .prop('status', S.string().enum(getActivityStates()))
+    .description('Activity status.')
     .required()
     .prop('author', S.string())
     .description('Activity author.')
@@ -183,4 +153,48 @@ export function sActivityList() {
     .prop('isMine', S.boolean())
     .description('Defines if the current user is the owner of the activity.')
     .required()
+}
+
+export function sUpdateActivity() {
+  return S.object()
+    .prop('title', S.string().minLength(3).maxLength(200))
+    .description('Activity title.')
+    .prop('description', S.string().raw({ nullable: true }))
+    .description('Activity description.')
+    .prop('text', S.string().minLength(3).raw({ nullable: true }))
+    .description('Activity text.')
+    .prop('categoryId', S.string().format('uuid'))
+    .description('Activity category id.')
+    .prop('type', S.string().enum(getActivityTypes()))
+    .description('Activity type.')
+    .prop('tags', sTags().raw({ nullable: true }))
+    .description('Activity tags.')
+    .prop(
+      'rating',
+      S.number().minimum(0).maximum(5).multipleOf(0.5).raw({ nullable: true })
+    )
+    .prop(
+      'attachmentIds',
+      S.array()
+        .items(S.string().format('uuid'))
+        .minItems(1)
+        .maxItems(50)
+        .raw({ nullable: true })
+    )
+    .description('Activity attachments ids.')
+    .prop(
+      'linkGazzettaUfficiale',
+      S.string().minLength(10).maxLength(500).raw({ nullable: true })
+    )
+    .description('Activity offical gazzette link.')
+    .prop(
+      'dataPubblicazioneInGazzetta',
+      S.string().format('date').raw({ nullable: true })
+    )
+    .description('Activity offical gazzette publication date.')
+    .prop(
+      'cancellationReason',
+      S.string().minLength(3).maxLength(500).raw({ nullable: true })
+    )
+    .description('Activity cancellation reason.')
 }

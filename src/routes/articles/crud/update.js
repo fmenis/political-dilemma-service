@@ -18,6 +18,7 @@ export default async function updateArticle(fastify) {
     config: {
       public: false,
       permission,
+      trimBodyFields: ['title', 'text', 'description', 'tags'],
     },
     schema: {
       summary: 'Update article',
@@ -34,27 +35,9 @@ export default async function updateArticle(fastify) {
         409: fastify.getSchema('sConflict'),
       },
     },
-    preValidation: onPreValidation,
     preHandler: onPreHandler,
     handler: onUpdateArticle,
   })
-
-  async function onPreValidation(req) {
-    const trimmableFields = ['title', 'text', 'description', 'tags']
-
-    for (const key of Object.keys(req.body)) {
-      if (req.body[key]) {
-        if (key === 'tags') {
-          req.body.tags = req.body.tags.map(tag => tag.trim())
-          continue
-        }
-
-        if (trimmableFields.includes(key)) {
-          req.body[key] = req.body[key].trim()
-        }
-      }
-    }
-  }
 
   async function onPreHandler(req) {
     const { id } = req.params
@@ -70,13 +53,14 @@ export default async function updateArticle(fastify) {
     }
 
     if (
-      article.status === ARTICLE_STATES.ARCHIVED ||
-      article.status === ARTICLE_STATES.DELETED
+      article.status !== ARTICLE_STATES.DRAFT ||
+      article.status !== ARTICLE_STATES.IN_REVIEW ||
+      article.status !== ARTICLE_STATES.REWORK
     ) {
       throw createError(409, 'Conflict', {
         validation: [
           {
-            message: `Invalid action on article '${id}'. Required status: not ${ARTICLE_STATES.ARCHIVED} or '${ARTICLE_STATES.DELETED}'`,
+            message: `Required status: ${ARTICLE_STATES.DRAFT}, ${ARTICLE_STATES.IN_REVIEW} or '${ARTICLE_STATES.REWORK}'`,
           },
         ],
       })

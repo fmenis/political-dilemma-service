@@ -1,5 +1,3 @@
-import { STATES } from './enums.js'
-
 /**
  * Build paginated info
  * @param {number} totalCount total items
@@ -51,11 +49,13 @@ export function buildRouteFullDescription(params) {
   const apiErrors = errors.filter(item => item.apis.includes(api))
 
   if (apiErrors.length > 0) {
-    const formattedErrors = apiErrors.map(
-      item => `- ${item.code}: ${item.description} \n\n`
-    )
+    const formattedErrors = apiErrors
+      .map(
+        item => `- ${item.statusCode} - ${item.code}: ${item.description} \n\n`
+      )
+      .sort()
 
-    fullDescription += ` **Possible errors**: \n\n ${formattedErrors.join(' ')}`
+    fullDescription += ` **Custom errors**: \n\n ${formattedErrors.join(' ')}`
   } else {
     fullDescription += ` **This api doesn't expose custom errors.** \n\n`
   }
@@ -67,59 +67,6 @@ export function buildRouteFullDescription(params) {
   }
 
   return fullDescription
-}
-
-/**
- * Calculate entity allowed actions
- * @param {string} status entity status
- * @returns object allowed actions
- */
-export function buildAllowedActions(status) {
-  const allowedActions = {
-    canBeDeleted: false,
-    canBeEdited: false,
-    canAskReview: false,
-    canAskApprove: false,
-    canAskRework: false,
-    canAskPublish: false,
-    canAskArchive: false,
-    canAskDelete: false,
-  }
-
-  if (status === STATES.DRAFT) {
-    allowedActions.canBeDeleted = true
-  }
-
-  if (status !== STATES.ARCHIVED && status !== STATES.DELETED) {
-    allowedActions.canBeEdited = true
-  }
-
-  if (status === STATES.DRAFT) {
-    allowedActions.canAskReview = true
-  }
-
-  if (status === STATES.IN_REVIEW) {
-    allowedActions.canAskApprove = true
-    allowedActions.canAskRework = true
-  }
-
-  if (status === STATES.REWORK) {
-    allowedActions.canAskReview = true
-  }
-
-  if (status === STATES.READY) {
-    allowedActions.canAskPublish = true
-  }
-
-  if (status === STATES.PUBLISHED) {
-    allowedActions.canAskArchive = true
-  }
-
-  if (status !== STATES.DRAFT && status !== STATES.DELETED) {
-    allowedActions.canAskDelete = true
-  }
-
-  return allowedActions
 }
 
 /**
@@ -144,6 +91,10 @@ export function trimObjectFields(fields, obj) {
 
 export function isFutureDate(date) {
   return checkDate(date, { isFutureDate: true })
+}
+
+export function isPastDate(date) {
+  return checkDate(date, { isPastDate: true })
 }
 
 function checkDate(date, opts = {}) {

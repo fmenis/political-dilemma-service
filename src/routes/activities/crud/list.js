@@ -130,6 +130,7 @@ export default async function listActivities(fastify) {
         title: activity.title,
         type: activity.type,
         shortType: activity.shortType,
+        status: activity.status,
         author: `${author.first_name} ${author.last_name}`,
         category: categoryName,
         isMine: activity.ownerId === currentUserId,
