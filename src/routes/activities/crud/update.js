@@ -80,8 +80,8 @@ export default async function updateActivity(fastify) {
     }
 
     if (
-      activity.status !== ACTIVITY_STATES.DRAFT ||
-      activity.status !== ACTIVITY_STATES.IN_REVIEW ||
+      activity.status !== ACTIVITY_STATES.DRAFT &&
+      activity.status !== ACTIVITY_STATES.IN_REVIEW &&
       activity.status !== ACTIVITY_STATES.REWORK
     ) {
       throwInvalidStatusError({
