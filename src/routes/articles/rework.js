@@ -1,6 +1,6 @@
 import S from 'fluent-json-schema'
 
-import { ARTICLE_STATES } from '../common/enums.js'
+import { ARTICLE_STATES, CATEGORY_TYPES } from '../common/enums.js'
 import { sArticleDetail } from './lib/schema.js'
 import { populateArticle } from './lib/common.js'
 
@@ -81,7 +81,7 @@ export default async function reworkArticle(fastify) {
           ownerId,
           text: note,
           articleId: updatedArticle.id,
-          category: 'articles',
+          category: CATEGORY_TYPES.ARTICLE,
         })
       }
     })
