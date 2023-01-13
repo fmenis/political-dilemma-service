@@ -53,8 +53,8 @@ export default async function updateArticle(fastify) {
     }
 
     if (
-      article.status !== ARTICLE_STATES.DRAFT ||
-      article.status !== ARTICLE_STATES.IN_REVIEW ||
+      article.status !== ARTICLE_STATES.DRAFT &&
+      article.status !== ARTICLE_STATES.IN_REVIEW &&
       article.status !== ARTICLE_STATES.REWORK
     ) {
       throw createError(409, 'Conflict', {

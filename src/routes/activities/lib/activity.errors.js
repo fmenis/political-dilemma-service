@@ -74,7 +74,7 @@ async function activityErrors(fastify) {
     throw createError(409, message, {
       internalCode: 'INVALID_STATUS',
       details: {
-        articleId: id,
+        activityId: id,
         requiredStatus,
       },
     })
