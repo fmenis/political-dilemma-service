@@ -80,6 +80,15 @@ async function activityErrors(fastify) {
     })
   }
 
+  function throwMissinDataError(data) {
+    const { id, errors } = data
+    const message = `Action not allowed on activity '${id}' due to a lack of data`
+    throw createError(400, message, {
+      internalCode: 'MISSING_DATA',
+      validation: errors,
+    })
+  }
+
   fastify.decorate('activityErrors', {
     throwNotFoundError,
     throwInvalidCategoryError,
@@ -88,11 +97,12 @@ async function activityErrors(fastify) {
     throwAttachmentsNotFoundError,
     throwOwnershipError,
     throwInvalidStatusError,
+    throwMissinDataError,
     errors: [
       {
         code: '*NOT_FOUND*',
         description: 'occurs when the target entity is not present.',
-        apis: ['create', 'read', 'update', 'delete'],
+        apis: ['create', 'read', 'update', 'delete', 'review'],
         statusCode: 404,
       },
       {
@@ -131,7 +141,13 @@ async function activityErrors(fastify) {
         code: '*INVALID_STATUS*',
         description:
           'occurs when the current status is not valid to perform the requested action.',
-        apis: ['update', 'delete'],
+        apis: ['update', 'delete', 'review'],
+        statusCode: 409,
+      },
+      {
+        code: '*MISSING_DATA*',
+        description: 'occurs when some article data is missing.',
+        apis: ['review'],
         statusCode: 409,
       },
     ],
