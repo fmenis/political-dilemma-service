@@ -292,6 +292,18 @@ export async function seedPermissions(client) {
       ownership: 'own',
       description: 'Rework attività (solo proprie)',
     },
+    {
+      resource: 'activity',
+      action: 'approve',
+      ownership: 'any',
+      description: 'Approve attività (tutte)',
+    },
+    {
+      resource: 'activity',
+      action: 'approve',
+      ownership: 'own',
+      description: 'Approve attività (solo proprie)',
+    },
   ]
 
   for (const permission of permissions) {

@@ -89,6 +89,19 @@ async function activityErrors(fastify) {
     })
   }
 
+  function throwInvalidPublicationDateError(data) {
+    const { publicationDate } = data
+    const message = 'Publication date must be in the future'
+    throw createError(400, message, {
+      internalCode: 'INVALID_PUBLICATION_DATE',
+      validation: [
+        {
+          message: `Publication date '${publicationDate}' must be in the future`,
+        },
+      ],
+    })
+  }
+
   fastify.decorate('activityErrors', {
     throwNotFoundError,
     throwInvalidCategoryError,
@@ -98,11 +111,20 @@ async function activityErrors(fastify) {
     throwOwnershipError,
     throwInvalidStatusError,
     throwMissinDataError,
+    throwInvalidPublicationDateError,
     errors: [
       {
         code: '*NOT_FOUND*',
         description: 'occurs when the target entity is not present.',
-        apis: ['create', 'read', 'update', 'delete', 'review', 'rework'],
+        apis: [
+          'create',
+          'read',
+          'update',
+          'delete',
+          'review',
+          'rework',
+          'approve',
+        ],
         statusCode: 404,
       },
       {
@@ -141,7 +163,7 @@ async function activityErrors(fastify) {
         code: '*INVALID_STATUS*',
         description:
           'occurs when the current status is not valid to perform the requested action.',
-        apis: ['update', 'delete', 'review', 'rework'],
+        apis: ['update', 'delete', 'review', 'rework', 'approve'],
         statusCode: 409,
       },
       {
@@ -149,6 +171,12 @@ async function activityErrors(fastify) {
         description: 'occurs when some article data is missing.',
         apis: ['review'],
         statusCode: 409,
+      },
+      {
+        code: '*INVALID_PUBLICATION_DATE*',
+        description: 'occurs when the publicationDate is not in the future.',
+        apis: ['approve'],
+        statusCode: 400,
       },
     ],
   })
