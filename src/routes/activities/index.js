@@ -7,6 +7,7 @@ import updateRoute from './crud/update.js'
 import deleteRoute from './crud/delete.js'
 
 import reviewRoute from './review.js'
+import reworkRoute from './rework.js'
 
 export default async function index(fastify) {
   fastify.addHook('onRoute', options => {
@@ -26,4 +27,5 @@ export default async function index(fastify) {
   fastify.register(deleteRoute, { prefix })
 
   fastify.register(reviewRoute, { prefix })
+  fastify.register(reworkRoute, { prefix })
 }

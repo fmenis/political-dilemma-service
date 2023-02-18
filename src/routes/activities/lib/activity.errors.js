@@ -102,7 +102,7 @@ async function activityErrors(fastify) {
       {
         code: '*NOT_FOUND*',
         description: 'occurs when the target entity is not present.',
-        apis: ['create', 'read', 'update', 'delete', 'review'],
+        apis: ['create', 'read', 'update', 'delete', 'review', 'rework'],
         statusCode: 404,
       },
       {
@@ -141,7 +141,7 @@ async function activityErrors(fastify) {
         code: '*INVALID_STATUS*',
         description:
           'occurs when the current status is not valid to perform the requested action.',
-        apis: ['update', 'delete', 'review'],
+        apis: ['update', 'delete', 'review', 'rework'],
         statusCode: 409,
       },
       {
