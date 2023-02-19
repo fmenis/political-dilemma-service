@@ -11,6 +11,7 @@ import reworkRoute from './rework.js'
 import approveRoute from './approve.js'
 import publishRoute from './publish.js'
 import archiveRoute from './archive.js'
+import removeRoute from './remove.js'
 
 export default async function index(fastify) {
   fastify.addHook('onRoute', options => {
@@ -34,4 +35,5 @@ export default async function index(fastify) {
   fastify.register(approveRoute, { prefix })
   fastify.register(publishRoute, { prefix })
   fastify.register(archiveRoute, { prefix })
+  fastify.register(removeRoute, { prefix })
 }
