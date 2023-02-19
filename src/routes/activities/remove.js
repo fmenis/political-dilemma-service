@@ -60,7 +60,7 @@ export default async function removeActivity(fastify) {
     if (
       activity.status === ACTIVITY_STATES.DRAFT ||
       activity.status === ACTIVITY_STATES.ARCHIVED ||
-      activity.status === ACTIVITY_STATES.DELETEDY
+      activity.status === ACTIVITY_STATES.DELETED
     ) {
       throwInvalidStatusError({
         id,

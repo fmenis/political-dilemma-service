@@ -308,37 +308,37 @@ export async function seedPermissions(client) {
       resource: 'activity',
       action: 'publish',
       ownership: 'any',
-      description: 'Pubblicazione attività (tutti) ',
+      description: 'Pubblicazione attività (tutte)',
     },
     {
       resource: 'activity',
       action: 'publish',
       ownership: 'own',
-      description: 'Pubblicazione attività (solo propri)',
+      description: 'Pubblicazione attività (solo proprie)',
     },
     {
       resource: 'activity',
       action: 'archive',
       ownership: 'any',
-      description: 'Archiviazione attività (tutti)',
+      description: 'Archiviazione attività (tutte)',
     },
     {
       resource: 'activity',
       action: 'archive',
       ownership: 'own',
-      description: 'Archiviazione attività (solo propri)',
+      description: 'Archiviazione attività (solo proprie)',
     },
     {
       resource: 'activity',
       action: 'remove',
       ownership: 'any',
-      description: 'Cancellazione logica attività (tutti)',
+      description: 'Cancellazione logica attività (tutte)',
     },
     {
       resource: 'activity',
       action: 'remove',
       ownership: 'own',
-      description: 'Cancellazione logica attività (solo propri)',
+      description: 'Cancellazione logica attività (solo proprie)',
     },
   ]
 
