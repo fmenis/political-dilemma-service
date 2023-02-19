@@ -124,6 +124,7 @@ async function activityErrors(fastify) {
           'review',
           'rework',
           'approve',
+          'publish',
         ],
         statusCode: 404,
       },
@@ -163,7 +164,7 @@ async function activityErrors(fastify) {
         code: '*INVALID_STATUS*',
         description:
           'occurs when the current status is not valid to perform the requested action.',
-        apis: ['update', 'delete', 'review', 'rework', 'approve'],
+        apis: ['update', 'delete', 'review', 'rework', 'approve', 'publish'],
         statusCode: 409,
       },
       {
