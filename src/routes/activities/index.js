@@ -1,4 +1,4 @@
-import articleErrors from './lib/activity.errors.js'
+import activityErrors from './lib/activity.errors.js'
 
 import createRoute from './crud/create.js'
 import listRoute from './crud/list.js'
@@ -10,6 +10,7 @@ import reviewRoute from './review.js'
 import reworkRoute from './rework.js'
 import approveRoute from './approve.js'
 import publishRoute from './publish.js'
+import archiveRoute from './archive.js'
 
 export default async function index(fastify) {
   fastify.addHook('onRoute', options => {
@@ -19,7 +20,7 @@ export default async function index(fastify) {
     }
   })
 
-  fastify.register(articleErrors)
+  fastify.register(activityErrors)
 
   const prefix = '/v1/activities'
   fastify.register(createRoute, { prefix })
@@ -32,4 +33,5 @@ export default async function index(fastify) {
   fastify.register(reworkRoute, { prefix })
   fastify.register(approveRoute, { prefix })
   fastify.register(publishRoute, { prefix })
+  fastify.register(archiveRoute, { prefix })
 }

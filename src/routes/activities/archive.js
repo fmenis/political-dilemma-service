@@ -5,29 +5,29 @@ import { populateActivity } from './lib/common.js'
 import { buildRouteFullDescription } from '../common/common.js'
 import { sActivityDetail } from './lib/activity.schema.js'
 
-export default async function reworkActivity(fastify) {
+export default async function onArchive(fastify) {
   const { massive } = fastify
   const { throwNotFoundError, throwInvalidStatusError, errors } =
     fastify.activityErrors
 
-  const routeDescription = 'Request to rework an activity.'
-  const permission = 'activity:rework'
+  const routeDescription = 'Request to archive an activity.'
+  const permission = 'activity:archive'
 
   fastify.route({
     method: 'POST',
-    path: '/:id/rework',
+    path: '/:id/archive',
     config: {
       public: false,
       permission,
       trimBodyFields: ['note'],
     },
     schema: {
-      summary: 'Rework activity',
+      summary: 'Archive activity',
       description: buildRouteFullDescription({
         description: routeDescription,
         errors,
         permission,
-        api: 'review',
+        api: 'archive',
       }),
       params: S.object()
         .additionalProperties(false)
@@ -45,7 +45,7 @@ export default async function reworkActivity(fastify) {
       },
     },
     preHandler: onPreHandler,
-    handler: onReworkActivity,
+    handler: onArchiveArticle,
   })
 
   async function onPreHandler(req) {
@@ -56,29 +56,29 @@ export default async function reworkActivity(fastify) {
       throwNotFoundError({ id })
     }
 
-    if (activity.status !== ACTIVITY_STATES.IN_REVIEW) {
+    if (activity.status !== ACTIVITY_STATES.PUBLISHED) {
       throwInvalidStatusError({
         id,
-        requiredStatus: `${ACTIVITY_STATES.IN_REVIEW}`,
+        requiredStatus: `${ACTIVITY_STATES.PUBLISHED}`,
       })
     }
 
     req.activity = activity
   }
 
-  async function onReworkActivity(req) {
+  async function onArchiveArticle(req) {
     const { activity } = req
     const { id: ownerId } = req.user
     const { note } = req.body
 
     const updatedActivity = {
       ...activity,
-      status: ACTIVITY_STATES.REWORK,
+      status: ACTIVITY_STATES.ARCHIVED,
       updatedAt: new Date(),
     }
 
     await massive.withTransaction(async tx => {
-      await tx.activity.update(updatedActivity.id, updatedActivity)
+      await tx.articles.update(updatedActivity.id, updatedActivity)
 
       if (note) {
         await tx.internalNotes.save({
