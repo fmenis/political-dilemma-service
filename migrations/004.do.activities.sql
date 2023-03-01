@@ -30,6 +30,14 @@ ALTER TABLE files ADD CONSTRAINT fk_activity_id FOREIGN KEY("activityId") REFERE
 ALTER TABLE files DROP CONSTRAINT IF EXISTS files_category_check;
 ALTER TABLE files ADD CONSTRAINT files_category_check CHECK (category in ('ARTICLE_IMAGE', 'ACTIVITY_IMAGE'));
 
+-- add "target" column
+ALTER TABLE files ADD COLUMN IF NOT EXISTS target VARCHAR(50);
+ALTER TABLE files DROP CONSTRAINT IF EXISTS  target_check;
+ALTER TABLE files ADD CONSTRAINT target_check CHECK (target in ('TEXT', 'DESCRIPTION'));
+UPDATE files SET target = 'TEXT';
+ALTER TABLE files ALTER COLUMN target SET NOT NULL;
+
+
 -- add column with related fk constraint
 ALTER TABLE "internalNotes" ADD COLUMN IF NOT EXISTS "activityId" UUID;
 ALTER TABLE "internalNotes" DROP CONSTRAINT IF EXISTS  fk_activity_id;

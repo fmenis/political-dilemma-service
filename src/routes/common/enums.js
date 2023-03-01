@@ -13,7 +13,16 @@ const CATEGORY_TYPES = {
   ACTIVITY: 'ACTIVITY',
 }
 
+const FILE_TARGETS = {
+  TEXT: 'TEXT',
+  DESCRIPTION: 'DESCRIPTION',
+}
+
 const ARTICLE_STATES = STATES
 const ACTIVITY_STATES = STATES
 
 export { STATES, ARTICLE_STATES, ACTIVITY_STATES, CATEGORY_TYPES }
+
+export function getFileTargets() {
+  return Object.values(FILE_TARGETS)
+}

@@ -9,7 +9,10 @@ export async function populateArticle(article, currentUserId, massive) {
     massive.users.findOne(article.ownerId, {
       fields: ['id', 'first_name', 'last_name'],
     }),
-    massive.files.find({ articleId: article.id }, { fields: ['id', 'url'] }),
+    massive.files.find(
+      { articleId: article.id },
+      { fields: ['id', 'url', 'target'] }
+    ),
   ])
 
   return {

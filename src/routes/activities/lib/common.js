@@ -26,7 +26,10 @@ export async function populateActivity(activity, currentUserId, massive) {
     massive.users.findOne(activity.ownerId, {
       fields: ['id', 'first_name', 'last_name'],
     }),
-    massive.files.find({ activityId: activity.id }, { fields: ['id', 'url'] }),
+    massive.files.find(
+      { activityId: activity.id },
+      { fields: ['id', 'url', 'target'] }
+    ),
   ])
 
   return {

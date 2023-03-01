@@ -8,11 +8,12 @@ import { CATEGORIES } from './lib/enums.js'
 import { calcFileSize, moveFile } from './lib/utils.js'
 import { appConfig } from '../../config/main.js'
 import { calculateBaseUrl } from '../../utils/main.js'
+import { sAttachmet } from '../common/common.schema.js'
 
 export default async function uploadFile(fastify) {
   fastify.register(multipart, {
     limits: {
-      fields: 1,
+      fields: 2,
       files: appConfig.upload.maxUploadsForRequeset,
     },
     // attachFieldsToBody: 'keyValues', //TODO test
@@ -36,17 +37,7 @@ export default async function uploadFile(fastify) {
       //   .required(),
       response: {
         200: S.array()
-          .items(
-            S.object()
-              .additionalProperties(false)
-              .description('Uploaded file/s.')
-              .prop('id', S.string().format('uuid'))
-              .description('File id.')
-              .required()
-              .prop('url', S.string().format('uri'))
-              .description('File url.')
-              .required()
-          )
+          .items(sAttachmet())
           .minItems(1)
           .maxItems(appConfig.upload.maxUploadsForRequeset),
       },
@@ -58,11 +49,12 @@ export default async function uploadFile(fastify) {
     const { user } = req
     const files = await req.saveRequestFiles()
 
-    const { entityRelativePath, category } = getFileMeta(files)
+    const { entityRelativePath, category, target } = getFileMeta(files)
     const populatedFiles = await populateFiles(
       files,
       entityRelativePath,
-      category
+      category,
+      target
     )
 
     await checkFiles(populatedFiles)
@@ -72,7 +64,7 @@ export default async function uploadFile(fastify) {
     return urls
   }
 
-  function populateFiles(files, entityRelativePath, category) {
+  function populateFiles(files, entityRelativePath, category, target) {
     async function populateFile(file) {
       const fileStats = await stat(file.filepath)
       const extension = extname(file.filename)
@@ -91,6 +83,7 @@ export default async function uploadFile(fastify) {
           port: 8080,
         })}/static/${entityRelativePath}/${filesystemFileName}`,
         category,
+        target,
       }
     }
 
@@ -128,8 +121,17 @@ export default async function uploadFile(fastify) {
 
   async function indexFiles(files, user) {
     async function indexFile(file, user, tx) {
-      const { destPath, url, filename, extension, mimetype, size, category } =
-        file
+      const {
+        destPath,
+        url,
+        filename,
+        extension,
+        mimetype,
+        size,
+        category,
+        target,
+      } = file
+
       const newFile = await tx.files.save({
         fullPath: destPath,
         url: encodeURI(url),
@@ -139,9 +141,10 @@ export default async function uploadFile(fastify) {
         size,
         ownerId: user.id,
         category,
+        target,
       })
 
-      return { id: newFile.id, url: newFile.url }
+      return { id: newFile.id, url: newFile.url, target: newFile.target }
     }
 
     const filesData = await massive.withTransaction(async tx => {
@@ -155,13 +158,20 @@ export default async function uploadFile(fastify) {
   }
 
   function getFileMeta(files) {
-    if (!files[0].fields.type) {
+    const type = files[0].fields.type
+    if (!type) {
       throw new Error(`Specify the required field 'type'`)
     }
 
+    const target = files[0].fields.target
+    if (!target) {
+      throw new Error(`Specify the required field 'target'`)
+    }
+
     const result = {
-      category: files[0].fields.type.value,
+      category: type.value,
       entityRelativePath: '',
+      target: target.value,
     }
 
     switch (result.category) {
