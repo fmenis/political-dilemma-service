@@ -12,6 +12,10 @@ export default async function addPermissions(fastify) {
   const { pg, httpErrors } = fastify
   const { createError } = httpErrors
 
+  //------------------------------------------------------------------
+  //############ API NOT USED (AND EXPOSED) AT THE MOMENT ############
+  //------------------------------------------------------------------
+
   fastify.route({
     method: 'POST',
     path: '/:id/permissions/add',
@@ -20,6 +24,7 @@ export default async function addPermissions(fastify) {
       permission: 'role:add-permission',
     },
     schema: {
+      hide: true,
       summary: 'Add permissions',
       description: 'Add permissions to role.',
       params: S.object()

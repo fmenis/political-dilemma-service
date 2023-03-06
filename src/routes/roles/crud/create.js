@@ -2,6 +2,7 @@ import _ from 'lodash'
 
 import { sCreateRole, sRoleResponse } from '../lib/schema.js'
 import { getRolePermissions, associatePermissions } from '../lib/utils.js'
+import { findArrayDuplicates } from '../../../utils/main.js'
 
 export default async function createRole(fastify) {
   const { pg, httpErrors } = fastify
@@ -60,6 +61,28 @@ export default async function createRole(fastify) {
         validation: [
           {
             message: `Permissions id ${missing.join(', ')} not found`,
+          },
+        ],
+      })
+    }
+
+    // only a permission per modificator (own / any) cab be specified
+    const { rows: permissions } = await pg.execQuery(
+      'SELECT resource, action  FROM permissions WHERE id= ANY ($1)',
+      [permissionsIds]
+    )
+
+    const duplicatedPermission = findArrayDuplicates(
+      permissions.map(item => `${item.resource}-${item.action}`)
+    )
+    if (duplicatedPermission.length) {
+      throw createError(400, 'Invalid input', {
+        internalCode: 'DUPLICATED_OWNERSHIP',
+        validation: [
+          {
+            message: `A permission cannot be assign with both ownerships (any and own): ${duplicatedPermission.join(
+              ', '
+            )}`,
           },
         ],
       })
