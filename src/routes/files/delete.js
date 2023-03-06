@@ -30,7 +30,6 @@ export default async function deleteFile(fastify) {
 
   async function onPreHandler(req) {
     const { id } = req.params
-    const currentUserId = req.user.id
 
     const file = await massive.files.findOne(id, {
       fields: ['id', 'ownerId', 'fullPath'],
@@ -40,13 +39,6 @@ export default async function deleteFile(fastify) {
       throw createError(404, 'Invalid input', {
         validation: [{ message: `File '${id}' not found` }],
       })
-    }
-
-    //TODO verificare
-    if (file.ownerId !== currentUserId) {
-      throw httpErrors.forbidden(
-        `Cannot delete file '${file.id}', the current user '${currentUserId}' is not the file owner '${file.ownerId}'`
-      )
     }
 
     req.resource = file
