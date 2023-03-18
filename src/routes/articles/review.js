@@ -57,7 +57,7 @@ export default async function reviewArticle(fastify) {
 
     const article = await massive.articles.findOne(id)
     if (!article) {
-      throwNotFoundError({ id })
+      throwNotFoundError({ id, name: 'article' })
     }
 
     if (

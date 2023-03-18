@@ -6,11 +6,19 @@ import { findArrayDuplicates, removeObjectProps } from '../../../utils/main.js'
 import { populateArticle } from '../lib/common.js'
 import { restrictDataToOwner } from '../../common/common.js'
 import { ARTICLE_STATES } from '../../common/enums.js'
+import { buildRouteFullDescription } from '../../common/common.js'
 
 export default async function updateArticle(fastify) {
-  const { massive, httpErrors } = fastify
-  const { createError } = httpErrors
-  const permission = 'article:update'
+  const { massive } = fastify
+  const {
+    errors,
+    throwNotFoundError,
+    throwOwnershipError,
+    throwInvalidStatusError,
+  } = fastify.articleErrors
+
+  const api = 'update'
+  const permission = `article:${api}`
 
   fastify.route({
     method: 'PATCH',
@@ -22,7 +30,12 @@ export default async function updateArticle(fastify) {
     },
     schema: {
       summary: 'Update article',
-      description: `Permission required: ${permission}`,
+      description: buildRouteFullDescription({
+        description: 'Update article.',
+        errors,
+        permission,
+        api,
+      }),
       params: S.object()
         .additionalProperties(false)
         .prop('id', S.string().format('uuid'))
@@ -41,15 +54,13 @@ export default async function updateArticle(fastify) {
 
   async function onPreHandler(req) {
     const { id } = req.params
-    const { tags = [], attachmentIds = [] } = req.body
+    const { attachmentIds = [] } = req.body
     const { id: userId, apiPermission } = req.user
 
     const article = await massive.articles.findOne(id)
 
     if (!article) {
-      throw createError(404, 'Invalid input', {
-        validation: [{ message: `Article '${id}' not found` }],
-      })
+      throwNotFoundError({ id: categoryId, name: 'article' })
     }
 
     if (
@@ -57,21 +68,17 @@ export default async function updateArticle(fastify) {
       article.status !== ARTICLE_STATES.IN_REVIEW &&
       article.status !== ARTICLE_STATES.REWORK
     ) {
-      throw createError(409, 'Conflict', {
-        validation: [
-          {
-            message: `Required status: ${ARTICLE_STATES.DRAFT}, ${ARTICLE_STATES.IN_REVIEW} or '${ARTICLE_STATES.REWORK}'`,
-          },
-        ],
+      throwInvalidStatusError({
+        id,
+        requiredStatus: `${ACTIVITY_STATES.DRAFT}, ${ACTIVITY_STATES.IN_REVIEW} or ${ACTIVITY_STATES.REWORK}`,
       })
     }
 
     if (restrictDataToOwner(apiPermission) && article.ownerId !== userId) {
-      throw httpErrors.forbidden(
-        'Only the owner (and admin) can access to this article'
-      )
+      throwOwnershipError({ id: userId, email })
     }
 
+    //##TODO mappare errori
     const duplicatedAttachmentIds = findArrayDuplicates(attachmentIds)
     if (duplicatedAttachmentIds.length) {
       throw createError(400, 'Invalid input', {
@@ -85,6 +92,7 @@ export default async function updateArticle(fastify) {
       })
     }
 
+    //##TODO mappare errori
     const attachments = await massive.files.find({ id: attachmentIds })
     if (attachments.length < attachmentIds.length) {
       const missing = _.difference(
@@ -95,17 +103,6 @@ export default async function updateArticle(fastify) {
         validation: [
           {
             message: `Attachment ids '${missing.join(', ')}' not found`,
-          },
-        ],
-      })
-    }
-
-    const duplicatedTags = findArrayDuplicates(tags)
-    if (duplicatedTags.length) {
-      throw createError(400, 'Invalid input', {
-        validation: [
-          {
-            message: `Duplicate tags: ${duplicatedTags.join(', ')}`,
           },
         ],
       })

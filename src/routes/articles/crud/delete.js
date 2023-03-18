@@ -1,11 +1,19 @@
 import S from 'fluent-json-schema'
 import { ARTICLE_STATES } from '../../common/enums.js'
 import { restrictDataToOwner } from '../../common/common.js'
+import { buildRouteFullDescription } from '../../common/common.js'
 
 export default async function deleteArticle(fastify) {
   const { massive, httpErrors } = fastify
-  const { createError } = httpErrors
-  const permission = 'article:delete'
+  const {
+    errors,
+    throwNotFoundError,
+    throwOwnershipError,
+    throwInvalidStatusError,
+  } = fastify.articleErrors
+
+  const api = 'delete'
+  const permission = `article:${api}`
 
   fastify.route({
     method: 'DELETE',
@@ -16,7 +24,12 @@ export default async function deleteArticle(fastify) {
     },
     schema: {
       summary: 'Delete article',
-      description: `Permission required: ${permission}`,
+      description: buildRouteFullDescription({
+        description: 'Update article.',
+        errors,
+        permission,
+        api,
+      }),
       params: S.object()
         .additionalProperties(false)
         .prop('id', S.string().format('uuid'))
@@ -39,21 +52,18 @@ export default async function deleteArticle(fastify) {
     const article = await massive.articles.findOne(id)
 
     if (!article) {
-      throw createError(404, 'Invalid input', {
-        validation: [{ message: `Article '${id}' not found` }],
-      })
+      throwNotFoundError({ id: categoryId, name: 'article' })
     }
 
     if (article.status !== ARTICLE_STATES.DRAFT) {
-      throw httpErrors.conflict(
-        `Cannot delete article '${article.id}', is not in status '${ARTICLE_STATES.DRAFT}'`
-      )
+      throwOwnershipError({ id: userId, email })
     }
 
     if (restrictDataToOwner(apiPermission) && article.ownerId !== userId) {
-      throw httpErrors.forbidden(
-        'Only the owner (and admin) can access to this article'
-      )
+      throwInvalidStatusError({
+        id,
+        requiredStatus: ACTIVITY_STATES.DRAFT,
+      })
     }
   }
 

@@ -50,6 +50,7 @@ export function sUpdateArticle() {
         .items(S.string().minLength(2).maxLength(30))
         .minItems(0) // allows all tags deletion
         .maxItems(50)
+        .uniqueItems(true)
     )
     .description('Article tags.')
     .prop(

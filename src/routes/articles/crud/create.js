@@ -3,11 +3,20 @@ import _ from 'lodash'
 import { sCreateArticle, sArticleDetail } from '../lib/schema.js'
 import { ARTICLE_STATES } from '../../common/enums.js'
 import { populateArticle } from '../lib/common.js'
+import { buildRouteFullDescription } from '../../common/common.js'
 
 export default async function createArticle(fastify) {
-  const { massive, httpErrors } = fastify
-  const { createError } = httpErrors
-  const permission = 'article:create'
+  const { massive } = fastify
+  const {
+    errors,
+    throwNotFoundError,
+    throwInvalidCategoryError,
+    throwDuplicateTitleError,
+    throwAttachmentsNotFoundError,
+  } = fastify.articleErrors
+
+  const api = 'create'
+  const permission = `article:${api}`
 
   fastify.route({
     method: 'POST',
@@ -19,7 +28,12 @@ export default async function createArticle(fastify) {
     },
     schema: {
       summary: 'Create article',
-      description: `Permission required: ${permission}`,
+      description: buildRouteFullDescription({
+        description: 'Create article.',
+        errors,
+        permission,
+        api,
+      }),
       body: sCreateArticle(),
       response: {
         201: sArticleDetail(),
@@ -36,34 +50,23 @@ export default async function createArticle(fastify) {
 
     const category = await massive.categories.findOne(categoryId)
     if (!category) {
-      throw createError(404, 'Invalid input', {
-        validation: [{ message: `Category '${categoryId}' not found` }],
-      })
+      throwNotFoundError({ id: categoryId, name: 'category' })
     }
-
-    //TODO aggiungere validazione tipo categoria
+    if (category.type !== 'ARTICLE') {
+      throwInvalidCategoryError({ id: categoryId, type: category.type })
+    }
 
     const titleDuplicates = await massive.articles.where(
       'LOWER(title) = TRIM(LOWER($1))',
       [`${title.trim()}`]
     )
     if (titleDuplicates.length > 0) {
-      throw httpErrors.conflict(`Article with title '${title}' already exists`)
+      throwDuplicateTitleError({ title })
     }
 
     const files = await massive.files.find({ id: attachmentIds })
     if (files.length < attachmentIds.length) {
-      const missing = _.difference(
-        attachmentIds,
-        files.map(item => item.id)
-      )
-      throw createError(400, 'Invalid input', {
-        validation: [
-          {
-            message: `Attachment ids '${missing.join(', ')}' not found`,
-          },
-        ],
-      })
+      throwAttachmentsNotFoundError({ attachmentIds, files })
     }
   }
 
