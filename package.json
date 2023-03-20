@@ -30,7 +30,7 @@
     "@fastify/cors": "8.2.0",
     "@fastify/env": "4.2.0",
     "@fastify/helmet": "10.1.0",
-    "@fastify/multipart": "7.3.0",
+    "@fastify/multipart": "7.5.0",
     "@fastify/sensible": "5.2.0",
     "@fastify/swagger": "7.4.1",
     "@immobiliarelabs/fastify-sentry": "4.1.1",

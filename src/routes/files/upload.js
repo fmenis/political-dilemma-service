@@ -16,7 +16,7 @@ export default async function uploadFile(fastify) {
       fields: 2,
       files: appConfig.upload.maxUploadsForRequeset,
     },
-    // attachFieldsToBody: 'keyValues', //TODO test
+    attachFieldsToBody: true,
   })
 
   const { massive, config, httpErrors } = fastify
@@ -47,9 +47,10 @@ export default async function uploadFile(fastify) {
 
   async function onUploadFile(req) {
     const { user } = req
+
     const files = await req.saveRequestFiles()
 
-    const { entityRelativePath, category, target } = getFileMeta(files)
+    const { entityRelativePath, category, target } = getFilesMetadata(req.body)
     const populatedFiles = await populateFiles(
       files,
       entityRelativePath,
@@ -157,13 +158,13 @@ export default async function uploadFile(fastify) {
     return filesData
   }
 
-  function getFileMeta(files) {
-    const type = files[0].fields.type
+  function getFilesMetadata(body) {
+    const type = body.type
     if (!type) {
       throw new Error(`Specify the required field 'type'`)
     }
 
-    const target = files[0].fields.target
+    const target = body.target
     if (!target) {
       throw new Error(`Specify the required field 'target'`)
     }
