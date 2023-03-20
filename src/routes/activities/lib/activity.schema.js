@@ -141,6 +141,9 @@ export function sActivityList() {
     .prop('isMine', S.boolean())
     .description('Defines if the current user is the owner of the activity.')
     .required()
+    .prop('hasNotifications', S.boolean())
+    .description('Defines if the article have notifications.')
+    .required()
 }
 
 export function sUpdateActivity() {

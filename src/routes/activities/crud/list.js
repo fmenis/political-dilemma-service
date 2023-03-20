@@ -79,7 +79,7 @@ export default async function listActivities(fastify) {
     ])
 
     return {
-      results: populateActivities(activities, user.id),
+      results: await populateActivities(activities, user.id),
       paginatedInfo: buildPaginatedInfo(count, {
         limit: query.limit,
         offset: query.offset,
@@ -121,7 +121,11 @@ export default async function listActivities(fastify) {
     return options
   }
 
-  function populateActivities(activities, currentUserId) {
+  async function populateActivities(activities, currentUserId) {
+    const internalNotes = await massive.internalNotes.find({
+      activityId: activities.map(item => item.id),
+    })
+
     return activities.map(activity => {
       const author = activity.users[0]
       const categoryName = activity.categories[0].name
@@ -134,6 +138,9 @@ export default async function listActivities(fastify) {
         author: `${author.first_name} ${author.last_name}`,
         category: categoryName,
         isMine: activity.ownerId === currentUserId,
+        hasNotifications: internalNotes.some(
+          item => item.activityId === activity.id
+        ),
       }
     })
   }
