@@ -4,7 +4,7 @@ import { restrictDataToOwner } from '../../common/common.js'
 import { buildRouteFullDescription } from '../../common/common.js'
 
 export default async function deleteArticle(fastify) {
-  const { massive, httpErrors } = fastify
+  const { massive } = fastify
   const {
     errors,
     throwNotFoundError,

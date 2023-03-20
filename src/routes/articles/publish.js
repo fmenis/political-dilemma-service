@@ -3,11 +3,15 @@ import S from 'fluent-json-schema'
 import { ARTICLE_STATES, CATEGORY_TYPES } from '../common/enums.js'
 import { sArticleDetail } from './lib/schema.js'
 import { populateArticle } from './lib/common.js'
+import { buildRouteFullDescription } from '../common/common.js'
 
 export default async function publishArticle(fastify) {
-  const { massive, httpErrors } = fastify
-  const { createError } = httpErrors
-  const permission = 'article:publish'
+  const { massive } = fastify
+  const { throwNotFoundError, throwInvalidStatusError, errors } =
+    fastify.articleErrors
+
+  const api = 'publish'
+  const permission = `article:${api}`
 
   fastify.route({
     method: 'POST',
@@ -19,7 +23,12 @@ export default async function publishArticle(fastify) {
     },
     schema: {
       summary: 'Publish article',
-      description: `Permission required: ${permission}`,
+      description: buildRouteFullDescription({
+        description: 'Publish article',
+        errors,
+        permission,
+        api,
+      }),
       params: S.object()
         .additionalProperties(false)
         .prop('id', S.string().format('uuid'))
@@ -44,26 +53,21 @@ export default async function publishArticle(fastify) {
 
     const article = await massive.articles.findOne(id)
     if (!article) {
-      throw createError(404, 'Invalid input', {
-        validation: [{ message: `Article '${id}' not found` }],
-      })
+      throwNotFoundError({ id, name: 'article' })
     }
 
     if (article.status !== ARTICLE_STATES.READY) {
-      throw createError(409, 'Conflict', {
-        validation: [
-          {
-            message: `Invalid action on article '${id}'. Required status '${ARTICLE_STATES.READY}'`,
-          },
-        ],
+      throwInvalidStatusError({
+        id,
+        requiredStatus: `${ARTICLE_STATES.READY}`,
       })
     }
 
-    req.article = article
+    req.resource = article
   }
 
   async function onPublishArticle(req) {
-    const { article } = req
+    const { resource: article } = req
     const { id: ownerId } = req.user
     const { note } = req.body
 

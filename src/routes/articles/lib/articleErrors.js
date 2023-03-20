@@ -109,6 +109,9 @@ async function articleErrors(fastify) {
           'approve',
           'review',
           'rework',
+          'publish',
+          'archive',
+          'remove',
         ],
         statusCode: 404,
       },
@@ -134,7 +137,16 @@ async function articleErrors(fastify) {
         code: '*INVALID_STATUS*',
         description:
           'occurs when the current status is not valid to perform the requested action.',
-        apis: ['update', 'delete', 'approve', 'review'],
+        apis: [
+          'update',
+          'delete',
+          'approve',
+          'review',
+          'rework',
+          'publish',
+          'archive',
+          'remove',
+        ],
         statusCode: 409,
       },
       {

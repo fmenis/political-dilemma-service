@@ -3,11 +3,19 @@ import S from 'fluent-json-schema'
 import { sArticleList } from '../lib/schema.js'
 import { appConfig } from '../../../config/main.js'
 import { getArticleStates } from '../lib/common.js'
-import { buildPaginatedInfo, restrictDataToOwner } from '../../common/common.js'
+import {
+  buildPaginatedInfo,
+  restrictDataToOwner,
+  buildRouteFullDescription,
+} from '../../common/common.js'
 
 export default async function listArticles(fastify) {
   const { massive } = fastify
-  const permission = 'article:list'
+  const { errors } = fastify.articleErrors
+
+  const api = 'list'
+  const permission = `article:${api}`
+
   const { defaultLimit, defaultOffset } = appConfig.pagination
 
   fastify.route({
@@ -19,7 +27,12 @@ export default async function listArticles(fastify) {
     },
     schema: {
       summary: 'List articles',
-      description: `Permission required: ${permission}`,
+      description: buildRouteFullDescription({
+        description: 'List articles.',
+        errors,
+        permission,
+        api: 'list',
+      }),
       query: S.object()
         .additionalProperties(false)
         .prop('status', S.string().enum(getArticleStates()))

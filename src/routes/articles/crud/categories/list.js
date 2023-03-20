@@ -1,7 +1,10 @@
 import S from 'fluent-json-schema'
 
+import { buildRouteFullDescription } from '../../../common/common.js'
+
 export default async function listArticleCategories(fastify) {
   const { massive } = fastify
+  const { errors } = fastify.articleErrors
 
   fastify.route({
     method: 'GET',
@@ -11,7 +14,12 @@ export default async function listArticleCategories(fastify) {
     },
     schema: {
       summary: 'List article categories',
-      description: 'Retrieve article categories.',
+      description: buildRouteFullDescription({
+        description: 'List articles categories.',
+        errors,
+        permission: null,
+        api: 'list-categories',
+      }),
       response: {
         200: S.object()
           .additionalProperties(false)

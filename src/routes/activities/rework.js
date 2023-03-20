@@ -10,8 +10,8 @@ export default async function reworkActivity(fastify) {
   const { throwNotFoundError, throwInvalidStatusError, errors } =
     fastify.activityErrors
 
-  const routeDescription = 'Request to rework an activity.'
-  const permission = 'activity:rework'
+  const api = 'rework'
+  const permission = `activity:${api}`
 
   fastify.route({
     method: 'POST',
@@ -24,10 +24,10 @@ export default async function reworkActivity(fastify) {
     schema: {
       summary: 'Rework activity',
       description: buildRouteFullDescription({
-        description: routeDescription,
+        description: 'Request to rework an activity.',
         errors,
         permission,
-        api: 'review',
+        api,
       }),
       params: S.object()
         .additionalProperties(false)
@@ -53,7 +53,7 @@ export default async function reworkActivity(fastify) {
 
     const activity = await massive.activity.findOne(id)
     if (!activity) {
-      throwNotFoundError({ id })
+      throwNotFoundError({ id, name: 'activity' })
     }
 
     if (activity.status !== ACTIVITY_STATES.IN_REVIEW) {

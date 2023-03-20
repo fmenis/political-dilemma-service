@@ -3,11 +3,15 @@ import S from 'fluent-json-schema'
 import { ARTICLE_STATES as status } from '../common/enums.js'
 import { sArticleDetail } from './lib/schema.js'
 import { populateArticle } from './lib/common.js'
+import { buildRouteFullDescription } from '../common/common.js'
 
 export default async function removeArticle(fastify) {
-  const { massive, httpErrors } = fastify
-  const { createError } = httpErrors
-  const permission = 'article:remove'
+  const { massive } = fastify
+  const { throwNotFoundError, throwInvalidStatusError, errors } =
+    fastify.articleErrors
+
+  const api = 'remove'
+  const permission = `article:${api}`
 
   fastify.route({
     method: 'POST',
@@ -19,7 +23,12 @@ export default async function removeArticle(fastify) {
     },
     schema: {
       summary: 'Remove article',
-      description: `Permission required: ${permission}`,
+      description: buildRouteFullDescription({
+        description: 'Remove article',
+        errors,
+        permission,
+        api,
+      }),
       params: S.object()
         .additionalProperties(false)
         .prop('id', S.string().format('uuid'))
@@ -45,9 +54,7 @@ export default async function removeArticle(fastify) {
 
     const article = await massive.articles.findOne(id)
     if (!article) {
-      throw createError(404, 'Invalid input', {
-        validation: [{ message: `Article '${id}' not found` }],
-      })
+      throwNotFoundError({ id, name: 'article' })
     }
 
     if (
@@ -55,20 +62,17 @@ export default async function removeArticle(fastify) {
       article.status === status.ARCHIVED ||
       article.status === status.DELETED
     ) {
-      throw createError(409, 'Conflict', {
-        validation: [
-          {
-            message: `Invalid action on article '${id}'. Required status: not '${status.DRAFT}', ${status.ARCHIVED} or '${status.DELETED}'`,
-          },
-        ],
+      throwInvalidStatusError({
+        id,
+        requiredStatus: `not ${status.DRAFT},  ${status.ARCHIVED} or ${status.DELETED}`,
       })
     }
 
-    req.article = article
+    req.resource = article
   }
 
   async function onRemoveArticle(req) {
-    const { article } = req
+    const { resource: article } = req
     const { cancellationReason } = req.body
     const { id: currentUserId } = req.user
 

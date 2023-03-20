@@ -3,18 +3,19 @@ import S from 'fluent-json-schema'
 import { ARTICLE_STATES, CATEGORY_TYPES } from '../common/enums.js'
 import { sArticleDetail } from './lib/schema.js'
 import { populateArticle } from './lib/common.js'
-import { isPastDate } from '../common/common.js'
+import { isPastDate, buildRouteFullDescription } from '../common/common.js'
 
 export default async function approveArticle(fastify) {
   const { massive } = fastify
-
   const {
     throwNotFound,
     throwInvalidStatusError,
     throwInvalidPublicationDate,
+    errors,
   } = fastify.articleErrors
 
-  const permission = 'article:approve'
+  const api = 'approve'
+  const permission = `article:${api}`
 
   fastify.route({
     method: 'POST',
@@ -26,7 +27,12 @@ export default async function approveArticle(fastify) {
     },
     schema: {
       summary: 'Approve article',
-      description: `Permission required: ${permission} \n. Possibile errors: NOT_FOUND, INVALID_PUBLICATION_DATE, INVALID_ACTION`,
+      description: buildRouteFullDescription({
+        description: 'Approve article',
+        errors,
+        permission,
+        api,
+      }),
       params: S.object()
         .additionalProperties(false)
         .prop('id', S.string().format('uuid'))
@@ -66,11 +72,11 @@ export default async function approveArticle(fastify) {
       throwInvalidPublicationDate({ publicationDate })
     }
 
-    req.article = article
+    req.resource = article
   }
 
   async function onApproveArticle(req) {
-    const { article } = req
+    const { resource: article } = req
     const { id: ownerId } = req.user
     const { note, publicationDate } = req.body
 
