@@ -41,6 +41,18 @@
       "request": "launch",
       "type": "node-terminal",
       "envFile": "${workspaceFolder}/.env"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Import politicians",
+      "skipFiles": ["<node_internals>/**"],
+      "program": "${workspaceFolder}/src/scripts/jobs/importPoliticians.js",
+      "envFile": "${workspaceFolder}/.env",
+      "outputCapture": "std",
+      "env": {
+        "NODE_ENV": "local"
+      }
     }
   ]
 }
