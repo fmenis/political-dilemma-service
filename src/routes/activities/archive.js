@@ -53,7 +53,7 @@ export default async function onArchive(fastify) {
 
     const activity = await massive.activity.findOne(id)
     if (!activity) {
-      throwNotFoundError({ id })
+      throwNotFoundError({ id, name: 'activity' })
     }
 
     if (activity.status !== ACTIVITY_STATES.PUBLISHED) {
@@ -63,11 +63,11 @@ export default async function onArchive(fastify) {
       })
     }
 
-    req.activity = activity
+    req.resource = activity
   }
 
   async function onArchiveActivity(req) {
-    const { activity } = req
+    const { resource: activity } = req
     const { id: ownerId } = req.user
     const { note } = req.body
 

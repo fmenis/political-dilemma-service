@@ -68,11 +68,11 @@ export default async function removeActivity(fastify) {
       })
     }
 
-    req.activity = activity
+    req.resource = activity
   }
 
   async function onRemoveActivity(req) {
-    const { activity } = req
+    const { resource: activity } = req
     const { cancellationReason } = req.body
     const { id: currentUserId } = req.user
 

@@ -57,11 +57,11 @@ export default async function readActivity(fastify) {
       throwOwnershipError({ id: userId, email })
     }
 
-    req.activity = activity
+    req.resource = activity
   }
 
   async function onReadActivity(req) {
-    const { activity } = req
+    const { resource: activity } = req
     const { id: ownerId } = req.user
 
     return populateActivity(activity, ownerId, massive)

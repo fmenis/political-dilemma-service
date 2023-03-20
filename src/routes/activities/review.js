@@ -57,7 +57,7 @@ export default async function reviewActivity(fastify) {
 
     const activity = await massive.activity.findOne(id)
     if (!activity) {
-      throwNotFoundError({ id })
+      throwNotFoundError({ id, name: 'activity' })
     }
 
     if (
@@ -90,11 +90,11 @@ export default async function reviewActivity(fastify) {
       throwMissinDataError({ id, errors })
     }
 
-    req.activity = activity
+    req.resource = activity
   }
 
   async function onReviewActivity(req) {
-    const { activity } = req
+    const { resource: activity } = req
     const { id: ownerId } = req.user
     const { note } = req.body
 

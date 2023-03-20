@@ -63,11 +63,11 @@ export default async function reworkActivity(fastify) {
       })
     }
 
-    req.activity = activity
+    req.resource = activity
   }
 
   async function onReworkActivity(req) {
-    const { activity } = req
+    const { resource: activity } = req
     const { id: ownerId } = req.user
     const { note } = req.body
 

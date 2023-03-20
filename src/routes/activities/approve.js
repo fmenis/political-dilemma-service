@@ -62,7 +62,7 @@ export default async function approveActivity(fastify) {
 
     const activity = await massive.activity.findOne(id)
     if (!activity) {
-      throwNotFoundError({ id })
+      throwNotFoundError({ id, name: 'activity' })
     }
 
     if (activity.status !== ACTIVITY_STATES.IN_REVIEW) {
@@ -73,11 +73,11 @@ export default async function approveActivity(fastify) {
       throwInvalidPublicationDateError({ publicationDate })
     }
 
-    req.activity = activity
+    req.resource = activity
   }
 
   async function onApproveActivity(req) {
-    const { activity } = req
+    const { resource: activity } = req
     const { id: ownerId } = req.user
     const { note, publicationDate } = req.body
 
