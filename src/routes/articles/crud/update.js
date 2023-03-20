@@ -15,6 +15,7 @@ export default async function updateArticle(fastify) {
     throwNotFoundError,
     throwOwnershipError,
     throwInvalidStatusError,
+    throwDuplicateTitleError,
   } = fastify.articleErrors
 
   const api = 'update'
@@ -54,7 +55,7 @@ export default async function updateArticle(fastify) {
 
   async function onPreHandler(req) {
     const { id } = req.params
-    const { attachmentIds = [] } = req.body
+    const { title, attachmentIds = [] } = req.body
     const { id: userId, apiPermission } = req.user
 
     const article = await massive.articles.findOne(id)
@@ -76,6 +77,21 @@ export default async function updateArticle(fastify) {
 
     if (restrictDataToOwner(apiPermission) && article.ownerId !== userId) {
       throwOwnershipError({ id: userId, email })
+    }
+
+    if (title) {
+      const titleDuplicates = await massive.articles.where(
+        'LOWER(title) = TRIM(LOWER($1))',
+        [`${title.trim()}`]
+      )
+
+      if (
+        titleDuplicates.some(
+          item => item.title.toLowerCase() === title.trim().toLowerCase()
+        )
+      ) {
+        throwDuplicateTitleError({ title })
+      }
     }
 
     //##TODO mappare errori

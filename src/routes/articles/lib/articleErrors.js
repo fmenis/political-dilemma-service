@@ -124,7 +124,7 @@ async function articleErrors(fastify) {
       {
         code: '*DUPLICATE_TITLE*',
         description: 'occurs when the title is already used.',
-        apis: ['create'],
+        apis: ['create', 'update'],
         statusCode: 409,
       },
       {

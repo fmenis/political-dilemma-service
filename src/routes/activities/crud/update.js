@@ -17,7 +17,7 @@ export default async function updateActivity(fastify) {
     errors,
     throwNotFoundError,
     throwInvalidCategoryError,
-    // throwDuplicateTitleError,
+    throwDuplicateTitleError,
     throwOwnershipError,
     throwInvalidPubblicazioneInGazzettaDateError,
     throwInvalidStatusError,
@@ -61,11 +61,8 @@ export default async function updateActivity(fastify) {
 
   async function onPreHandler(req) {
     const { id } = req.params
-    const {
-      categoryId,
-      /*title,*/ dataPubblicazioneInGazzetta,
-      attachmentIds,
-    } = req.body
+    const { categoryId, title, dataPubblicazioneInGazzetta, attachmentIds } =
+      req.body
     const { id: userId, email, apiPermission } = req.user
 
     const activity = await massive.activity.findOne(id, {
@@ -100,22 +97,20 @@ export default async function updateActivity(fastify) {
       }
     }
 
-    //TODO dev'essere diverso da se stesso
-    // if (title) {
-    //   const titleDuplicates = await massive.activity.where(
-    //     'LOWER(title) = TRIM(LOWER($1))',
-    //     [`${title.trim()}`]
-    //   )
+    if (title) {
+      const titleDuplicates = await massive.activity.where(
+        'LOWER(title) = TRIM(LOWER($1))',
+        [`${title.trim()}`]
+      )
 
-    //   const flag = titleDuplicates.some(item => {
-    //     const res = item.title.toLowerCase() === title.trim().toLowerCase()
-    //     return res
-    //   })
-
-    //   if (flag) {
-    //     throwDuplicateTitleError({ title })
-    //   }
-    // }
+      if (
+        titleDuplicates.some(
+          item => item.title.toLowerCase() === title.trim().toLowerCase()
+        )
+      ) {
+        throwDuplicateTitleError({ title })
+      }
+    }
 
     if (
       dataPubblicazioneInGazzetta &&
