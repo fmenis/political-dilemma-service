@@ -134,12 +134,10 @@ export default async function listUsers(fastify) {
 
     dbObj = applyPagination(dbObj.query, options.pagination, dbObj.inputs)
 
-    const { rows } = await pg.execQuery(
+    const { rows: users } = await pg.execQuery(
       dbObj.query.replace(/{columns}/g, ''),
       dbObj.inputs
     )
-
-    const users = await populateUserList(rows)
 
     return {
       users,
@@ -248,15 +246,5 @@ export default async function listUsers(fastify) {
     query += ` LIMIT $${inputs.length + 1} OFFSET $${inputs.length + 2}`
     inputs.push(pagination.limit, pagination.offset)
     return { query, inputs }
-  }
-
-  async function populateUserList(users) {
-    return users.map(user => {
-      return {
-        ...user,
-        publishedLaws: 0,
-        draftLaws: 0,
-      }
-    })
   }
 }

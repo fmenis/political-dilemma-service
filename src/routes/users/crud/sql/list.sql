@@ -3,8 +3,18 @@ SELECT
   users.id, users.first_name, users.last_name, users.user_name, users.email,
   users.joined_date, users.is_blocked, users.is_deleted, last_access,
   regions.name AS region, provinces.name AS province, roles.name AS role,
-  (SELECT count(id) FROM articles WHERE status = 'DRAFT' AND "ownerId" = users.id) as "draftArticles",
-  (SELECT count(id) FROM articles WHERE status = 'PUBLISHED' AND "ownerId" = users.id) as "publishedArticles"
+  (SELECT count(id) FROM articles 
+    WHERE status <> 'PUBLISHED' AND status <> 'ARCHIVED' AND STATUS <> 'READY' AND "ownerId" = users.id
+  ) as "draftArticles",
+  (SELECT count(id) FROM articles 
+    WHERE status = 'PUBLISHED' OR status = 'ARCHIVED' AND "ownerId" = users.id
+  ) as "publishedArticles",
+  (SELECT count(id) FROM activity 
+    WHERE status <> 'PUBLISHED' AND status <> 'ARCHIVED' AND STATUS <> 'READY' AND "ownerId" = users.id
+  ) as "draftLaws",
+  (SELECT count(id) FROM activity 
+    WHERE status = 'PUBLISHED' OR status = 'ARCHIVED' AND "ownerId" = users.id
+  ) as "publishedLaws"
 {columns}
 FROM users
 JOIN provinces
