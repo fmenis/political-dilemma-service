@@ -11,10 +11,10 @@ SELECT
   ) as "publishedArticles",
   (SELECT count(id) FROM activity 
     WHERE status <> 'PUBLISHED' AND status <> 'ARCHIVED' AND STATUS <> 'READY' AND "ownerId" = users.id
-  ) as "draftLaws",
+  ) as "draftActivities",
   (SELECT count(id) FROM activity 
     WHERE status = 'PUBLISHED' OR status = 'ARCHIVED' AND "ownerId" = users.id
-  ) as "publishedLaws"
+  ) as "publishedActivities"
 {columns}
 FROM users
 JOIN provinces
