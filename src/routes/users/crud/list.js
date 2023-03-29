@@ -140,7 +140,7 @@ export default async function listUsers(fastify) {
     )
 
     return {
-      users,
+      users: await populateUsers(users, pg),
       count,
     }
   }
@@ -246,5 +246,105 @@ export default async function listUsers(fastify) {
     query += ` LIMIT $${inputs.length + 1} OFFSET $${inputs.length + 2}`
     inputs.push(pagination.limit, pagination.offset)
     return { query, inputs }
+  }
+
+  async function populateUsers(users, pg) {
+    const [
+      draftedActivities,
+      publishedActivities,
+      draftedArticles,
+      publishedArticles,
+    ] = await Promise.all([
+      countDraftedActivities(pg),
+      countPublishedActivities(pg),
+      countDraftedArticles(pg),
+      countPublishedArticles(pg),
+    ])
+
+    return users.map(user => {
+      const countPublishedActivities = publishedActivities.find(
+        item => item.id === user.id
+      )
+        ? parseInt(publishedActivities.find(item => item.id === user.id).count)
+        : 0
+
+      const countDraftedActivities = draftedActivities.find(
+        item => item.id === user.id
+      )
+        ? parseInt(draftedActivities.find(item => item.id === user.id).count)
+        : 0
+
+      const countDraftedArticles = draftedArticles.find(
+        item => item.id === user.id
+      )
+        ? parseInt(draftedArticles.find(item => item.id === user.id).count)
+        : 0
+
+      const countPublishedArticles = publishedArticles.find(
+        item => item.id === user.id
+      )
+        ? parseInt(publishedArticles.find(item => item.id === user.id).count)
+        : 0
+
+      return {
+        ...user,
+        draftArticles: countDraftedArticles,
+        publishedArticles: countPublishedArticles,
+        draftActivities: countDraftedActivities,
+        publishedActivities: countPublishedActivities,
+      }
+    })
+  }
+
+  async function countPublishedActivities(pg) {
+    const query = `
+      SELECT us.id, count(ac.id)
+      FROM users as us
+      JOIN activity as ac
+      ON us.id = ac."ownerId"
+      WHERE ac.status = 'PUBLISHED' OR ac.status = 'ARCHIVED'
+      GROUP BY us.id`
+
+    const { rows } = await pg.execQuery(query)
+    return rows
+  }
+
+  async function countDraftedActivities(pg) {
+    const query = `
+      SELECT us.id, count(ac.id)
+      FROM users as us
+      JOIN activity as ac
+      ON us.id = ac."ownerId"
+      WHERE ac.status <> 'PUBLISHED' AND ac.status <> 'ARCHIVED' AND status <> 'READY'
+      GROUP BY us.id`
+
+    const { rows } = await pg.execQuery(query)
+    return rows
+  }
+
+  async function countDraftedArticles(pg) {
+    const query = `
+      SELECT us.id, count(ac.id)
+      FROM users as us
+      JOIN articles as ac
+      ON us.id = ac."ownerId"
+      WHERE ac.status <> 'PUBLISHED' AND ac.status <> 'ARCHIVED' AND status <> 'READY'
+      GROUP BY us.id`
+
+    const { rows } = await pg.execQuery(query)
+    return rows
+  }
+
+  async function countPublishedArticles(pg) {
+    const query = `
+      SELECT us.id, count(ac.id)
+      FROM users as us
+      JOIN articles as ac
+      ON us.id = ac."ownerId"
+      WHERE ac.status = 'PUBLISHED' OR ac.status = 'ARCHIVED'
+      GROUP BY us.id`
+
+    const { rows } = await pg.execQuery(query)
+    return rows
   }
 }
