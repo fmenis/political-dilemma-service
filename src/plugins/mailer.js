@@ -27,6 +27,10 @@ function mailer(fastify, options, done) {
     done()
   }
 
+  fastify.addHook('onClose', () => {
+    transporter.close()
+  })
+
   fastify.decorate('mailer', transporter)
 }
 

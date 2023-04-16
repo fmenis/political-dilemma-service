@@ -80,6 +80,10 @@ function postgresClient(fastify, options, done) {
     }, {})
   }
 
+  fastify.addHook('onClose', async () => {
+    await pool.end()
+  })
+
   fastify.decorate('pg', {
     execQuery,
     beginTransaction,
