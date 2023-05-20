@@ -1,8 +1,5 @@
 import Fp from 'fastify-plugin'
-import {
-  getRawUserPermissions,
-  getUserRoles,
-} from '../routes/users/lib/utils.js'
+import { getRawUserPermissions } from '../routes/users/lib/utils.js'
 
 async function authorization(fastify) {
   const { httpErrors, pg } = fastify
@@ -34,10 +31,7 @@ async function authorization(fastify) {
       return
     }
 
-    const [userRole, userPermissions] = await Promise.all([
-      getUserRoles([user.id], pg),
-      getRawUserPermissions(user.id, pg),
-    ])
+    const userPermissions = await getRawUserPermissions(user.id, pg)
 
     const userApiPermission = userPermissions.find(item =>
       item.includes(permission)
@@ -53,7 +47,6 @@ async function authorization(fastify) {
       })
     }
 
-    user.roleId = userRole.roleId
     user.apiPermission = userApiPermission
   }
 

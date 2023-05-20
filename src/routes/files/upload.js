@@ -1,21 +1,22 @@
 import S from 'fluent-json-schema'
 import multipart from '@fastify/multipart'
-import { join, extname, basename } from 'path'
+import { join, extname } from 'path'
 import { stat, mkdir } from 'fs/promises'
 import { nanoid } from 'nanoid'
 
 import { CATEGORIES } from './lib/enums.js'
-import { calcFileSize, deleteFiles, moveFile } from './lib/utils.js'
+import { calcFileSize, moveFile } from './lib/utils.js'
 import { appConfig } from '../../config/main.js'
 import { calculateBaseUrl } from '../../utils/main.js'
+import { sAttachmet } from '../common/common.schema.js'
 
 export default async function uploadFile(fastify) {
   fastify.register(multipart, {
     limits: {
-      fields: 0,
+      fields: 2,
       files: appConfig.upload.maxUploadsForRequeset,
     },
-    // attachFieldsToBody: 'keyValues', //TODO test
+    attachFieldsToBody: true,
   })
 
   const { massive, config, httpErrors } = fastify
@@ -36,17 +37,7 @@ export default async function uploadFile(fastify) {
       //   .required(),
       response: {
         200: S.array()
-          .items(
-            S.object()
-              .additionalProperties(false)
-              .description('Uploaded file/s.')
-              .prop('id', S.string().format('uuid'))
-              .description('File id.')
-              .required()
-              .prop('url', S.string().format('uri'))
-              .description('File url.')
-              .required()
-          )
+          .items(sAttachmet())
           .minItems(1)
           .maxItems(appConfig.upload.maxUploadsForRequeset),
       },
@@ -55,44 +46,45 @@ export default async function uploadFile(fastify) {
   })
 
   async function onUploadFile(req) {
-    const { user, log } = req
-    const basePath = join(config.STATIC_FILES_DEST, 'articles/images')
+    const { user } = req
 
     const files = await req.saveRequestFiles()
 
-    try {
-      const populatedFiles = await populateFiles(files, basePath)
+    const { entityRelativePath, category, target } = getFilesMetadata(req.body)
+    const populatedFiles = await populateFiles(
+      files,
+      entityRelativePath,
+      category,
+      target
+    )
 
-      await checkFiles(populatedFiles)
+    await checkFiles(populatedFiles)
+    await moveFiles(populatedFiles, entityRelativePath)
+    const urls = await indexFiles(populatedFiles, user)
 
-      await moveFiles(populatedFiles, basePath)
-
-      const urls = await indexFiles(populatedFiles, user)
-
-      return urls
-    } catch (error) {
-      log.error('Error trying to upload file', error)
-      // delete tmp files in any case
-      await deleteFiles(files.map(file => file.filepath))
-      throw error
-    }
+    return urls
   }
 
-  function populateFiles(files, basePath) {
+  function populateFiles(files, entityRelativePath, category, target) {
     async function populateFile(file) {
       const fileStats = await stat(file.filepath)
       const extension = extname(file.filename)
-      const fileName = basename(file.filename, extension)
-      const filesystemFileName = `${fileName}_${nanoid()}${extension}`
+      const filesystemFileName = `${nanoid()}${extension}`
 
       return {
         ...file,
-        destPath: join(basePath, filesystemFileName),
+        destPath: join(
+          config.STATIC_FILES_DEST,
+          entityRelativePath,
+          filesystemFileName
+        ),
         extension: extension.slice(1),
         size: calcFileSize(fileStats.size),
         url: `${calculateBaseUrl({
           port: 8080,
-        })}/static/articles/images/${filesystemFileName}`,
+        })}/static/${entityRelativePath}/${filesystemFileName}`,
+        category,
+        target,
       }
     }
 
@@ -119,8 +111,10 @@ export default async function uploadFile(fastify) {
     return Promise.all(files.map(file => checkFile(file)))
   }
 
-  async function moveFiles(files, basePath) {
-    await mkdir(basePath, { recursive: true })
+  async function moveFiles(files, entityRelativePath) {
+    await mkdir(join(config.STATIC_FILES_DEST, entityRelativePath), {
+      recursive: true,
+    })
     return Promise.all(
       files.map(file => moveFile(file.filepath, file.destPath))
     )
@@ -128,7 +122,17 @@ export default async function uploadFile(fastify) {
 
   async function indexFiles(files, user) {
     async function indexFile(file, user, tx) {
-      const { destPath, url, filename, extension, mimetype, size } = file
+      const {
+        destPath,
+        url,
+        filename,
+        extension,
+        mimetype,
+        size,
+        category,
+        target,
+      } = file
+
       const newFile = await tx.files.save({
         fullPath: destPath,
         url: encodeURI(url),
@@ -137,10 +141,11 @@ export default async function uploadFile(fastify) {
         mimetype,
         size,
         ownerId: user.id,
-        category: CATEGORIES.ARTICLE_IMAGE,
+        category,
+        target,
       })
 
-      return { id: newFile.id, url: newFile.url }
+      return { id: newFile.id, url: newFile.url, target: newFile.target }
     }
 
     const filesData = await massive.withTransaction(async tx => {
@@ -151,5 +156,38 @@ export default async function uploadFile(fastify) {
     })
 
     return filesData
+  }
+
+  function getFilesMetadata(body) {
+    const type = body.type
+    if (!type) {
+      throw new Error(`Specify the required field 'type'`)
+    }
+
+    const target = body.target
+    if (!target) {
+      throw new Error(`Specify the required field 'target'`)
+    }
+
+    const result = {
+      category: type.value,
+      entityRelativePath: '',
+      target: target.value,
+    }
+
+    switch (result.category) {
+      case CATEGORIES.ARTICLE_IMAGE:
+        result.entityRelativePath = 'articles/images'
+        break
+
+      case CATEGORIES.ACTIVITY_IMAGE:
+        result.entityRelativePath = 'activities/images'
+        break
+
+      default:
+        throw new Error(`File type ${result.category} not allowed`)
+    }
+
+    return result
   }
 }

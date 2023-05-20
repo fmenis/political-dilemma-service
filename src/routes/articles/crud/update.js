@@ -1,16 +1,25 @@
 import S from 'fluent-json-schema'
 import _ from 'lodash'
 
-import { sUpdateArticle, sArticle } from '../lib/schema.js'
+import { sUpdateArticle, sArticleDetail } from '../lib/schema.js'
 import { findArrayDuplicates, removeObjectProps } from '../../../utils/main.js'
 import { populateArticle } from '../lib/common.js'
-import { restrictDataToOwner } from '../../lib/common.js'
-import { ARTICLE_STATES } from '../lib/enums.js'
+import { restrictDataToOwner } from '../../common/common.js'
+import { ARTICLE_STATES } from '../../common/enums.js'
+import { buildRouteFullDescription } from '../../common/common.js'
 
 export default async function updateArticle(fastify) {
-  const { massive, httpErrors } = fastify
-  const { createError } = httpErrors
-  const permission = 'article:update'
+  const { massive } = fastify
+  const {
+    errors,
+    throwNotFoundError,
+    throwOwnershipError,
+    throwInvalidStatusError,
+    throwDuplicateTitleError,
+  } = fastify.articleErrors
+
+  const api = 'update'
+  const permission = `article:${api}`
 
   fastify.route({
     method: 'PATCH',
@@ -18,10 +27,16 @@ export default async function updateArticle(fastify) {
     config: {
       public: false,
       permission,
+      trimBodyFields: ['title', 'text', 'description', 'tags'],
     },
     schema: {
       summary: 'Update article',
-      description: `Permission required: ${permission}`,
+      description: buildRouteFullDescription({
+        description: 'Update article.',
+        errors,
+        permission,
+        api,
+      }),
       params: S.object()
         .additionalProperties(false)
         .prop('id', S.string().format('uuid'))
@@ -29,65 +44,57 @@ export default async function updateArticle(fastify) {
         .required(),
       body: sUpdateArticle(),
       response: {
-        200: sArticle(),
+        200: sArticleDetail(),
         404: fastify.getSchema('sNotFound'),
         409: fastify.getSchema('sConflict'),
       },
     },
-    preValidation: onPreValidation,
     preHandler: onPreHandler,
     handler: onUpdateArticle,
   })
 
-  async function onPreValidation(req) {
-    const trimmableFields = ['title', 'text', 'description', 'tags']
-
-    for (const key of Object.keys(req.body)) {
-      if (req.body[key]) {
-        if (key === 'tags') {
-          req.body.tags = req.body.tags.map(tag => tag.trim())
-          continue
-        }
-
-        if (trimmableFields.includes(key)) {
-          req.body[key] = req.body[key].trim()
-        }
-      }
-    }
-  }
-
   async function onPreHandler(req) {
     const { id } = req.params
-    const { tags = [], attachmentIds = [] } = req.body
+    const { title, attachmentIds = [] } = req.body
     const { id: userId, apiPermission } = req.user
 
     const article = await massive.articles.findOne(id)
 
     if (!article) {
-      throw createError(404, 'Invalid input', {
-        validation: [{ message: `Article '${id}' not found` }],
-      })
+      throwNotFoundError({ id: categoryId, name: 'article' })
     }
 
     if (
-      article.status === ARTICLE_STATES.ARCHIVED ||
-      article.status === ARTICLE_STATES.DELETED
+      article.status !== ARTICLE_STATES.DRAFT &&
+      article.status !== ARTICLE_STATES.IN_REVIEW &&
+      article.status !== ARTICLE_STATES.REWORK
     ) {
-      throw createError(409, 'Conflict', {
-        validation: [
-          {
-            message: `Invalid action on article '${id}'. Required status: not ${ARTICLE_STATES.ARCHIVED} or '${ARTICLE_STATES.DELETED}'`,
-          },
-        ],
+      throwInvalidStatusError({
+        id,
+        requiredStatus: `${ACTIVITY_STATES.DRAFT}, ${ACTIVITY_STATES.IN_REVIEW} or ${ACTIVITY_STATES.REWORK}`,
       })
     }
 
     if (restrictDataToOwner(apiPermission) && article.ownerId !== userId) {
-      throw httpErrors.forbidden(
-        'Only the owner (and admin) can access to this article'
-      )
+      throwOwnershipError({ id: userId, email })
     }
 
+    if (title) {
+      const titleDuplicates = await massive.articles.where(
+        'LOWER(title) = TRIM(LOWER($1))',
+        [`${title.trim()}`]
+      )
+
+      if (
+        titleDuplicates.some(
+          item => item.title.toLowerCase() === title.trim().toLowerCase()
+        )
+      ) {
+        throwDuplicateTitleError({ title })
+      }
+    }
+
+    //##TODO mappare errori
     const duplicatedAttachmentIds = findArrayDuplicates(attachmentIds)
     if (duplicatedAttachmentIds.length) {
       throw createError(400, 'Invalid input', {
@@ -101,6 +108,7 @@ export default async function updateArticle(fastify) {
       })
     }
 
+    //##TODO mappare errori
     const attachments = await massive.files.find({ id: attachmentIds })
     if (attachments.length < attachmentIds.length) {
       const missing = _.difference(
@@ -115,22 +123,12 @@ export default async function updateArticle(fastify) {
         ],
       })
     }
-
-    const duplicatedTags = findArrayDuplicates(tags)
-    if (duplicatedTags.length) {
-      throw createError(400, 'Invalid input', {
-        validation: [
-          {
-            message: `Duplicate tags: ${duplicatedTags.join(', ')}`,
-          },
-        ],
-      })
-    }
   }
 
   async function onUpdateArticle(req) {
     const { id } = req.params
     const { attachmentIds = [] } = req.body
+    const { id: currentUserId } = req.user
 
     const updatedArticle = await massive.withTransaction(async tx => {
       const updatedArticle = await tx.articles.update(id, {
@@ -163,6 +161,6 @@ export default async function updateArticle(fastify) {
       return updatedArticle
     })
 
-    return populateArticle(updatedArticle, massive)
+    return populateArticle(updatedArticle, currentUserId, massive)
   }
 }

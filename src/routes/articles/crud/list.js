@@ -3,11 +3,19 @@ import S from 'fluent-json-schema'
 import { sArticleList } from '../lib/schema.js'
 import { appConfig } from '../../../config/main.js'
 import { getArticleStates } from '../lib/common.js'
-import { buildPaginatedInfo, restrictDataToOwner } from '../../lib/common.js'
+import {
+  buildPaginatedInfo,
+  restrictDataToOwner,
+  buildRouteFullDescription,
+} from '../../common/common.js'
 
 export default async function listArticles(fastify) {
   const { massive } = fastify
-  const permission = 'article:list'
+  const { errors } = fastify.articleErrors
+
+  const api = 'list'
+  const permission = `article:${api}`
+
   const { defaultLimit, defaultOffset } = appConfig.pagination
 
   fastify.route({
@@ -19,7 +27,12 @@ export default async function listArticles(fastify) {
     },
     schema: {
       summary: 'List articles',
-      description: `Permission required: ${permission}`,
+      description: buildRouteFullDescription({
+        description: 'List articles.',
+        errors,
+        permission,
+        api: 'list',
+      }),
       query: S.object()
         .additionalProperties(false)
         .prop('status', S.string().enum(getArticleStates()))
@@ -33,10 +46,10 @@ export default async function listArticles(fastify) {
         .prop('sortBy', S.string().enum(['title']))
         .description('Field used to sort results (sorting).')
         .prop('order', S.string().enum(['ASC', 'DESC']))
-        .prop('limit', S.number())
+        .prop('limit', S.integer())
         .description('Number of results (pagination).')
         .default(defaultLimit)
-        .prop('offset', S.number())
+        .prop('offset', S.integer())
         .description('Items to skip (pagination).')
         .default(defaultOffset),
       response: {
@@ -82,7 +95,7 @@ export default async function listArticles(fastify) {
     ])
 
     return {
-      results: await populateArticles(articles),
+      results: await populateArticles(articles, user.id),
       paginatedInfo: buildPaginatedInfo(count, {
         limit: query.limit,
         offset: query.offset,
@@ -148,7 +161,7 @@ export default async function listArticles(fastify) {
     return options
   }
 
-  async function populateArticles(articles) {
+  async function populateArticles(articles, currentUserId) {
     const internalNotes = await massive.internalNotes.find({
       articleId: articles.map(item => item.id),
     })
@@ -163,6 +176,7 @@ export default async function listArticles(fastify) {
           item => item.articleId === article.id
         ),
         category: categoryName,
+        isMine: article.ownerId === currentUserId,
       }
     })
   }

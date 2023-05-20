@@ -40,15 +40,11 @@ export default async function userWhoami(fastify) {
   })
 
   async function onUserWhoami(req) {
-    const { id } = req.user
+    const { user } = req
 
-    const query =
-      'SELECT id, first_name, last_name, email FROM users WHERE id=$1'
-
-    const [user, roles, permissions] = await Promise.all([
-      pg.execQuery(query, [id], { findOne: true }),
-      getUserRoles([id], pg),
-      getRawUserPermissions(id, pg),
+    const [roles, permissions] = await Promise.all([
+      getUserRoles([user.id], pg),
+      getRawUserPermissions(user.id, pg),
     ])
 
     return {

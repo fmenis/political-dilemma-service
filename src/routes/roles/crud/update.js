@@ -2,9 +2,11 @@ import S from 'fluent-json-schema'
 
 import { sRoleResponse } from '../lib/schema.js'
 import { getRolePermissions, associatePermissions } from '../lib/utils.js'
+import { findArrayDuplicates } from '../../../utils/main.js'
 
 export default async function updateRole(fastify) {
   const { pg, httpErrors } = fastify
+  const { createError } = httpErrors
 
   fastify.route({
     method: 'PUT',
@@ -46,6 +48,7 @@ export default async function updateRole(fastify) {
 
   async function onPreHandler(req) {
     const { id } = req.params
+    const { permissionsIds } = req.body
 
     const role = await pg.execQuery('SELECT id FROM roles WHERE id=$1', [id], {
       findOne: true,
@@ -53,6 +56,30 @@ export default async function updateRole(fastify) {
 
     if (!role) {
       throw httpErrors.notFound(`Role with id '${id}' not found`)
+    }
+
+    // only a permission per modificator (own / any) cab be specified
+    if (permissionsIds?.length) {
+      const { rows: permissions } = await pg.execQuery(
+        'SELECT resource, action  FROM permissions WHERE id= ANY ($1)',
+        [permissionsIds]
+      )
+
+      const duplicatedPermission = findArrayDuplicates(
+        permissions.map(item => `${item.resource}-${item.action}`)
+      )
+      if (duplicatedPermission.length) {
+        throw createError(400, 'Invalid input', {
+          internalCode: 'DUPLICATED_OWNERSHIP',
+          validation: [
+            {
+              message: `A permission cannot be assign with both ownerships (any and own): ${duplicatedPermission.join(
+                ', '
+              )}`,
+            },
+          ],
+        })
+      }
     }
   }
 

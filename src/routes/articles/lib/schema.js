@@ -1,12 +1,7 @@
 import S from 'fluent-json-schema'
-import { getArticleStates } from '../lib/common.js'
 
-export function sTags() {
-  return S.array()
-    .items(S.string().minLength(2).maxLength(30))
-    .minItems(1)
-    .maxItems(50)
-}
+import { sTags, sAttachmet } from '../../common/common.schema.js'
+import { getArticleStates } from '../lib/common.js'
 
 export function sCreateArticle() {
   return (
@@ -26,9 +21,13 @@ export function sCreateArticle() {
       .description('Article tags.')
       .prop(
         'attachmentIds',
-        S.array().items(S.string().format('uuid')).minItems(1).maxItems(50)
+        S.array()
+          .items(S.string().format('uuid'))
+          .minItems(1)
+          .maxItems(50)
+          .uniqueItems(true)
       )
-      //##TODO non funziona, capire come mettere default su tipo dati non primitivi
+      //TODO non funziona, capire come mettere default su tipo dati non primitivi
       // .default(S.array())
       .description('Article attachments ids.')
   )
@@ -51,6 +50,7 @@ export function sUpdateArticle() {
         .items(S.string().minLength(2).maxLength(30))
         .minItems(0) // allows all tags deletion
         .maxItems(50)
+        .uniqueItems(true)
     )
     .description('Article tags.')
     .prop(
@@ -60,7 +60,7 @@ export function sUpdateArticle() {
     .description('Article attachments ids.')
 }
 
-export function sArticle() {
+export function sArticleDetail() {
   return S.object()
     .description('Article.')
     .additionalProperties(false)
@@ -90,21 +90,7 @@ export function sArticle() {
     .prop('categoryId', S.string().format('uuid'))
     .description('Article category id.')
     .required()
-    .prop(
-      'attachments',
-      S.array()
-        .items(
-          S.object()
-            .additionalProperties(false)
-            .prop('id', S.string().format('uuid'))
-            .description('File id.')
-            .required()
-            .prop('url', S.string().format('uri'))
-            .description('File url.')
-            .required()
-        )
-        .maxItems(10)
-    )
+    .prop('attachments', S.array().items(sAttachmet()).maxItems(10))
     .description('Article attachments ids.')
     .prop('tags', sTags())
     .description('Article tags.')
@@ -112,44 +98,9 @@ export function sArticle() {
     .description('Article description.')
     .prop('cancellationReason', S.string().minLength(3).maxLength(500))
     .description('Article cancellation reason.')
-    .prop(
-      'allowedActions',
-      S.object()
-        .additionalProperties(false)
-        .prop('canBeDeleted', S.boolean())
-        .description('Defines if the article can be deleted.')
-        .required()
-        .prop('canBeEdited', S.boolean())
-        .description('Defines if the article can be edited.')
-        .required()
-        .prop('canAskReview', S.boolean())
-        .description(
-          `Defines if the article can be moved to status 'IN_REVIEW'.`
-        )
-        .required()
-        .prop('canAskApprove', S.boolean())
-        .description(
-          `Defines if the article can be moved to status 'APPROVED'.`
-        )
-        .required()
-        .prop('canAskRework', S.boolean())
-        .description(`Defines if the article can be moved to status 'REWORK'.`)
-        .required()
-        .prop('canAskPublish', S.boolean())
-        .description(
-          `Defines if the article can be moved to status 'PUBLISHED'.`
-        )
-        .required()
-        .prop('canAskArchive', S.boolean())
-        .description(
-          `Defines if the article can be moved to status 'ARCHIVED'.`
-        )
-        .required()
-        .prop('canAskDelete', S.boolean())
-        .description(`Defines if the article can be moved to status 'DELETED'.`)
-        .required()
-    )
-    .description('Article allowed actions.')
+    .prop('isMine', S.boolean())
+    .description('Defines if the current user is the owner of the article.')
+    .required()
 }
 
 export function sArticleList() {
@@ -180,5 +131,8 @@ export function sArticleList() {
     .required()
     .prop('category', S.string())
     .description('Article category.')
+    .required()
+    .prop('isMine', S.boolean())
+    .description('Defines if the current user is the owner of the article.')
     .required()
 }

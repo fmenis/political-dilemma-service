@@ -1,9 +1,9 @@
 import S from 'fluent-json-schema'
 
-import { ARTICLE_STATES } from './lib/enums.js'
-import { sArticle } from './lib/schema.js'
+import { ARTICLE_STATES, CATEGORY_TYPES } from '../common/enums.js'
+import { sArticleDetail } from './lib/schema.js'
 import { populateArticle } from './lib/common.js'
-import { buildRouteFullDescription } from '../lib/common.js'
+import { buildRouteFullDescription } from '../common/common.js'
 
 export default async function reviewArticle(fastify) {
   const { massive } = fastify
@@ -23,15 +23,16 @@ export default async function reviewArticle(fastify) {
     config: {
       public: false,
       permission,
+      trimBodyFields: ['note'],
     },
     schema: {
       summary: 'Review article',
-      description: buildRouteFullDescription(
-        routeDescription,
+      description: buildRouteFullDescription({
+        description: routeDescription,
         errors,
         permission,
-        'review'
-      ),
+        api: 'review',
+      }),
       params: S.object()
         .additionalProperties(false)
         .prop('id', S.string().format('uuid'))
@@ -42,28 +43,21 @@ export default async function reviewArticle(fastify) {
         .prop('note', S.string().minLength(3).maxLength(250))
         .description('Article note.'),
       response: {
-        200: sArticle(),
+        200: sArticleDetail(),
         404: fastify.getSchema('sNotFound'),
         409: fastify.getSchema('sConflict'),
       },
     },
-    preValidation: onPreValidation,
     preHandler: onPreHandler,
     handler: onReviewArticle,
   })
-
-  async function onPreValidation(req) {
-    if (req.body.note) {
-      req.body.note = req.body.note.trim()
-    }
-  }
 
   async function onPreHandler(req) {
     const { id } = req.params
 
     const article = await massive.articles.findOne(id)
     if (!article) {
-      throwNotFoundError({ id })
+      throwNotFoundError({ id, name: 'article' })
     }
 
     if (
@@ -118,11 +112,11 @@ export default async function reviewArticle(fastify) {
           ownerId,
           text: note,
           articleId: updatedArticle.id,
-          category: 'articles',
+          category: CATEGORY_TYPES.ARTICLE,
         })
       }
     })
 
-    return populateArticle(updatedArticle, massive)
+    return populateArticle(updatedArticle, ownerId, massive)
   }
 }

@@ -7,8 +7,8 @@ async function redisClient(fastify) {
   const client = redis.createClient({
     socket: {
       host: fastify.config.REDIS_HOST,
-      port: fastify.config.REDIS_PORT
-    }
+      port: fastify.config.REDIS_PORT,
+    },
   })
 
   await client.connect()
@@ -17,6 +17,10 @@ async function redisClient(fastify) {
 
   client.on('error', err => {
     log.error(err)
+  })
+
+  fastify.addHook('onClose', async () => {
+    await client.disconnect()
   })
 
   fastify.decorate('redis', client)

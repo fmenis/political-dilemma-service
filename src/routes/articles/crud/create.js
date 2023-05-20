@@ -1,13 +1,22 @@
 import _ from 'lodash'
 
-import { sCreateArticle, sArticle } from '../lib/schema.js'
-import { ARTICLE_STATES } from '../lib/enums.js'
-import { findArrayDuplicates } from '../../../utils/main.js'
+import { sCreateArticle, sArticleDetail } from '../lib/schema.js'
+import { ARTICLE_STATES } from '../../common/enums.js'
+import { populateArticle } from '../lib/common.js'
+import { buildRouteFullDescription } from '../../common/common.js'
 
 export default async function createArticle(fastify) {
-  const { massive, httpErrors } = fastify
-  const { createError } = httpErrors
-  const permission = 'article:create'
+  const { massive } = fastify
+  const {
+    errors,
+    throwNotFoundError,
+    throwInvalidCategoryError,
+    throwDuplicateTitleError,
+    throwAttachmentsNotFoundError,
+  } = fastify.articleErrors
+
+  const api = 'create'
+  const permission = `article:${api}`
 
   fastify.route({
     method: 'POST',
@@ -15,93 +24,49 @@ export default async function createArticle(fastify) {
     config: {
       public: false,
       permission,
+      trimBodyFields: ['title', 'text', 'description', 'tags'],
     },
     schema: {
       summary: 'Create article',
-      description: `Permission required: ${permission}`,
+      description: buildRouteFullDescription({
+        description: 'Create article.',
+        errors,
+        permission,
+        api,
+      }),
       body: sCreateArticle(),
       response: {
-        201: sArticle(),
+        201: sArticleDetail(),
         404: fastify.getSchema('sNotFound'),
         409: fastify.getSchema('sConflict'),
       },
     },
-    preValidation: onPreValidation,
     preHandler: onPreHandler,
     handler: onCreateArticle,
   })
 
-  async function onPreValidation(req) {
-    const trimmableFields = ['title', 'text', 'description', 'tags']
-
-    for (const key of Object.keys(req.body)) {
-      if (req.body[key]) {
-        if (key === 'tags') {
-          req.body.tags = req.body.tags.map(tag => tag.trim())
-          continue
-        }
-
-        if (trimmableFields.includes(key)) {
-          req.body[key] = req.body[key].trim()
-        }
-      }
-    }
-  }
-
   async function onPreHandler(req) {
-    const { categoryId, title, tags = [], attachmentIds = [] } = req.body
+    const { categoryId, title, attachmentIds = [] } = req.body
 
     const category = await massive.categories.findOne(categoryId)
     if (!category) {
-      throw createError(404, 'Invalid input', {
-        validation: [{ message: `Category '${categoryId}' not found` }],
-      })
+      throwNotFoundError({ id: categoryId, name: 'category' })
+    }
+    if (category.type !== 'ARTICLE') {
+      throwInvalidCategoryError({ id: categoryId, type: category.type })
     }
 
-    //TODO rifare controllo: togliere spazi e metter tutto lower
-    const duplicateTitle = await massive.articles.findOne({ title })
-    if (duplicateTitle) {
-      //TODO capire perchè il messaggio non appare sui log pm2
-      throw httpErrors.conflict(`Article with title '${title}' already exists`)
-    }
-
-    const duplicatedTags = findArrayDuplicates(tags)
-    if (duplicatedTags.length) {
-      throw createError(400, 'Invalid input', {
-        validation: [
-          {
-            message: `Duplicate tags: ${duplicatedTags.join(', ')}`,
-          },
-        ],
-      })
-    }
-
-    const duplicatedAttachmentIds = findArrayDuplicates(attachmentIds)
-    if (duplicatedAttachmentIds.length) {
-      throw createError(400, 'Invalid input', {
-        validation: [
-          {
-            message: `Duplicate attachments ids: ${duplicatedAttachmentIds.join(
-              ', '
-            )}`,
-          },
-        ],
-      })
+    const titleDuplicates = await massive.articles.where(
+      'LOWER(title) = TRIM(LOWER($1))',
+      [`${title.trim()}`]
+    )
+    if (titleDuplicates.length > 0) {
+      throwDuplicateTitleError({ title })
     }
 
     const files = await massive.files.find({ id: attachmentIds })
     if (files.length < attachmentIds.length) {
-      const missing = _.difference(
-        attachmentIds,
-        files.map(item => item.id)
-      )
-      throw createError(400, 'Invalid input', {
-        validation: [
-          {
-            message: `Attachment ids '${missing.join(', ')}' not found`,
-          },
-        ],
-      })
+      throwAttachmentsNotFoundError({ attachmentIds, files })
     }
   }
 
@@ -114,7 +79,7 @@ export default async function createArticle(fastify) {
       tags,
       attachmentIds = [],
     } = req.body
-    const { user } = req
+    const { id: ownerId } = req.user
 
     const params = {
       title,
@@ -122,7 +87,7 @@ export default async function createArticle(fastify) {
       categoryId,
       description,
       status: ARTICLE_STATES.DRAFT,
-      ownerId: user.id,
+      ownerId,
       tags,
     }
 
@@ -138,24 +103,9 @@ export default async function createArticle(fastify) {
       return newArticle
     })
 
-    const owner = await massive.users.findOne(user.id)
-
     reply.resourceId = newArticle.id
     reply.code(201)
 
-    return {
-      id: newArticle.id,
-      title: newArticle.title,
-      text: newArticle.text,
-      categoryId,
-      status: newArticle.status,
-      author: `${owner.first_name} ${owner.last_name}`,
-      createdAt: newArticle.createdAt,
-      publishedAt: newArticle.publishedAt,
-      updatedAt: newArticle.updatedAt,
-      canBeDeleted: newArticle.status === ARTICLE_STATES.DRAFT,
-      tags: newArticle.tags || undefined,
-      description: newArticle.description || undefined,
-    }
+    return populateArticle(newArticle, ownerId, massive)
   }
 }

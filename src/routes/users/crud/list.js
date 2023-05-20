@@ -6,7 +6,7 @@ import { promisify } from 'util'
 const readFileAsync = promisify(readFile)
 
 import { sUserList } from '../lib/schema.js'
-import { buildPaginatedInfo } from '../../lib/common.js'
+import { buildPaginatedInfo } from '../../common/common.js'
 import { appConfig } from '../../../config/main.js'
 
 export default async function listUsers(fastify) {
@@ -60,10 +60,10 @@ export default async function listUsers(fastify) {
         .description('Field used to sort results (sorting).')
         .prop('order', S.string().enum(['ASC', 'DESC']))
         .description('Sort order (sorting).')
-        .prop('limit', S.number())
+        .prop('limit', S.integer())
         .default(defaultLimit)
         .description('Number of results (pagination).')
-        .prop('offset', S.number())
+        .prop('offset', S.integer())
         .default(defaultOffset)
         .description('Items to skip (pagination).'),
       response: {
@@ -134,15 +134,13 @@ export default async function listUsers(fastify) {
 
     dbObj = applyPagination(dbObj.query, options.pagination, dbObj.inputs)
 
-    const { rows } = await pg.execQuery(
+    const { rows: users } = await pg.execQuery(
       dbObj.query.replace(/{columns}/g, ''),
       dbObj.inputs
     )
 
-    const users = await populateUserList(rows)
-
     return {
-      users,
+      users: await populateUsers(users, pg),
       count,
     }
   }
@@ -250,13 +248,103 @@ export default async function listUsers(fastify) {
     return { query, inputs }
   }
 
-  async function populateUserList(users) {
+  async function populateUsers(users, pg) {
+    const [
+      draftedActivities,
+      publishedActivities,
+      draftedArticles,
+      publishedArticles,
+    ] = await Promise.all([
+      countDraftedActivities(pg),
+      countPublishedActivities(pg),
+      countDraftedArticles(pg),
+      countPublishedArticles(pg),
+    ])
+
     return users.map(user => {
+      const countPublishedActivities = publishedActivities.find(
+        item => item.id === user.id
+      )
+        ? parseInt(publishedActivities.find(item => item.id === user.id).count)
+        : 0
+
+      const countDraftedActivities = draftedActivities.find(
+        item => item.id === user.id
+      )
+        ? parseInt(draftedActivities.find(item => item.id === user.id).count)
+        : 0
+
+      const countDraftedArticles = draftedArticles.find(
+        item => item.id === user.id
+      )
+        ? parseInt(draftedArticles.find(item => item.id === user.id).count)
+        : 0
+
+      const countPublishedArticles = publishedArticles.find(
+        item => item.id === user.id
+      )
+        ? parseInt(publishedArticles.find(item => item.id === user.id).count)
+        : 0
+
       return {
         ...user,
-        publishedLaws: 0,
-        draftLaws: 0,
+        draftArticles: countDraftedArticles,
+        publishedArticles: countPublishedArticles,
+        draftActivities: countDraftedActivities,
+        publishedActivities: countPublishedActivities,
       }
     })
+  }
+
+  async function countPublishedActivities(pg) {
+    const query = `
+      SELECT us.id, count(ac.id)
+      FROM users as us
+      JOIN activity as ac
+      ON us.id = ac."ownerId"
+      WHERE ac.status = 'PUBLISHED' OR ac.status = 'ARCHIVED'
+      GROUP BY us.id`
+
+    const { rows } = await pg.execQuery(query)
+    return rows
+  }
+
+  async function countDraftedActivities(pg) {
+    const query = `
+      SELECT us.id, count(ac.id)
+      FROM users as us
+      JOIN activity as ac
+      ON us.id = ac."ownerId"
+      WHERE ac.status <> 'PUBLISHED' AND ac.status <> 'ARCHIVED' AND status <> 'READY'
+      GROUP BY us.id`
+
+    const { rows } = await pg.execQuery(query)
+    return rows
+  }
+
+  async function countDraftedArticles(pg) {
+    const query = `
+      SELECT us.id, count(ac.id)
+      FROM users as us
+      JOIN articles as ac
+      ON us.id = ac."ownerId"
+      WHERE ac.status <> 'PUBLISHED' AND ac.status <> 'ARCHIVED' AND status <> 'READY'
+      GROUP BY us.id`
+
+    const { rows } = await pg.execQuery(query)
+    return rows
+  }
+
+  async function countPublishedArticles(pg) {
+    const query = `
+      SELECT us.id, count(ac.id)
+      FROM users as us
+      JOIN articles as ac
+      ON us.id = ac."ownerId"
+      WHERE ac.status = 'PUBLISHED' OR ac.status = 'ARCHIVED'
+      GROUP BY us.id`
+
+    const { rows } = await pg.execQuery(query)
+    return rows
   }
 }

@@ -65,6 +65,8 @@ async function swaggerGenerator(fastify) {
           description: 'Internal notes related end-points',
         },
         { name: 'files', description: 'Files related end-points' },
+        { name: 'activities', description: 'Activities related end-points' },
+        { name: 'categories', description: 'Categories related end-points' },
       ].sort((a, b) => a.name.localeCompare(b.name)),
     },
     exposeRoute: process.env.NODE_ENV !== ENV.PRODUCTION,

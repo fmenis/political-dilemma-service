@@ -1,13 +1,17 @@
 import S from 'fluent-json-schema'
 
-import { sArticle } from '../lib/schema.js'
+import { sArticleDetail } from '../lib/schema.js'
 import { populateArticle } from '../lib/common.js'
-import { restrictDataToOwner } from '../../lib/common.js'
+import { restrictDataToOwner } from '../../common/common.js'
+import { buildRouteFullDescription } from '../../common/common.js'
 
 export default async function readArticle(fastify) {
-  const { massive, httpErrors } = fastify
-  const { createError } = httpErrors
-  const permission = 'article:read'
+  const { massive } = fastify
+  const { errors, throwNotFoundError, throwOwnershipError } =
+    fastify.articleErrors
+
+  const api = 'read'
+  const permission = `article:${api}`
 
   fastify.route({
     method: 'GET',
@@ -18,14 +22,19 @@ export default async function readArticle(fastify) {
     },
     schema: {
       summary: 'Get article',
-      description: `Permission required: ${permission}`,
+      description: buildRouteFullDescription({
+        description: 'Get article.',
+        errors,
+        permission,
+        api,
+      }),
       params: S.object()
         .additionalProperties(false)
         .prop('id', S.string().format('uuid'))
         .description('Article id.')
         .required(),
       response: {
-        200: sArticle(),
+        200: sArticleDetail(),
         404: fastify.getSchema('sNotFound'),
       },
     },
@@ -39,23 +48,20 @@ export default async function readArticle(fastify) {
 
     const article = await massive.articles.findOne(id)
     if (!article) {
-      throw createError(404, 'Invalid input', {
-        validation: [{ message: `Article '${id}' not found` }],
-      })
+      throw throwNotFoundError({ id, name: 'article' })
     }
 
     if (restrictDataToOwner(apiPermission) && article.ownerId !== userId) {
-      throw httpErrors.forbidden(
-        'Only the owner (and admin) can access to this article'
-      )
+      throwOwnershipError({ id: userId, email })
     }
 
-    req.article = article
+    req.resource = article
   }
 
   async function onReadArticle(req) {
-    const { article } = req
+    const { resource: article } = req
+    const { id: currentUserId } = req.user
 
-    return populateArticle(article, massive)
+    return populateArticle(article, currentUserId, massive)
   }
 }

@@ -1,13 +1,17 @@
 import S from 'fluent-json-schema'
 
-import { ARTICLE_STATES } from './lib/enums.js'
-import { sArticle } from './lib/schema.js'
+import { ARTICLE_STATES, CATEGORY_TYPES } from '../common/enums.js'
+import { sArticleDetail } from './lib/schema.js'
 import { populateArticle } from './lib/common.js'
+import { buildRouteFullDescription } from '../common/common.js'
 
 export default async function publishArticle(fastify) {
-  const { massive, httpErrors } = fastify
-  const { createError } = httpErrors
-  const permission = 'article:publish'
+  const { massive } = fastify
+  const { throwNotFoundError, throwInvalidStatusError, errors } =
+    fastify.articleErrors
+
+  const api = 'publish'
+  const permission = `article:${api}`
 
   fastify.route({
     method: 'POST',
@@ -15,10 +19,16 @@ export default async function publishArticle(fastify) {
     config: {
       public: false,
       permission,
+      trimBodyFields: ['note'],
     },
     schema: {
       summary: 'Publish article',
-      description: `Permission required: ${permission}`,
+      description: buildRouteFullDescription({
+        description: 'Publish article',
+        errors,
+        permission,
+        api,
+      }),
       params: S.object()
         .additionalProperties(false)
         .prop('id', S.string().format('uuid'))
@@ -29,47 +39,35 @@ export default async function publishArticle(fastify) {
         .prop('note', S.string().minLength(3).maxLength(250))
         .description('Article note.'),
       response: {
-        200: sArticle(),
+        200: sArticleDetail(),
         404: fastify.getSchema('sNotFound'),
         409: fastify.getSchema('sConflict'),
       },
     },
-    preValidation: onPreValidation,
     preHandler: onPreHandler,
     handler: onPublishArticle,
   })
-
-  async function onPreValidation(req) {
-    if (req.body.note) {
-      req.body.note = req.body.note.trim()
-    }
-  }
 
   async function onPreHandler(req) {
     const { id } = req.params
 
     const article = await massive.articles.findOne(id)
     if (!article) {
-      throw createError(404, 'Invalid input', {
-        validation: [{ message: `Article '${id}' not found` }],
-      })
+      throwNotFoundError({ id, name: 'article' })
     }
 
     if (article.status !== ARTICLE_STATES.READY) {
-      throw createError(409, 'Conflict', {
-        validation: [
-          {
-            message: `Invalid action on article '${id}'. Required status '${ARTICLE_STATES.READY}'`,
-          },
-        ],
+      throwInvalidStatusError({
+        id,
+        requiredStatus: `${ARTICLE_STATES.READY}`,
       })
     }
 
-    req.article = article
+    req.resource = article
   }
 
   async function onPublishArticle(req) {
-    const { article } = req
+    const { resource: article } = req
     const { id: ownerId } = req.user
     const { note } = req.body
 
@@ -88,11 +86,11 @@ export default async function publishArticle(fastify) {
           ownerId,
           text: note,
           articleId: updatedArticle.id,
-          category: 'articles',
+          category: CATEGORY_TYPES.ARTICLE,
         })
       }
     })
 
-    return populateArticle(updatedArticle, massive)
+    return populateArticle(updatedArticle, ownerId, massive)
   }
 }

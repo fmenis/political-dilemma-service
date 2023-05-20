@@ -1,13 +1,17 @@
 import S from 'fluent-json-schema'
 
-import { ARTICLE_STATES as status } from './lib/enums.js'
-import { sArticle } from './lib/schema.js'
+import { ARTICLE_STATES as status } from '../common/enums.js'
+import { sArticleDetail } from './lib/schema.js'
 import { populateArticle } from './lib/common.js'
+import { buildRouteFullDescription } from '../common/common.js'
 
 export default async function removeArticle(fastify) {
-  const { massive, httpErrors } = fastify
-  const { createError } = httpErrors
-  const permission = 'article:remove'
+  const { massive } = fastify
+  const { throwNotFoundError, throwInvalidStatusError, errors } =
+    fastify.articleErrors
+
+  const api = 'remove'
+  const permission = `article:${api}`
 
   fastify.route({
     method: 'POST',
@@ -15,10 +19,16 @@ export default async function removeArticle(fastify) {
     config: {
       public: false,
       permission,
+      trimBodyFields: ['cancellationReason'],
     },
     schema: {
       summary: 'Remove article',
-      description: `Permission required: ${permission}`,
+      description: buildRouteFullDescription({
+        description: 'Remove article',
+        errors,
+        permission,
+        api,
+      }),
       params: S.object()
         .additionalProperties(false)
         .prop('id', S.string().format('uuid'))
@@ -30,28 +40,21 @@ export default async function removeArticle(fastify) {
         .description('Article cancellation reason.')
         .required(),
       response: {
-        200: sArticle(),
+        200: sArticleDetail(),
         404: fastify.getSchema('sNotFound'),
         409: fastify.getSchema('sConflict'),
       },
     },
-    preValidation: onPreValidation,
     preHandler: onPreHandler,
     handler: onRemoveArticle,
   })
-
-  async function onPreValidation(req) {
-    req.body.cancellationReason = req.body.cancellationReason.trim()
-  }
 
   async function onPreHandler(req) {
     const { id } = req.params
 
     const article = await massive.articles.findOne(id)
     if (!article) {
-      throw createError(404, 'Invalid input', {
-        validation: [{ message: `Article '${id}' not found` }],
-      })
+      throwNotFoundError({ id, name: 'article' })
     }
 
     if (
@@ -59,21 +62,19 @@ export default async function removeArticle(fastify) {
       article.status === status.ARCHIVED ||
       article.status === status.DELETED
     ) {
-      throw createError(409, 'Conflict', {
-        validation: [
-          {
-            message: `Invalid action on article '${id}'. Required status: not '${status.DRAFT}', ${status.ARCHIVED} or '${status.DELETED}'`,
-          },
-        ],
+      throwInvalidStatusError({
+        id,
+        requiredStatus: `not ${status.DRAFT},  ${status.ARCHIVED} or ${status.DELETED}`,
       })
     }
 
-    req.article = article
+    req.resource = article
   }
 
   async function onRemoveArticle(req) {
-    const { article } = req
+    const { resource: article } = req
     const { cancellationReason } = req.body
+    const { id: currentUserId } = req.user
 
     const updatedArticle = {
       ...article,
@@ -84,6 +85,6 @@ export default async function removeArticle(fastify) {
 
     await massive.articles.update(updatedArticle.id, updatedArticle)
 
-    return populateArticle(updatedArticle, massive)
+    return populateArticle(updatedArticle, currentUserId, massive)
   }
 }

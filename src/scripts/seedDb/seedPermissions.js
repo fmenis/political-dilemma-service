@@ -213,6 +213,133 @@ export async function seedPermissions(client) {
       ownership: 'own',
       description: 'Cancellazione logica articolo (solo propri)',
     },
+    // ACTIVITIES
+    {
+      resource: 'activity',
+      action: 'create',
+      ownership: null,
+      description: 'Creazione attività',
+    },
+    {
+      resource: 'activity',
+      action: 'list',
+      ownership: 'any',
+      description: 'Lista attività (tutte)',
+    },
+    {
+      resource: 'activity',
+      action: 'list',
+      ownership: 'own',
+      description: 'Lista attività (solo proprie)',
+    },
+    {
+      resource: 'activity',
+      action: 'read',
+      ownership: 'any',
+      description: 'Dettaglio attività (tutte)',
+    },
+    {
+      resource: 'activity',
+      action: 'read',
+      ownership: 'own',
+      description: 'Dettaglio attività (solo proprie)',
+    },
+    {
+      resource: 'activity',
+      action: 'update',
+      ownership: 'any',
+      description: 'Aggiornamento attività (tutte)',
+    },
+    {
+      resource: 'activity',
+      action: 'update',
+      ownership: 'own',
+      description: 'Aggiornamento attività (solo proprie)',
+    },
+    {
+      resource: 'activity',
+      action: 'delete',
+      ownership: 'any',
+      description: 'Cancellazione attività (tutte)',
+    },
+    {
+      resource: 'activity',
+      action: 'delete',
+      ownership: 'own',
+      description: 'Cancellazione attività (solo proprie)',
+    },
+    {
+      resource: 'activity',
+      action: 'review',
+      ownership: 'any',
+      description: 'Review attività (tutte)',
+    },
+    {
+      resource: 'activity',
+      action: 'review',
+      ownership: 'own',
+      description: 'Review attività (solo proprie)',
+    },
+    {
+      resource: 'activity',
+      action: 'rework',
+      ownership: 'any',
+      description: 'Rework attività (tutte)',
+    },
+    {
+      resource: 'activity',
+      action: 'rework',
+      ownership: 'own',
+      description: 'Rework attività (solo proprie)',
+    },
+    {
+      resource: 'activity',
+      action: 'approve',
+      ownership: 'any',
+      description: 'Approve attività (tutte)',
+    },
+    {
+      resource: 'activity',
+      action: 'approve',
+      ownership: 'own',
+      description: 'Approve attività (solo proprie)',
+    },
+    {
+      resource: 'activity',
+      action: 'publish',
+      ownership: 'any',
+      description: 'Pubblicazione attività (tutte)',
+    },
+    {
+      resource: 'activity',
+      action: 'publish',
+      ownership: 'own',
+      description: 'Pubblicazione attività (solo proprie)',
+    },
+    {
+      resource: 'activity',
+      action: 'archive',
+      ownership: 'any',
+      description: 'Archiviazione attività (tutte)',
+    },
+    {
+      resource: 'activity',
+      action: 'archive',
+      ownership: 'own',
+      description: 'Archiviazione attività (solo proprie)',
+    },
+    {
+      resource: 'activity',
+      action: 'remove',
+      ownership: 'any',
+      description: 'Cancellazione logica attività (tutte)',
+    },
+    {
+      resource: 'activity',
+      action: 'remove',
+      ownership: 'own',
+      description: 'Cancellazione logica attività (solo proprie)',
+    },
   ]
 
   for (const permission of permissions) {

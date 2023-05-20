@@ -1,19 +1,21 @@
 import S from 'fluent-json-schema'
 
-import { ARTICLE_STATES } from './lib/enums.js'
-import { sArticle } from './lib/schema.js'
+import { ARTICLE_STATES, CATEGORY_TYPES } from '../common/enums.js'
+import { sArticleDetail } from './lib/schema.js'
 import { populateArticle } from './lib/common.js'
+import { isPastDate, buildRouteFullDescription } from '../common/common.js'
 
 export default async function approveArticle(fastify) {
   const { massive } = fastify
-
   const {
     throwNotFound,
     throwInvalidStatusError,
     throwInvalidPublicationDate,
+    errors,
   } = fastify.articleErrors
 
-  const permission = 'article:approve'
+  const api = 'approve'
+  const permission = `article:${api}`
 
   fastify.route({
     method: 'POST',
@@ -21,10 +23,16 @@ export default async function approveArticle(fastify) {
     config: {
       public: false,
       permission,
+      trimBodyFields: ['note'],
     },
     schema: {
       summary: 'Approve article',
-      description: `Permission required: ${permission} \n. Possibile errors: NOT_FOUND, INVALID_PUBLICATION_DATE, INVALID_ACTION`,
+      description: buildRouteFullDescription({
+        description: 'Approve article',
+        errors,
+        permission,
+        api,
+      }),
       params: S.object()
         .additionalProperties(false)
         .prop('id', S.string().format('uuid'))
@@ -35,23 +43,17 @@ export default async function approveArticle(fastify) {
         .prop('note', S.string().minLength(3).maxLength(250))
         .description('Article note.')
         .prop('publicationDate', S.string().format('date-time'))
-        .description('Article publication date.'),
+        .description('Article publication date.')
+        .required(),
       response: {
-        200: sArticle(),
+        200: sArticleDetail(),
         404: fastify.getSchema('sNotFound'),
         409: fastify.getSchema('sConflict'),
       },
     },
-    preValidation: onPreValidation,
     preHandler: onPreHandler,
     handler: onApproveArticle,
   })
-
-  async function onPreValidation(req) {
-    if (req.body.note) {
-      req.body.note = req.body.note.trim()
-    }
-  }
 
   async function onPreHandler(req) {
     const { id } = req.params
@@ -66,25 +68,22 @@ export default async function approveArticle(fastify) {
       throwInvalidStatusError({ id, requiredStatus: ARTICLE_STATES.IN_REVIEW })
     }
 
-    if (publicationDate && publicationDate <= new Date().toISOString()) {
+    if (isPastDate(publicationDate)) {
       throwInvalidPublicationDate({ publicationDate })
     }
 
-    req.article = article
+    req.resource = article
   }
 
   async function onApproveArticle(req) {
-    const { article } = req
+    const { resource: article } = req
     const { id: ownerId } = req.user
     const { note, publicationDate } = req.body
-
-    article.status = ARTICLE_STATES.READY
-    article.publishedAt = publicationDate || null
 
     const updatedArticle = {
       ...article,
       status: ARTICLE_STATES.READY,
-      publishedAt: publicationDate || null,
+      publishedAt: publicationDate,
       updatedAt: new Date(),
     }
 
@@ -96,11 +95,11 @@ export default async function approveArticle(fastify) {
           ownerId,
           text: note,
           articleId: updatedArticle.id,
-          category: 'articles',
+          category: CATEGORY_TYPES.ARTICLE,
         })
       }
     })
 
-    return populateArticle(updatedArticle, massive)
+    return populateArticle(updatedArticle, ownerId, massive)
   }
 }
