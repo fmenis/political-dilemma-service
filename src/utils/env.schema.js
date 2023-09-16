@@ -38,6 +38,8 @@ export function sEnv() {
     .required()
     .prop('PG_PW', S.string())
     .required()
+    .prop('SENATO_URL_DATA', S.string())
+    .required()
     .prop('REDIS_HOST', S.string())
     .required()
     .prop('REDIS_PORT', S.string())

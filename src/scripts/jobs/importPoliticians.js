@@ -120,11 +120,21 @@ async function persistRow(parsedRow, db) {
 
 function buildQuery() {
   return `
-    PREFIX osr: <http://dati.senato.it/osr/>
-    PREFIX foaf: <http://xmlns.com/foaf/0.1/>
-        
-    SELECT DISTINCT ?senatore ?nome ?cognome ?gender ?cittaNascita ?provinciaNascita ?dataNascita ?img
-    WHERE {
+  PREFIX ocd: <http://dati.camera.it/ocd/>
+  PREFIX osr: <http://dati.senato.it/osr/>
+  PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+  
+  SELECT DISTINCT ?gruppo ?nomeGruppo ?senatore ?nome ?cognome ?gender ?cittaNascita ?provinciaNascita ?dataNascita ?img ?carica ?inizioAdesione
+  WHERE
+  {
+      ?gruppo a ocd:gruppoParlamentare .
+      ?gruppo osr:denominazione ?denominazione .
+      ?denominazione osr:titolo ?nomeGruppo .
+      ?adesioneGruppo a ocd:adesioneGruppo .
+      ?adesioneGruppo osr:carica ?carica .
+      ?adesioneGruppo osr:inizio ?inizioAdesione.
+      ?adesioneGruppo osr:gruppo ?gruppo.
+      ?senatore ocd:aderisce ?adesioneGruppo.
       ?senatore a osr:Senatore.
       ?senatore foaf:firstName ?nome.
       ?senatore foaf:lastName ?cognome.
@@ -133,7 +143,12 @@ function buildQuery() {
       ?senatore osr:provinciaNascita ?provinciaNascita.
       ?senatore osr:dataNascita ?dataNascita.
       ?senatore foaf:depiction ?img.
-    } ORDER BY ?cognome ?nome`
+      OPTIONAL { ?adesioneGruppo osr:fine ?fineAdesione }
+      OPTIONAL { ?denominazione osr:fine ?fineDenominazione }
+      FILTER(!bound(?fineAdesione) && !bound(?fineDenominazione) )
+  }
+  GROUP BY ?nomeGruppo
+  ORDER BY ?nomeGruppo`
 }
 
 function getExternalId(parsedRow) {
