@@ -1,5 +1,6 @@
 import SparqlClient from 'sparql-http-client'
-import massive from 'massive'
+
+import { POLITICIAN_TYPE } from '../../../routes/common/enums.js'
 
 export async function importSenators(db) {
   console.log(`Start 'import-senators' job...`)
@@ -11,16 +12,6 @@ export async function importSenators(db) {
   } catch (error) {
     console.error('Error during sparql client initialization')
     throw error
-  }
-
-  if (!db) {
-    db = await massive({
-      user: process.env.PG_USER,
-      host: process.env.PG_HOST,
-      database: process.env.PG_DB,
-      password: process.env.PG_PW,
-      port: process.env.PG_PORT,
-    })
   }
 
   const stream = await client.query.select(buildQuery())
@@ -40,7 +31,7 @@ function parseRow(row) {
   const parsedRow = {
     externalId,
     groupExternalId,
-    type: 'SENATOR', //##TODO enum
+    type: POLITICIAN_TYPE.SENATOR,
     firstName: row.nome.value,
     lastName: row.cognome.value,
     gender: row.gender === 'F' ? 'FEMALE' : 'MALE',
@@ -76,7 +67,7 @@ async function persistRow(parsedRow, db) {
 
     const params = {
       externalId: parsedRow.externalId,
-      type: 'SENATOR',
+      type: parsedRow.type,
       firstName: parsedRow.firstName,
       lastName: parsedRow.lastName,
       gender: parsedRow.gender,
@@ -87,8 +78,7 @@ async function persistRow(parsedRow, db) {
       groupId: group.id,
     }
 
-    const res = await db.politician.save(params)
-    console.log(res)
+    await db.politician.save(params)
   } catch (error) {
     console.debug('Error during persisting row')
     throw error
@@ -128,11 +118,11 @@ function buildQuery() {
     ORDER BY ?nomeGruppo`
 }
 
-importSenators()
-  .then(() => {
-    process.exit(0)
-  })
-  .catch(err => {
-    console.error(`Error during 'importPoliticians' job`, err)
-    process.exit(1)
-  })
+// importSenators()
+//   .then(() => {
+//     process.exit(0)
+//   })
+//   .catch(err => {
+//     console.error(`Error during 'importPoliticians' job`, err)
+//     process.exit(1)
+//   })

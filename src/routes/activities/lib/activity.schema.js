@@ -1,6 +1,6 @@
 import S from 'fluent-json-schema'
 
-import { sTags, sAttachmet } from '../../common/common.schema.js'
+import { sTags, sAttachment } from '../../common/common.schema.js'
 import { getActivityStates } from '../lib/common.js'
 import { getActivityTypes, getActivityShortTypes } from './common.js'
 
@@ -82,7 +82,7 @@ export function sActivityDetail() {
     )
     .prop(
       'attachments',
-      S.array().items(sAttachmet()).maxItems(10).raw({ nullable: true })
+      S.array().items(sAttachment()).maxItems(10).raw({ nullable: true })
     )
     .description('Activity attachments ids.')
     .prop(

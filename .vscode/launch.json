@@ -47,7 +47,7 @@
       "request": "launch",
       "name": "Import politicians",
       "skipFiles": ["<node_internals>/**"],
-      "program": "${workspaceFolder}/src/scripts/jobs/importSenators.js",
+      "program": "${workspaceFolder}/src/scripts/jobs/importStaticData/index.js",
       "envFile": "${workspaceFolder}/.env",
       "outputCapture": "std",
       "env": {

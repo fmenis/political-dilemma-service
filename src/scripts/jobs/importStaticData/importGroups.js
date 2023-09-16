@@ -1,5 +1,4 @@
 import SparqlClient from 'sparql-http-client'
-import massive from 'massive'
 
 export async function importGroups(db) {
   console.log(`Start 'import-groups' job...`)
@@ -13,21 +12,11 @@ export async function importGroups(db) {
     throw error
   }
 
-  if (!db) {
-    db = await massive({
-      user: process.env.PG_USER,
-      host: process.env.PG_HOST,
-      database: process.env.PG_DB,
-      password: process.env.PG_PW,
-      port: process.env.PG_PORT,
-    })
-  }
-
   const stream = await client.query.select(buildQuery())
 
   for await (const chunk of stream) {
     const parsedRow = parseRow(chunk)
-    await persistRow(parsedRow, db)
+    // await persistRow(parsedRow, db)
   }
 
   console.log(`Finish 'import-groups' job! `)
@@ -77,11 +66,11 @@ function buildQuery() {
     ORDER BY ?nomeGruppo`
 }
 
-importGroups()
-  .then(() => {
-    process.exit(0)
-  })
-  .catch(err => {
-    console.error(`Error during 'import-groups' job`, err)
-    process.exit(1)
-  })
+// importGroups()
+//   .then(() => {
+//     process.exit(0)
+//   })
+//   .catch(err => {
+//     console.error(`Error during 'import-groups' job`, err)
+//     process.exit(1)
+//   })

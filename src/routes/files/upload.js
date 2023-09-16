@@ -8,7 +8,7 @@ import { CATEGORIES } from './lib/enums.js'
 import { calcFileSize, moveFile } from './lib/utils.js'
 import { appConfig } from '../../config/main.js'
 import { calculateBaseUrl } from '../../utils/main.js'
-import { sAttachmet } from '../common/common.schema.js'
+import { sAttachment } from '../common/common.schema.js'
 
 export default async function uploadFile(fastify) {
   fastify.register(multipart, {
@@ -37,7 +37,7 @@ export default async function uploadFile(fastify) {
       //   .required(),
       response: {
         200: S.array()
-          .items(sAttachmet())
+          .items(sAttachment())
           .minItems(1)
           .maxItems(appConfig.upload.maxUploadsForRequeset),
       },
