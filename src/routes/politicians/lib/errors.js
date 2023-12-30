@@ -19,7 +19,7 @@ async function politicianErrors(fastify) {
       {
         code: '*NOT_FOUND*',
         description: 'occurs when the target entity is not present.',
-        apis: ['list'],
+        apis: [],
         statusCode: 404,
       },
     ],

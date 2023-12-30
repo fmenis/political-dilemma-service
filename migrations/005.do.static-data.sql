@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS "group" (
 CREATE TABLE IF NOT EXISTS "politician" (
     "id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     "externalId" INT UNIQUE NOT NULL,
-    "type" VARCHAR(10) NOT NULL CHECK (type in ('SENATOR', 'DEPUTY', 'MINISTER', 'PRIME MINISTER')),
+    "type" VARCHAR(10) NOT NULL CHECK (type in ('SENATOR', 'DEPUTY', 'MINISTER', 'PRIME_MINISTER')),
     "firstName" VARCHAR(50) NOT NULL,
     "lastName" VARCHAR(50) NOT NULL,
     "gender" VARCHAR(10) NOT NULL CHECK (gender in ('MALE', 'FEMALE', 'OTHER')),

@@ -68,6 +68,7 @@ async function swaggerGenerator(fastify) {
         { name: 'activities', description: 'Activities related end-points' },
         { name: 'categories', description: 'Categories related end-points' },
         { name: 'politicians', description: 'Politicians related end-points' },
+        { name: 'groups', description: 'Groups related end-points' },
       ].sort((a, b) => a.name.localeCompare(b.name)),
     },
     exposeRoute: process.env.NODE_ENV !== ENV.PRODUCTION,

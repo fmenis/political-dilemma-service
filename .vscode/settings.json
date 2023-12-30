@@ -2,5 +2,20 @@
   "editor.tabSize": 2,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
-  "cSpell.words": ["dilemmapolitico", "fastify", "gruppo", "SENATO", "sparql"]
+  "cSpell.words": [
+    "Archiviazione",
+    "attività",
+    "Dettaglio",
+    "dilemmapolitico",
+    "fastify",
+    "gruppo",
+    "logica",
+    "politican",
+    "politici",
+    "proprie",
+    "Pubblicazione",
+    "SENATO",
+    "sparql",
+    "tutte"
+  ]
 }

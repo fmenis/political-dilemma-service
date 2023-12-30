@@ -1,8 +1,16 @@
 import S from 'fluent-json-schema'
 
-export function sPolitician() {
+import { getPoliticianTypes } from './common.js'
+
+export function sPoliticianList() {
   return S.object()
     .additionalProperties(false)
+    .prop('id', S.string().format('uuid'))
+    .description('Politician id.')
+    .required()
+    .prop('type', S.string().enum(getPoliticianTypes()))
+    .description('Article type.')
+    .required()
     .prop('firstName', S.string().minLength(1).maxLength(50))
     .description('Politician first name.')
     .required()
