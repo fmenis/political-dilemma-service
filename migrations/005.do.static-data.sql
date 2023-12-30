@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS "group" (
     "id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    "externalId" INT UNIQUE NOT NULL,
-    "name" VARCHAR(250) UNIQUE NOT NULL,
+    "externalId" INT NOT NULL,
+    "name" VARCHAR(250) NOT NULL,
     "startDate" DATE NOT NULL,
     "createdAt" timestamp DEFAULT NOW(),
     "updatedAt" timestamp DEFAULT NOW()
@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS "group" (
 CREATE TABLE IF NOT EXISTS "politician" (
     "id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     "externalId" INT UNIQUE NOT NULL,
-    "type" VARCHAR(10) NOT NULL CHECK (type in ('SENATOR', 'DEPUTY')),
+    "type" VARCHAR(10) NOT NULL CHECK (type in ('SENATOR', 'DEPUTY', 'MINISTER', 'PRIME MINISTER')),
     "firstName" VARCHAR(50) NOT NULL,
     "lastName" VARCHAR(50) NOT NULL,
     "gender" VARCHAR(10) NOT NULL CHECK (gender in ('MALE', 'FEMALE', 'OTHER')),
@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS "politician" (
     "birthCity" VARCHAR(50) NOT NULL,
     "img" VARCHAR(255),
     "link" VARCHAR(255) UNIQUE NOT NULL,
-    "groupId" UUID NOT NULL,
+    "groupId" UUID,
     "createdAt" timestamp DEFAULT NOW(),
     "updatedAt" timestamp DEFAULT NOW(),
     CONSTRAINT fk_group_id FOREIGN KEY("groupId") REFERENCES "group"("id") ON DELETE NO ACTION

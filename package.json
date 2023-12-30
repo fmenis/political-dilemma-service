@@ -20,7 +20,7 @@
     "applyMigrations": "node -r dotenv/config ./src/scripts/applyMigrations.js",
     "seedDb": "node -r dotenv/config ./src/scripts/seedDb/index.js",
     "verifyEmail": "node -r dotenv/config ./src/scripts/verifyEmail.js",
-    "importPoliticians": "node -r dotenv/config ./src/scripts/jobs/importPoliticians.js"
+    "importStaticData": "node -r dotenv/config ./src/scripts/jobs/importStaticData/index.js"
   },
   "keywords": [
     "political-dilemma"

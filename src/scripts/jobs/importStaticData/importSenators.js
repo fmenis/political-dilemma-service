@@ -1,6 +1,7 @@
 import SparqlClient from 'sparql-http-client'
 
 import { POLITICIAN_TYPE } from '../../../routes/common/enums.js'
+import { capitalizeString } from '../../../utils/main.js'
 
 export async function importSenators(db) {
   console.log(`Start 'import-senators' job...`)
@@ -34,7 +35,7 @@ function parseRow(row) {
     type: POLITICIAN_TYPE.SENATOR,
     firstName: row.nome.value,
     lastName: row.cognome.value,
-    gender: row.gender === 'F' ? 'FEMALE' : 'MALE',
+    gender: row.gender.value === 'F' ? 'FEMALE' : 'MALE',
     birthDate: row.dataNascita.value,
     birthCity: capitalizeString(row.cittaNascita.value),
     img: row.img.value,
@@ -42,15 +43,6 @@ function parseRow(row) {
   }
 
   return parsedRow
-}
-
-function capitalizeString(str) {
-  return str
-    .split(' ')
-    .map(item => {
-      return `${item.charAt(0).toUpperCase()}${item.slice(1).toLowerCase()}`
-    })
-    .join(' ')
 }
 
 async function persistRow(parsedRow, db) {
@@ -78,6 +70,17 @@ async function persistRow(parsedRow, db) {
       groupId: group.id,
     }
 
+    const politician = await db.politician.findOne({
+      externalId: parsedRow.externalId,
+    })
+
+    if (politician) {
+      console.debug(
+        `Skip ${politician.firstName} ${politician.lastName} (${politician.externalId}): already exists`
+      )
+      return
+    }
+
     await db.politician.save(params)
   } catch (error) {
     console.debug('Error during persisting row')
@@ -87,42 +90,35 @@ async function persistRow(parsedRow, db) {
 
 function buildQuery() {
   return `
-    PREFIX ocd: <http://dati.camera.it/ocd/>
-    PREFIX osr: <http://dati.senato.it/osr/>
-    PREFIX foaf: <http://xmlns.com/foaf/0.1/>
-    
-    SELECT DISTINCT ?gruppo ?nomeGruppo ?senatore ?nome ?cognome ?gender ?cittaNascita ?provinciaNascita ?dataNascita ?img ?carica ?inizioAdesione
-    WHERE
-    {
-        ?gruppo a ocd:gruppoParlamentare .
-        ?gruppo osr:denominazione ?denominazione .
-        ?denominazione osr:titolo ?nomeGruppo .
-        ?adesioneGruppo a ocd:adesioneGruppo .
-        ?adesioneGruppo osr:carica ?carica .
-        ?adesioneGruppo osr:inizio ?inizioAdesione.
-        ?adesioneGruppo osr:gruppo ?gruppo.
-        ?senatore ocd:aderisce ?adesioneGruppo.
-        ?senatore a osr:Senatore.
-        ?senatore foaf:firstName ?nome.
-        ?senatore foaf:lastName ?cognome.
-        ?senatore foaf:gender ?gender.
-        ?senatore osr:cittaNascita ?cittaNascita.
-        ?senatore osr:provinciaNascita ?provinciaNascita.
-        ?senatore osr:dataNascita ?dataNascita.
-        ?senatore foaf:depiction ?img.
-        OPTIONAL { ?adesioneGruppo osr:fine ?fineAdesione }
-        OPTIONAL { ?denominazione osr:fine ?fineDenominazione }
-        FILTER(!bound(?fineAdesione) && !bound(?fineDenominazione) )
-    }
-    GROUP BY ?nomeGruppo
-    ORDER BY ?nomeGruppo`
+      PREFIX ocd: <http://dati.camera.it/ocd/>
+      PREFIX osr: <http://dati.senato.it/osr/>
+      PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+      
+      SELECT DISTINCT ?gruppo ?nomeGruppo ?senatore ?nome ?cognome ?gender ?img ?cittaNascita ?provinciaNascita ?dataNascita ?carica ?inizioAdesione ?fineAdesione
+      WHERE
+      {
+      ?gruppo a ocd:gruppoParlamentare .
+      ?gruppo osr:denominazione ?denominazione .
+      ?denominazione osr:titolo ?nomeGruppo .
+      ?adesioneGruppo a ocd:adesioneGruppo .
+      ?adesioneGruppo osr:carica ?carica .
+      ?adesioneGruppo osr:inizio ?inizioAdesione.
+      ?adesioneGruppo osr:gruppo ?gruppo.
+      ?senatore ocd:aderisce ?adesioneGruppo.
+      ?senatore a osr:Senatore.
+      ?senatore foaf:firstName ?nome.
+      ?senatore foaf:lastName ?cognome.
+      ?senatore foaf:gender ?gender.
+      ?senatore foaf:depiction ?img.
+      ?senatore osr:cittaNascita ?cittaNascita.
+      ?senatore osr:provinciaNascita ?provinciaNascita.
+      ?senatore osr:dataNascita ?dataNascita.
+      ?adesioneGruppo osr:legislatura ?legislatura.
+      FILTER(?legislatura=19)
+      OPTIONAL { ?adesioneGruppo osr:fine ?fineAdesione }
+      OPTIONAL { ?denominazione osr:fine ?fineDenominazione }
+      #FILTER(!bound(?fineAdesione) && !bound(?fineDenominazione) )
+      }
+      GROUP BY ?nomeGruppo
+      ORDER BY ?nomeGruppo`
 }
-
-// importSenators()
-//   .then(() => {
-//     process.exit(0)
-//   })
-//   .catch(err => {
-//     console.error(`Error during 'importPoliticians' job`, err)
-//     process.exit(1)
-//   })

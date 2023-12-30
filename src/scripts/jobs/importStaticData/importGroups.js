@@ -16,7 +16,7 @@ export async function importGroups(db) {
 
   for await (const chunk of stream) {
     const parsedRow = parseRow(chunk)
-    // await persistRow(parsedRow, db)
+    await persistRow(parsedRow, db)
   }
 
   console.log(`Finish 'import-groups' job! `)
@@ -41,7 +41,18 @@ async function persistRow(parsedRow, db) {
       name: parsedRow.name,
       startDate: parsedRow.startDate,
     }
-    await db.group.save(params)
+
+    const group = await db.group.findOne({ externalId: params.externalId })
+
+    if (!group) {
+      return db.group.save(params)
+    }
+
+    if (
+      new Date(params.startDate).toISOString() > group.startDate.toISOString()
+    ) {
+      await db.group.update(group.id, params)
+    }
   } catch (error) {
     console.debug('Error during persisting row')
     throw error
@@ -65,12 +76,3 @@ function buildQuery() {
     }
     ORDER BY ?nomeGruppo`
 }
-
-// importGroups()
-//   .then(() => {
-//     process.exit(0)
-//   })
-//   .catch(err => {
-//     console.error(`Error during 'import-groups' job`, err)
-//     process.exit(1)
-//   })
