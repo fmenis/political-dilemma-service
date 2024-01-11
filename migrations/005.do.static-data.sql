@@ -3,6 +3,9 @@ CREATE TABLE IF NOT EXISTS "group" (
     "externalId" INT NOT NULL,
     "name" VARCHAR(250) NOT NULL,
     "startDate" DATE NOT NULL,
+    "intials" VARCHAR(15),
+    "color" CHAR(6),
+    "orientation" VARCHAR(50),
     "createdAt" timestamp DEFAULT NOW(),
     "updatedAt" timestamp DEFAULT NOW()
 );

@@ -66,7 +66,7 @@ export default async function listPoliticians(fastify) {
     ])
 
     return {
-      results: politicians,
+      results: formatOutput(politicians),
       paginatedInfo: buildPaginatedInfo(count, {
         limit: query.limit,
         offset: query.offset,
@@ -76,6 +76,7 @@ export default async function listPoliticians(fastify) {
 
   function buildOptions(query) {
     const options = {
+      fields: ['id', 'firstName', 'lastName', 'groupId'],
       order: [
         {
           field: 'firstName',
@@ -97,5 +98,14 @@ export default async function listPoliticians(fastify) {
     }
 
     return filters
+  }
+
+  function formatOutput(politicians) {
+    return politicians.map(item => {
+      return {
+        ...item,
+        rating: 0, //##TODO implement
+      }
+    })
   }
 }
