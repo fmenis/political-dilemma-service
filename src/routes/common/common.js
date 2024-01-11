@@ -40,12 +40,21 @@ export function restrictDataToOwner(apiPermission) {
  * @param {Object[]} [errors] route possibile errors
  * @param {string} [permission] route permission
  * @param {string} [api] route error identifier
+ * @param {string} [publicApi] defines if the route is public
  * @returns string
  */
 export function buildRouteFullDescription(params) {
-  const { description, errors = [], api, permission } = params
+  const {
+    description,
+    errors = [],
+    api,
+    permission,
+    publicApi = false,
+  } = params
 
-  let fullDescription = `${description} \n\n `
+  let fullDescription = `${description} \n\n ${
+    publicApi ? '_Public_' : '_Private_'
+  } _API._ \n\n\ `
   const apiErrors = errors.filter(item => item.apis.includes(api))
 
   if (apiErrors.length > 0) {

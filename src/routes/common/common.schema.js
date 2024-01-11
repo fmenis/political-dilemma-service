@@ -10,7 +10,7 @@ export function sTags() {
     .uniqueItems(true)
 }
 
-export function sAttachmet() {
+export function sAttachment() {
   return S.object()
     .additionalProperties(false)
     .prop('id', S.string().format('uuid'))

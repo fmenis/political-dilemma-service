@@ -1,6 +1,6 @@
 import S from 'fluent-json-schema'
 
-import { sTags, sAttachmet } from '../../common/common.schema.js'
+import { sTags, sAttachment } from '../../common/common.schema.js'
 import { getArticleStates } from '../lib/common.js'
 
 export function sCreateArticle() {
@@ -90,7 +90,7 @@ export function sArticleDetail() {
     .prop('categoryId', S.string().format('uuid'))
     .description('Article category id.')
     .required()
-    .prop('attachments', S.array().items(sAttachmet()).maxItems(10))
+    .prop('attachments', S.array().items(sAttachment()).maxItems(10))
     .description('Article attachments ids.')
     .prop('tags', sTags())
     .description('Article tags.')

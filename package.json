@@ -19,7 +19,8 @@
     "rebuildDb": "./pd-stack/rebuild-db.sh",
     "applyMigrations": "node -r dotenv/config ./src/scripts/applyMigrations.js",
     "seedDb": "node -r dotenv/config ./src/scripts/seedDb/index.js",
-    "verifyEmail": "node -r dotenv/config ./src/scripts/verifyEmail.js"
+    "verifyEmail": "node -r dotenv/config ./src/scripts/verifyEmail.js",
+    "importStaticData": "node -r dotenv/config ./src/scripts/jobs/importStaticData/index.js"
   },
   "keywords": [
     "political-dilemma"
@@ -45,6 +46,7 @@
     "fastify-massive": "1.0.0",
     "fastify-plugin": "4.4.0",
     "fluent-json-schema": "4.0.0",
+    "fluido": "2.1.1",
     "lodash": "4.17.21",
     "moment": "2.29.4",
     "nanoid": "4.0.0",
@@ -54,6 +56,7 @@
     "pino-sentry-transport": "0.0.6",
     "postgrator": "7.1.1",
     "redis": "4.5.1",
+    "sparql-http-client": "2.4.2",
     "tap": "16.3.2",
     "ua-parser-js": "1.0.32"
   },

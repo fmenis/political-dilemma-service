@@ -9,12 +9,12 @@ const fastify = Fastify(buildServerOptions())
 await fastify.register(App)
 await fastify.ready()
 
-closeWithGrace({ delay: 500 }, async ({ signal, err }) => {
+closeWithGrace({ delay: 2000 }, async ({ signal, err }) => {
   const { log } = fastify
   if (err) {
     log.error(err)
   }
-  log.debug(`'${signal}' signal receiced. Gracefully closing fastify server`)
+  log.debug(`'${signal}' signal received. Gracefully closing fastify server`)
   await fastify.close()
 })
 

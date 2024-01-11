@@ -36,6 +36,7 @@ jobs:
           echo PG_DB=${{ secrets.PG_DB }} >> .env
           echo PG_USER=${{ secrets.PG_USER }} >> .env
           echo PG_PW=${{ secrets.PG_PW }} >> .env
+          echo SENATO_URL_DATA=https://dati.senato.it/sparql >> .env
           echo REDIS_HOST=${{ secrets.REDIS_HOST }} >> .env
           echo REDIS_PORT=${{ secrets.REDIS_PORT }} >> .env
           echo SECRET=${{ secrets.SECRET }} >> .env

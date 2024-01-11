@@ -17,12 +17,22 @@ const FILE_TARGETS = {
   TEXT: 'TEXT',
   DESCRIPTION: 'DESCRIPTION',
 }
+export function getFileTargets() {
+  return Object.values(FILE_TARGETS)
+}
 
 const ARTICLE_STATES = STATES
 const ACTIVITY_STATES = STATES
 
-export { STATES, ARTICLE_STATES, ACTIVITY_STATES, CATEGORY_TYPES }
+const POLITICIAN_TYPE = {
+  SENATOR: 'SENATOR',
+  DEPUTY: 'DEPUTY',
+}
 
-export function getFileTargets() {
-  return Object.values(FILE_TARGETS)
+export {
+  STATES,
+  ARTICLE_STATES,
+  ACTIVITY_STATES,
+  CATEGORY_TYPES,
+  POLITICIAN_TYPE,
 }
