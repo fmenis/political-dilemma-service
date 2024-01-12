@@ -51,15 +51,16 @@ export default async function listPoliticians(fastify) {
           .required(),
       },
     },
-    handler: onListPolitician,
+    handler: onListPoliticians,
   })
 
-  async function onListPolitician(req) {
+  async function onListPoliticians(req) {
     const { query } = req
 
     const filters = buildFilters(query)
     const options = buildOptions(query)
 
+    //##TODO join with group to find group name
     const [politicians, count] = await Promise.all([
       massive.politician.find(filters, options),
       massive.politician.count(),

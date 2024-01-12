@@ -1,8 +1,10 @@
 {
 	"info": {
-		"_postman_id": "6f5e5de8-41d3-4ab0-adae-b1bab40bdbd4",
+		"_postman_id": "9e2e45ad-12fc-43f6-a0db-93cc2f004147",
 		"name": "political-dilemma",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23111718",
+		"_collection_link": "https://planetary-crater-176152.postman.co/workspace/Team-Workspace~543bbe70-6658-413b-8bb0-69518e637b90/collection/23111718-9e2e45ad-12fc-43f6-a0db-93cc2f004147?action=share&source=collection_link&creator=23111718"
 	},
 	"item": [
 		{
@@ -1287,6 +1289,74 @@
 									"value": "articles",
 									"disabled": true
 								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "politicians",
+			"item": [
+				{
+					"name": "list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/v1/politicians",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"politicians"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "read",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/v1/politicians/b966186a-a7e8-45bd-b1d1-66e590b10388",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"politicians",
+								"b966186a-a7e8-45bd-b1d1-66e590b10388"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "groups",
+			"item": [
+				{
+					"name": "list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/v1/groups",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"groups"
 							]
 						}
 					},

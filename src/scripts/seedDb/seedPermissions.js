@@ -347,6 +347,12 @@ export async function seedPermissions(client) {
       ownership: 'any',
       description: 'Lista politici (tutti)',
     },
+    {
+      resource: 'politician',
+      action: 'read',
+      ownership: null,
+      description: 'Lista politici (tutti)',
+    },
     // GROUPS
     {
       resource: 'group',
