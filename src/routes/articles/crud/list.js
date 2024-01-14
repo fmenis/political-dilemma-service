@@ -82,7 +82,7 @@ export default async function listArticles(fastify) {
           },
         })
         .find(filters, options),
-      massive.articles
+      massive.articles //##TODO controllare se serve il join sulla count
         .join({
           categories: {
             on: { id: 'categoryId' },

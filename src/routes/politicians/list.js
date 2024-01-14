@@ -60,14 +60,13 @@ export default async function listPoliticians(fastify) {
     const filters = buildFilters(query)
     const options = buildOptions(query)
 
-    //##TODO join with group to find group name
     const [politicians, count] = await Promise.all([
       massive.politician.find(filters, options),
       massive.politician.count(),
     ])
 
     return {
-      results: formatOutput(politicians),
+      results: await formatOutput(politicians),
       paginatedInfo: buildPaginatedInfo(count, {
         limit: query.limit,
         offset: query.offset,
@@ -77,7 +76,6 @@ export default async function listPoliticians(fastify) {
 
   function buildOptions(query) {
     const options = {
-      fields: ['id', 'firstName', 'lastName', 'groupId'],
       order: [
         {
           field: 'firstName',
@@ -101,10 +99,24 @@ export default async function listPoliticians(fastify) {
     return filters
   }
 
-  function formatOutput(politicians) {
-    return politicians.map(item => {
+  async function formatOutput(politicians) {
+    const groupIds = politicians.reduce((acc, item) => {
+      if (item.groupId) {
+        acc.add(item.groupId)
+      }
+      return acc
+    }, new Set())
+
+    const groups = await massive.group.find({ id: [...groupIds] })
+
+    return politicians.map(politician => {
+      const group = groups.find(group => group.id === politician.groupId)
+
       return {
-        ...item,
+        id: politician.id,
+        firstName: politician.firstName,
+        lastName: politician.lastName,
+        groupName: group ? group.name : null,
         rating: 0, //##TODO implement
       }
     })

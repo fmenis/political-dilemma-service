@@ -14,7 +14,7 @@ export function sPoliticianList() {
     .prop('lastName', S.string().minLength(1).maxLength(50))
     .description('Politician first name.')
     .required()
-    .prop('groupId', S.string().format('uuid').raw({ nullable: true }))
+    .prop('groupName', S.string().raw({ nullable: true }))
     .description('Politician group id.')
     .required()
     .prop('rating', S.number())
@@ -52,8 +52,5 @@ export function sPoliticianDetail() {
     .required()
     .prop('rating', S.number())
     .description('Politician rating.')
-    .required()
-    .prop('groupId', S.string().format('uuid').raw({ nullable: true }))
-    .description('Politician group id.')
     .required()
 }
