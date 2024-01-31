@@ -9,7 +9,7 @@ async function main() {
 
   try {
     await verifyEmail({ EmailAddress: email })
-    console.log(`Correltly request email '${email}' verification`)
+    console.log(`Correctly request email '${email}' verification`)
   } catch (err) {
     console.error(err)
     // eslint-disable-next-line no-process-exit
