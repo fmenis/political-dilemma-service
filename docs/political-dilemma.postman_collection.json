@@ -1324,7 +1324,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{url}}/api/v1/politicians/b966186a-a7e8-45bd-b1d1-66e590b10388",
+							"raw": "{{url}}/api/v1/politicians/b3607d5b-4076-4273-aa67-443d5907cba2",
 							"host": [
 								"{{url}}"
 							],
@@ -1332,7 +1332,7 @@
 								"api",
 								"v1",
 								"politicians",
-								"b966186a-a7e8-45bd-b1d1-66e590b10388"
+								"b3607d5b-4076-4273-aa67-443d5907cba2"
 							]
 						}
 					},
@@ -1357,6 +1357,35 @@
 								"api",
 								"v1",
 								"groups"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"intials\": \"boo\",\n    \"color\": \"ffgffd\",\n    \"orientation\": \"puttanieri\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/v1/groups/7b3bee32-8eac-4a19-baaf-2935491ca0a3",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"groups",
+								"7b3bee32-8eac-4a19-baaf-2935491ca0a3"
 							]
 						}
 					},

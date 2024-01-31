@@ -19,7 +19,7 @@ async function groupErrors(fastify) {
       {
         code: '*NOT_FOUND*',
         description: 'occurs when the target entity is not present.',
-        apis: [],
+        apis: ['update'],
         statusCode: 404,
       },
     ],

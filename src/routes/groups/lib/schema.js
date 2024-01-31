@@ -1,6 +1,6 @@
 import S from 'fluent-json-schema'
 
-export function sGroupList() {
+export function sGroupDetail() {
   return S.object()
     .additionalProperties(false)
     .prop('id', S.string().format('uuid'))
@@ -16,12 +16,27 @@ export function sGroupList() {
     .description('Group initials.')
     .required()
     .prop('color', S.string().maxLength(6).raw({ nullable: true }))
-    .description('Group initials.')
+    .description('Group color.')
     .required()
     .prop(
       'orientation',
       S.string().minLength(3).maxLength(50).raw({ nullable: true })
     )
-    .description('Group initials.')
+    .description('Group orientation.')
     .required()
+}
+
+export function sUpdateGroup() {
+  return S.object()
+    .prop(
+      'intials',
+      S.string().minLength(2).maxLength(15).raw({ nullable: true })
+    )
+    .description('Group initials.')
+    .prop('color', S.string().maxLength(6).raw({ nullable: true }))
+    .description('Group color.')
+    .prop(
+      'orientation',
+      S.string().minLength(3).maxLength(50).raw({ nullable: true })
+    )
 }

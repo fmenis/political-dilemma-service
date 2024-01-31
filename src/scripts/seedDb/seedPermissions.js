@@ -360,6 +360,12 @@ export async function seedPermissions(client) {
       ownership: 'any',
       description: 'Lista gruppi (tutti)',
     },
+    {
+      resource: 'group',
+      action: 'update',
+      ownership: null,
+      description: 'Aggiornamento gruppo',
+    },
   ]
 
   for (const permission of permissions) {

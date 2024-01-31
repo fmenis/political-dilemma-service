@@ -1,6 +1,6 @@
 import S from 'fluent-json-schema'
 
-import { sGroupList } from './lib/schema.js'
+import { sGroupDetail } from './lib/schema.js'
 import {
   buildRouteFullDescription,
   buildPaginatedInfo,
@@ -42,7 +42,7 @@ export default async function listGroups(fastify) {
         200: S.object()
           .additionalProperties(false)
           .description('Groups.')
-          .prop('results', S.array().maxItems(200).items(sGroupList()))
+          .prop('results', S.array().maxItems(200).items(sGroupDetail()))
           .required()
           .prop('paginatedInfo', fastify.getSchema('sPaginatedInfo'))
           .required(),

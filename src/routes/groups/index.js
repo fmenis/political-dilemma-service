@@ -1,6 +1,7 @@
 import groupErrors from './lib/errors.js'
 
 import listRoute from './list.js'
+import updateRoute from './update.js'
 
 export default async function index(fastify) {
   fastify.addHook('onRoute', options => {
@@ -14,4 +15,5 @@ export default async function index(fastify) {
 
   fastify.register(groupErrors)
   fastify.register(listRoute, { prefix })
+  fastify.register(updateRoute, { prefix })
 }
