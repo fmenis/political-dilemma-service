@@ -15,7 +15,7 @@ export function sGroupDetail() {
     )
     .description('Group initials.')
     .required()
-    .prop('color', S.string().maxLength(6).raw({ nullable: true }))
+    .prop('color', S.string().minLength(6).maxLength(6).raw({ nullable: true }))
     .description('Group color.')
     .required()
     .prop(
@@ -33,7 +33,7 @@ export function sUpdateGroup() {
       S.string().minLength(2).maxLength(15).raw({ nullable: true })
     )
     .description('Group initials.')
-    .prop('color', S.string().maxLength(6).raw({ nullable: true }))
+    .prop('color', S.string().minLength(6).maxLength(6).raw({ nullable: true }))
     .description('Group color.')
     .prop(
       'orientation',
