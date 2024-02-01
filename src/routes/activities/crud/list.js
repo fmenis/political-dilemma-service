@@ -66,7 +66,7 @@ export default async function listActivities(fastify) {
           },
         })
         .find(filters, options),
-      massive.activity
+      massive.activity //##TODO controllare se serve il join sulla count
         .join({
           categories: {
             on: { id: 'categoryId' },
@@ -100,14 +100,6 @@ export default async function listActivities(fastify) {
 
   function buildOptions(query) {
     const options = {
-      //TODO capire come selezionare fields sui join
-      // fields: [
-      //   'activity.id',
-      //   'activity.title',
-      //   'activity.categoryId',
-      //   'activity.type',
-      //   'activity.shortType',
-      // ],
       order: [
         {
           field: 'updatedAt',

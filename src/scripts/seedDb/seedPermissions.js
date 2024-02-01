@@ -340,6 +340,32 @@ export async function seedPermissions(client) {
       ownership: 'own',
       description: 'Cancellazione logica attività (solo proprie)',
     },
+    // POLITICIANS
+    {
+      resource: 'politician',
+      action: 'list',
+      ownership: 'any',
+      description: 'Lista politici (tutti)',
+    },
+    {
+      resource: 'politician',
+      action: 'read',
+      ownership: null,
+      description: 'Lista politici (tutti)',
+    },
+    // GROUPS
+    {
+      resource: 'group',
+      action: 'list',
+      ownership: 'any',
+      description: 'Lista gruppi (tutti)',
+    },
+    {
+      resource: 'group',
+      action: 'update',
+      ownership: null,
+      description: 'Aggiornamento gruppo',
+    },
   ]
 
   for (const permission of permissions) {

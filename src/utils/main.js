@@ -61,3 +61,15 @@ export function getUUIDFromUrl(str) {
     return match[0]
   }
 }
+
+/**
+ * Capitalize first letter of a string
+ */
+export function capitalizeString(str) {
+  return str
+    .split(' ')
+    .map(item => {
+      return `${item.charAt(0).toUpperCase()}${item.slice(1).toLowerCase()}`
+    })
+    .join(' ')
+}

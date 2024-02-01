@@ -24,3 +24,8 @@ Guardare massive.js
 
 Al momento, se all'update non viene passato il campo x dell'entità, a db verrà automaticamente messa a null.
 Pericoloso, cambiare facendo un modo che se non venga passata non succeda nulla.
+
+### MassiveJs
+
+- il metodo join supporta solo INNER and LEFT OUTER joins
+- l'opzione `fields` non può essere usata nei join
