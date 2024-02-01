@@ -10,7 +10,7 @@ export function sGroupDetail() {
     .description('Group first name.')
     .required()
     .prop(
-      'intials',
+      'initials',
       S.string().minLength(2).maxLength(15).raw({ nullable: true })
     )
     .description('Group initials.')
@@ -29,7 +29,7 @@ export function sGroupDetail() {
 export function sUpdateGroup() {
   return S.object()
     .prop(
-      'intials',
+      'initials',
       S.string().minLength(2).maxLength(15).raw({ nullable: true })
     )
     .description('Group initials.')
