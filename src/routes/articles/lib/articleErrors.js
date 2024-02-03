@@ -70,7 +70,7 @@ async function articleErrors(fastify) {
     })
   }
 
-  function throwMissinDataError(data) {
+  function throwMissingDataError(data) {
     const { id, errors } = data
     const message = `Action not allowed on article '${id}' due to a lack of data`
     throw createError(400, message, {
@@ -95,7 +95,7 @@ async function articleErrors(fastify) {
     throwAttachmentsNotFoundError,
     throwInvalidStatusError,
     throwInvalidPublicationDateError,
-    throwMissinDataError,
+    throwMissingDataError,
     throwOwnershipError,
     errors: [
       {

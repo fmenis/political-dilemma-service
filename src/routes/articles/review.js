@@ -10,7 +10,7 @@ export default async function reviewArticle(fastify) {
   const {
     throwNotFoundError,
     throwInvalidStatusError,
-    throwMissinDataError,
+    throwMissingDataError,
     errors,
   } = fastify.articleErrors
 
@@ -87,7 +87,7 @@ export default async function reviewArticle(fastify) {
         })
       }
 
-      throwMissinDataError({ id, errors })
+      throwMissingDataError({ id, errors })
     }
 
     req.article = article
