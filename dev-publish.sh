@@ -8,7 +8,7 @@ REMOTE_USER=ubuntu
 # Block if current branch is not develop
 BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 if [[ "$BRANCH" != "develop" ]]; then
-    echo "Aborting: you are not in the master branch (current $BRANCH)";
+    echo "Aborting: you are not in the develop branch (current $BRANCH)";
     exit 1;
 fi
 

@@ -366,6 +366,13 @@ export async function seedPermissions(client) {
       ownership: null,
       description: 'Aggiornamento gruppo',
     },
+    // LEGISLATURE
+    {
+      resource: 'legislature',
+      action: 'create',
+      ownership: null,
+      description: 'Creazione legislatura',
+    },
   ]
 
   for (const permission of permissions) {
