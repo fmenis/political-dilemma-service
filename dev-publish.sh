@@ -4,6 +4,23 @@ SSH_KEY_PATH=$HOME/Documents/projects/political-dilemma/dev_politicaldilemma.pem
 REMOTE_HOST=13.39.48.132
 REMOTE_PATH=/opt/dev-dilemma
 REMOTE_USER=ubuntu
+SKIP_NPM_INSTALL=false
+
+# Parse command line options
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --skip)
+            SKIP_NPM_INSTALL=true
+            echo "||--------------------------------------------||"
+            echo "| skip option detected, npm ci will be skipped |"
+            echo "||--------------------------------------------||"
+            shift
+            ;;
+        *)
+            shift
+            ;;
+    esac
+done
 
 # Block if current branch is not develop
 BRANCH="$(git rev-parse --abbrev-ref HEAD)"
@@ -33,4 +50,7 @@ rsync -avhz \
 # Install dependencies and restart application process
 ssh -i $SSH_KEY_PATH $REMOTE_USER@$REMOTE_HOST \
 "export PATH=$PATH:/home/ubuntu/.nvm/versions/node/v20.11.0/bin; \
-cd $REMOTE_PATH; npm ci; npm run applyMigrations; pm2 startOrRestart ecosystem-dev.config.cjs; pm2 save"
+cd $REMOTE_PATH; \
+if [ "$SKIP_NPM_INSTALL" = false ]; then npm ci; fi; \
+npm run applyMigrations; \
+pm2 startOrRestart ecosystem-dev.config.cjs; pm2 save"
