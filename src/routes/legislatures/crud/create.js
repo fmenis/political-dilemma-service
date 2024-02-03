@@ -1,9 +1,12 @@
+import dayjs from 'dayjs'
+
 import { sCreateLegislature, sLegislatureDetail } from '../lib/schema.js'
 import { buildRouteFullDescription } from '../../common/common.js'
 
 export default async function createLegislature(fastify) {
   const { massive } = fastify
-  const { throwDuplicatedNameError, errors } = fastify.legislatureErrors
+  const { throwDuplicatedNameError, throwInvalidDatesError, errors } =
+    fastify.legislatureErrors
 
   const routeDescription = 'Create legislature.'
   const permission = 'legislature:create'
@@ -35,7 +38,7 @@ export default async function createLegislature(fastify) {
   })
 
   async function onPreHandler(req) {
-    const { name } = req.body
+    const { name, startDate, endDate } = req.body
 
     const nameDuplicates = await massive.legislature.where(
       'LOWER(name) = TRIM(LOWER($1))',
@@ -43,6 +46,15 @@ export default async function createLegislature(fastify) {
     )
     if (nameDuplicates.length) {
       throwDuplicatedNameError({ name })
+    }
+
+    if (
+      startDate &&
+      endDate &&
+      (dayjs(startDate).isAfter(dayjs(endDate)) ||
+        dayjs(startDate).isSame(dayjs(endDate)))
+    ) {
+      throwInvalidDatesError({ startDate, endDate })
     }
   }
 
