@@ -5,11 +5,11 @@ async function groupErrors(fastify) {
   const { createError } = fastify.httpErrors
 
   function throwNotFoundError(data) {
-    const { name, id } = data
-    const message = `Entity ${name} '${id}' not found`
+    const { id } = data
+    const message = `Entity 'legislature' '${id}' not found`
     throw createError(404, message, {
       internalCode: 'NOT_FOUND',
-      details: { entityId: id, entityName: name },
+      details: { entityId: id, entityName: 'legislature' },
     })
   }
 
@@ -39,20 +39,20 @@ async function groupErrors(fastify) {
       {
         code: '*NOT_FOUND*',
         description: 'occurs when the target entity is not present.',
-        apis: [],
+        apis: ['update'],
         statusCode: 404,
       },
       {
         code: '*DUPLICATED_NAME*',
         description: 'occurs when the name is already used.',
-        apis: ['create'],
+        apis: ['create', 'update'],
         statusCode: 409,
       },
       {
         code: '*INVALID_DATES*',
         description:
           'occurs when the left date is lower or equal to the right date (date range).',
-        apis: ['create'],
+        apis: ['create', 'update'],
         statusCode: 409,
       },
     ],

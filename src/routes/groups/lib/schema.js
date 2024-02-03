@@ -28,15 +28,9 @@ export function sGroupDetail() {
 
 export function sUpdateGroup() {
   return S.object()
-    .prop(
-      'initials',
-      S.string().minLength(2).maxLength(15).raw({ nullable: true })
-    )
+    .prop('initials', S.string().minLength(2).maxLength(15))
     .description('Group initials.')
-    .prop('color', S.string().minLength(6).maxLength(6).raw({ nullable: true }))
+    .prop('color', S.string().minLength(6).maxLength(6))
     .description('Group color.')
-    .prop(
-      'orientation',
-      S.string().minLength(3).maxLength(50).raw({ nullable: true })
-    )
+    .prop('orientation', S.string().minLength(3).maxLength(50))
 }

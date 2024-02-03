@@ -1102,7 +1102,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"initials\": \"boo\",\n    \"color\": \"ffgffd\",\n    \"orientation\": \"puttanieri\"\n}",
+              "raw": "{\n    \"color\": \"123456\",\n    \"initials\": \"aws\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1110,14 +1110,68 @@
               }
             },
             "url": {
-              "raw": "{{url}}/api/v1/groups/7b3bee32-8eac-4a19-baaf-2935491ca0a3",
+              "raw": "{{url}}/api/v1/groups/9111bdec-2cc3-4ba4-9619-91c1aacd386e",
               "host": ["{{url}}"],
               "path": [
                 "api",
                 "v1",
                 "groups",
-                "7b3bee32-8eac-4a19-baaf-2935491ca0a3"
+                "9111bdec-2cc3-4ba4-9619-91c1aacd386e"
               ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "legislatures",
+      "item": [
+        {
+          "name": "update",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"color\": \"123456\",\n    \"initials\": \"aws\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/api/v1/groups/9111bdec-2cc3-4ba4-9619-91c1aacd386e",
+              "host": ["{{url}}"],
+              "path": [
+                "api",
+                "v1",
+                "groups",
+                "9111bdec-2cc3-4ba4-9619-91c1aacd386e"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "create",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"XIX\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/api/v1/legislatures",
+              "host": ["{{url}}"],
+              "path": ["api", "v1", "legislatures"]
             }
           },
           "response": []

@@ -50,3 +50,14 @@ export function sMinistryDetail() {
     .description('Minister name.')
     .required()
 }
+
+export function sUpdateLegislature() {
+  return S.object()
+    .additionalProperties(false)
+    .prop('name', S.string().maxLength(10))
+    .description('Legislature name.')
+    .prop('startDate', S.string().format('date'))
+    .description('Legislature start date.')
+    .prop('endDate', S.string().format('date'))
+    .description('Legislature end date.')
+}

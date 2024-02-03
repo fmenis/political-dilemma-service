@@ -1,6 +1,7 @@
 import legislatureErrors from './lib/errors.js'
 
 import createRoute from './crud/create.js'
+import updateRoute from './crud/update.js'
 
 export default async function index(fastify) {
   fastify.addHook('onRoute', options => {
@@ -14,4 +15,5 @@ export default async function index(fastify) {
 
   fastify.register(legislatureErrors)
   fastify.register(createRoute, { prefix })
+  fastify.register(updateRoute, { prefix })
 }

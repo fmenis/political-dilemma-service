@@ -9,7 +9,8 @@ export default async function createLegislature(fastify) {
     fastify.legislatureErrors
 
   const routeDescription = 'Create legislature.'
-  const permission = 'legislature:create'
+  const api = 'create'
+  const permission = `legislature:${api}`
 
   fastify.route({
     method: 'POST',
@@ -25,7 +26,7 @@ export default async function createLegislature(fastify) {
         description: routeDescription,
         errors,
         permission,
-        api: 'create',
+        api,
       }),
       body: sCreateLegislature(),
       response: {
