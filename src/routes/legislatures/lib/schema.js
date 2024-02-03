@@ -12,7 +12,7 @@ export function sCreateLegislature() {
     .description('Legislature end date.')
 }
 
-export function sLegislatureDetail() {
+export function sLegislatureList() {
   return S.object()
     .description('Legislature')
     .additionalProperties(false)
@@ -28,12 +28,19 @@ export function sLegislatureDetail() {
     .prop('endDate', S.string().format('date').raw({ nullable: true }))
     .description('Legislature end date.')
     .required()
+}
+
+export function sLegislatureDetail() {
+  return S.object()
+    .description('Legislature')
+    .additionalProperties(false)
     .prop(
       'ministries',
       S.array().items(sMinistryDetail()).minItems(0).maxItems(50)
     )
     .description('Legislature ministries.')
     .required()
+    .extend(sLegislatureList())
 }
 
 export function sMinistryDetail() {

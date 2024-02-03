@@ -1134,7 +1134,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"color\": \"123456\",\n    \"initials\": \"aws\"\n}",
+              "raw": "{\n    \"startDate\": \"2024-02-02\",\n    \"endDate\": \"2024-03-07\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1142,13 +1142,13 @@
               }
             },
             "url": {
-              "raw": "{{url}}/api/v1/groups/9111bdec-2cc3-4ba4-9619-91c1aacd386e",
+              "raw": "{{url}}/api/v1/legislatures/ad1bf003-c849-4b38-acf2-f5161a0a8d06",
               "host": ["{{url}}"],
               "path": [
                 "api",
                 "v1",
-                "groups",
-                "9111bdec-2cc3-4ba4-9619-91c1aacd386e"
+                "legislatures",
+                "ad1bf003-c849-4b38-acf2-f5161a0a8d06"
               ]
             }
           },
@@ -1161,7 +1161,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"XIX\"\n}",
+              "raw": "{\n    \"name\": \"cambly\",\n    \"startDate\": \"2024-01-02\",\n    \"endDate\": \"2024-01-04\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1172,6 +1172,45 @@
               "raw": "{{url}}/api/v1/legislatures",
               "host": ["{{url}}"],
               "path": ["api", "v1", "legislatures"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "list",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"XIX\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/api/v1/legislatures?limit=10&offset=0&search=X",
+              "host": ["{{url}}"],
+              "path": ["api", "v1", "legislatures"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                },
+                {
+                  "key": "search",
+                  "value": "X"
+                }
+              ]
             }
           },
           "response": []
