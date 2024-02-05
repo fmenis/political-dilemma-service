@@ -385,6 +385,12 @@ export async function seedPermissions(client) {
       ownership: null,
       description: 'Lista legislature',
     },
+    {
+      resource: 'legislature',
+      action: 'add-ministries',
+      ownership: null,
+      description: 'Aggiunta ministeri/ministri',
+    },
   ]
 
   for (const permission of permissions) {

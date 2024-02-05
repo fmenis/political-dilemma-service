@@ -28,11 +28,11 @@ export default async function deleteSession(fastify) {
     preValidation: async function (req) {
       req.query.ids = req.query.ids.split(',')
     },
-    preHandler: onPrepreHandler,
+    preHandler: onPreHandler,
     handler: onDeleteSession,
   })
 
-  async function onPrepreHandler(req) {
+  async function onPreHandler(req) {
     const { ids } = req.query
     const { session } = req.user
 

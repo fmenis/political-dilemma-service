@@ -31,15 +31,25 @@ async function groupErrors(fastify) {
     })
   }
 
+  function throwDuplicateMinistriesError(data) {
+    const { duplicates } = data
+    const message = `Duplicated ministries: '${duplicates.join(', ')}'`
+    throw createError(409, message, {
+      internalCode: 'DUPLICATE_MINISTRIES',
+      details: { duplicates: duplicates.join(', ') },
+    })
+  }
+
   fastify.decorate('legislatureErrors', {
     throwNotFoundError,
     throwDuplicatedNameError,
     throwInvalidDatesError,
+    throwDuplicateMinistriesError,
     errors: [
       {
         code: '*NOT_FOUND*',
         description: 'occurs when the target entity is not present.',
-        apis: ['update'],
+        apis: ['update', 'add-ministries'],
         statusCode: 404,
       },
       {
@@ -53,6 +63,13 @@ async function groupErrors(fastify) {
         description:
           'occurs when the left date is lower or equal to the right date (date range).',
         apis: ['create', 'update'],
+        statusCode: 409,
+      },
+      {
+        code: '*DUPLICATE_MINISTRIES*',
+        description:
+          'occurs when same ministry/minister are provider more that once.',
+        apis: ['add-ministries'],
         statusCode: 409,
       },
     ],

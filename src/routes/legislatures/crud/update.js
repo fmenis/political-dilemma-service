@@ -3,6 +3,7 @@ import S from 'fluent-json-schema'
 
 import { sUpdateLegislature, sLegislatureDetail } from '../lib/schema.js'
 import { buildRouteFullDescription } from '../../common/common.js'
+import { populateLegislature } from '../lib/common.js'
 
 export default async function updateLegislature(fastify) {
   const { massive } = fastify
@@ -77,14 +78,11 @@ export default async function updateLegislature(fastify) {
     }
   }
 
-  async function onUpdateLegislature(req, reply) {
+  async function onUpdateLegislature(req) {
     const { id } = req.params
 
     const updatedLegislature = await massive.legislature.update(id, req.body)
 
-    reply.code(200).send({
-      ...updatedLegislature,
-      ministries: [],
-    })
+    return populateLegislature(updatedLegislature, massive)
   }
 }

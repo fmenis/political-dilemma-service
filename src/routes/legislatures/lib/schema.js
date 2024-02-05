@@ -68,3 +68,25 @@ export function sUpdateLegislature() {
     .prop('endDate', S.string().format('date'))
     .description('Legislature end date.')
 }
+
+export function sAddMinistries() {
+  return S.object()
+    .additionalProperties(false)
+    .prop(
+      'ministries',
+      S.array()
+        .items(
+          S.object()
+            .additionalProperties(false)
+            .prop('name', S.string().maxLength(50))
+            .description('Ministry name.')
+            .required()
+            .prop('ministerFullName', S.string().maxLength(100))
+            .description('Minister name.')
+            .required()
+        )
+        .minItems(1)
+        .maxItems(50)
+    )
+    .required()
+}
