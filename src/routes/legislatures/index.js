@@ -3,6 +3,8 @@ import legislatureErrors from './lib/errors.js'
 import createRoute from './crud/create.js'
 import updateRoute from './crud/update.js'
 import listRoute from './crud/list.js'
+import readRoute from './crud/read.js'
+
 import addMinistriesRoute from './addMinistries.js'
 
 export default async function index(fastify) {
@@ -19,5 +21,6 @@ export default async function index(fastify) {
   fastify.register(createRoute, { prefix })
   fastify.register(updateRoute, { prefix })
   fastify.register(listRoute, { prefix })
+  fastify.register(readRoute, { prefix })
   fastify.register(addMinistriesRoute, { prefix })
 }

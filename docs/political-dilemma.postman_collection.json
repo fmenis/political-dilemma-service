@@ -1177,7 +1177,74 @@
           "response": []
         },
         {
+          "name": "add-ministry",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n   \"ministries\": [\n    {\n        \"name\": \"Ministero dei trasporti\",\n        \"ministerFullName\": \"Matteo Salvini\" \n    }\n   ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/api/v1/legislatures/c5e853f6-a200-4fe3-8679-5ab71d3081f8/add-ministries",
+              "host": ["{{url}}"],
+              "path": [
+                "api",
+                "v1",
+                "legislatures",
+                "c5e853f6-a200-4fe3-8679-5ab71d3081f8",
+                "add-ministries"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
           "name": "list",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"XIX\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/api/v1/legislatures?limit=10&offset=0&search=X",
+              "host": ["{{url}}"],
+              "path": ["api", "v1", "legislatures"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                },
+                {
+                  "key": "search",
+                  "value": "X"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "read",
           "protocolProfileBehavior": {
             "disableBodyPruning": true
           },

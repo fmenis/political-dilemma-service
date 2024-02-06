@@ -387,6 +387,12 @@ export async function seedPermissions(client) {
     },
     {
       resource: 'legislature',
+      action: 'read',
+      ownership: null,
+      description: 'Dettaglio legislatura',
+    },
+    {
+      resource: 'legislature',
       action: 'add-ministries',
       ownership: null,
       description: 'Aggiunta ministeri/ministri',
