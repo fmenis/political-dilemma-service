@@ -1,6 +1,7 @@
 import S from 'fluent-json-schema'
 
 import { buildRouteFullDescription } from '../common/common.js'
+import { sLegislatureDetail } from './lib/schema.js'
 
 export default async function duplicateLegislature(fastify) {
   const { massive } = fastify
@@ -31,7 +32,7 @@ export default async function duplicateLegislature(fastify) {
         .description('Legislature id.')
         .required(),
       response: {
-        204: fastify.getSchema('sNoContent'),
+        200: sLegislatureDetail(),
         404: fastify.getSchema('sNotFound'),
       },
     },
@@ -60,7 +61,7 @@ export default async function duplicateLegislature(fastify) {
       { fields: ['name', 'ministerFullName'] }
     )
 
-    await massive.withTransaction(async tx => {
+    const newLegislature = await massive.withTransaction(async tx => {
       const newLegislature = await tx.legislature.save({
         name: `${legislature.name} copy_${new Date().getMilliseconds()}`,
         startDate: legislature.startDate,
@@ -73,8 +74,13 @@ export default async function duplicateLegislature(fastify) {
           legislatureId: newLegislature.id,
         }))
       )
+
+      return newLegislature
     })
 
-    reply.code(204)
+    return {
+      ...newLegislature,
+      ministries: [],
+    }
   }
 }
