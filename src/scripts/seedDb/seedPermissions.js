@@ -393,6 +393,12 @@ export async function seedPermissions(client) {
     },
     {
       resource: 'legislature',
+      action: 'delete',
+      ownership: null,
+      description: 'Cancellazione legislatura',
+    },
+    {
+      resource: 'legislature',
       action: 'add-ministries',
       ownership: null,
       description: 'Aggiunta ministeri/ministri',

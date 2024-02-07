@@ -1161,7 +1161,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"cambly\",\n    \"startDate\": \"2024-01-02\",\n    \"endDate\": \"2024-01-04\"\n}",
+              "raw": "{\n    \"name\": \"IXI\",\n    \"startDate\": \"2024-01-02\",\n    \"endDate\": \"2024-01-04\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1191,13 +1191,13 @@
               }
             },
             "url": {
-              "raw": "{{url}}/api/v1/legislatures/c5e853f6-a200-4fe3-8679-5ab71d3081f8/add-ministries",
+              "raw": "{{url}}/api/v1/legislatures/77ef3667-8f72-4e9b-975e-084890e1d4b8/add-ministries",
               "host": ["{{url}}"],
               "path": [
                 "api",
                 "v1",
                 "legislatures",
-                "c5e853f6-a200-4fe3-8679-5ab71d3081f8",
+                "77ef3667-8f72-4e9b-975e-084890e1d4b8",
                 "add-ministries"
               ]
             }
@@ -1261,22 +1261,43 @@
               }
             },
             "url": {
-              "raw": "{{url}}/api/v1/legislatures?limit=10&offset=0&search=X",
+              "raw": "{{url}}/api/v1/legislatures/77ef3667-8f72-4e9b-975e-084890e1d4b8",
               "host": ["{{url}}"],
-              "path": ["api", "v1", "legislatures"],
-              "query": [
-                {
-                  "key": "limit",
-                  "value": "10"
-                },
-                {
-                  "key": "offset",
-                  "value": "0"
-                },
-                {
-                  "key": "search",
-                  "value": "X"
+              "path": [
+                "api",
+                "v1",
+                "legislatures",
+                "77ef3667-8f72-4e9b-975e-084890e1d4b8"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "delete",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"XIX\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
                 }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/api/v1/legislatures/77ef3667-8f72-4e9b-975e-084890e1d4b8",
+              "host": ["{{url}}"],
+              "path": [
+                "api",
+                "v1",
+                "legislatures",
+                "77ef3667-8f72-4e9b-975e-084890e1d4b8"
               ]
             }
           },
