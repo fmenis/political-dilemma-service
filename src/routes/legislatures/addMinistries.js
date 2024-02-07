@@ -48,7 +48,7 @@ export default async function addMinistry(fastify) {
       }))
     },
     preHandler: onPreHandler,
-    handler: onCreateLegislature,
+    handler: onAddMinistry,
   })
 
   async function onPreHandler(req) {
@@ -77,7 +77,7 @@ export default async function addMinistry(fastify) {
     req.resource = legislature
   }
 
-  async function onCreateLegislature(req) {
+  async function onAddMinistry(req) {
     const { ministries } = req.body
     const { resource: legislature } = req
 

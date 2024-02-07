@@ -3,7 +3,7 @@ import S from 'fluent-json-schema'
 export function sCreateLegislature() {
   return S.object()
     .additionalProperties(false)
-    .prop('name', S.string().maxLength(10))
+    .prop('name', S.string().maxLength(50))
     .description('Legislature name.')
     .required()
     .prop('startDate', S.string().format('date'))
@@ -19,7 +19,7 @@ export function sLegislatureList() {
     .prop('id', S.string().format('uuid'))
     .description('Legislature id.')
     .required()
-    .prop('name', S.string().maxLength(10))
+    .prop('name', S.string().maxLength(50))
     .description('Legislature name.')
     .required()
     .prop('startDate', S.string().format('date').raw({ nullable: true }))
@@ -61,7 +61,7 @@ export function sMinistryDetail() {
 export function sUpdateLegislature() {
   return S.object()
     .additionalProperties(false)
-    .prop('name', S.string().maxLength(10))
+    .prop('name', S.string().maxLength(50))
     .description('Legislature name.')
     .prop('startDate', S.string().format('date'))
     .description('Legislature start date.')

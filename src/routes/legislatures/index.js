@@ -6,6 +6,7 @@ import listRoute from './crud/list.js'
 import readRoute from './crud/read.js'
 import deleteRoute from './crud/delete.js'
 
+import duplicateRoute from './duplicate.js'
 import addMinistriesRoute from './addMinistries.js'
 
 export default async function index(fastify) {
@@ -25,5 +26,6 @@ export default async function index(fastify) {
   fastify.register(readRoute, { prefix })
   fastify.register(deleteRoute, { prefix })
 
+  fastify.register(duplicateRoute, { prefix })
   fastify.register(addMinistriesRoute, { prefix })
 }

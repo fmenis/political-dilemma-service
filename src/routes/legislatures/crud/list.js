@@ -77,7 +77,7 @@ export default async function listLegislatures(fastify) {
       order: [
         {
           field: 'createdAt',
-          direction: 'asc',
+          direction: 'desc',
         },
       ],
       limit: query.limit,

@@ -403,6 +403,12 @@ export async function seedPermissions(client) {
       ownership: null,
       description: 'Aggiunta ministeri/ministri',
     },
+    {
+      resource: 'legislature',
+      action: 'duplicate',
+      ownership: null,
+      description: 'Duplicazione legislatura',
+    },
   ]
 
   for (const permission of permissions) {
