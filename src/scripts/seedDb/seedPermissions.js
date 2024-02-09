@@ -405,6 +405,12 @@ export async function seedPermissions(client) {
     },
     {
       resource: 'legislature',
+      action: 'update-ministry',
+      ownership: null,
+      description: 'Aggiornamento ministero/ministro',
+    },
+    {
+      resource: 'legislature',
       action: 'duplicate',
       ownership: null,
       description: 'Duplicazione legislatura',

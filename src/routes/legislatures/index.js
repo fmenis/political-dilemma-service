@@ -8,6 +8,7 @@ import deleteRoute from './crud/delete.js'
 
 import duplicateRoute from './duplicate.js'
 import addMinistriesRoute from './addMinistries.js'
+import updateMinistryRoute from './updateMInistry.js'
 
 export default async function index(fastify) {
   fastify.addHook('onRoute', options => {
@@ -28,4 +29,5 @@ export default async function index(fastify) {
 
   fastify.register(duplicateRoute, { prefix })
   fastify.register(addMinistriesRoute, { prefix })
+  fastify.register(updateMinistryRoute, { prefix })
 }

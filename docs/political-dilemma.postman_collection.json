@@ -1161,7 +1161,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"IXI\",\n    \"startDate\": \"2024-01-02\",\n    \"endDate\": \"2024-01-04\"\n}",
+              "raw": "{\n    \"name\": \"Legislatua XIX\",\n    \"startDate\": \"2024-01-02\",\n    \"endDate\": \"2024-01-04\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1177,13 +1177,32 @@
           "response": []
         },
         {
-          "name": "add-ministry",
+          "name": "duplicate",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/api/v1/legislatures/ee9533cc-b14f-40f2-ab4b-3c2a193b9ea4/duplicate",
+              "host": ["{{url}}"],
+              "path": [
+                "api",
+                "v1",
+                "legislatures",
+                "ee9533cc-b14f-40f2-ab4b-3c2a193b9ea4",
+                "duplicate"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "add ministries",
           "request": {
             "method": "POST",
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n   \"ministries\": [\n    {\n        \"name\": \"Ministero dei trasporti\",\n        \"ministerFullName\": \"Matteo Salvini\" \n    }\n   ]\n}",
+              "raw": "{\n   \"ministries\": [\n    {\n        \"name\": \"Ministero dei trasporti\",\n        \"ministerFullName\": \"Matteo Salvini\" \n    },\n     {\n        \"name\": \"Ministero delle finanze\",\n        \"ministerFullName\": \"Sgarbi\" \n    },\n     {\n        \"name\": \"Ministero dei fanfalucchi\",\n        \"ministerFullName\": \"Bho\" \n    }\n   ]\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1191,14 +1210,42 @@
               }
             },
             "url": {
-              "raw": "{{url}}/api/v1/legislatures/77ef3667-8f72-4e9b-975e-084890e1d4b8/add-ministries",
+              "raw": "{{url}}/api/v1/legislatures/bee7d626-d706-42f4-ae2c-c181bcaf229f/ministries",
               "host": ["{{url}}"],
               "path": [
                 "api",
                 "v1",
                 "legislatures",
-                "77ef3667-8f72-4e9b-975e-084890e1d4b8",
-                "add-ministries"
+                "bee7d626-d706-42f4-ae2c-c181bcaf229f",
+                "ministries"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "update ministry",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n   \"ministries\": [\n    {\n        \"name\": \"Ministero dei trasporti\",\n        \"ministerFullName\": \"Matteo Salvini\" \n    },\n     {\n        \"name\": \"Ministero delle finanze\",\n        \"ministerFullName\": \"Sgarbi\" \n    },\n     {\n        \"name\": \"Ministero dei fanfalucchi\",\n        \"ministerFullName\": \"Bho\" \n    }\n   ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/api/v1/legislatures/bee7d626-d706-42f4-ae2c-c181bcaf229f/ministries",
+              "host": ["{{url}}"],
+              "path": [
+                "api",
+                "v1",
+                "legislatures",
+                "bee7d626-d706-42f4-ae2c-c181bcaf229f",
+                "ministries"
               ]
             }
           },
@@ -1222,7 +1269,7 @@
               }
             },
             "url": {
-              "raw": "{{url}}/api/v1/legislatures?limit=10&offset=0&search=X",
+              "raw": "{{url}}/api/v1/legislatures?limit=10&offset=0",
               "host": ["{{url}}"],
               "path": ["api", "v1", "legislatures"],
               "query": [
@@ -1236,7 +1283,8 @@
                 },
                 {
                   "key": "search",
-                  "value": "X"
+                  "value": "X",
+                  "disabled": true
                 }
               ]
             }
@@ -1261,13 +1309,13 @@
               }
             },
             "url": {
-              "raw": "{{url}}/api/v1/legislatures/77ef3667-8f72-4e9b-975e-084890e1d4b8",
+              "raw": "{{url}}/api/v1/legislatures/703c8566-5955-409b-9d98-a93fb06e5c71",
               "host": ["{{url}}"],
               "path": [
                 "api",
                 "v1",
                 "legislatures",
-                "77ef3667-8f72-4e9b-975e-084890e1d4b8"
+                "703c8566-5955-409b-9d98-a93fb06e5c71"
               ]
             }
           },
@@ -1275,29 +1323,17 @@
         },
         {
           "name": "delete",
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          },
           "request": {
-            "method": "GET",
+            "method": "DELETE",
             "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"name\": \"XIX\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
             "url": {
-              "raw": "{{url}}/api/v1/legislatures/77ef3667-8f72-4e9b-975e-084890e1d4b8",
+              "raw": "{{url}}/api/v1/legislatures/152e050c-54f4-4cde-aceb-4c6d7535c485",
               "host": ["{{url}}"],
               "path": [
                 "api",
                 "v1",
                 "legislatures",
-                "77ef3667-8f72-4e9b-975e-084890e1d4b8"
+                "152e050c-54f4-4cde-aceb-4c6d7535c485"
               ]
             }
           },

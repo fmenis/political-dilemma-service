@@ -78,10 +78,10 @@ export function sAddMinistries() {
         .items(
           S.object()
             .additionalProperties(false)
-            .prop('name', S.string().maxLength(50))
+            .prop('name', S.string().minLength(2).maxLength(50))
             .description('Ministry name.')
             .required()
-            .prop('ministerFullName', S.string().maxLength(100))
+            .prop('ministerFullName', S.string().minLength(2).maxLength(100))
             .description('Minister name.')
             .required()
         )

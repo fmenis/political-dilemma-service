@@ -5,7 +5,7 @@ import { buildRouteFullDescription } from '../common/common.js'
 import { populateLegislature } from './lib/common.js'
 import { findArrayDuplicates } from '../../utils/main.js'
 
-export default async function addMinistry(fastify) {
+export default async function addMinistries(fastify) {
   const { massive } = fastify
   const { throwNotFoundError, throwDuplicateMinistriesError, errors } =
     fastify.legislatureErrors
@@ -16,7 +16,7 @@ export default async function addMinistry(fastify) {
 
   fastify.route({
     method: 'POST',
-    path: '/:id/add-ministries',
+    path: '/:id/ministries',
     config: {
       public: false,
       permission,
@@ -48,7 +48,7 @@ export default async function addMinistry(fastify) {
       }))
     },
     preHandler: onPreHandler,
-    handler: onAddMinistry,
+    handler: onAddMinistries,
   })
 
   async function onPreHandler(req) {
@@ -77,7 +77,7 @@ export default async function addMinistry(fastify) {
     req.resource = legislature
   }
 
-  async function onAddMinistry(req) {
+  async function onAddMinistries(req) {
     const { ministries } = req.body
     const { resource: legislature } = req
 
