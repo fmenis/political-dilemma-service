@@ -81,7 +81,10 @@ export default async function updateLegislature(fastify) {
   async function onUpdateLegislature(req) {
     const { id } = req.params
 
-    const updatedLegislature = await massive.legislature.update(id, req.body)
+    const updatedLegislature = await massive.legislature.update(id, {
+      ...req.body,
+      updatedAt: new Date(),
+    })
 
     return populateLegislature(updatedLegislature, massive)
   }

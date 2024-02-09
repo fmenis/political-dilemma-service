@@ -48,7 +48,10 @@ export default async function updateGroup(fastify) {
       throwNotFoundError({ id, name: 'group' })
     }
 
-    const updatedGroup = await massive.group.update(id, body)
+    const updatedGroup = await massive.group.update(id, {
+      ...body,
+      updatedAt: new Date(),
+    })
 
     return updatedGroup
   }

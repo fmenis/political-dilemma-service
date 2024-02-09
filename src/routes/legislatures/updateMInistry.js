@@ -70,7 +70,10 @@ export default async function updateMinistry(fastify) {
 
     const { id, name, ministerFullName } = await massive.ministry.update(
       ministryId,
-      req.body
+      {
+        ...req.body,
+        updatedAt: new Date(),
+      }
     )
 
     return {
