@@ -114,8 +114,12 @@ export default async function listPoliticians(fastify) {
 
       return {
         id: politician.id,
+        type: politician.type,
         firstName: politician.firstName,
         lastName: politician.lastName,
+        birthCity: politician.birthCity,
+        birthDate: politician.birthDate,
+        img: politician.img,
         groupName: group ? group.name : null,
         rating: 0, //##TODO implement
       }
