@@ -7,6 +7,9 @@ export function buildServerOptions() {
     ajv: {
       customOptions: {
         allErrors: true,
+        strict: 'log',
+        strictRequired: 'log',
+        verbose: true,
       },
     },
   }

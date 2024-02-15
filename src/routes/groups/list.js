@@ -72,7 +72,7 @@ export default async function listGroups(fastify) {
 
   function buildOptions(query) {
     const options = {
-      fields: ['id', 'name', 'initials', 'color', 'orientation'],
+      fields: ['id', 'name', 'initials', 'colorCode', 'orientation'],
       order: [
         {
           field: 'name',

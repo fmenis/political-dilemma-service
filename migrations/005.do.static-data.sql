@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS "group" (
     "name" VARCHAR(250) NOT NULL,
     "startDate" DATE NOT NULL,
     "initials" VARCHAR(15),
-    "color" CHAR(6),
+    "colorCode" CHAR(7),
     "orientation" VARCHAR(50),
     "createdAt" timestamp DEFAULT NOW(),
     "updatedAt" timestamp DEFAULT NOW()
