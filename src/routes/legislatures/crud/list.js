@@ -60,7 +60,7 @@ export default async function listLegislatures(fastify) {
 
     const [legislatures, count] = await Promise.all([
       massive.legislature.find(filters, options),
-      massive.legislature.count(),
+      massive.legislature.count(filters),
     ])
 
     reply.send({

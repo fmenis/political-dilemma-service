@@ -12,7 +12,6 @@ import pgPlugin from './plugins/postgres.js'
 import redisPlugin from './plugins/redis.js'
 import loadSchemasPlugin from './plugins/loadSchemas.js'
 import mailerPlugin from './plugins/mailer.js'
-// import schedulerPlugin from './plugins/scheduler.js'
 
 import { sEnv } from './utils/env.schema.js'
 import { ENV } from './common/enums.js'
@@ -68,12 +67,11 @@ export default async function app(fastify, opts) {
     },
   })
 
+  //##TODO!! do not expose in production
   fastify.register(swaggerPlugin)
   fastify.register(pgPlugin)
   fastify.register(redisPlugin)
   fastify.register(loadSchemasPlugin)
   fastify.register(mailerPlugin)
-  // fastify.register(schedulerPlugin)
-
   fastify.register(apiPlugin, { prefix: '/api' })
 }

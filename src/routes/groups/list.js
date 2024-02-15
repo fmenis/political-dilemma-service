@@ -54,11 +54,12 @@ export default async function listGroups(fastify) {
   async function onListGroups(req) {
     const { query } = req
 
+    const filters = buildFilters(query)
     const options = buildOptions(query)
 
     const [groups, count] = await Promise.all([
-      massive.group.find({}, options),
-      massive.group.count(),
+      massive.group.find(filters, options),
+      massive.group.count(filters),
     ])
 
     return {
@@ -68,6 +69,10 @@ export default async function listGroups(fastify) {
         offset: query.offset,
       }),
     }
+  }
+
+  function buildFilters(query) {
+    return {}
   }
 
   function buildOptions(query) {

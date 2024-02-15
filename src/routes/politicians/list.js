@@ -62,7 +62,7 @@ export default async function listPoliticians(fastify) {
 
     const [politicians, count] = await Promise.all([
       massive.politician.find(filters, options),
-      massive.politician.count(),
+      massive.politician.count(filters),
     ])
 
     return {
