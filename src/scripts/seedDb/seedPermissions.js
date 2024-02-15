@@ -344,7 +344,7 @@ export async function seedPermissions(client) {
     {
       resource: 'politician',
       action: 'list',
-      ownership: 'any',
+      ownership: null,
       description: 'Lista politici (tutti)',
     },
     {
@@ -357,7 +357,7 @@ export async function seedPermissions(client) {
     {
       resource: 'group',
       action: 'list',
-      ownership: 'any',
+      ownership: null,
       description: 'Lista gruppi (tutti)',
     },
     {
