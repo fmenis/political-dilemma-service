@@ -31,6 +31,7 @@ export function sGroupDetail() {
 
 export function sUpdateGroup() {
   return S.object()
+    .additionalProperties(false)
     .prop('initials', S.string().minLength(2).maxLength(15))
     .description('Group initials.')
     .prop('colorCode', S.string().minLength(7).maxLength(7))
