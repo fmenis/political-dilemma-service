@@ -1,18 +1,18 @@
 import S from 'fluent-json-schema'
 
-import { sGroupDetail } from './lib/schema.js'
+import { sLegislatureList } from '../lib/schema.js'
 import {
   buildRouteFullDescription,
   buildPaginatedInfo,
-} from '../common/common.js'
-import { appConfig } from '../../config/main.js'
+} from '../../common/common.js'
+import { appConfig } from '../../../config/main.js'
 
-export default async function listGroups(fastify) {
-  const { massive, groupErrors } = fastify
-  const { errors } = groupErrors
+export default async function listLegislatures(fastify) {
+  const { massive } = fastify
 
+  const routeDescription = 'List legislatures.'
   const api = 'list'
-  const permission = `group:${api}`
+  const permission = `legislature:${api}`
   const { defaultLimit, defaultOffset } = appConfig.pagination
 
   fastify.route({
@@ -23,10 +23,9 @@ export default async function listGroups(fastify) {
       permission,
     },
     schema: {
-      summary: 'List groups',
+      summary: routeDescription,
       description: buildRouteFullDescription({
-        description: 'List groups',
-        errors,
+        description: routeDescription,
         permission,
         api,
       }),
@@ -43,34 +42,49 @@ export default async function listGroups(fastify) {
       response: {
         200: S.object()
           .additionalProperties(false)
-          .description('Groups.')
-          .prop('results', S.array().maxItems(200).items(sGroupDetail()))
+          .description('Legislatures.')
+          .prop('results', S.array().maxItems(200).items(sLegislatureList()))
           .required()
           .prop('paginatedInfo', fastify.getSchema('sPaginatedInfo'))
           .required(),
       },
     },
-    handler: onListGroups,
+    handler: onCreateLegislature,
   })
 
-  async function onListGroups(req) {
+  async function onCreateLegislature(req, reply) {
     const { query } = req
 
     const filters = buildFilters(query)
     const options = buildOptions(query)
 
-    const [groups, count] = await Promise.all([
-      massive.group.find(filters, options),
-      massive.group.count(filters),
+    const [legislatures, count] = await Promise.all([
+      massive.legislature.find(filters, options),
+      massive.legislature.count(filters),
     ])
 
-    return {
-      results: groups,
+    reply.send({
+      results: legislatures,
       paginatedInfo: buildPaginatedInfo(count, {
         limit: query.limit,
         offset: query.offset,
       }),
+    })
+  }
+
+  function buildOptions(query) {
+    const options = {
+      order: [
+        {
+          field: 'createdAt',
+          direction: 'desc',
+        },
+      ],
+      limit: query.limit,
+      offset: query.offset,
     }
+
+    return options
   }
 
   function buildFilters(query) {
@@ -81,21 +95,5 @@ export default async function listGroups(fastify) {
     }
 
     return filters
-  }
-
-  function buildOptions(query) {
-    const options = {
-      fields: ['id', 'name', 'initials', 'colorCode', 'orientation'],
-      order: [
-        {
-          field: 'name',
-          direction: 'asc',
-        },
-      ],
-      limit: query.limit,
-      offset: query.offset,
-    }
-
-    return options
   }
 }

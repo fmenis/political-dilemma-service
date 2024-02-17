@@ -80,7 +80,7 @@ async function activityErrors(fastify) {
     })
   }
 
-  function throwMissinDataError(data) {
+  function throwMissingDataError(data) {
     const { id, errors } = data
     const message = `Action not allowed on activity '${id}' due to a lack of data`
     throw createError(400, message, {
@@ -110,7 +110,7 @@ async function activityErrors(fastify) {
     throwAttachmentsNotFoundError,
     throwOwnershipError,
     throwInvalidStatusError,
-    throwMissinDataError,
+    throwMissingDataError,
     throwInvalidPublicationDateError,
     errors: [
       {

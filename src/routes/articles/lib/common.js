@@ -21,7 +21,7 @@ export async function populateArticle(article, currentUserId, massive) {
     canBeDeleted: article.status === ARTICLE_STATES.DRAFT,
     tags: article.tags || [],
     attachments,
-    description: article.description || undefined,
+    description: article.description,
     isMine: article.ownerId === currentUserId,
   }
 }

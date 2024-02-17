@@ -7,6 +7,7 @@ export function buildServerOptions() {
     ajv: {
       customOptions: {
         allErrors: true,
+        removeAdditional: false,
       },
     },
   }

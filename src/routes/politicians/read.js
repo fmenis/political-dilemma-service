@@ -53,6 +53,11 @@ export default async function readPolitician(fastify) {
   async function onReadPolitician(req) {
     const { resource: politician } = req
 
-    return { ...politician, rating: 0 }
+    const group = await massive.group.findOne(
+      { id: politician.groupId },
+      { fields: ['name'] }
+    )
+
+    return { ...politician, groupName: group ? group.name : null, rating: 0 }
   }
 }

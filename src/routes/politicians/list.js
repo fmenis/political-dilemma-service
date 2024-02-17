@@ -35,6 +35,8 @@ export default async function listPoliticians(fastify) {
         .additionalProperties(false)
         .prop('type', S.string().enum(getPoliticianTypes()))
         .description('Filter by politician type')
+        .prop('search', S.string().minLength(1).maxLength(30))
+        .description('Full text search (by firstName and lastName).')
         .prop('limit', S.integer())
         .description('Number of results (pagination).')
         .default(defaultLimit)
@@ -62,7 +64,7 @@ export default async function listPoliticians(fastify) {
 
     const [politicians, count] = await Promise.all([
       massive.politician.find(filters, options),
-      massive.politician.count(),
+      massive.politician.count(filters),
     ])
 
     return {
@@ -96,6 +98,13 @@ export default async function listPoliticians(fastify) {
       filters.type = query.type
     }
 
+    if (query.search) {
+      filters.or = [
+        { 'firstName ILIKE': `%${query.search}%` },
+        { 'lastName ILIKE': `%${query.search}%` },
+      ]
+    }
+
     return filters
   }
 
@@ -114,8 +123,12 @@ export default async function listPoliticians(fastify) {
 
       return {
         id: politician.id,
+        type: politician.type,
         firstName: politician.firstName,
         lastName: politician.lastName,
+        birthCity: politician.birthCity,
+        birthDate: politician.birthDate,
+        img: politician.img,
         groupName: group ? group.name : null,
         rating: 0, //##TODO implement
       }

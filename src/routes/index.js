@@ -18,6 +18,7 @@ import activitiesRoutes from './activities/index.js'
 import categoriesRoutes from './categories/index.js'
 import politiciansRoutes from './politicians/index.js'
 import groupsRoutes from './groups/index.js'
+import legislaturesRoutes from './legislatures/index.js'
 
 export default async function index(fastify) {
   fastify.register(authentication)
@@ -40,4 +41,5 @@ export default async function index(fastify) {
   fastify.register(categoriesRoutes)
   fastify.register(politiciansRoutes)
   fastify.register(groupsRoutes)
+  fastify.register(legislaturesRoutes)
 }

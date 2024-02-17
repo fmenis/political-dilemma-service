@@ -10,7 +10,7 @@ export default async function reviewActivity(fastify) {
   const {
     throwNotFoundError,
     throwInvalidStatusError,
-    throwMissinDataError,
+    throwMissingDataError,
     errors,
   } = fastify.activityErrors
 
@@ -87,7 +87,7 @@ export default async function reviewActivity(fastify) {
         })
       }
 
-      throwMissinDataError({ id, errors })
+      throwMissingDataError({ id, errors })
     }
 
     req.resource = activity

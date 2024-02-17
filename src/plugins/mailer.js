@@ -20,7 +20,7 @@ function mailer(fastify, options, done) {
       if (err) {
         done(err)
       }
-      log.debug('Email trasporter correctly verified')
+      log.debug('Email transporter correctly verified')
       done()
     })
   } else {

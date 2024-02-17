@@ -1,14 +1,16 @@
 import { readFileSync } from 'fs'
 import { join, resolve } from 'path'
 import fp from 'fastify-plugin'
-import Swagger from '@fastify/swagger'
+import fastifySwagger from '@fastify/swagger'
+import fastifySwaggerUi from '@fastify/swagger-ui'
+
 import { ENV } from '../common/enums.js'
 
 const { version } = JSON.parse(readFileSync(join(resolve(), 'package.json')))
 
 async function swaggerGenerator(fastify) {
-  fastify.register(Swagger, {
-    routePrefix: '/doc',
+  fastify.register(fastifySwagger, {
+    mode: 'dynamic',
     openapi: {
       info: {
         title: 'Political Dilemma Service',
@@ -69,9 +71,16 @@ async function swaggerGenerator(fastify) {
         { name: 'categories', description: 'Categories related end-points' },
         { name: 'politicians', description: 'Politicians related end-points' },
         { name: 'groups', description: 'Groups related end-points' },
+        {
+          name: 'legislatures',
+          description: 'Legislatures related end-points',
+        },
       ].sort((a, b) => a.name.localeCompare(b.name)),
     },
-    exposeRoute: process.env.NODE_ENV !== ENV.PRODUCTION,
+  })
+
+  fastify.register(fastifySwaggerUi, {
+    routePrefix: '/doc',
   })
 }
 

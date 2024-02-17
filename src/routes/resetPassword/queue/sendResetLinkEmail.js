@@ -10,7 +10,7 @@ export async function sendResetPasswordEmail(data, mailer) {
   await mailer.sendMail({
     from,
     to: email,
-    subject: 'Ripristino password',
+    subject: 'Reset password',
     html,
   })
 
@@ -19,7 +19,7 @@ export async function sendResetPasswordEmail(data, mailer) {
    * If the job is done correctly after 2 attempts, bull set anyway the error in the
    * 'failedReason' field with the prev errors.
    * Due to this, the whole job appears to have failed.
-   * With this return value also the 'returnValue' field is set, so it is possibile
+   * With this return value also the 'returnValue' field is set, so it is possible
    * to distinguish if all the job attempts have failed or not.
    */
   return 'COMPLETED'

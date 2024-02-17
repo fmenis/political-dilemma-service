@@ -344,7 +344,7 @@ export async function seedPermissions(client) {
     {
       resource: 'politician',
       action: 'list',
-      ownership: 'any',
+      ownership: null,
       description: 'Lista politici (tutti)',
     },
     {
@@ -357,7 +357,7 @@ export async function seedPermissions(client) {
     {
       resource: 'group',
       action: 'list',
-      ownership: 'any',
+      ownership: null,
       description: 'Lista gruppi (tutti)',
     },
     {
@@ -365,6 +365,55 @@ export async function seedPermissions(client) {
       action: 'update',
       ownership: null,
       description: 'Aggiornamento gruppo',
+    },
+    // LEGISLATURE
+    {
+      resource: 'legislature',
+      action: 'create',
+      ownership: null,
+      description: 'Creazione legislatura',
+    },
+    {
+      resource: 'legislature',
+      action: 'update',
+      ownership: null,
+      description: 'Aggiornamento legislatura',
+    },
+    {
+      resource: 'legislature',
+      action: 'list',
+      ownership: null,
+      description: 'Lista legislature',
+    },
+    {
+      resource: 'legislature',
+      action: 'read',
+      ownership: null,
+      description: 'Dettaglio legislatura',
+    },
+    {
+      resource: 'legislature',
+      action: 'delete',
+      ownership: null,
+      description: 'Cancellazione legislatura',
+    },
+    {
+      resource: 'legislature',
+      action: 'add-ministries',
+      ownership: null,
+      description: 'Aggiunta ministeri/ministri',
+    },
+    {
+      resource: 'legislature',
+      action: 'update-ministry',
+      ownership: null,
+      description: 'Aggiornamento ministero/ministro',
+    },
+    {
+      resource: 'legislature',
+      action: 'duplicate',
+      ownership: null,
+      description: 'Duplicazione legislatura',
     },
   ]
 
