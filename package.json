@@ -56,7 +56,7 @@
     "pino": "^8.19.0",
     "pino-sentry-transport": "^0.0.6",
     "postgrator": "^7.2.0",
-    "redis": "^4.6.12",
+    "redis": "^4.6.13",
     "sparql-http-client": "^2.4.2",
     "ua-parser-js": "^1.0.37"
   },
