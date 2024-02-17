@@ -35,6 +35,8 @@ export default async function listPoliticians(fastify) {
         .additionalProperties(false)
         .prop('type', S.string().enum(getPoliticianTypes()))
         .description('Filter by politician type')
+        .prop('search', S.string().minLength(1).maxLength(30))
+        .description('Full text search (by firstName and lastName).')
         .prop('limit', S.integer())
         .description('Number of results (pagination).')
         .default(defaultLimit)
@@ -94,6 +96,13 @@ export default async function listPoliticians(fastify) {
 
     if (query.type) {
       filters.type = query.type
+    }
+
+    if (query.search) {
+      filters.or = [
+        { 'firstName ILIKE': `%${query.search}%` },
+        { 'lastName ILIKE': `%${query.search}%` },
+      ]
     }
 
     return filters

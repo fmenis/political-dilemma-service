@@ -32,6 +32,8 @@ export default async function listGroups(fastify) {
       }),
       query: S.object()
         .additionalProperties(false)
+        .prop('search', S.string().minLength(1).maxLength(30))
+        .description('Full text search (by name).')
         .prop('limit', S.integer())
         .description('Number of results (pagination).')
         .default(defaultLimit)
@@ -72,7 +74,13 @@ export default async function listGroups(fastify) {
   }
 
   function buildFilters(query) {
-    return {}
+    const filters = {}
+
+    if (query.search) {
+      filters['name ILIKE'] = `%${query.search}%`
+    }
+
+    return filters
   }
 
   function buildOptions(query) {
