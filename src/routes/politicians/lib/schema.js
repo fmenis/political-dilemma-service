@@ -65,4 +65,7 @@ export function sPoliticianDetail() {
     .prop('rating', S.number())
     .description('Politician rating.')
     .required()
+    .prop('groupName', S.string().minLength(2).raw({ nullable: true }))
+    .description('Politician group name.')
+    .required()
 }
