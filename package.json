@@ -34,7 +34,7 @@
     "@fastify/sensible": "^5.5.0",
     "@fastify/swagger": "^8.14.0",
     "@fastify/swagger-ui": "^3.0.0",
-    "@immobiliarelabs/fastify-sentry": "^4.1.1",
+    "@immobiliarelabs/fastify-sentry": "^8.0.0",
     "aws-sdk": "^2.1560.0",
     "bcrypt": "^5.1.1",
     "bullmq": "^3.4.1",
