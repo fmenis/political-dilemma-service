@@ -76,6 +76,11 @@ async function commonHooks(fastify) {
       error.details.validation = error.validation
     }
   })
+
+  fastify.addHook('onRequestAbort', async request => {
+    const { log } = request
+    log.warn('Request aborted!')
+  })
 }
 
 export default fp(commonHooks)
