@@ -57,7 +57,7 @@
     "pino-sentry-transport": "^0.0.6",
     "postgrator": "^7.2.0",
     "redis": "^4.6.12",
-    "sparql-http-client": "^2.4.2",
+    "sparql-http-client": "^3.0.0",
     "ua-parser-js": "^1.0.37"
   },
   "devDependencies": {
