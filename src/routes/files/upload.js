@@ -14,7 +14,7 @@ export default async function uploadFile(fastify) {
   fastify.register(multipart, {
     limits: {
       fields: 2,
-      files: appConfig.upload.maxUploadsForRequeset,
+      files: appConfig.upload.maxUploadsForRequest,
     },
     attachFieldsToBody: true,
   })
@@ -30,16 +30,22 @@ export default async function uploadFile(fastify) {
     schema: {
       summary: 'Upload files',
       description: 'Upload files.',
-      // body: S.object()
-      //   .additionalProperties(false)
-      //   .prop('files')
-      //   .description('')
-      //   .required(),
+      body: S.object()
+        .additionalProperties(false)
+        .prop('files')
+        .description('Files binaries.')
+        .required()
+        .prop('type')
+        .description('File type.')
+        .required()
+        .prop('target')
+        .description('File target.')
+        .required(),
       response: {
         200: S.array()
           .items(sAttachment())
           .minItems(1)
-          .maxItems(appConfig.upload.maxUploadsForRequeset),
+          .maxItems(appConfig.upload.maxUploadsForRequest),
       },
     },
     handler: onUploadFile,

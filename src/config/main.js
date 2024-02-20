@@ -6,7 +6,7 @@ const appConfig = {
   upload: {
     allowedFileExts: ['png', 'jpg', 'jpeg'],
     maxSize: 20, // MB,
-    maxUploadsForRequeset: 10,
+    maxUploadsForRequest: 10,
   },
   pagination: {
     defaultLimit: 10,
