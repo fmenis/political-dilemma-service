@@ -18,22 +18,18 @@ export default async function deleteSession(fastify) {
       query: S.object()
         .additionalProperties(false)
         .prop('ids', S.array().items(S.string().format('uuid')).minItems(1))
-
         .description('Session ids.')
         .required(),
       response: {
         204: fastify.getSchema('sNoContent'),
       },
     },
-    preValidation: async function (req) {
-      req.query.ids = req.query.ids.split(',')
-    },
     preHandler: onPreHandler,
     handler: onDeleteSession,
   })
 
   async function onPreHandler(req) {
-    const { ids } = req.query
+    const ids = req.query.ids.split(',')
     const { session } = req.user
 
     if (ids.includes(session.id)) {

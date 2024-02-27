@@ -53,7 +53,11 @@ export default async function addMinistries(fastify) {
 
   async function onPreHandler(req) {
     const { id } = req.params
-    const { ministries } = req.body
+
+    const ministries = req.body.ministries.map(item => ({
+      name: item.name.trim(),
+      ministerFullName: item.ministerFullName.trim(),
+    }))
 
     const legislature = await massive.legislature.findOne(id)
     if (!legislature) {
