@@ -5,11 +5,11 @@ async function authorization(fastify) {
   const { httpErrors, pg } = fastify
   const { createError } = httpErrors
 
-  async function authorize(req, reply) {
+  async function authorize(req) {
     const { log, user } = req
-    const { permission } = reply.context.config
+    const { permission } = req.routeOptions.config
 
-    if (reply.context.config.public) {
+    if (req.routeOptions.config.public) {
       return
     }
 

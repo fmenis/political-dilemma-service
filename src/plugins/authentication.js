@@ -7,12 +7,12 @@ async function authentication(fastify) {
     secret: fastify.config.SECRET,
   })
 
-  async function authenticate(req, reply) {
+  async function authenticate(req) {
     const { pg, httpErrors, config } = this
     const { createError } = httpErrors
     const { log } = req
 
-    if (reply.context.config.public) {
+    if (req.routeOptions.config.public) {
       return
     }
 

@@ -14,7 +14,7 @@ async function commonHooks(fastify) {
   /**
    * Additional request logs and trim target body fields
    */
-  fastify.addHook('preValidation', async (req, reply) => {
+  fastify.addHook('preValidation', async req => {
     const { body, log, user } = req
 
     if (user) {
@@ -31,8 +31,11 @@ async function commonHooks(fastify) {
       log.debug(body, 'parsed body')
     }
 
-    if (reply.context.config.trimBodyFields) {
-      req.body = trimObjectFields(reply.context.config.trimBodyFields, req.body)
+    if (req.routeOptions.config.trimBodyFields) {
+      req.body = trimObjectFields(
+        req.routeOptions.config.trimBodyFields,
+        req.body
+      )
     }
   })
 
@@ -70,7 +73,7 @@ async function commonHooks(fastify) {
     error.internalCode = error.internalCode || '0000'
     error.details = error.details || {}
     error.message =
-      reply.statusCode === 500 ? 'Somethig went wrong...' : error.message
+      reply.statusCode === 500 ? 'Something went wrong...' : error.message
 
     if (error.validation) {
       error.details.validation = error.validation

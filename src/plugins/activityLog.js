@@ -7,7 +7,7 @@ async function activityLog(fastify) {
     const { massive, config } = this
     const { user } = req
 
-    const action = generateRouteAction(reply)
+    const action = generateRouteAction(req)
 
     const writeCalls = ['POST', 'PUT', 'PATCH', 'DELETE']
     const notInterestingActions = [
