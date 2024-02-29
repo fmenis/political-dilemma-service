@@ -43,6 +43,15 @@ function sUser() {
     .prop('lastAccess', S.string().format('date-time').raw({ nullable: true }))
     .description(`Last user authentication date.`)
     .required()
+    .prop('isBlocked', S.boolean())
+    .description(
+      `Defines if the user is blocked, i.e. 
+      if he cannot use the API (until it is unblocked).`
+    )
+    .required()
+    .prop('isDeleted', S.boolean())
+    .description(`Defines if the user is deleted.`)
+    .required()
 }
 
 export function sUserAccount() {
