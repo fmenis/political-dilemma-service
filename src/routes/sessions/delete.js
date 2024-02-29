@@ -29,7 +29,7 @@ export default async function deleteSession(fastify) {
   })
 
   async function onPreHandler(req) {
-    const ids = req.query.ids.split(',')
+    const { ids } = req.query
     const { session } = req.user
 
     if (ids.includes(session.id)) {
