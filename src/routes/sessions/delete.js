@@ -15,9 +15,15 @@ export default async function deleteSession(fastify) {
     schema: {
       summary: 'Delete sessions',
       description: 'Delete sessions by ids (bulk deletion).',
-      query: S.object()
+      body: S.object()
         .additionalProperties(false)
-        .prop('ids', S.array().items(S.string().format('uuid')).minItems(1))
+        .prop(
+          'ids',
+          S.array()
+            .items(S.string().format('uuid'))
+            .minItems(1)
+            .uniqueItems(true)
+        )
         .description('Session ids.')
         .required(),
       response: {
@@ -29,7 +35,7 @@ export default async function deleteSession(fastify) {
   })
 
   async function onPreHandler(req) {
-    const { ids } = req.query
+    const { ids } = req.body
     const { session } = req.user
 
     if (ids.includes(session.id)) {
@@ -57,7 +63,7 @@ export default async function deleteSession(fastify) {
   }
 
   async function onDeleteSession(req, reply) {
-    const { ids } = req.query
+    const { ids } = req.body
     await deleteSessions(ids, pg)
     reply.code(204)
   }

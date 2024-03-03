@@ -8,6 +8,8 @@ export function buildServerOptions() {
       customOptions: {
         allErrors: true,
         removeAdditional: false,
+        // coerceTypes: 'array',
+        // useDefaults ##TODO see if useful https://ajv.js.org/options.html#usedefaults
       },
     },
   }
