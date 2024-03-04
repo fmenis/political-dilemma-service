@@ -47,15 +47,7 @@ export default async function listUsers(fastify) {
         .description('Full text search.')
         .prop(
           'sortBy',
-          S.string().enum([
-            'firstName',
-            'lastName',
-            'userName',
-            'email',
-            'lastAccess',
-            'region',
-            'province',
-          ])
+          S.string().enum(['firstName', 'lastName', 'email', 'role'])
         )
         .description('Field used to sort results (sorting).')
         .prop('order', S.string().enum(['ASC', 'DESC']))
@@ -225,10 +217,8 @@ export default async function listUsers(fastify) {
       letter => `_${letter.toLowerCase()}`
     )
 
-    if (field === 'region') {
-      field = `regions.name`
-    } else if (field === 'province') {
-      field = `provinces.name`
+    if (field === 'role') {
+      field = `roles.name`
     } else {
       field = `users.${field}`
     }
