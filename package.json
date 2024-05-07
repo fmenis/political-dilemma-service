@@ -42,7 +42,7 @@
     "cross-env": "^7.0.3",
     "dayjs": "^1.11.10",
     "dotenv": "^16.4.5",
-    "fastify": "^4.26.1",
+    "fastify": "^4.27.0",
     "fastify-cookie": "^5.3.2",
     "fastify-massive": "^1.0.0",
     "fastify-plugin": "^4.5.1",
