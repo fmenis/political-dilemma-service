@@ -37,17 +37,18 @@ export default async function updateMinistry(fastify) {
         .additionalProperties(false)
         .prop(
           'ministries',
-          S.array(
-            S.object()
-              .additionalProperties(false)
-              .prop('id', S.string().format('uuid'))
-              .description('Ministry id.')
-              .required()
-              .prop('name', S.string().minLength(2).maxLength(50))
-              .description('Ministry name.')
-              .prop('ministerFullName', S.string().minLength(2).maxLength(100))
-              .description('Minister name.')
-          )
+          S.array()
+            .items(
+              S.object()
+                .additionalProperties(false)
+                .prop('id', S.string().format('uuid'))
+                .description('Ministry id.')
+                .required()
+                .prop('name', S.string().minLength(2).maxLength(50))
+                .description('Ministry name.')
+                .prop('politicianId', S.string().format('uuid'))
+                .description('Politician id.')
+            )
             .minItems(1)
             .uniqueItems(true)
         ),

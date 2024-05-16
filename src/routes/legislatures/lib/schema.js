@@ -43,7 +43,6 @@ export function sLegislatureDetail() {
     .extend(sLegislatureList())
 }
 
-//##TODO capire se serve a qualcosa
 export function sMinistryDetail() {
   return S.object()
     .description('Ministry')
@@ -55,7 +54,7 @@ export function sMinistryDetail() {
     .description('Ministry name.')
     .required()
     .prop('ministerFullName', S.string().maxLength(100))
-    .description('Minister name.')
+    .description('Politician full name.')
     .required()
 }
 
@@ -82,8 +81,8 @@ export function sAddMinistries() {
             .prop('name', S.string().minLength(2).maxLength(50))
             .description('Ministry name.')
             .required()
-            .prop('ministerFullName', S.string().minLength(2).maxLength(100))
-            .description('Minister name.')
+            .prop('politicianId', S.string().format('uuid'))
+            .description('Politician id.')
             .required()
         )
         .minItems(1)
