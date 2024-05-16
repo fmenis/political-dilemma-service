@@ -79,13 +79,15 @@ export default async function updateMinistry(fastify) {
     const { ministries } = req.body
     const { resource: legislature } = req
 
-    //##TODO promise.all
-    for (const minister of ministries) {
-      await massive.ministry.update(minister.id, {
-        ...removeObjectNullishProps(minister),
-        updatedAt: new Date(),
-      })
-    }
+    await Promise.all(
+      ministries.map(
+        async minister =>
+          await massive.ministry.update(minister.id, {
+            ...removeObjectNullishProps(minister),
+            updatedAt: new Date(),
+          })
+      )
+    )
 
     return populateLegislature(legislature, massive)
   }

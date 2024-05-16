@@ -16,7 +16,7 @@ export default async function addMinistries(fastify) {
 
   fastify.route({
     method: 'POST',
-    path: '/:id/ministries',
+    path: '/:id/add-ministries',
     config: {
       public: false,
       permission,

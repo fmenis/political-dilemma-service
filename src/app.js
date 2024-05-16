@@ -11,7 +11,7 @@ import swaggerPlugin from './plugins/swagger.js'
 import pgPlugin from './plugins/postgres.js'
 import redisPlugin from './plugins/redis.js'
 import loadSchemasPlugin from './plugins/loadSchemas.js'
-// import mailerPlugin from './plugins/mailer.js'
+// import mailerPlugin from './plugins/mailer.js' //##TODO!!!
 
 import { sEnv } from './utils/env.schema.js'
 import { ENV } from './common/enums.js'
