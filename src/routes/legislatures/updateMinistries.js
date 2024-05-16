@@ -1,20 +1,21 @@
 import S from 'fluent-json-schema'
 
+import { sLegislatureDetail } from './lib/schema.js'
 import { buildRouteFullDescription } from '../common/common.js'
 import { populateLegislature } from './lib/common.js'
-import { sLegislatureDetail } from './lib/schema.js'
+import { removeObjectNullishProps } from '../../utils/main.js'
 
-export default async function removeMinistries(fastify) {
+export default async function updateMinistry(fastify) {
   const { massive } = fastify
   const { throwNotFoundError, errors } = fastify.legislatureErrors
 
-  const routeDescription = 'Remove ministries.'
-  const api = 'remove-ministries'
+  const routeDescription = 'Update ministries.'
+  const api = 'update-ministries'
   const permission = `legislature:${api}`
 
   fastify.route({
-    method: 'POST',
-    path: '/:id/remove-ministries',
+    method: 'PATCH',
+    path: '/:id/update-ministries',
     config: {
       public: false,
       permission,
@@ -35,20 +36,29 @@ export default async function removeMinistries(fastify) {
       body: S.object()
         .additionalProperties(false)
         .prop(
-          'ids',
-          S.array(S.string().format('uuid')).minItems(1).uniqueItems(true)
-        )
-        .description('Ministries ids.')
-        .required(),
+          'ministries',
+          S.array(
+            S.object()
+              .additionalProperties(false)
+              .prop('id', S.string().format('uuid'))
+              .description('Ministry id.')
+              .required()
+              .prop('name', S.string().minLength(2).maxLength(50))
+              .description('Ministry name.')
+              .prop('ministerFullName', S.string().minLength(2).maxLength(100))
+              .description('Minister name.')
+          )
+            .minItems(1)
+            .uniqueItems(true)
+        ),
       response: {
         200: sLegislatureDetail(),
-        204: fastify.getSchema('sNoContent'),
         404: fastify.getSchema('sNotFound'),
-        // 409: fastify.getSchema('sConflict'),
+        409: fastify.getSchema('sConflict'),
       },
     },
     preHandler: onPreHandler,
-    handler: onRemoveMinistries,
+    handler: onUpdateMinistry,
   })
 
   async function onPreHandler(req) {
@@ -60,16 +70,22 @@ export default async function removeMinistries(fastify) {
       throwNotFoundError({ id })
     }
 
-    //##TODO check ministers not present
+    //##TODO if check name and ministerFullName already used
 
     req.resource = legislature
   }
 
-  async function onRemoveMinistries(req) {
-    const { ids } = req.body
+  async function onUpdateMinistry(req) {
+    const { ministries } = req.body
     const { resource: legislature } = req
 
-    await massive.ministry.destroy({ id: ids })
+    //##TODO promise.all
+    for (const minister of ministries) {
+      await massive.ministry.update(minister.id, {
+        ...removeObjectNullishProps(minister),
+        updatedAt: new Date(),
+      })
+    }
 
     return populateLegislature(legislature, massive)
   }

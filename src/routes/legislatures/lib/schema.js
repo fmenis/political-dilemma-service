@@ -43,6 +43,7 @@ export function sLegislatureDetail() {
     .extend(sLegislatureList())
 }
 
+//##TODO capire se serve a qualcosa
 export function sMinistryDetail() {
   return S.object()
     .description('Ministry')

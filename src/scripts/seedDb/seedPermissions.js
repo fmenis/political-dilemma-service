@@ -405,15 +405,15 @@ export async function seedPermissions(client) {
     },
     {
       resource: 'legislature',
-      action: 'update-ministry',
+      action: 'update-ministries',
       ownership: null,
-      description: 'Aggiornamento ministero/ministro',
+      description: 'Aggiornamento ministeri/ministri',
     },
     {
       resource: 'legislature',
       action: 'remove-ministries',
       ownership: null,
-      description: 'Rimozione ministero/ministro',
+      description: 'Rimozione ministeri/ministri',
     },
     {
       resource: 'legislature',

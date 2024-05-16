@@ -8,7 +8,7 @@ import deleteRoute from './crud/delete.js'
 
 import duplicateRoute from './duplicate.js'
 import addMinistriesRoute from './addMinistries.js'
-import updateMinistryRoute from './updateMinistry.js'
+import updateMinistryRoute from './updateMinistries.js'
 import removeMinistriesRoute from './removeMinistries.js'
 
 export default async function index(fastify) {
