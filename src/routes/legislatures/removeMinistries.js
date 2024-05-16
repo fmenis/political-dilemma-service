@@ -12,8 +12,8 @@ export default async function removeMinistries(fastify) {
   const permission = `legislature:${api}`
 
   fastify.route({
-    method: 'DELETE',
-    path: '/:id/ministries',
+    method: 'POST',
+    path: '/:id/remove-ministries',
     config: {
       public: false,
       permission,

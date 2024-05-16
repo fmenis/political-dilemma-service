@@ -411,7 +411,7 @@ export async function seedPermissions(client) {
     },
     {
       resource: 'legislature',
-      action: 'remove-ministry',
+      action: 'remove-ministries',
       ownership: null,
       description: 'Rimozione ministero/ministro',
     },
