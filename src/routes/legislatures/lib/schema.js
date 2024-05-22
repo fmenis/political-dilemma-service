@@ -36,25 +36,38 @@ export function sLegislatureDetail() {
     .additionalProperties(false)
     .prop(
       'ministries',
-      S.array().items(sMinistryDetail()).minItems(0).maxItems(50)
+      S.array().items(sMinisterDetail()).minItems(0).maxItems(50)
     )
     .description('Legislature ministries.')
     .required()
     .extend(sLegislatureList())
 }
 
-export function sMinistryDetail() {
+function sMinisterDetail() {
   return S.object()
-    .description('Ministry')
+    .description('Minister')
     .additionalProperties(false)
     .prop('id', S.string().format('uuid'))
-    .description('Ministry id.')
+    .description('Minister id.')
     .required()
     .prop('name', S.string().maxLength(50))
-    .description('Ministry name.')
+    .description('Minister name.')
     .required()
-    .prop('ministerFullName', S.string().maxLength(100))
-    .description('Politician full name.')
+    .prop(
+      'ministry',
+      S.object()
+        .additionalProperties(false)
+        .prop('id', S.string().format('uuid'))
+        .description('Ministry id.')
+        .required()
+        .prop('firstName', S.string().maxLength(50))
+        .description('Ministry first name')
+        .required()
+        .prop('lastName', S.string().maxLength(50))
+        .description('Ministry last name')
+        .required()
+    )
+    .description('Ministry info')
     .required()
 }
 

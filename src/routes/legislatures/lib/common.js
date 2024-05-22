@@ -21,13 +21,17 @@ export async function populateLegislature(legislature, massive) {
 
   return {
     ...legislature,
-    ministries: ministries.map(ministry => {
+    ministries: ministries.map(minister => {
       const politician = politicians.find(
-        item => item.id === ministry.politicianId
+        item => item.id === minister.politicianId
       )
       return {
-        ...ministry,
-        ministerFullName: `${politician.firstName} ${politician.lastName}`,
+        ...minister,
+        ministry: {
+          id: politician.id,
+          firstName: politician.firstName,
+          lastName: politician.lastName,
+        },
       }
     }),
   }
