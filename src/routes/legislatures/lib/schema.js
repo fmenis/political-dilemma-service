@@ -45,29 +45,29 @@ export function sLegislatureDetail() {
 
 function sMinisterDetail() {
   return S.object()
-    .description('Minister')
+    .description('Ministry')
     .additionalProperties(false)
     .prop('id', S.string().format('uuid'))
-    .description('Minister id.')
+    .description('Ministry id.')
     .required()
     .prop('name', S.string().maxLength(50))
-    .description('Minister name.')
+    .description('Ministry name.')
     .required()
     .prop(
-      'ministry',
+      'minister',
       S.object()
         .additionalProperties(false)
         .prop('id', S.string().format('uuid'))
-        .description('Ministry id.')
+        .description('minister id.')
         .required()
         .prop('firstName', S.string().maxLength(50))
-        .description('Ministry first name')
+        .description('minister first name')
         .required()
         .prop('lastName', S.string().maxLength(50))
-        .description('Ministry last name')
+        .description('minister last name')
         .required()
     )
-    .description('Ministry info')
+    .description('minister info')
     .required()
 }
 

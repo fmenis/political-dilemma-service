@@ -27,7 +27,7 @@ export async function populateLegislature(legislature, massive) {
       )
       return {
         ...minister,
-        ministry: {
+        minister: {
           id: politician.id,
           firstName: politician.firstName,
           lastName: politician.lastName,
