@@ -36,9 +36,12 @@ export default async function removeMinistries(fastify) {
         .additionalProperties(false)
         .prop(
           'ids',
-          S.array(S.string().format('uuid')).minItems(1).uniqueItems(true)
+          S.array()
+            .items(S.string().format('uuid'))
+            .minItems(1)
+            .uniqueItems(true)
         )
-        .description('Ministries ids.')
+        .description('Ministries ids')
         .required(),
       response: {
         200: sLegislatureDetail(),
