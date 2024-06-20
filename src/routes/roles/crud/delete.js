@@ -1,18 +1,30 @@
 import S from 'fluent-json-schema'
 
+import { buildRouteFullDescription } from '../../common/common.js'
+
 export default async function deleteRole(fastify) {
   const { pg, httpErrors } = fastify
+  const { errors, throwNotFoundError, throwRoleAssignedError } =
+    fastify.roleErrors
+
+  const api = 'delete'
+  const permission = `role:${api}`
 
   fastify.route({
     method: 'DELETE',
     path: '/:id',
     config: {
       public: false,
-      permission: 'role:delete',
+      permission,
     },
     schema: {
       summary: 'Delete role',
-      description: 'Delete role by id.',
+      description: buildRouteFullDescription({
+        description: 'Delete role by id.',
+        errors,
+        permission,
+        api,
+      }),
       params: S.object()
         .additionalProperties(false)
         .prop('id', S.string().format('uuid'))
@@ -36,7 +48,7 @@ export default async function deleteRole(fastify) {
     })
 
     if (!role) {
-      throw httpErrors.notFound(`Role with id '${id}' not found`)
+      throwNotFoundError({ id, name: 'role' })
     }
 
     const { rows } = await pg.execQuery(
@@ -45,7 +57,7 @@ export default async function deleteRole(fastify) {
     )
 
     if (rows.length) {
-      throw httpErrors.notFound(`Role with id '${id}' is assigned to users`)
+      throwRoleAssignedError({ id })
     }
   }
 
