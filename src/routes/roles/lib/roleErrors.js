@@ -36,7 +36,7 @@ async function roleErrors(fastify) {
       {
         code: '*ROLE_ASSIGNED*',
         description:
-          'occurs when the target role assigned to one or more users.',
+          'occurs when the target role is assigned to one or more users.',
         apis: ['delete'],
         statusCode: 409,
       },

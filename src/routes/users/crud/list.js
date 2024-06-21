@@ -183,7 +183,11 @@ export default async function listUsers(fastify) {
     }, [])
 
     if (where.length) {
-      query = `${query} WHERE ${where.join(' AND ')}`
+      const operator =
+        filters.is_blocked.value === true && filters.is_deleted.value === true
+          ? 'OR'
+          : 'AND'
+      query = `${query} WHERE ${where.join(` ${operator} `)}`
     }
 
     return { query, inputs }
