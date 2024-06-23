@@ -4,7 +4,6 @@ import moment from 'moment'
 import { compareStrings } from '../../lib/hash.js'
 import { deleteSessions } from '../sessions/lib/utils.js'
 import { appConfig } from '../../config/main.js'
-import { ENV } from '../../common/enums.js'
 
 export default async function login(fastify) {
   const { pg, httpErrors, config } = fastify
@@ -79,7 +78,7 @@ export default async function login(fastify) {
 
     const userSessionsCount = await countActiveUserSessions(user.id, pg)
     /**
-     * Don't stop the logic if the user have reached the sessons
+     * Don't stop the logic if the user have reached the sessions
      * limit and 'deleteOldest' is true. Is the only way to allow
      * the user to login in that situation
      */
@@ -126,15 +125,8 @@ export default async function login(fastify) {
       httpOnly: true,
       signed: true,
       secure: true,
-      sameSite: 'none',
+      sameSite: 'strict',
       expires: moment().add(fastify.config.COOKIE_TTL, 'seconds').toDate(),
-    }
-
-    if (fastify.config.NODE_ENV !== ENV.LOCAL) {
-      // 'secure' works in the browser, for localhost, but not for postman
-      cookieOptions.secure = true
-      cookieOptions.sameSite = 'none'
-      // cookieOptions.domain = fastify.config.API_DOMAIN
     }
 
     reply.setCookie('session', sessionId, cookieOptions)
