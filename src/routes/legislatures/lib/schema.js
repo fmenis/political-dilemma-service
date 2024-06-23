@@ -36,14 +36,14 @@ export function sLegislatureDetail() {
     .additionalProperties(false)
     .prop(
       'ministries',
-      S.array().items(sMinistryDetail()).minItems(0).maxItems(50)
+      S.array().items(sMinisterDetail()).minItems(0).maxItems(50)
     )
     .description('Legislature ministries.')
     .required()
     .extend(sLegislatureList())
 }
 
-export function sMinistryDetail() {
+function sMinisterDetail() {
   return S.object()
     .description('Ministry')
     .additionalProperties(false)
@@ -53,8 +53,21 @@ export function sMinistryDetail() {
     .prop('name', S.string().maxLength(50))
     .description('Ministry name.')
     .required()
-    .prop('ministerFullName', S.string().maxLength(100))
-    .description('Minister name.')
+    .prop(
+      'minister',
+      S.object()
+        .additionalProperties(false)
+        .prop('id', S.string().format('uuid'))
+        .description('minister id.')
+        .required()
+        .prop('firstName', S.string().maxLength(50))
+        .description('minister first name')
+        .required()
+        .prop('lastName', S.string().maxLength(50))
+        .description('minister last name')
+        .required()
+    )
+    .description('minister info')
     .required()
 }
 
@@ -81,8 +94,8 @@ export function sAddMinistries() {
             .prop('name', S.string().minLength(2).maxLength(50))
             .description('Ministry name.')
             .required()
-            .prop('ministerFullName', S.string().minLength(2).maxLength(100))
-            .description('Minister name.')
+            .prop('politicianId', S.string().format('uuid'))
+            .description('Politician id.')
             .required()
         )
         .minItems(1)

@@ -37,7 +37,7 @@ export function restrictDataToOwner(apiPermission) {
 /**
  * Build OpenAPI route description
  * @param {string} description route description
- * @param {Object[]} [errors] route possibile errors
+ * @param {Object[]} [errors] route possible errors
  * @param {string} [permission] route permission
  * @param {string} [api] route error identifier
  * @param {string} [publicApi] defines if the route is public

@@ -51,6 +51,10 @@ export default async function blockUser(fastify) {
     if (user.isBlocked) {
       throw httpErrors.conflict(`User is already blocked`)
     }
+
+    if (user.isDeleted) {
+      throw httpErrors.conflict(`Cannot block a deleted user`)
+    }
   }
 
   async function onBlockUser(req, reply) {

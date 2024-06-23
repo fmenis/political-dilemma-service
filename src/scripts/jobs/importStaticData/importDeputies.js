@@ -60,7 +60,6 @@ function parseGroupName(value) {
   }
 
   value = value.toLowerCase().trim()
-
   return value
 }
 
@@ -72,3 +71,50 @@ async function persistRow(parsedRow, db) {
     throw error
   }
 }
+
+// SELECT DISTINCT ?persona ?cognome ?nome ?info
+// ?dataNascita ?luogoNascita ?genere ?img
+// ?collegio ?lista ?nomeGruppo ?gruppo COUNT(DISTINCT ?madatoCamera) as ?numeroMandati ?aggiornamento
+// WHERE {
+// ?persona ocd:rif_mandatoCamera ?mandato; a foaf:Person.
+
+// ## deputato
+// ?d a ocd:deputato;
+// ocd:rif_leg <http://dati.camera.it/ocd/legislatura.rdf/repubblica_19>;
+// ocd:rif_mandatoCamera ?mandato.
+// OPTIONAL{?d ocd:aderisce ?aderisce}
+// OPTIONAL{?d dc:description ?info}
+
+// ##anagrafica
+// ?d foaf:surname ?cognome; foaf:gender ?genere; foaf:depiction ?img; foaf:firstName ?nome.
+// OPTIONAL{
+// ?persona <http://purl.org/vocab/bio/0.1/Birth> ?nascita.
+// ?nascita <http://purl.org/vocab/bio/0.1/date> ?dataNascita;
+// rdfs:label ?nato; ocd:rif_luogo ?luogoNascitaUri.
+// ?luogoNascitaUri dc:title ?luogoNascita.
+// }
+
+// ##aggiornamento del sistema
+// OPTIONAL{?d <http://lod.xdams.org/ontologies/ods/modified> ?aggiornamento.}
+
+// ## mandato
+// ?mandato ocd:rif_elezione ?elezione.
+// MINUS{?mandato ocd:endDate ?fineMandato.}
+
+// ## totale mandati
+// ?persona ocd:rif_mandatoCamera ?madatoCamera.
+
+// ## elezione
+// OPTIONAL {
+// ?elezione dc:coverage ?collegio
+// }
+// OPTIONAL {
+// ?elezione ocd:lista ?lista
+// }
+
+// ## adesione a gruppo
+// OPTIONAL {?aderisce ocd:rif_gruppoParlamentare ?gruppo}
+// OPTIONAL {?aderisce rdfs:label ?nomeGruppo}
+// MINUS{?aderisce ocd:endDate ?fineAdesione}
+
+// }

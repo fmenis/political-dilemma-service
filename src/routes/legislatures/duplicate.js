@@ -58,7 +58,7 @@ export default async function duplicateLegislature(fastify) {
       {
         legislatureId: legislature.id,
       },
-      { fields: ['name', 'ministerFullName'] }
+      { fields: ['name', 'politicianId'] }
     )
 
     const newLegislature = await massive.withTransaction(async tx => {

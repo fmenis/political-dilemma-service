@@ -16,7 +16,7 @@ export default async function addMinistries(fastify) {
 
   fastify.route({
     method: 'POST',
-    path: '/:id/ministries',
+    path: '/:id/add-ministries',
     config: {
       public: false,
       permission,
@@ -44,7 +44,7 @@ export default async function addMinistries(fastify) {
     preValidation: async function (req) {
       req.body.ministries = req.body.ministries.map(item => ({
         name: item.name.trim(),
-        ministerFullName: item.ministerFullName.trim(),
+        politicianId: item.politicianId,
       }))
     },
     preHandler: onPreHandler,
@@ -53,11 +53,7 @@ export default async function addMinistries(fastify) {
 
   async function onPreHandler(req) {
     const { id } = req.params
-
-    const ministries = req.body.ministries.map(item => ({
-      name: item.name.trim(),
-      ministerFullName: item.ministerFullName.trim(),
-    }))
+    const { ministries } = req.body
 
     const legislature = await massive.legislature.findOne(id)
     if (!legislature) {
@@ -67,12 +63,12 @@ export default async function addMinistries(fastify) {
     const ministriesDuplicates = findArrayDuplicates(
       ministries.map(item => item.name)
     )
-    const ministersDuplicates = findArrayDuplicates(
-      ministries.map(item => item.ministerFullName)
-    )
-    if (ministriesDuplicates.length || ministersDuplicates.length) {
+    // const ministersDuplicates = findArrayDuplicates(
+    //   ministries.map(item => item.ministerFullName)
+    // )
+    if (ministriesDuplicates.length /*|| ministersDuplicates.length*/) {
       throwDuplicateMinistriesError({
-        duplicates: [...ministriesDuplicates, ...ministersDuplicates],
+        duplicates: [...ministriesDuplicates /*, ...ministersDuplicates*/],
       })
     }
 
@@ -90,7 +86,7 @@ export default async function addMinistries(fastify) {
         async item =>
           await massive.ministry.save({
             name: item.name,
-            ministerFullName: item.ministerFullName,
+            politicianId: item.politicianId,
             legislatureId: legislature.id,
           })
       )
