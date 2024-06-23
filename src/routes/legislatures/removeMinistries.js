@@ -1,19 +1,20 @@
 import S from 'fluent-json-schema'
 
 import { buildRouteFullDescription } from '../common/common.js'
+import { populateLegislature } from './lib/common.js'
 import { sLegislatureDetail } from './lib/schema.js'
 
-export default async function duplicateLegislature(fastify) {
+export default async function removeMinistries(fastify) {
   const { massive } = fastify
   const { throwNotFoundError, errors } = fastify.legislatureErrors
 
-  const routeDescription = 'Duplicate legislature.'
-  const api = 'duplicate'
+  const routeDescription = 'Remove ministries.'
+  const api = 'remove-ministries'
   const permission = `legislature:${api}`
 
   fastify.route({
     method: 'POST',
-    path: '/:id/duplicate',
+    path: '/:id/remove-ministries',
     config: {
       public: false,
       permission,
@@ -31,56 +32,48 @@ export default async function duplicateLegislature(fastify) {
         .prop('id', S.string().format('uuid'))
         .description('Legislature id.')
         .required(),
+      body: S.object()
+        .additionalProperties(false)
+        .prop(
+          'ids',
+          S.array()
+            .items(S.string().format('uuid'))
+            .minItems(1)
+            .uniqueItems(true)
+        )
+        .description('Ministries ids')
+        .required(),
       response: {
         200: sLegislatureDetail(),
+        204: fastify.getSchema('sNoContent'),
         404: fastify.getSchema('sNotFound'),
+        // 409: fastify.getSchema('sConflict'),
       },
     },
     preHandler: onPreHandler,
-    handler: onDuplicateLegislature,
+    handler: onRemoveMinistries,
   })
 
   async function onPreHandler(req) {
     const { id } = req.params
 
     const legislature = await massive.legislature.findOne(id)
+
     if (!legislature) {
       throwNotFoundError({ id })
     }
 
+    //##TODO check ministers not present
+
     req.resource = legislature
   }
 
-  async function onDuplicateLegislature(req, reply) {
+  async function onRemoveMinistries(req) {
+    const { ids } = req.body
     const { resource: legislature } = req
 
-    const ministries = await massive.ministry.find(
-      {
-        legislatureId: legislature.id,
-      },
-      { fields: ['name', 'politicianId'] }
-    )
+    await massive.ministry.destroy({ id: ids })
 
-    const newLegislature = await massive.withTransaction(async tx => {
-      const newLegislature = await tx.legislature.save({
-        name: `${legislature.name} copy_${new Date().getMilliseconds()}`,
-        startDate: legislature.startDate,
-        endDate: legislature.endDate,
-      })
-
-      await tx.ministry.insert(
-        ministries.map(item => ({
-          ...item,
-          legislatureId: newLegislature.id,
-        }))
-      )
-
-      return newLegislature
-    })
-
-    return {
-      ...newLegislature,
-      ministries: [],
-    }
+    return populateLegislature(legislature, massive)
   }
 }

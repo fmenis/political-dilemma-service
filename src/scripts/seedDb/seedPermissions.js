@@ -345,20 +345,20 @@ export async function seedPermissions(client) {
       resource: 'politician',
       action: 'list',
       ownership: null,
-      description: 'Lista politici (tutti)',
+      description: 'Lista politici.',
     },
     {
       resource: 'politician',
       action: 'read',
       ownership: null,
-      description: 'Lista politici (tutti)',
+      description: 'Lista politici.',
     },
     // GROUPS
     {
       resource: 'group',
       action: 'list',
       ownership: null,
-      description: 'Lista gruppi (tutti)',
+      description: 'Lista gruppi.',
     },
     {
       resource: 'group',
@@ -405,9 +405,15 @@ export async function seedPermissions(client) {
     },
     {
       resource: 'legislature',
-      action: 'update-ministry',
+      action: 'update-ministries',
       ownership: null,
-      description: 'Aggiornamento ministero/ministro',
+      description: 'Aggiornamento ministeri/ministri',
+    },
+    {
+      resource: 'legislature',
+      action: 'remove-ministries',
+      ownership: null,
+      description: 'Rimozione ministeri/ministri',
     },
     {
       resource: 'legislature',

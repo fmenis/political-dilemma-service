@@ -83,6 +83,10 @@ export default async function listPoliticians(fastify) {
           field: 'firstName',
           direction: 'asc',
         },
+        {
+          field: 'id',
+          direction: 'asc',
+        },
       ],
       limit: query.limit,
       offset: query.offset,

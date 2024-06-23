@@ -1,1345 +1,1704 @@
 {
-  "info": {
-    "_postman_id": "9e2e45ad-12fc-43f6-a0db-93cc2f004147",
-    "name": "political-dilemma",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "23111718",
-    "_collection_link": "https://planetary-crater-176152.postman.co/workspace/Team-Workspace~543bbe70-6658-413b-8bb0-69518e637b90/collection/23111718-9e2e45ad-12fc-43f6-a0db-93cc2f004147?action=share&source=collection_link&creator=23111718"
-  },
-  "item": [
-    {
-      "name": "auth",
-      "item": [
-        {
-          "name": "login",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Accept-Version",
-                "value": "1.x",
-                "type": "default",
-                "disabled": true
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"email\": \"filippomeniswork@gmail.com\",\n    \"password\": \"@Password1\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{url}}/api/v1/auth/login",
-              "host": ["{{url}}"],
-              "path": ["api", "v1", "auth", "login"]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "logout",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "accept-version",
-                "value": "2.x",
-                "type": "text"
-              }
-            ],
-            "url": {
-              "raw": "{{url}}/api/v1/auth/logout",
-              "host": ["{{url}}"],
-              "path": ["api", "v1", "auth", "logout"]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "misc",
-      "item": [
-        {
-          "name": "status",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "accept-version",
-                "value": "2.x",
-                "type": "text",
-                "disabled": true
-              }
-            ],
-            "url": {
-              "raw": "{{url}}/api/v1/status",
-              "host": ["{{url}}"],
-              "path": ["api", "v1", "status"]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "regions",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "accept-version",
-                "value": "2.x",
-                "type": "text"
-              }
-            ],
-            "url": {
-              "raw": "{{url}}/api/v1/regions",
-              "host": ["{{url}}"],
-              "path": ["api", "v1", "regions"]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "provinces",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "accept-version",
-                "value": "2.x",
-                "type": "text"
-              }
-            ],
-            "url": {
-              "raw": "{{url}}/api/v1/provinces",
-              "host": ["{{url}}"],
-              "path": ["api", "v1", "provinces"],
-              "query": [
-                {
-                  "key": "regionId",
-                  "value": "10",
-                  "disabled": true
-                }
-              ]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "users",
-      "item": [
-        {
-          "name": "resetPassword",
-          "item": [
-            {
-              "name": "send reset link",
-              "request": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"email\": \"filippomeniswork@gmail.com\"\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{url}}/api/v1/reset-link",
-                  "host": ["{{url}}"],
-                  "path": ["api", "v1", "reset-link"]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "reset password",
-              "request": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"token\": \"569421bd23d935351be083d6ad2f9fcbb6658d90a3565f78083742cd60ee\",\n    \"newPassword\": \"@Password1\",\n    \"newPasswordConfirmation\": \"@Password1\"\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{url}}/api/v1/reset-password",
-                  "host": ["{{url}}"],
-                  "path": ["api", "v1", "reset-password"]
-                }
-              },
-              "response": []
-            }
-          ]
-        },
-        {
-          "name": "read",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{url}}/api/v1/users/3",
-              "host": ["{{url}}"],
-              "path": ["api", "v1", "users", "3"]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "delete",
-          "request": {
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{url}}/api/v1/users/7",
-              "host": ["{{url}}"],
-              "path": ["api", "v1", "users", "7"]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "list",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{url}}/api/v1/users",
-              "host": ["{{url}}"],
-              "path": ["api", "v1", "users"],
-              "query": [
-                {
-                  "key": "isBlocked",
-                  "value": "false",
-                  "disabled": true
-                },
-                {
-                  "key": "isDeleted",
-                  "value": "true",
-                  "disabled": true
-                },
-                {
-                  "key": "search",
-                  "value": "@gmail",
-                  "disabled": true
-                },
-                {
-                  "key": "firstName",
-                  "value": "gaet",
-                  "disabled": true
-                },
-                {
-                  "key": "lastName",
-                  "value": "BOA",
-                  "disabled": true
-                },
-                {
-                  "key": "type",
-                  "value": "backoffice",
-                  "disabled": true
-                },
-                {
-                  "key": "email",
-                  "value": "",
-                  "disabled": true
-                },
-                {
-                  "key": "userName",
-                  "value": "phil Ded",
-                  "disabled": true
-                },
-                {
-                  "key": "role",
-                  "value": "DEV",
-                  "disabled": true
-                },
-                {
-                  "key": "limit",
-                  "value": "10",
-                  "disabled": true
-                },
-                {
-                  "key": "offset",
-                  "value": "40",
-                  "disabled": true
-                },
-                {
-                  "key": "sortBy",
-                  "value": "lastAccess",
-                  "disabled": true
-                },
-                {
-                  "key": "order",
-                  "value": "ASC",
-                  "disabled": true
-                }
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "change password",
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"oldPassword\": \"Pas1;:_,.\\\\-ç°§òàù@#é*è+[]{}|!\\\"£$%&()=?^'ìZ<>\",\n  \"newPassword\": \"@Password1\",\n  \"newPasswordConfirmation\": \"@Password1\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{url}}/api/v1/users/2/change-password",
-              "host": ["{{url}}"],
-              "path": ["api", "v1", "users", "2", "change-password"]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "update",
-          "request": {
-            "method": "PUT",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"firstName\": \"dio\",\n    \"lastName\": \"Del Dal Non Mi Ricordo Ostia\",\n    \"userName\": \"sdfadddssf\",\n    \"email\": \"vccv@gmail.com\",\n    \"regionId\": 12,\n    \"provinceId\": 23,\n    \"isBlocked\": false\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{url}}/api/v1/users/5",
-              "host": ["{{url}}"],
-              "path": ["api", "v1", "users", "5"]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "whoami",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{url}}/api/v1/users/whoami",
-              "host": ["{{url}}"],
-              "path": ["api", "v1", "users", "whoami"]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "block",
-          "request": {
-            "method": "POST",
-            "header": [],
-            "url": {
-              "raw": "{{url}}/api/v1/users/3/block",
-              "host": ["{{url}}"],
-              "path": ["api", "v1", "users", "3", "block"]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "unblock",
-          "request": {
-            "method": "POST",
-            "header": [],
-            "url": {
-              "raw": "{{url}}/api/v1/users/3/unblock",
-              "host": ["{{url}}"],
-              "path": ["api", "v1", "users", "3", "unblock"]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "sessions",
-      "item": [
-        {
-          "name": "list",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{url}}/api/v1/sessions?userId=2&active=true",
-              "host": ["{{url}}"],
-              "path": ["api", "v1", "sessions"],
-              "query": [
-                {
-                  "key": "userId",
-                  "value": "2"
-                },
-                {
-                  "key": "active",
-                  "value": "true"
-                }
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "delete",
-          "request": {
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{url}}/api/v1/sessions?ids=5d634de2-ded3-4592-a5cd-9460241b30ce,90c1167c-d394-4698-93d9-834609c51da4",
-              "host": ["{{url}}"],
-              "path": ["api", "v1", "sessions"],
-              "query": [
-                {
-                  "key": "ids",
-                  "value": "5d634de2-ded3-4592-a5cd-9460241b30ce,90c1167c-d394-4698-93d9-834609c51da4"
-                }
-              ]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "permissions",
-      "item": [
-        {
-          "name": "create",
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"resource\": \"role\",\n    \"action\": \"list\",\n    \"ownership\": \"any\",\n    \"description\": \"List roles\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{url}}/api/v1/permissions",
-              "host": ["{{url}}"],
-              "path": ["api", "v1", "permissions"]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "list",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{url}}/api/v1/permissions",
-              "host": ["{{url}}"],
-              "path": ["api", "v1", "permissions"]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "delete",
-          "request": {
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{url}}/api/v1/permissions/2",
-              "host": ["{{url}}"],
-              "path": ["api", "v1", "permissions", "2"]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "update",
-          "request": {
-            "method": "PUT",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"description\": \"Delete session\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{url}}/api/v1/permissions/122",
-              "host": ["{{url}}"],
-              "path": ["api", "v1", "permissions", "122"]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "roles",
-      "item": [
-        {
-          "name": "create",
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"name\": \"test 4\",\n    \"description\": \"Test role 4\",\n    \"permissionsIds\": [3,5,7,9,12]\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{url}}/api/v1/roles",
-              "host": ["{{url}}"],
-              "path": ["api", "v1", "roles"]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "list",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{url}}/api/v1/roles",
-              "host": ["{{url}}"],
-              "path": ["api", "v1", "roles"]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "read",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{url}}/api/v1/roles/1",
-              "host": ["{{url}}"],
-              "path": ["api", "v1", "roles", "1"]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "update",
-          "request": {
-            "method": "PUT",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"name\": \"Root Updated\",\n    \"description\": \"Test role updated\",\n    \"permissionsIds\": [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{url}}/api/v1/roles/1",
-              "host": ["{{url}}"],
-              "path": ["api", "v1", "roles", "1"]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "delete",
-          "request": {
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{url}}/api/v1/roles/1",
-              "host": ["{{url}}"],
-              "path": ["api", "v1", "roles", "1"]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "userAssign",
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"userId\": 1,\n    \"rolesIds\": [1]\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{url}}/api/v1/roles/assign",
-              "host": ["{{url}}"],
-              "path": ["api", "v1", "roles", "assign"]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "userRemove",
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"userId\": 1,\n    \"rolesIds\": [2]\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{url}}/api/v1/roles/remove",
-              "host": ["{{url}}"],
-              "path": ["api", "v1", "roles", "remove"]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "permissionsAdd",
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"permissionsIds\": [7]\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{url}}/api/v1/roles/3/permissions/add",
-              "host": ["{{url}}"],
-              "path": ["api", "v1", "roles", "3", "permissions", "add"]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "permissionsRemove",
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"permissionsIds\": [7]\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{url}}/api/v1/roles/3/permissions/remove",
-              "host": ["{{url}}"],
-              "path": ["api", "v1", "roles", "3", "permissions", "remove"]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "articles",
-      "item": [
-        {
-          "name": "categories",
-          "item": [
-            {
-              "name": "list article categories",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{url}}/api/v1/articles/categories",
-                  "host": ["{{url}}"],
-                  "path": ["api", "v1", "articles", "categories"],
-                  "query": [
-                    {
-                      "key": "status",
-                      "value": "published",
-                      "disabled": true
-                    },
-                    {
-                      "key": "limit",
-                      "value": "10",
-                      "disabled": true
-                    },
-                    {
-                      "key": "offset",
-                      "value": "0",
-                      "disabled": true
-                    }
-                  ]
-                }
-              },
-              "response": []
-            }
-          ]
-        },
-        {
-          "name": "CRUD",
-          "item": [
-            {
-              "name": "create article",
-              "request": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"title\": \"test\",\n    \"categoryId\": \"4a3979b8-9e0f-42b4-b350-bb155476b026\"\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{url}}/api/v1/articles",
-                  "host": ["{{url}}"],
-                  "path": ["api", "v1", "articles"]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "list articles",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{url}}/api/v1/articles",
-                  "host": ["{{url}}"],
-                  "path": ["api", "v1", "articles"],
-                  "query": [
-                    {
-                      "key": "status",
-                      "value": "PUBLISHED",
-                      "disabled": true
-                    },
-                    {
-                      "key": "search",
-                      "value": "agg",
-                      "disabled": true
-                    },
-                    {
-                      "key": "limit",
-                      "value": "2",
-                      "disabled": true
-                    },
-                    {
-                      "key": "offset",
-                      "value": "0",
-                      "disabled": true
-                    },
-                    {
-                      "key": "category",
-                      "value": "decreti",
-                      "disabled": true
-                    },
-                    {
-                      "key": "sortBy",
-                      "value": "title",
-                      "disabled": true
-                    },
-                    {
-                      "key": "order",
-                      "value": "ASC",
-                      "disabled": true
-                    }
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "update article",
-              "request": {
-                "method": "PATCH",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"text\": \"test\", \n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{url}}/api/v1/articles/174c954d-ebd6-44b9-9e52-298ca8cc1364",
-                  "host": ["{{url}}"],
-                  "path": [
-                    "api",
-                    "v1",
-                    "articles",
-                    "174c954d-ebd6-44b9-9e52-298ca8cc1364"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "delete article",
-              "request": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{url}}/api/v1/articles/eefbadd1-e06f-4f89-94b5-54d5736d7617",
-                  "host": ["{{url}}"],
-                  "path": [
-                    "api",
-                    "v1",
-                    "articles",
-                    "eefbadd1-e06f-4f89-94b5-54d5736d7617"
-                  ],
-                  "query": [
-                    {
-                      "key": "status",
-                      "value": "published",
-                      "disabled": true
-                    },
-                    {
-                      "key": "limit",
-                      "value": "10",
-                      "disabled": true
-                    },
-                    {
-                      "key": "offset",
-                      "value": "0",
-                      "disabled": true
-                    },
-                    {
-                      "key": "category",
-                      "value": "decreti",
-                      "disabled": true
-                    }
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "read article",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{url}}/api/v1/articles/252a6cda-a383-4aa7-acb5-7f132ed5a36b",
-                  "host": ["{{url}}"],
-                  "path": [
-                    "api",
-                    "v1",
-                    "articles",
-                    "252a6cda-a383-4aa7-acb5-7f132ed5a36b"
-                  ],
-                  "query": [
-                    {
-                      "key": "status",
-                      "value": "published",
-                      "disabled": true
-                    },
-                    {
-                      "key": "limit",
-                      "value": "10",
-                      "disabled": true
-                    },
-                    {
-                      "key": "offset",
-                      "value": "0",
-                      "disabled": true
-                    },
-                    {
-                      "key": "category",
-                      "value": "decreti",
-                      "disabled": true
-                    }
-                  ]
-                }
-              },
-              "response": []
-            }
-          ]
-        },
-        {
-          "name": "review article",
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"title\": \"tesdfdf3t\",\n    \"text\": \"Mah\",\n    \"description\": \"Bho\",\n    \"categoryId\": \"019acff7-23b8-43eb-add5-4d02e2bffe82\",\n    \"tags\": [\"arte\", \"arte\", \"ambiente\"]\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{url}}/api/v1/articles/5ed5df8a-c91e-4a14-a07d-cd0a540a0cc3/review",
-              "host": ["{{url}}"],
-              "path": [
-                "api",
-                "v1",
-                "articles",
-                "5ed5df8a-c91e-4a14-a07d-cd0a540a0cc3",
-                "review"
-              ]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "files",
-      "item": [
-        {
-          "name": "upload file",
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "formdata",
-              "formdata": [
-                {
-                  "key": "files",
-                  "type": "file",
-                  "src": "/home/dev/Pictures/screen.png"
-                },
-                {
-                  "key": "files",
-                  "type": "file",
-                  "src": "/home/dev/Pictures/screen.png"
-                },
-                {
-                  "key": "files",
-                  "type": "file",
-                  "src": "/home/dev/Pictures/screen.png"
-                }
-              ]
-            },
-            "url": {
-              "raw": "{{url}}/api/v1/files/upload",
-              "host": ["{{url}}"],
-              "path": ["api", "v1", "files", "upload"]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "delete file",
-          "request": {
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{url}}/api/v1/files/7763cda5-5291-4c17-bd60-c06b4adc1ded",
-              "host": ["{{url}}"],
-              "path": [
-                "api",
-                "v1",
-                "files",
-                "7763cda5-5291-4c17-bd60-c06b4adc1ded"
-              ]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "internalNotes",
-      "item": [
-        {
-          "name": "create internalNote",
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"text\": \"Nota elezioni anticipate\",\n    \"relatedDocumentId\": \"ceda394e-9cd1-4251-a5ad-ee9e6318727d\",\n    \"category\": \"articles\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{url}}/api/v1/notes",
-              "host": ["{{url}}"],
-              "path": ["api", "v1", "notes"]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "list internalNote",
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          },
-          "request": {
-            "method": "GET",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"text\": \"Nota elezioni anticipate\",\n    \"relatedDocumentId\": \"d0a9d9a4-191d-4203-8e12-abddc042ba66\",\n    \"category\": \"articles\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{url}}/api/v1/notes",
-              "host": ["{{url}}"],
-              "path": ["api", "v1", "notes"],
-              "query": [
-                {
-                  "key": "relatedDocumentId",
-                  "value": "89f80f01-b908-48cd-9c07-637a255a2c8c",
-                  "disabled": true
-                },
-                {
-                  "key": "category",
-                  "value": "articles",
-                  "disabled": true
-                }
-              ]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "politicians",
-      "item": [
-        {
-          "name": "list",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{url}}/api/v1/politicians",
-              "host": ["{{url}}"],
-              "path": ["api", "v1", "politicians"]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "read",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{url}}/api/v1/politicians/b3607d5b-4076-4273-aa67-443d5907cba2",
-              "host": ["{{url}}"],
-              "path": [
-                "api",
-                "v1",
-                "politicians",
-                "b3607d5b-4076-4273-aa67-443d5907cba2"
-              ]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "groups",
-      "item": [
-        {
-          "name": "list",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{url}}/api/v1/groups",
-              "host": ["{{url}}"],
-              "path": ["api", "v1", "groups"]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "update",
-          "request": {
-            "method": "PATCH",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"color\": \"123456\",\n    \"initials\": \"aws\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{url}}/api/v1/groups/9111bdec-2cc3-4ba4-9619-91c1aacd386e",
-              "host": ["{{url}}"],
-              "path": [
-                "api",
-                "v1",
-                "groups",
-                "9111bdec-2cc3-4ba4-9619-91c1aacd386e"
-              ]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "legislatures",
-      "item": [
-        {
-          "name": "update",
-          "request": {
-            "method": "PATCH",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"startDate\": \"2024-02-02\",\n    \"endDate\": \"2024-03-07\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{url}}/api/v1/legislatures/ad1bf003-c849-4b38-acf2-f5161a0a8d06",
-              "host": ["{{url}}"],
-              "path": [
-                "api",
-                "v1",
-                "legislatures",
-                "ad1bf003-c849-4b38-acf2-f5161a0a8d06"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "create",
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"name\": \"Legislatua XIX\",\n    \"startDate\": \"2024-01-02\",\n    \"endDate\": \"2024-01-04\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{url}}/api/v1/legislatures",
-              "host": ["{{url}}"],
-              "path": ["api", "v1", "legislatures"]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "duplicate",
-          "request": {
-            "method": "POST",
-            "header": [],
-            "url": {
-              "raw": "{{url}}/api/v1/legislatures/ee9533cc-b14f-40f2-ab4b-3c2a193b9ea4/duplicate",
-              "host": ["{{url}}"],
-              "path": [
-                "api",
-                "v1",
-                "legislatures",
-                "ee9533cc-b14f-40f2-ab4b-3c2a193b9ea4",
-                "duplicate"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "add ministries",
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n   \"ministries\": [\n    {\n        \"name\": \"Ministero dei trasporti\",\n        \"ministerFullName\": \"Matteo Salvini\" \n    },\n     {\n        \"name\": \"Ministero delle finanze\",\n        \"ministerFullName\": \"Sgarbi\" \n    },\n     {\n        \"name\": \"Ministero dei fanfalucchi\",\n        \"ministerFullName\": \"Bho\" \n    }\n   ]\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{url}}/api/v1/legislatures/bee7d626-d706-42f4-ae2c-c181bcaf229f/ministries",
-              "host": ["{{url}}"],
-              "path": [
-                "api",
-                "v1",
-                "legislatures",
-                "bee7d626-d706-42f4-ae2c-c181bcaf229f",
-                "ministries"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "update ministry",
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n   \"ministries\": [\n    {\n        \"name\": \"Ministero dei trasporti\",\n        \"ministerFullName\": \"Matteo Salvini\" \n    },\n     {\n        \"name\": \"Ministero delle finanze\",\n        \"ministerFullName\": \"Sgarbi\" \n    },\n     {\n        \"name\": \"Ministero dei fanfalucchi\",\n        \"ministerFullName\": \"Bho\" \n    }\n   ]\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{url}}/api/v1/legislatures/bee7d626-d706-42f4-ae2c-c181bcaf229f/ministries",
-              "host": ["{{url}}"],
-              "path": [
-                "api",
-                "v1",
-                "legislatures",
-                "bee7d626-d706-42f4-ae2c-c181bcaf229f",
-                "ministries"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "list",
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          },
-          "request": {
-            "method": "GET",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"name\": \"XIX\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{url}}/api/v1/legislatures?limit=10&offset=0",
-              "host": ["{{url}}"],
-              "path": ["api", "v1", "legislatures"],
-              "query": [
-                {
-                  "key": "limit",
-                  "value": "10"
-                },
-                {
-                  "key": "offset",
-                  "value": "0"
-                },
-                {
-                  "key": "search",
-                  "value": "X",
-                  "disabled": true
-                }
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "read",
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          },
-          "request": {
-            "method": "GET",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"name\": \"XIX\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{url}}/api/v1/legislatures/703c8566-5955-409b-9d98-a93fb06e5c71",
-              "host": ["{{url}}"],
-              "path": [
-                "api",
-                "v1",
-                "legislatures",
-                "703c8566-5955-409b-9d98-a93fb06e5c71"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "delete",
-          "request": {
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{url}}/api/v1/legislatures/152e050c-54f4-4cde-aceb-4c6d7535c485",
-              "host": ["{{url}}"],
-              "path": [
-                "api",
-                "v1",
-                "legislatures",
-                "152e050c-54f4-4cde-aceb-4c6d7535c485"
-              ]
-            }
-          },
-          "response": []
-        }
-      ]
-    }
-  ]
+	"info": {
+		"_postman_id": "9e2e45ad-12fc-43f6-a0db-93cc2f004147",
+		"name": "political-dilemma",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23111718",
+		"_collection_link": "https://planetary-crater-176152.postman.co/workspace/Team-Workspace~543bbe70-6658-413b-8bb0-69518e637b90/collection/23111718-9e2e45ad-12fc-43f6-a0db-93cc2f004147?action=share&source=collection_link&creator=23111718"
+	},
+	"item": [
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept-Version",
+								"value": "1.x",
+								"type": "default",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"filippomeniswork@gmail.com\",\n    \"password\": \"@Password1\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/v1/auth/login",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "logout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept-version",
+								"value": "2.x",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/api/v1/auth/logout",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "misc",
+			"item": [
+				{
+					"name": "status",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept-version",
+								"value": "2.x",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{url}}/api/v1/status",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"status"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "regions",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept-version",
+								"value": "2.x",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/api/v1/regions",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"regions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "provinces",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept-version",
+								"value": "2.x",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/api/v1/provinces",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"provinces"
+							],
+							"query": [
+								{
+									"key": "regionId",
+									"value": "10",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "users",
+			"item": [
+				{
+					"name": "resetPassword",
+					"item": [
+						{
+							"name": "send reset link",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"filippomeniswork@gmail.com\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/api/v1/reset-link",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"reset-link"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "reset password",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"token\": \"569421bd23d935351be083d6ad2f9fcbb6658d90a3565f78083742cd60ee\",\n    \"newPassword\": \"@Password1\",\n    \"newPasswordConfirmation\": \"@Password1\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/api/v1/reset-password",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"reset-password"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "read",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/v1/users/03cd95b2-d86d-43c2-86f2-48740ad394c7",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"03cd95b2-d86d-43c2-86f2-48740ad394c7"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/v1/users/7",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"7"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/v1/users",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users"
+							],
+							"query": [
+								{
+									"key": "isBlocked",
+									"value": "false",
+									"disabled": true
+								},
+								{
+									"key": "isDeleted",
+									"value": "true",
+									"disabled": true
+								},
+								{
+									"key": "search",
+									"value": "@gmail",
+									"disabled": true
+								},
+								{
+									"key": "firstName",
+									"value": "gaet",
+									"disabled": true
+								},
+								{
+									"key": "lastName",
+									"value": "BOA",
+									"disabled": true
+								},
+								{
+									"key": "type",
+									"value": "backoffice",
+									"disabled": true
+								},
+								{
+									"key": "email",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "userName",
+									"value": "phil Ded",
+									"disabled": true
+								},
+								{
+									"key": "role",
+									"value": "DEV",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "10",
+									"disabled": true
+								},
+								{
+									"key": "offset",
+									"value": "40",
+									"disabled": true
+								},
+								{
+									"key": "sortBy",
+									"value": "lastAccess",
+									"disabled": true
+								},
+								{
+									"key": "order",
+									"value": "ASC",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "change password",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"oldPassword\": \"@Password2\",\n  \"newPassword\": \"@Password1\",\n  \"newPasswordConfirmation\": \"@Password1\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/v1/users/555397f9-6107-41f1-9573-d5702bfa18e4/change-password",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"555397f9-6107-41f1-9573-d5702bfa18e4",
+								"change-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"Filippo\",\n    \"lastName\": \"Menis\",\n    \"userName\": \"menis\",\n    \"email\": \"filippomeniswork@gmail.com\",\n    \"regionId\": \"e88d62c4-cab3-4e89-942c-5500f4cf02a9\",\n    \"provinceId\": \"2984b12f-cef9-4aeb-a347-359ee213180a\",\n    \"bio\": \"eeeeee\"\n}\n\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/v1/users/03cd95b2-d86d-43c2-86f2-48740ad394c7",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"03cd95b2-d86d-43c2-86f2-48740ad394c7"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "whoami",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/v1/users/whoami",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"whoami"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "block",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/v1/users/3/block",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"3",
+								"block"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "account",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/v1/users/account",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"account"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "unblock",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/v1/users/3/unblock",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"3",
+								"unblock"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "sessions",
+			"item": [
+				{
+					"name": "list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/v1/sessions?userId=03cd95b2-d86d-43c2-86f2-48740ad394c7&active=true",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"sessions"
+							],
+							"query": [
+								{
+									"key": "userId",
+									"value": "03cd95b2-d86d-43c2-86f2-48740ad394c7"
+								},
+								{
+									"key": "active",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"ids\": [\"917d2dee-1355-48cf-b981-8792226b66d4\"]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/v1/sessions",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"sessions"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "permissions",
+			"item": [
+				{
+					"name": "create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"resource\": \"role\",\n    \"action\": \"list\",\n    \"ownership\": \"any\",\n    \"description\": \"List roles\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/v1/permissions",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"permissions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/v1/permissions",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"permissions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/v1/permissions/2",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"permissions",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"description\": \"Delete session\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/v1/permissions/122",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"permissions",
+								"122"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "roles",
+			"item": [
+				{
+					"name": "create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"test 4\",\n    \"description\": \"Test role 4\",\n    \"permissionsIds\": [3,5,7,9,12]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/v1/roles",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"roles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/v1/roles",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"roles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "read",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/v1/roles/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"roles",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Root Updated\",\n    \"description\": \"Test role updated\",\n    \"permissionsIds\": [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/v1/roles/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"roles",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/v1/roles/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"roles",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "userAssign",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"userId\": 1,\n    \"rolesIds\": [1]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/v1/roles/assign",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"roles",
+								"assign"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "userRemove",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"userId\": 1,\n    \"rolesIds\": [2]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/v1/roles/remove",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"roles",
+								"remove"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "permissionsAdd",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"permissionsIds\": [7]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/v1/roles/3/permissions/add",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"roles",
+								"3",
+								"permissions",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "permissionsRemove",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"permissionsIds\": [7]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/v1/roles/3/permissions/remove",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"roles",
+								"3",
+								"permissions",
+								"remove"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "articles",
+			"item": [
+				{
+					"name": "categories",
+					"item": [
+						{
+							"name": "list article categories",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/api/v1/articles/categories",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"articles",
+										"categories"
+									],
+									"query": [
+										{
+											"key": "status",
+											"value": "published",
+											"disabled": true
+										},
+										{
+											"key": "limit",
+											"value": "10",
+											"disabled": true
+										},
+										{
+											"key": "offset",
+											"value": "0",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "CRUD",
+					"item": [
+						{
+							"name": "create article",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"test\",\n    \"categoryId\": \"d3275561-3a75-4373-b6a8-fd13fe356d4c\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/api/v1/articles",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"articles"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "list articles",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/api/v1/articles",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"articles"
+									],
+									"query": [
+										{
+											"key": "status",
+											"value": "PUBLISHED",
+											"disabled": true
+										},
+										{
+											"key": "search",
+											"value": "agg",
+											"disabled": true
+										},
+										{
+											"key": "limit",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "offset",
+											"value": "0",
+											"disabled": true
+										},
+										{
+											"key": "category",
+											"value": "decreti",
+											"disabled": true
+										},
+										{
+											"key": "sortBy",
+											"value": "title",
+											"disabled": true
+										},
+										{
+											"key": "order",
+											"value": "ASC",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update article",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"text\": null\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/api/v1/articles/65dcfccd-75f0-4a31-b628-da253f4786f8",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"articles",
+										"65dcfccd-75f0-4a31-b628-da253f4786f8"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete article",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/api/v1/articles/eefbadd1-e06f-4f89-94b5-54d5736d7617",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"articles",
+										"eefbadd1-e06f-4f89-94b5-54d5736d7617"
+									],
+									"query": [
+										{
+											"key": "status",
+											"value": "published",
+											"disabled": true
+										},
+										{
+											"key": "limit",
+											"value": "10",
+											"disabled": true
+										},
+										{
+											"key": "offset",
+											"value": "0",
+											"disabled": true
+										},
+										{
+											"key": "category",
+											"value": "decreti",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "read article",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/api/v1/articles/252a6cda-a383-4aa7-acb5-7f132ed5a36b",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"articles",
+										"252a6cda-a383-4aa7-acb5-7f132ed5a36b"
+									],
+									"query": [
+										{
+											"key": "status",
+											"value": "published",
+											"disabled": true
+										},
+										{
+											"key": "limit",
+											"value": "10",
+											"disabled": true
+										},
+										{
+											"key": "offset",
+											"value": "0",
+											"disabled": true
+										},
+										{
+											"key": "category",
+											"value": "decreti",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "review article",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"tesdfdf3t\",\n    \"text\": \"Mah\",\n    \"description\": \"Bho\",\n    \"categoryId\": \"019acff7-23b8-43eb-add5-4d02e2bffe82\",\n    \"tags\": [\"arte\", \"arte\", \"ambiente\"]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/v1/articles/5ed5df8a-c91e-4a14-a07d-cd0a540a0cc3/review",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"articles",
+								"5ed5df8a-c91e-4a14-a07d-cd0a540a0cc3",
+								"review"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "files",
+			"item": [
+				{
+					"name": "upload file",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "files",
+									"type": "file",
+									"src": "/home/dev/Pictures/screen.png"
+								},
+								{
+									"key": "files",
+									"type": "file",
+									"src": "/home/dev/Pictures/screen.png"
+								},
+								{
+									"key": "files",
+									"type": "file",
+									"src": "/home/dev/Pictures/screen.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/api/v1/files/upload",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"files",
+								"upload"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete file",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/v1/files/7763cda5-5291-4c17-bd60-c06b4adc1ded",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"files",
+								"7763cda5-5291-4c17-bd60-c06b4adc1ded"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "internalNotes",
+			"item": [
+				{
+					"name": "create internalNote",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"text\": \"Nota elezioni anticipate\",\n    \"relatedDocumentId\": \"ceda394e-9cd1-4251-a5ad-ee9e6318727d\",\n    \"category\": \"articles\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/v1/notes",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"notes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "list internalNote",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"text\": \"Nota elezioni anticipate\",\n    \"relatedDocumentId\": \"d0a9d9a4-191d-4203-8e12-abddc042ba66\",\n    \"category\": \"articles\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/v1/notes",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"notes"
+							],
+							"query": [
+								{
+									"key": "relatedDocumentId",
+									"value": "89f80f01-b908-48cd-9c07-637a255a2c8c",
+									"disabled": true
+								},
+								{
+									"key": "category",
+									"value": "articles",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "politicians",
+			"item": [
+				{
+					"name": "list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/v1/politicians?search=urs",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"politicians"
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": "urs"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "read",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/v1/politicians/febdb85e-6f25-483c-adfe-5d944aa48d6a",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"politicians",
+								"febdb85e-6f25-483c-adfe-5d944aa48d6a"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "groups",
+			"item": [
+				{
+					"name": "list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/v1/groups",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"groups"
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": "coe",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"colorCode\": null,\n    \"initials\": null\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/v1/groups/c668cbca-f0b5-4d28-81ea-85827a1a005a",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"groups",
+								"c668cbca-f0b5-4d28-81ea-85827a1a005a"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "legislatures",
+			"item": [
+				{
+					"name": "update",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"startDate\": \"2024-02-02\",\n    \"endDate\": \"2024-03-07\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/v1/legislatures/ad1bf003-c849-4b38-acf2-f5161a0a8d06",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"legislatures",
+								"ad1bf003-c849-4b38-acf2-f5161a0a8d06"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Legislatua ZZZX\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/v1/legislatures",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"legislatures"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "duplicate",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/v1/legislatures/ee9533cc-b14f-40f2-ab4b-3c2a193b9ea4/duplicate",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"legislatures",
+								"ee9533cc-b14f-40f2-ab4b-3c2a193b9ea4",
+								"duplicate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "add ministries",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n   \"ministries\": [\n    {\n        \"name\": \"Ministero dei trasporti\",\n        \"ministerFullName\": \"Matteo Salvini\" \n    },\n     {\n        \"name\": \"Ministero delle finanze\",\n        \"ministerFullName\": \"Sgarbi\" \n    },\n     {\n        \"name\": \"Ministero dei fanfalucchi\",\n        \"ministerFullName\": \"Bho\" \n    }\n   ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/v1/legislatures/daf81291-bf58-4134-89d5-5d5cbbdd813d/ministries",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"legislatures",
+								"daf81291-bf58-4134-89d5-5d5cbbdd813d",
+								"ministries"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "remove ministries",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n   \"ids\": [\"d163fd96-bea3-4099-9910-30bc8836002b\"]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/v1/legislatures/e6202b07-6e5d-4a29-a94b-44d7d4ecda1f/remove-ministries",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"legislatures",
+								"e6202b07-6e5d-4a29-a94b-44d7d4ecda1f",
+								"remove-ministries"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update ministries",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"ministries\": [\n        {\n            \"id\": \"9f291699-6f50-4fae-8973-f80450e18a5d\",\n            \"ministerFullName\": \"bah\"\n        },\n         {\n            \"id\": \"8b384e57-1a15-4711-8f41-d920cefc8683\",\n            \"ministerFullName\": \"Sgarbi the best\"\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/v1/legislatures/daf81291-bf58-4134-89d5-5d5cbbdd813d/update-ministries",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"legislatures",
+								"daf81291-bf58-4134-89d5-5d5cbbdd813d",
+								"update-ministries"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "list",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"XIX\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/v1/legislatures?limit=10&offset=0",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"legislatures"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "offset",
+									"value": "0"
+								},
+								{
+									"key": "search",
+									"value": "X",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "read",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"XIX\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/v1/legislatures/daf81291-bf58-4134-89d5-5d5cbbdd813d",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"legislatures",
+								"daf81291-bf58-4134-89d5-5d5cbbdd813d"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/v1/legislatures/60fea250-2d42-458a-9079-157eaf96e817",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"legislatures",
+								"60fea250-2d42-458a-9079-157eaf96e817"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
 }

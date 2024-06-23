@@ -17,6 +17,7 @@
     "immobiliarelabs",
     "legislatura",
     "logica",
+    "mailgun",
     "offical",
     "openapi",
     "politican",
@@ -27,6 +28,7 @@
     "sortings",
     "sparql",
     "tutte",
-    "Ufficiale"
+    "Ufficiale",
+    "unsign"
   ]
 }

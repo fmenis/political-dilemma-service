@@ -32,9 +32,18 @@ export function sGroupDetail() {
 export function sUpdateGroup() {
   return S.object()
     .additionalProperties(false)
-    .prop('initials', S.string().minLength(2).maxLength(15))
+    .prop(
+      'initials',
+      S.string().minLength(2).maxLength(15).raw({ nullable: true })
+    )
     .description('Group initials.')
-    .prop('colorCode', S.string().minLength(7).maxLength(7))
+    .prop(
+      'colorCode',
+      S.string().minLength(7).maxLength(7).raw({ nullable: true })
+    )
     .description('Group color.')
-    .prop('orientation', S.string().minLength(3).maxLength(50))
+    .prop(
+      'orientation',
+      S.string().minLength(3).maxLength(50).raw({ nullable: true })
+    )
 }

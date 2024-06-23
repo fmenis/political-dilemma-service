@@ -123,7 +123,7 @@ export default async function updateUser(fastify) {
       'WHERE id=$1 ' +
       'RETURNING id, first_name, last_name, user_name, email, bio, ' +
       'birth_date, joined_date, sex, is_blocked, is_deleted, ' +
-      'id_region, id_province'
+      'id_region, id_province, last_access'
 
     const getUserRoleQuery =
       'SELECT ur.role_id FROM users AS u ' +

@@ -56,6 +56,7 @@ async function groupErrors(fastify) {
           'delete',
           'duplicate',
           'update-ministry',
+          'remove-ministries',
         ],
         statusCode: 404,
       },

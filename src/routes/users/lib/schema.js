@@ -11,8 +11,8 @@ function sUser() {
     .description('User first name.')
     .required()
     .prop('lastName', S.string().minLength(1).maxLength(50))
-    .required()
     .description('User last name.')
+    .required()
     .prop('userName', S.string().minLength(3).maxLength(50))
     .description('User system name. It must be unique.')
     .required()
@@ -25,14 +25,33 @@ function sUser() {
     .prop('provinceId', S.string().format('uuid'))
     .description('User province id.')
     .required()
-    .prop('bio', S.string().maxLength(500))
+    .prop('bio', S.string().maxLength(500).raw({ nullable: true }))
     .description('User biography.')
-    .prop('birthDate', S.string().format('date'))
+    .required()
+    .prop('birthDate', S.string().format('date').raw({ nullable: true }))
     .description('User birth date.')
-    .prop('joinedDate', S.string().format('date-time'))
+    .required()
+    .prop('joinedDate', S.string().format('date-time').raw({ nullable: true }))
     .description('Defines when a user accepts the system invitation.')
-    .prop('sex', S.string().enum(['male', 'female', 'other']))
+    .required()
+    .prop(
+      'sex',
+      S.string().enum(['male', 'female', 'other']).raw({ nullable: true })
+    )
     .description('User sex.')
+    .required()
+    .prop('lastAccess', S.string().format('date-time').raw({ nullable: true }))
+    .description(`Last user authentication date.`)
+    .required()
+    .prop('isBlocked', S.boolean())
+    .description(
+      `Defines if the user is blocked, i.e. 
+      if he cannot use the API (until it is unblocked).`
+    )
+    .required()
+    .prop('isDeleted', S.boolean())
+    .description(`Defines if the user is deleted.`)
+    .required()
 }
 
 export function sUserAccount() {
@@ -70,8 +89,9 @@ export function sUserList() {
     .prop('email', S.string().format('email').minLength(6).maxLength(50))
     .description('User email. It must be unique.')
     .required()
-    .prop('joinedDate', S.string().format('date-time'))
+    .prop('joinedDate', S.string().format('date-time').raw({ nullable: true }))
     .description('Defines when a user accepts the system invitation.')
+    .required()
     .prop('isBlocked', S.boolean())
     .description(
       `Defines if the user is blocked, i.e. 
@@ -84,8 +104,9 @@ export function sUserList() {
     .prop('role', S.string().minLength(2))
     .description(`User roles`)
     .required()
-    .prop('lastAccess', S.string().format('date-time'))
+    .prop('lastAccess', S.string().format('date-time').raw({ nullable: true }))
     .description(`Last user authentication date.`)
+    .required()
     .prop('region', S.string().minLength(3))
     .description(`User region.`)
     .required()

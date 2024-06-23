@@ -26,6 +26,19 @@ export function removeObjectProps(obj, propsToRemove) {
 }
 
 /**
+ * Create an object copy without nullish props
+ */
+export function removeObjectNullishProps(obj) {
+  return Object.keys(obj).reduce((acc, key) => {
+    if (obj[key] !== null && obj[key] !== undefined) {
+      acc[key] = obj[key]
+    }
+
+    return acc
+  }, {})
+}
+
+/**
  * Calculate base url related to the current envinronment
  */
 export function calculateBaseUrl(opts = {}) {
@@ -42,8 +55,8 @@ export function calculateBaseUrl(opts = {}) {
 /**
  * Generate readable route action from reply context
  */
-export function generateRouteAction(reply) {
-  return reply.context.schema.summary
+export function generateRouteAction(req) {
+  return req.routeOptions.schema.summary
     .split(' ')
     .reduce((acc, item) => {
       acc.push(item.toLowerCase())

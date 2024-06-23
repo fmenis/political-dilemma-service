@@ -8,7 +8,7 @@ async function apiAuditPlugin(fastify) {
       return
     }
 
-    const api = reply.context.schema.summary
+    const api = req.routeOptions.schema.summary
       .split(' ')
       .reduce((acc, item) => {
         acc.push(item.toLowerCase())
@@ -18,7 +18,7 @@ async function apiAuditPlugin(fastify) {
 
     await massive.apiAudit.save({
       api,
-      responseTime: parseFloat(reply.getResponseTime().toFixed(3)),
+      responseTime: parseFloat(reply.elapsedTime.toFixed(3)),
       httpMethod: req.method,
       statusCode: reply.statusCode,
       userEmail: req.user ? req.user.email : null,

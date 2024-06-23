@@ -7,12 +7,12 @@ async function authentication(fastify) {
     secret: fastify.config.SECRET,
   })
 
-  async function authenticate(req, reply) {
+  async function authenticate(req) {
     const { pg, httpErrors, config } = this
     const { createError } = httpErrors
     const { log } = req
 
-    if (reply.context.config.public) {
+    if (req.routeOptions.config.public) {
       return
     }
 
@@ -62,7 +62,7 @@ async function authentication(fastify) {
     }
 
     const user = await pg.execQuery(
-      'SELECT id, first_name, last_name, email, is_blocked, is_deleted, type FROM users WHERE id=$1',
+      'SELECT id, first_name, last_name, email, is_blocked, is_deleted, type, password FROM users WHERE id=$1',
       [session.userId],
       { findOne: true }
     )
