@@ -27,7 +27,7 @@ export default async function resetPassword(fastify) {
         .description('New password.')
         .required()
         .prop('newPasswordConfirmation', S.string().pattern(passwordRexExp))
-        .description('New paassword confirmation.')
+        .description('New password confirmation.')
         .required(),
       response: {
         204: fastify.getSchema('sNoContent'),
@@ -123,6 +123,7 @@ export default async function resetPassword(fastify) {
 
       await deleteUserResetLinks(user.id, pg)
 
+      //##TODO cancellare quelle attive
       await pg.execQuery('DELETE FROM sessions WHERE user_id=$1', [user.id], {
         client,
       })

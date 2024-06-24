@@ -120,12 +120,19 @@ export default async function login(fastify) {
       new Date(),
     ])
 
+    /**
+     * If the apis are consumed by FE running in localhost, 'none' is not working.
+     * ##TODO investigate!!
+     */
+    const sameSite =
+      req.headers['origin'] === 'http://localhost:4200' ? 'none' : 'strict'
+
     const cookieOptions = {
       path: '/api',
       httpOnly: true,
       signed: true,
       secure: true,
-      sameSite: 'strict',
+      sameSite,
       expires: moment().add(fastify.config.COOKIE_TTL, 'seconds').toDate(),
     }
 
