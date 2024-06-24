@@ -7,7 +7,7 @@ export async function sendResetPasswordEmail(data, mailer) {
   const template = await getTemplate()
   const html = compileTemplate(template, templateParams)
 
-  await mailer.sendMail({
+  await mailer.send({
     from,
     to: email,
     subject: 'Reset password',

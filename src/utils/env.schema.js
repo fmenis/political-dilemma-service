@@ -70,5 +70,7 @@ export function sEnv() {
     .required()
     .prop('SENTRY_DSN', S.string())
     .required()
+    .prop('SENDGRID_API_KEY', S.string())
+    .required()
     .valueOf()
 }

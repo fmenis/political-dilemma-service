@@ -53,6 +53,7 @@
 | **SENDER_EMAIL**          |                     | Email address used to send email from   |
 | **STATIC_FILES_DEST**     |                     | Static files destination full path      |
 | **SENTRY_DSN**            |                     | Sentry dsn                              |
+| **SENDGRID_API_KEY**      |                     | Sendgrid api key                        |
 
 PS: If you have difficulties to compiling the env file, ask the backend guy!
 

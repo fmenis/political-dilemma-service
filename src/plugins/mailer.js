@@ -1,37 +1,14 @@
 import Fp from 'fastify-plugin'
-import { createTransport } from 'nodemailer'
-import aws from 'aws-sdk'
-import { ENV } from '../common/enums.js'
+import sgMail from '@sendgrid/mail'
 
 function mailer(fastify, options, done) {
-  const { config, log } = fastify
+  const { config } = fastify
 
-  const ses = new aws.SES({
-    // apiVersion: '',
-    region: config.AWS_REGION,
-  })
+  sgMail.setApiKey(config.SENDGRID_API_KEY)
 
-  const transporter = createTransport({
-    SES: { ses, aws },
-  })
+  done()
 
-  if (fastify.config.NODE_ENV !== ENV.LOCAL) {
-    transporter.verify(err => {
-      if (err) {
-        done(err)
-      }
-      log.debug('Email transporter correctly verified')
-      done()
-    })
-  } else {
-    done()
-  }
-
-  fastify.addHook('onClose', () => {
-    transporter.close()
-  })
-
-  fastify.decorate('mailer', transporter)
+  fastify.decorate('mailer', sgMail)
 }
 
 export default Fp(mailer)
