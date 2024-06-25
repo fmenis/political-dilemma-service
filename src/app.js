@@ -57,12 +57,16 @@ export default async function app(fastify, opts) {
     environment: process.env.NODE_ENV,
     release: JSON.parse(readFileSync(join(resolve(), 'package.json'))).version,
     enabled: process.env.NODE_ENV !== ENV.LOCAL,
-    onErrorFactory: () => {
-      return function (error, req, reply) {
-        reply.send(error)
-        if (process.env.NODE_ENV !== ENV.LOCAL && reply.statusCode === 500) {
-          this.Sentry.captureException(error)
-        }
+    shouldHandleError(error, request, reply) {
+      if (
+        process.env.NODE_ENV === ENV.DEVELOPMENT &&
+        reply.statusCode === 500
+      ) {
+        return true
+      }
+
+      if ([400, 404, 409, 500].includes(reply.statusCode)) {
+        return true
       }
     },
   })
