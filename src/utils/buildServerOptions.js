@@ -35,19 +35,20 @@ function buildLoggerOptions() {
         destination: 1, // STDOUT
       },
     },
-    {
-      target: 'pino-sentry-transport',
-      options: {
-        sentry: {
-          dsn: process.env.SENTRY_DSN,
-          environment: process.env.NODE_ENV,
-        },
-        withLogRecord: true,
-        tags: ['id'],
-        context: ['hostname'],
-        minLevel: 30, // warn
-      },
-    },
+    //##TODO!!!
+    // {
+    //   target: 'pino-sentry-transport',
+    //   options: {
+    //     sentry: {
+    //       dsn: process.env.SENTRY_DSN,
+    //       environment: process.env.NODE_ENV,
+    //     },
+    //     withLogRecord: true,
+    //     tags: ['id'],
+    //     context: ['hostname'],
+    //     minLevel: 30, // warn
+    //   },
+    // },
   ]
 
   return {

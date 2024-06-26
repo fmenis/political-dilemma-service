@@ -58,14 +58,14 @@ export default async function app(fastify, opts) {
     release: JSON.parse(readFileSync(join(resolve(), 'package.json'))).version,
     enabled: process.env.NODE_ENV !== ENV.LOCAL,
     shouldHandleError(error, request, reply) {
-      if (
-        process.env.NODE_ENV === ENV.DEVELOPMENT &&
-        reply.statusCode === 500
-      ) {
+      if (reply.statusCode === 500) {
         return true
       }
-
-      if ([400, 404, 409, 500].includes(reply.statusCode)) {
+      if (
+        (process.env.NODE_ENV === ENV.STAGING ||
+          process.env.NODE_ENV === ENV.PRODUCTION) &&
+        [400, 404, 409, 500].includes(reply.statusCode)
+      ) {
         return true
       }
     },
