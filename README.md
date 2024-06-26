@@ -37,7 +37,7 @@
 | **PG_DB**                 |                     | Postgres database                       |
 | **PG_USER**               |                     | Postgres user                           |
 | **PG_PW**                 |                     | Postgres password                       |
-| **SENATO_URL_DATA**       |                     | ##TODO                                  |
+| **SENATO_URL_DATA**       |                     | Senato portal url                       |
 | **REDIS_HOST**            |                     | Redis host                              |
 | **REDIS_PORT**            |                     | Redis port                              |
 | **SECRET**                |                     | Secret string (used to sign the cookie) |

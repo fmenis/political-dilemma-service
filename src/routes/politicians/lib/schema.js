@@ -1,6 +1,7 @@
 import S from 'fluent-json-schema'
 
 import { getPoliticianTypes } from './common.js'
+import { Gender } from '../../../common/enums.js'
 
 export function sPoliticianList() {
   return S.object()
@@ -50,7 +51,7 @@ export function sPoliticianDetail() {
     .prop('lastName', S.string().minLength(1).maxLength(50))
     .description('Politician first name.')
     .required()
-    .prop('gender', S.string().enum(['MALE', 'FEMALE', 'OTHER'])) //##TODO fare enum
+    .prop('gender', S.string().enum([Gender.FEMALE, Gender.MALE, Gender.OTHER]))
     .description('Politician gender.')
     .required()
     .prop('birthDate', S.string().format('date'))
