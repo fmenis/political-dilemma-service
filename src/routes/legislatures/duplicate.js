@@ -5,7 +5,8 @@ import { sLegislatureDetail } from './lib/schema.js'
 
 export default async function duplicateLegislature(fastify) {
   const { massive } = fastify
-  const { throwNotFoundError, errors } = fastify.legislatureErrors
+  const { throwNotFoundError, throwDuplicateNameLengthError, errors } =
+    fastify.legislatureErrors
 
   const routeDescription = 'Duplicate legislature.'
   const api = 'duplicate'
@@ -34,6 +35,7 @@ export default async function duplicateLegislature(fastify) {
       response: {
         200: sLegislatureDetail(),
         404: fastify.getSchema('sNotFound'),
+        409: fastify.getSchema('sConflict'),
       },
     },
     preHandler: onPreHandler,
@@ -46,6 +48,11 @@ export default async function duplicateLegislature(fastify) {
     const legislature = await massive.legislature.findOne(id)
     if (!legislature) {
       throwNotFoundError({ id })
+    }
+
+    const newName = buildTempName(legislature.name)
+    if (newName.length > 50) {
+      throwDuplicateNameLengthError({ newName })
     }
 
     req.resource = legislature
@@ -63,7 +70,7 @@ export default async function duplicateLegislature(fastify) {
 
     const newLegislature = await massive.withTransaction(async tx => {
       const newLegislature = await tx.legislature.save({
-        name: `${legislature.name} copy_${new Date().getMilliseconds()}`,
+        name: buildTempName(legislature.name),
         startDate: legislature.startDate,
         endDate: legislature.endDate,
       })
@@ -82,5 +89,9 @@ export default async function duplicateLegislature(fastify) {
       ...newLegislature,
       ministries: [],
     }
+  }
+
+  function buildTempName(legislatureName) {
+    return `${legislatureName} copy_${new Date().getMilliseconds()}`
   }
 }
