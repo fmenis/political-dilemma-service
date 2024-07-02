@@ -7,10 +7,13 @@ export async function seedRoles(client) {
   const permissions = await client.permissions.find({})
 
   for (const permission of permissions) {
-    await client.permissions_roles.save({
-      role_id: role.id,
-      permission_id: permission.id,
-    })
+    // it's not allowed to have both ownership for the same permission
+    if (!permission.ownership || permission.ownership === 'any') {
+      await client.permissions_roles.save({
+        role_id: role.id,
+        permission_id: permission.id,
+      })
+    }
   }
 
   const users = await client.users.find({})
