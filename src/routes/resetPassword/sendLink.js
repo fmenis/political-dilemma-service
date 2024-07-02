@@ -67,8 +67,8 @@ export default async function sendResetPasswordLink(fastify) {
     const { user } = req
 
     /**
-     * If the user request other reset links, for securiy reasons,
-     * they must be delete before generete a new one
+     * If the user request other reset links, for security reasons,
+     * they must be delete before generate a new one
      */
     await massive.reset_links.destroy({ user_id: user.id })
 
@@ -86,7 +86,7 @@ export default async function sendResetPasswordLink(fastify) {
 
       await queue.addJob({
         email,
-        templateParams: buildTempateParams({
+        templateParams: buildTemplateParams({
           resetLink,
           user,
           userAgent: req.headers['user-agent'],
@@ -100,12 +100,12 @@ export default async function sendResetPasswordLink(fastify) {
     return `${baseUrl}/reset-password?token=${token}`
   }
 
-  function buildTempateParams({ resetLink, user, userAgent }) {
+  function buildTemplateParams({ resetLink, user, userAgent }) {
     const ua = new parser(userAgent)
 
     return {
       name: user.first_name,
-      validFor: config.RESET_LINK_TTL / 60 / 60, // secondo to hours
+      validFor: config.RESET_LINK_TTL / 60 / 60, // second to hours
       os: ua.getOS().name || 'unknown',
       browser: ua.getBrowser().name || 'unknown',
       resetLink,

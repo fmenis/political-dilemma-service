@@ -36,7 +36,7 @@ export default async function assignRoles(fastify) {
   async function onPreHandler(req) {
     const { userId, roleId } = req.body
 
-    // check user existance
+    // check user existence
     const user = await pg.execQuery(
       'SELECT id FROM users WHERE id=$1',
       [userId],
@@ -71,6 +71,14 @@ export default async function assignRoles(fastify) {
           },
         ],
       })
+    }
+
+    if (user.is_deleted) {
+      throw httpErrors.conflict(`Cannot update a deleted user`)
+    }
+
+    if (user.is_blocked) {
+      throw httpErrors.conflict(`Cannot update a blocked user`)
     }
   }
 

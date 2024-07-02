@@ -52,7 +52,7 @@ export default async function addPermissions(fastify) {
     const { id } = req.params
     const { permissionsIds } = req.body
 
-    // check role existance
+    // check role existence
     const role = await getRole(id, pg)
     if (!role) {
       throw httpErrors.notFound(`Role with id '${id}' not found`)

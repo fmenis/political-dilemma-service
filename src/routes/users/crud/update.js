@@ -98,6 +98,14 @@ export default async function updateUser(fastify) {
         validation: [{ message: `Province with id '${regionId}' not found` }],
       })
     }
+
+    if (user.is_deleted) {
+      throw httpErrors.conflict(`Cannot update a deleted user`)
+    }
+
+    if (user.is_blocked) {
+      throw httpErrors.conflict(`Cannot update a blocked user`)
+    }
   }
 
   async function onUpdateUser(req) {

@@ -43,6 +43,10 @@ export default async function deleteUser(fastify) {
     if (user.id === owner.id) {
       throw httpErrors.conflict(`Cannot delete your own user`)
     }
+
+    if (user.is_deleted) {
+      throw httpErrors.conflict(`User already deleted`)
+    }
   }
 
   async function onDeleteUser(req, reply) {

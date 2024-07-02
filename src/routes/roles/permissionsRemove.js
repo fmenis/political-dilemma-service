@@ -43,7 +43,7 @@ export default async function removePermissions(fastify) {
     const { id: roleId } = req.params
     const { permissionsIds } = req.body
 
-    // check role existance
+    // check role existence
     const role = await getRole(roleId, pg)
     if (!role) {
       throw httpErrors.notFound(`Role with id '${roleId}' not found`)

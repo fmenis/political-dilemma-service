@@ -44,7 +44,7 @@ export default async function removeRoles(fastify) {
   async function onPreHandler(req) {
     const { userId, rolesIds } = req.body
 
-    // check user existance
+    // check user existence
     const user = await pg.execQuery(
       'SELECT id FROM users WHERE id=$1',
       [userId],
@@ -90,6 +90,14 @@ export default async function removeRoles(fastify) {
     }
 
     //TODO controllare che uno dei ruoli non sia stato già assegnato
+
+    if (user.is_deleted) {
+      throw httpErrors.conflict(`Cannot update a deleted user`)
+    }
+
+    if (user.is_blocked) {
+      throw httpErrors.conflict(`Cannot update a blocked user`)
+    }
   }
 
   async function onRemoveRoles(req, reply) {
