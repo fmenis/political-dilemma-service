@@ -11,7 +11,7 @@ import swaggerPlugin from './plugins/swagger.js'
 import pgPlugin from './plugins/postgres.js'
 import redisPlugin from './plugins/redis.js'
 import loadSchemasPlugin from './plugins/loadSchemas.js'
-// import mailerPlugin from './plugins/mailer.js' //##TODO!!!
+import mailerPlugin from './plugins/mailer.js'
 
 import { sEnv } from './utils/env.schema.js'
 import { ENV } from './common/enums.js'
@@ -57,12 +57,16 @@ export default async function app(fastify, opts) {
     environment: process.env.NODE_ENV,
     release: JSON.parse(readFileSync(join(resolve(), 'package.json'))).version,
     enabled: process.env.NODE_ENV !== ENV.LOCAL,
-    onErrorFactory: () => {
-      return function (error, req, reply) {
-        reply.send(error)
-        if (process.env.NODE_ENV !== ENV.LOCAL && reply.statusCode === 500) {
-          this.Sentry.captureException(error)
-        }
+    shouldHandleError(error, request, reply) {
+      if (reply.statusCode === 500) {
+        return true
+      }
+      if (
+        (process.env.NODE_ENV === ENV.STAGING ||
+          process.env.NODE_ENV === ENV.PRODUCTION) &&
+        [400, 404, 409, 500].includes(reply.statusCode)
+      ) {
+        return true
       }
     },
   })
@@ -71,6 +75,6 @@ export default async function app(fastify, opts) {
   fastify.register(pgPlugin)
   fastify.register(redisPlugin)
   fastify.register(loadSchemasPlugin)
-  //fastify.register(mailerPlugin)
+  fastify.register(mailerPlugin)
   fastify.register(apiPlugin, { prefix: '/api' })
 }

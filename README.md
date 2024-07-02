@@ -37,7 +37,7 @@
 | **PG_DB**                 |                     | Postgres database                       |
 | **PG_USER**               |                     | Postgres user                           |
 | **PG_PW**                 |                     | Postgres password                       |
-| **SENATO_URL_DATA**       |                     | ##TODO                                  |
+| **SENATO_URL_DATA**       |                     | Senato portal url                       |
 | **REDIS_HOST**            |                     | Redis host                              |
 | **REDIS_PORT**            |                     | Redis port                              |
 | **SECRET**                |                     | Secret string (used to sign the cookie) |
@@ -53,6 +53,7 @@
 | **SENDER_EMAIL**          |                     | Email address used to send email from   |
 | **STATIC_FILES_DEST**     |                     | Static files destination full path      |
 | **SENTRY_DSN**            |                     | Sentry dsn                              |
+| **SENDGRID_API_KEY**      |                     | Sendgrid api key                        |
 
 PS: If you have difficulties to compiling the env file, ask the backend guy!
 

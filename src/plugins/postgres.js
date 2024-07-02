@@ -62,11 +62,6 @@ function postgresClient(fastify, options, done) {
    */
   function parseRow(obj) {
     return Object.keys(obj).reduce((acc, key) => {
-      //##TODO not sure the consequences of comment this lines..
-      // if (obj[key] === null) {
-      //   return acc
-      // }
-
       const camelCaseKey = key.split('_').reduce((str, item, index) => {
         if (index === 0) {
           str = item

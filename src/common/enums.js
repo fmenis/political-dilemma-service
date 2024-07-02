@@ -5,4 +5,10 @@ const ENV = {
   PRODUCTION: 'production',
 }
 
-export { ENV }
+const Gender = {
+  FEMALE: 'FEMALE',
+  MALE: 'MALE',
+  OTHER: 'OTHER',
+}
+
+export { ENV, Gender }

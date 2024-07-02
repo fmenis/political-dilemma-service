@@ -4,6 +4,7 @@ import moment from 'moment'
 import { compareStrings } from '../../lib/hash.js'
 import { deleteSessions } from '../sessions/lib/utils.js'
 import { appConfig } from '../../config/main.js'
+import { ENV } from '../../common/enums.js'
 
 export default async function login(fastify) {
   const { pg, httpErrors, config } = fastify
@@ -125,7 +126,7 @@ export default async function login(fastify) {
       httpOnly: true,
       signed: true,
       secure: true,
-      sameSite: 'strict',
+      sameSite: getSameSite(),
       expires: moment().add(fastify.config.COOKIE_TTL, 'seconds').toDate(),
     }
 
@@ -134,6 +135,19 @@ export default async function login(fastify) {
   }
 
   //-------------------------------------- HELPERS ----------------------------
+
+  function getSameSite() {
+    /**
+     * If the published api's are consumed by FE running locally,
+     * the domain are different, so the attribute cannot be 'strict'.
+     * We assume that staging and production envs will be not consumed
+     * by local FE.
+     */
+    if (config.NODE_ENV === ENV.LOCAL || config.NODE_ENV === ENV.DEVELOPMENT) {
+      return 'none'
+    }
+    return 'strict'
+  }
 
   async function countActiveUserSessions(userId, pg) {
     const query =
