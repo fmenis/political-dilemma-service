@@ -3,6 +3,7 @@ import moment from 'moment'
 import parser from 'ua-parser-js'
 
 import { generateRandomToken } from './lib/utils.js'
+// import { getGeolocationData } from '../common/services/geolocation.js'
 
 export default async function sendResetPasswordLink(fastify) {
   const { massive, config, resetLinkQueue: queue } = fastify
@@ -91,6 +92,7 @@ export default async function sendResetPasswordLink(fastify) {
           user,
           userAgent: req.headers['user-agent'],
           ip: req.ip,
+          // geolocation: await getGeolocationData(req.ip),
         }),
       })
     })
@@ -100,6 +102,16 @@ export default async function sendResetPasswordLink(fastify) {
     const baseUrl = req.headers.origin || 'http://127.0.0.1:4200'
     return `${baseUrl}/reset-password?token=${token}`
   }
+
+  //##TODO
+  // async function getGeolocationData(ip) {
+  //   const data = await getGeolocationData(ip)
+  //   return {
+  //     city: data.city,
+  //     region: data.region,
+  //     countryName: data.country_name,
+  //   }
+  // }
 
   function buildTemplateParams({ resetLink, user, userAgent, ip }) {
     const ua = new parser(userAgent)

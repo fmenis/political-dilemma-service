@@ -5,7 +5,7 @@ import { populateActivity } from './lib/common.js'
 import { buildRouteFullDescription } from '../common/common.js'
 import { sActivityDetail } from './lib/activity.schema.js'
 
-export default async function publoshActivity(fastify) {
+export default async function publishActivity(fastify) {
   const { massive } = fastify
   const { throwNotFoundError, throwInvalidStatusError, errors } =
     fastify.activityErrors

@@ -35,20 +35,6 @@ function buildLoggerOptions() {
         destination: 1, // STDOUT
       },
     },
-    //##TODO!!!
-    // {
-    //   target: 'pino-sentry-transport',
-    //   options: {
-    //     sentry: {
-    //       dsn: process.env.SENTRY_DSN,
-    //       environment: process.env.NODE_ENV,
-    //     },
-    //     withLogRecord: true,
-    //     tags: ['id'],
-    //     context: ['hostname'],
-    //     minLevel: 30, // warn
-    //   },
-    // },
   ]
 
   return {
@@ -63,6 +49,14 @@ function buildLoggerOptions() {
       ],
       censor: '**GDPR COMPLIANT**',
     },
+    // formatters: {
+    //   level(label) {
+    //     return { level: label }
+    //   },
+    //   bindings() {
+    //     return { pid: undefined, hostname: undefined }
+    //   },
+    // },
     transport: {
       targets: process.env.NODE_ENV === 'local' ? localTargets : liveTargets,
     },
