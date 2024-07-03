@@ -39,6 +39,7 @@ function compileTemplate(template, templateParams) {
     'name',
     'validFor',
     'os',
+    'ip',
     'browser',
     'resetLink',
     'supportEmail',

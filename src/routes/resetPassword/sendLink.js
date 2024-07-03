@@ -90,6 +90,7 @@ export default async function sendResetPasswordLink(fastify) {
           resetLink,
           user,
           userAgent: req.headers['user-agent'],
+          ip: req.ip,
         }),
       })
     })
@@ -100,7 +101,7 @@ export default async function sendResetPasswordLink(fastify) {
     return `${baseUrl}/reset-password?token=${token}`
   }
 
-  function buildTemplateParams({ resetLink, user, userAgent }) {
+  function buildTemplateParams({ resetLink, user, userAgent, ip }) {
     const ua = new parser(userAgent)
 
     return {
@@ -108,6 +109,7 @@ export default async function sendResetPasswordLink(fastify) {
       validFor: config.RESET_LINK_TTL / 60 / 60, // second to hours
       os: ua.getOS().name || 'unknown',
       browser: ua.getBrowser().name || 'unknown',
+      ip,
       resetLink,
       supportEmail: config.SENDER_EMAIL,
     }
