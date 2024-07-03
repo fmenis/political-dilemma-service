@@ -38,6 +38,10 @@ export function removeObjectNullishProps(obj) {
   }, {})
 }
 
+export function isObjectEmpty(obj) {
+  return Object.keys(obj).length === 0
+}
+
 /**
  * Calculate base url related to the current envinronment
  */
