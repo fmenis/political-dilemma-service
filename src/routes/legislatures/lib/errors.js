@@ -40,21 +40,11 @@ async function groupErrors(fastify) {
     })
   }
 
-  function throwDuplicateNameLengthError(data) {
-    const { newName } = data
-    const message = `Duplicated name will be '${newName}' that is too long (${newName.length} characters)`
-    throw createError(409, message, {
-      internalCode: 'NAME_TOO_LONG',
-      details: { newName },
-    })
-  }
-
   fastify.decorate('legislatureErrors', {
     throwNotFoundError,
     throwDuplicatedNameError,
     throwInvalidDatesError,
     throwDuplicateMinistriesError,
-    throwDuplicateNameLengthError,
     errors: [
       {
         code: '*NOT_FOUND*',
@@ -88,13 +78,6 @@ async function groupErrors(fastify) {
         description:
           'occurs when same ministry/minister are provider more that once.',
         apis: ['add-ministries'],
-        statusCode: 409,
-      },
-      {
-        code: '*NAME_TOO_LONG*',
-        description:
-          'occurs when the duplicated legislature will have a name length greater than 50 chars.',
-        apis: ['duplicate'],
         statusCode: 409,
       },
     ],

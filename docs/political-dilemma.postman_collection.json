@@ -24,7 +24,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\": \"filippomeniswork@gmail.com\",\n    \"password\": \"@Password1\"\n}",
+							"raw": "{\n    \"email\": \"filippomeniswork@gmail.com\",\n    \"password\": \"@Password1\",\n    \"deleteOldest\": true\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -232,7 +232,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{url}}/api/v1/users/03cd95b2-d86d-43c2-86f2-48740ad394c7",
+							"raw": "{{url}}/api/v1/users/555397f9-6107-41f19573-d5702bfa18e4",
 							"host": [
 								"{{url}}"
 							],
@@ -240,7 +240,7 @@
 								"api",
 								"v1",
 								"users",
-								"03cd95b2-d86d-43c2-86f2-48740ad394c7"
+								"555397f9-6107-41f19573-d5702bfa18e4"
 							]
 						}
 					},
@@ -763,7 +763,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{url}}/api/v1/roles/1",
+							"raw": "{{url}}/api/v1/roles/d0148860-2a0f-4f3d-b983-14565004cc92",
 							"host": [
 								"{{url}}"
 							],
@@ -771,7 +771,7 @@
 								"api",
 								"v1",
 								"roles",
-								"1"
+								"d0148860-2a0f-4f3d-b983-14565004cc92"
 							]
 						}
 					},
@@ -1328,7 +1328,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{url}}/api/v1/politicians?search=urs",
+							"raw": "{{url}}/api/v1/politicians",
 							"host": [
 								"{{url}}"
 							],
@@ -1340,7 +1340,8 @@
 							"query": [
 								{
 									"key": "search",
-									"value": "urs"
+									"value": "salvini",
+									"disabled": true
 								}
 							]
 						}
@@ -1468,7 +1469,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"Legislatua ZZZX\"\n}",
+							"raw": "{\n    \"name\": \"Legislatua XIX\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1494,8 +1495,17 @@
 					"request": {
 						"method": "POST",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"piopio\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "{{url}}/api/v1/legislatures/ee9533cc-b14f-40f2-ab4b-3c2a193b9ea4/duplicate",
+							"raw": "{{url}}/api/v1/legislatures/a2e1cb9d-2119-4c88-8df2-2b5ccb350b58/duplicate",
 							"host": [
 								"{{url}}"
 							],
@@ -1503,7 +1513,7 @@
 								"api",
 								"v1",
 								"legislatures",
-								"ee9533cc-b14f-40f2-ab4b-3c2a193b9ea4",
+								"a2e1cb9d-2119-4c88-8df2-2b5ccb350b58",
 								"duplicate"
 							]
 						}
@@ -1517,7 +1527,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n   \"ministries\": [\n    {\n        \"name\": \"Ministero dei trasporti\",\n        \"ministerFullName\": \"Matteo Salvini\" \n    },\n     {\n        \"name\": \"Ministero delle finanze\",\n        \"ministerFullName\": \"Sgarbi\" \n    },\n     {\n        \"name\": \"Ministero dei fanfalucchi\",\n        \"ministerFullName\": \"Bho\" \n    }\n   ]\n}",
+							"raw": "{\n   \"ministries\": [\n    {\n        \"name\": \"Ministero dei trasporti 2\",\n        \"politicianId\": \"5301c57b-bb5d-410a-9d94-a7f68336b99c\" \n    }\n   ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1525,7 +1535,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}/api/v1/legislatures/daf81291-bf58-4134-89d5-5d5cbbdd813d/ministries",
+							"raw": "{{url}}/api/v1/legislatures/8cc83ee8-3c0d-46f5-9625-4b18a7b5c591/add-ministries",
 							"host": [
 								"{{url}}"
 							],
@@ -1533,8 +1543,8 @@
 								"api",
 								"v1",
 								"legislatures",
-								"daf81291-bf58-4134-89d5-5d5cbbdd813d",
-								"ministries"
+								"8cc83ee8-3c0d-46f5-9625-4b18a7b5c591",
+								"add-ministries"
 							]
 						}
 					},
@@ -1547,7 +1557,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n   \"ids\": [\"d163fd96-bea3-4099-9910-30bc8836002b\"]\n}",
+							"raw": "{\n   \"ids\": [\"80bbda4f-0db2-4bce-aecf-adb7d18c6f9a\"]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1555,7 +1565,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}/api/v1/legislatures/e6202b07-6e5d-4a29-a94b-44d7d4ecda1f/remove-ministries",
+							"raw": "{{url}}/api/v1/legislatures/2e2feeee-f33d-486c-a40a-c7f1e63a8a44/remove-ministries",
 							"host": [
 								"{{url}}"
 							],
@@ -1563,7 +1573,7 @@
 								"api",
 								"v1",
 								"legislatures",
-								"e6202b07-6e5d-4a29-a94b-44d7d4ecda1f",
+								"2e2feeee-f33d-486c-a40a-c7f1e63a8a44",
 								"remove-ministries"
 							]
 						}
@@ -1577,7 +1587,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"ministries\": [\n        {\n            \"id\": \"9f291699-6f50-4fae-8973-f80450e18a5d\",\n            \"ministerFullName\": \"bah\"\n        },\n         {\n            \"id\": \"8b384e57-1a15-4711-8f41-d920cefc8683\",\n            \"ministerFullName\": \"Sgarbi the best\"\n        }\n    ]\n}",
+							"raw": "{\n    \"ministries\": [\n         {\n        \"id\": \"80bbda4f-0db2-4bce-aecf-adb7d18c6f9a\",\n        \"name\": \"Ministero dei trasporti MATTEOOOO\",\n        \"politicianId\": \"003ac329-5217-41cf-b32a-8dc5baf9775e\" \n    }\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1585,7 +1595,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}/api/v1/legislatures/daf81291-bf58-4134-89d5-5d5cbbdd813d/update-ministries",
+							"raw": "{{url}}/api/v1/legislatures/2e2feeee-f33d-486c-a40a-c7f1e63a8a44/update-ministries",
 							"host": [
 								"{{url}}"
 							],
@@ -1593,7 +1603,7 @@
 								"api",
 								"v1",
 								"legislatures",
-								"daf81291-bf58-4134-89d5-5d5cbbdd813d",
+								"2e2feeee-f33d-486c-a40a-c7f1e63a8a44",
 								"update-ministries"
 							]
 						}
@@ -1664,7 +1674,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}/api/v1/legislatures/daf81291-bf58-4134-89d5-5d5cbbdd813d",
+							"raw": "{{url}}/api/v1/legislatures/8cc83ee8-3c0d-46f5-9625-4b18a7b5c591",
 							"host": [
 								"{{url}}"
 							],
@@ -1672,7 +1682,7 @@
 								"api",
 								"v1",
 								"legislatures",
-								"daf81291-bf58-4134-89d5-5d5cbbdd813d"
+								"8cc83ee8-3c0d-46f5-9625-4b18a7b5c591"
 							]
 						}
 					},
@@ -1684,7 +1694,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{url}}/api/v1/legislatures/60fea250-2d42-458a-9079-157eaf96e817",
+							"raw": "{{url}}/api/v1/legislatures/2e2feeee-f33d-486c-a40a-c7f1e63a8a44",
 							"host": [
 								"{{url}}"
 							],
@@ -1692,7 +1702,7 @@
 								"api",
 								"v1",
 								"legislatures",
-								"60fea250-2d42-458a-9079-157eaf96e817"
+								"2e2feeee-f33d-486c-a40a-c7f1e63a8a44"
 							]
 						}
 					},

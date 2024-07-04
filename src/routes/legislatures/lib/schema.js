@@ -19,7 +19,7 @@ export function sLegislatureList() {
     .prop('id', S.string().format('uuid'))
     .description('Legislature id.')
     .required()
-    .prop('name', S.string().maxLength(50))
+    .prop('name', S.string().minLength(3).maxLength(50))
     .description('Legislature name.')
     .required()
     .prop('startDate', S.string().format('date').raw({ nullable: true }))

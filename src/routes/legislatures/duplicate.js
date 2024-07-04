@@ -5,8 +5,7 @@ import { sLegislatureDetail } from './lib/schema.js'
 
 export default async function duplicateLegislature(fastify) {
   const { massive } = fastify
-  const { throwNotFoundError, throwDuplicateNameLengthError, errors } =
-    fastify.legislatureErrors
+  const { throwNotFoundError, errors } = fastify.legislatureErrors
 
   const routeDescription = 'Duplicate legislature.'
   const api = 'duplicate'
@@ -32,6 +31,11 @@ export default async function duplicateLegislature(fastify) {
         .prop('id', S.string().format('uuid'))
         .description('Legislature id.')
         .required(),
+      body: S.object()
+        .additionalProperties(false)
+        .prop('name', S.string().minLength(3).maxLength(50))
+        .description('Legislature name.')
+        .required(),
       response: {
         200: sLegislatureDetail(),
         404: fastify.getSchema('sNotFound'),
@@ -46,20 +50,17 @@ export default async function duplicateLegislature(fastify) {
     const { id } = req.params
 
     const legislature = await massive.legislature.findOne(id)
+
     if (!legislature) {
       throwNotFoundError({ id })
-    }
-
-    const newName = buildTempName(legislature.name)
-    if (newName.length > 50) {
-      throwDuplicateNameLengthError({ newName })
     }
 
     req.resource = legislature
   }
 
-  async function onDuplicateLegislature(req, reply) {
+  async function onDuplicateLegislature(req) {
     const { resource: legislature } = req
+    const { name } = req.body
 
     const ministries = await massive.ministry.find(
       {
@@ -70,7 +71,7 @@ export default async function duplicateLegislature(fastify) {
 
     const newLegislature = await massive.withTransaction(async tx => {
       const newLegislature = await tx.legislature.save({
-        name: buildTempName(legislature.name),
+        name,
         startDate: legislature.startDate,
         endDate: legislature.endDate,
       })
@@ -89,9 +90,5 @@ export default async function duplicateLegislature(fastify) {
       ...newLegislature,
       ministries: [],
     }
-  }
-
-  function buildTempName(legislatureName) {
-    return `${legislatureName} copy_${new Date().getMilliseconds()}`
   }
 }

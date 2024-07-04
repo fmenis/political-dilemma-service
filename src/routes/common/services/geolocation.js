@@ -14,6 +14,8 @@ const validate = compileValidateFn()
 
 export async function getGeolocationData(ip) {
   //##TODO implement retry strategy
+
+  //##TODO axios non funge allo startup del server
   const { data } = await axios({
     method: 'GET',
     baseURL: GEOLOCATION_API_URL,
@@ -75,6 +77,7 @@ function compileValidateFn() {
 
   const jsonSchema = schema.valueOf()
 
+  //TODO https://ajv.js.org/guide/managing-schemas.html
   return ajv.compile(jsonSchema)
 }
 

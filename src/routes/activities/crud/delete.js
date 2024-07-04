@@ -56,6 +56,7 @@ export default async function deleteActivity(fastify) {
     const activity = await massive.activity.findOne(id, {
       fields: ['id', 'status', 'ownerId'],
     })
+
     if (!activity) {
       throwNotFoundError({ id, name: 'activity' })
     }

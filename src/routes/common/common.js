@@ -26,7 +26,7 @@ export function buildPaginatedInfo(totalCount, options) {
 }
 
 /**
- * Determinates if the entities must be restricted by owner
+ * Determinate if the entities must be restricted by owner
  * @param {string} apiPermission permission
  * @returns boolean
  */

@@ -55,11 +55,11 @@ export default async function deleteArticle(fastify) {
       throwNotFoundError({ id: categoryId, name: 'article' })
     }
 
-    if (article.status !== ARTICLE_STATES.DRAFT) {
+    if (restrictDataToOwner(apiPermission) && article.ownerId !== userId) {
       throwOwnershipError({ id: userId, email })
     }
 
-    if (restrictDataToOwner(apiPermission) && article.ownerId !== userId) {
+    if (article.status !== ARTICLE_STATES.DRAFT) {
       throwInvalidStatusError({
         id,
         requiredStatus: ACTIVITY_STATES.DRAFT,
