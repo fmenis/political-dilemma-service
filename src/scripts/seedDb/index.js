@@ -5,7 +5,6 @@ import { seedRegionsAndProvinces } from './seedRegionsAndProvinces.js'
 import { seedUsers } from './seedUsers.js'
 import { seedPermissions } from './seedPermissions.js'
 import { seedRoles } from './seedRoles.js'
-import { seedMisc } from './seedMisc.js'
 
 async function seedDb() {
   const db = await massive({
@@ -21,7 +20,6 @@ async function seedDb() {
     await seedUsers(db)
     await seedPermissions(db)
     await seedRoles(db)
-    await seedMisc(db)
 
     console.log('Seeding completed!')
     db.instance.$pool.end()
