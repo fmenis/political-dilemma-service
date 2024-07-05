@@ -5,7 +5,8 @@ import { sLegislatureDetail } from './lib/schema.js'
 
 export default async function duplicateLegislature(fastify) {
   const { massive } = fastify
-  const { throwNotFoundError, errors } = fastify.legislatureErrors
+  const { throwNotFoundError, throwDuplicatedNameError, errors } =
+    fastify.legislatureErrors
 
   const routeDescription = 'Duplicate legislature.'
   const api = 'duplicate'
@@ -48,11 +49,20 @@ export default async function duplicateLegislature(fastify) {
 
   async function onPreHandler(req) {
     const { id } = req.params
+    const { name } = req.body
 
     const legislature = await massive.legislature.findOne(id)
 
     if (!legislature) {
       throwNotFoundError({ id })
+    }
+
+    const nameDuplicates = await massive.legislature.where(
+      'LOWER(name) = TRIM(LOWER($1))',
+      [`${name.trim()}`]
+    )
+    if (nameDuplicates.length) {
+      throwDuplicatedNameError({ name })
     }
 
     req.resource = legislature

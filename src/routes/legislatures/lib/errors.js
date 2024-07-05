@@ -61,9 +61,9 @@ async function groupErrors(fastify) {
         statusCode: 404,
       },
       {
-        code: '*DUPLICATED_NAME*',
+        code: '*DUPLICATE_NAME*',
         description: 'occurs when the name is already used.',
-        apis: ['create', 'update'],
+        apis: ['create', 'update', 'duplicate'],
         statusCode: 409,
       },
       {
