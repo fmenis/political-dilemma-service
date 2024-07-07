@@ -1,5 +1,5 @@
 import Fp from 'fastify-plugin'
-import cookie from 'fastify-cookie'
+import cookie from '@fastify/cookie'
 import moment from 'moment'
 
 async function authentication(fastify) {
