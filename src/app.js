@@ -9,7 +9,6 @@ import sentry from '@immobiliarelabs/fastify-sentry'
 
 import swaggerPlugin from './plugins/swagger.js'
 import pgPlugin from './plugins/postgres.js'
-import redisPlugin from './plugins/redis.js'
 import loadSchemasPlugin from './plugins/loadSchemas.js'
 import mailerPlugin from './plugins/mailer.js'
 
@@ -73,7 +72,6 @@ export default async function app(fastify, opts) {
 
   fastify.register(swaggerPlugin)
   fastify.register(pgPlugin)
-  fastify.register(redisPlugin)
   fastify.register(loadSchemasPlugin)
   fastify.register(mailerPlugin)
   fastify.register(apiPlugin, { prefix: '/api' })
