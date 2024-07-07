@@ -6,7 +6,7 @@ import { pipeline } from 'node:stream/promises'
  * Calculate real file size in MB
  * @param {number} blksize file block size
  * @param {number} blocks number of blocks
- * @returns {number} rouded file size
+ * @returns {number} rounded file size
  */
 export function calcFileSize(size) {
   const mb = size / (1024 * 1024)
@@ -25,7 +25,7 @@ export function deleteFiles(filePaths) {
 }
 
 /**
- * Move a file from a location to another (streammed)
+ * Move a file from a location to another (streamed)
  * @param {string} sourcePath source file abs path
  * @param {string} destPath dest file abs path
  * @returns {Promise<void>}
