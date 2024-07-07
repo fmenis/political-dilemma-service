@@ -1192,17 +1192,17 @@
 								{
 									"key": "files",
 									"type": "file",
-									"src": "/home/dev/Pictures/screen.png"
+									"src": "/home/phil/Pictures/Screenshots/Screenshot from 2024-07-03 17-59-57.png"
 								},
 								{
-									"key": "files",
-									"type": "file",
-									"src": "/home/dev/Pictures/screen.png"
+									"key": "target",
+									"value": "DESCRIPTION",
+									"type": "text"
 								},
 								{
-									"key": "files",
-									"type": "file",
-									"src": "/home/dev/Pictures/screen.png"
+									"key": "type",
+									"value": "ACTIVITY_IMAGE",
+									"type": "text"
 								}
 							]
 						},
@@ -1343,6 +1343,26 @@
 									"value": "salvini",
 									"disabled": true
 								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "names",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/v1/politicians/names",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"politicians",
+								"names"
 							]
 						}
 					},
@@ -1497,7 +1517,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"piopio\"\n}",
+							"raw": "{\n    \"name\": \"test\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1505,7 +1525,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}/api/v1/legislatures/a2e1cb9d-2119-4c88-8df2-2b5ccb350b58/duplicate",
+							"raw": "{{url}}/api/v1/legislatures/95a0a1d9-518d-4563-9e09-8054e8685a23/duplicate",
 							"host": [
 								"{{url}}"
 							],
@@ -1513,7 +1533,7 @@
 								"api",
 								"v1",
 								"legislatures",
-								"a2e1cb9d-2119-4c88-8df2-2b5ccb350b58",
+								"95a0a1d9-518d-4563-9e09-8054e8685a23",
 								"duplicate"
 							]
 						}
